@@ -1,12 +1,16 @@
 #ifndef UART_MIN_H
 #define UART_MIN_H
 
+#include <stdlib.h> // needed to use malloc, calloc, realloc
 #include <string.h> // includes defintion of strtok function
 #include <stdint.h> // includes uint8_t data type
 #include <stddef.h> // includes NULL value
 
-const uint8_t DIALOG_DELIMITER = '|'; // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=s1|
-const uint8_t PARAM_DELIMITER = '='; // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
+#define DIALOG_DELIMITER "|"
+#define PARAM_DELIMITER "="
+
+//const uint8_t DIALOG_DELIMITER = '|'; // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=s1|
+//const uint8_t PARAM_DELIMITER = '='; // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
 
 uint8_t ***connector_parse(uint8_t *dialog); // explodes data and parses it to 2d array, first column = key, second columns = value
                                              // [key],[value]
