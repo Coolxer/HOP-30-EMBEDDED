@@ -1,4 +1,3 @@
-#ifdef STSTM32
 #include "uart_min.h"
 
 void uart_setup_gpio()
@@ -7,7 +6,7 @@ void uart_setup_gpio()
 
 	GPIO_InitTypeDef gpio;
 
-	gpio.Pin = UART2_TX | UART2_RX;
+	gpio.Pin = USART2_TX | USART2_RX;
 	gpio.Mode = GPIO_MODE_AF_PP;
 	gpio.Pull = GPIO_NOPULL;
 	gpio.Speed = GPIO_SPEED_FREQ_LOW;
@@ -53,4 +52,3 @@ void uart_disable()
     __HAL_RCC_GPIOA_CLK_DISABLE();
     __HAL_RCC_USART2_CLK_DISABLE();
 }
-#endif

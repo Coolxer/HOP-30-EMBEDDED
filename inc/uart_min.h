@@ -1,9 +1,6 @@
 #ifndef UART_MIN_H
 #define UART_MIN_H
 
-#define UART2_TX GPIO_PIN_2
-#define UART2_RX GPIO_PIN_3
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -11,6 +8,9 @@ extern "C" {
 #include "stm32f4xx_hal.h"
 
 /* defined consts */
+const uint16_t USART2_TX = GPIO_PIN_2;
+const uint16_t USART2_RX = GPIO_PIN_3;
+
 static UART_HandleTypeDef uart; /* uart interface */
 
 void uart_setup_gpio(); /* sets both tx & rx gpio ports to be ready for uart transmission */
