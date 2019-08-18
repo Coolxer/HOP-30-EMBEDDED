@@ -1,6 +1,7 @@
 #ifndef UART_MIN_H
 #define UART_MIN_H
 
+#include <string.h> // includes defintion of strtok function
 #include <stdint.h> // includes uint8_t data type
 #include <stddef.h> // includes NULL value
 

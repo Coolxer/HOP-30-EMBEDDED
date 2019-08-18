@@ -32,8 +32,8 @@ void connector_manage_data(uint8_t ***args)
 
 	memmove(args, args + 1, (--size) * sizeof(uint8_t *));
 
-	if(strcmp((void *)opt, "sth") == 0)
-		prepare_turn(args, size);
+	//if(strcmp((void *)opt, "sth") == 0)
+	//	prepare_turn(args, size);
 }
 
 uint8_t connector_string_size(uint8_t *string)
