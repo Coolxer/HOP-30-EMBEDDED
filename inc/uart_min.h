@@ -7,19 +7,19 @@ extern "C" {
 
 #include "stm32f4xx_hal.h"
 
-/* defined consts */
+// defined consts 
 const uint16_t USART2_TX = GPIO_PIN_2;
 const uint16_t USART2_RX = GPIO_PIN_3;
 
-static UART_HandleTypeDef uart; /* uart interface */
+static UART_HandleTypeDef uart; // uart interface 
 
-void uart_setup_gpio(); /* sets both tx & rx gpio ports to be ready for uart transmission */
-void uart_setup_interface(); /* prepares uart interface */
+void uart_setup_gpio(); // sets both tx & rx gpio ports to be ready for uart transmission 
+void uart_setup_interface(); // prepares uart interface 
 
-void uart_enable(); /* enables -> calls the setup gpio and interface to working as unit test transport */
-void uart_send(char c); /* sends one char to uart port */
-void uart_flush(); /* flushes uart interface */
-void uart_disable(); /* disables all peripherals related to uart */
+void uart_enable(); // enables -> calls the setup gpio and interface to working as unit test transport 
+void uart_send(char c); // sends one char to uart port 
+void uart_flush(); // flushes uart interface 
+void uart_disable(); // disables all peripherals related to uart 
 
 #ifdef __cplusplus
 }
