@@ -1,3 +1,5 @@
+#ifdef STSTM32
+
 #include "uart_min.h"
 
 void uart_setup_gpio()
@@ -52,3 +54,5 @@ void uart_disable()
     __HAL_RCC_GPIOA_CLK_DISABLE();
     __HAL_RCC_USART2_CLK_DISABLE();
 }
+
+#endif // STSTM32
