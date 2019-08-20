@@ -12,7 +12,7 @@ void prepare_steppers(); //initialize steppers structures
 
 /* prepare functions */
 
-void prepare_turn(uint8_t ***args, uint8_t *size);
+void prepare_turn(uint8_t ***args, uint8_t *size); // passing the parameters to stepper_enable function
 
 
 #endif // PREPARE_FUNCTIONS_H
