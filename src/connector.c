@@ -81,7 +81,7 @@ void connector_build_result()
 {
 	uint8_t i;
 
-	for(i = 0; i < data_size; i++)
+	for(i = 0; i < DATA_SIZE; i++)
 	{
 		if(data[i] != "")
 			data[i] = SPACE_FILLER;

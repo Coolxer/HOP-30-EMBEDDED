@@ -1,3 +1,4 @@
+#ifdef STSTM32
 #include "prepare_functions.h"
 
 void prepare_turn(uint8_t ***args, uint8_t *size)
@@ -13,3 +14,5 @@ void prepare_turn(uint8_t ***args, uint8_t *size)
 	    	stepper_enable(current, (bool)args[i][1]);
 	}
 }
+
+#endif //STSTM32

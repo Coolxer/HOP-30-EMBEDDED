@@ -1,3 +1,4 @@
+#ifdef STSTM32
 #include "application.h"
 
 #include "uart.h"
@@ -22,3 +23,5 @@ void application_close()
     uart_deinit();
     device_manager_deinit();
 }
+
+#endif // STSTM32

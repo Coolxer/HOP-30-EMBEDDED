@@ -3,12 +3,13 @@
 
 #include <stdint.h> // includes uint8_t data type
 
-#define DIALOG_DELIMITER "|"
+#define DATA_SIZE 64 // size of data transmission 
+
+#define DIALOG_DELIMITER "|" 
 #define PARAM_DELIMITER "="
 #define SPACE_FILLER "~"
 
-const uint8_t data_size = 64;  // size of data transmission 
-static uint8_t data[data_size]; // array using for receiving data and stores messages
+uint8_t data[DATA_SIZE]; // array using for receiving data and stores messages
 
 //const uint8_t DIALOG_DELIMITER = '|'; // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=s1|
 //const uint8_t PARAM_DELIMITER = '='; // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
