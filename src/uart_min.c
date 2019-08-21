@@ -33,13 +33,13 @@ void uart_setup_interface()
 	HAL_UART_Init(&uart);
 }
 
-void uart_enable()
+void uart_start()
 {
     uart_setup_gpio();
     uart_setup_interface();
 }
 
-void uart_send(char c)
+void uart_write(char c)
 {
     HAL_UART_Transmit(&uart, (uint8_t*)(&c), 1, 1000);
 }
@@ -49,7 +49,7 @@ void uart_flush()
     
 }
 
-void uart_disable()
+void uart_end()
 {
     __HAL_RCC_GPIOA_CLK_DISABLE();
     __HAL_RCC_USART2_CLK_DISABLE();

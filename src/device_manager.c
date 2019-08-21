@@ -6,6 +6,7 @@
 void device_manager_init()
 {
     stepper_init(&devices[0], "s1", GPIO_PIN_5, 0, 0, 0, 0, 0, 0);
+    stepper_init(&devices[0], "s2", 0, 0, 0, 0, 0, 0, 0);
 
     current = (struct Stepper *) malloc(sizeof(struct Stepper));
 }
