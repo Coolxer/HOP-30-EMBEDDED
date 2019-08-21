@@ -1,17 +1,19 @@
-#ifndef UART_MIN_H
-#define UART_MIN_H
+#ifndef CONNECTOR_H
+#define CONNECTOR_H
 
 #include <stdint.h> // includes uint8_t data type
 
 #define DIALOG_DELIMITER "|"
 #define PARAM_DELIMITER "="
+#define SPACE_FILLER "~"
 
-uint8_t message[40];
+const uint8_t data_size = 64;  // size of data transmission 
+static uint8_t data[data_size]; // array using for receiving data and stores messages
 
 //const uint8_t DIALOG_DELIMITER = '|'; // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=s1|
 //const uint8_t PARAM_DELIMITER = '='; // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
 
-uint8_t ***connector_parse(uint8_t *dialog, uint8_t * size); // explodes data and parses it to 2d array, first column = key, second columns = value
+uint8_t ***connector_parse(uint8_t * size); // explodes data and parses it to 2d array, first column = key, second columns = value
                                              // [key],[value]
                                              // [opt],[move]
                                              // [spp],[s1]                            
@@ -20,8 +22,8 @@ void connector_manage_data(uint8_t ***args, uint8_t* size); // calls correct fun
 
 uint8_t connector_string_size(uint8_t *string); // returns size of array of uint8_t (size of string)
 
-uint8_t *connector_start(uint8_t *dialog); // parse dialog with connector_parse() and passes it to connector_manage_data()
+void connector_start(); // parse dialog with connector_parse() and passes it to connector_manage_data()
 
-uint8_t *connector_build(uint8_t *dialog);
+void connector_build_result();
 
-#endif // UART_MIN_H
+#endif // CONNECTOR_H

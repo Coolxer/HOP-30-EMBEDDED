@@ -3,10 +3,6 @@
 
 #include "stm32f4xx_hal.h"
 
-const uint8_t data_size = 64;  // size of data transmission 
-
-uint8_t data[data_size]; // array of uint8_t using for keep in received data 
-
 DMA_HandleTypeDef hdma_uart_rx; // rx interface 
 DMA_HandleTypeDef hdma_uart_tx; // tx interface 
 

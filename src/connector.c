@@ -6,11 +6,11 @@
 
 //#include "prepare_functions.h"
 
-uint8_t ***connector_parse(uint8_t* dialog, uint8_t* size)
+uint8_t ***connector_parse(uint8_t* size)
 {
     uint8_t ***args = NULL, *param, *key, *value;
 
-	for (param = strtok((uint8_t*) dialog, DIALOG_DELIMITER); param != NULL; param = strtok(NULL, DIALOG_DELIMITER))
+	for (param = strtok((uint8_t*) data, DIALOG_DELIMITER); param != NULL; param = strtok(NULL, DIALOG_DELIMITER))
 	{
 		key = strtok_r(param, PARAM_DELIMITER, &value);
 		args = (uint8_t ***) realloc(args, ++(*size) * sizeof(uint8_t *));
@@ -23,15 +23,17 @@ uint8_t ***connector_parse(uint8_t* dialog, uint8_t* size)
 		args[*size - 1][1] = value;
 	}
 
+	strcpy(data, ""); // clear the data array, will be use to save process result
+
 	if((*size) == 1) // if there is only one record -> command incorrect
 	{
-		strcpy(message, "ERROR:one_parameter_only");
+		strcpy(data, "ERROR:one_parameter_only");
 		return NULL;
 	}
 
 	if(args != NULL && strcmp(args[0][0], "opt") != 0) // if there is no "opt" key -> command incorrect
 	{
-		strcpy(message, "ERROR:no_opt_key");
+		strcpy(data, "ERROR:no_opt_key");
 		return NULL;
 	}
 
@@ -52,7 +54,7 @@ void connector_manage_data(uint8_t ***args, uint8_t* size)
 	if(strcmp((void *)opt, "sth") == 0){}
 		//prepare_turn(args, size);
 	else
-		strcpy(message, "ERROR:invalid_opt_value");
+		strcpy(data, "ERROR:invalid_opt_value");
 	
 }
 
@@ -66,17 +68,24 @@ uint8_t connector_string_size(uint8_t *string)
 	return i;
 }
 
-uint8_t *connector_start(uint8_t *dialog)
+void connector_start()
 {
 	uint8_t size = 0; // number of records
-	strcpy(message, ""); // reset message
 
-	connector_manage_data(connector_parse(dialog, &size), &size);
+	connector_manage_data(connector_parse(&size), &size);
+
+	connector_build_result();
 }
 
-uint8_t *connector_build(uint8_t *message)
+void connector_build_result()
 {
-	uint
+	uint8_t i;
+
+	for(i = 0; i < data_size; i++)
+	{
+		if(data[i] != "")
+			data[i] = SPACE_FILLER;
+	}
 }
 
 

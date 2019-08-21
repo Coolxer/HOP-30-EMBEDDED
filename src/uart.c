@@ -86,7 +86,7 @@ void uart_send(uint8_t *message)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* usart)
 {
-	uint8_t *message = connector_start(data);
+	connector_start();
 	strcpy(data, message);
 	uart_send(data);
 	uart_enable();
