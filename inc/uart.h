@@ -2,7 +2,6 @@
 #define UART_H
 
 #include "stm32f4xx_hal.h"
-#include "uart_min.h"
 
 const uint8_t data_size = 64;  // size of data transmission 
 
@@ -20,6 +19,7 @@ void uart_deinit(); // frees memmory and disables all periphals in common, timer
 void uart_enable();
 void uart_disable();
 
+void uart_send(uint8_t *message);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* usart); // calls if there is any data on rx receiving buffer (only if buffer has its own defined size -> @data_size) 
 
 #endif // UART_H

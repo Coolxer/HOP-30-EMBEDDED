@@ -1,5 +1,10 @@
-#ifdef STSTM32
+//#ifdef STSTM32
 #include "uart.h"
+
+#include <string.h>
+
+#include "uart_min.h"
+#include "connector.h"
 
 void uart_setup_dma()
 {
@@ -51,7 +56,7 @@ void uart_setup_nvic()
 
 void uart_init()
 {
-	uart_start()
+	uart_start();
 	uart_setup_dma();
     uart_setup_nvic();
 
@@ -74,9 +79,17 @@ void uart_disable()
 	HAL_UART_DMAStop(&uart);
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef* usart)
+void uart_send(uint8_t *message)
 {
-	
+	HAL_USART_Transmit_DMA(&uart, message, data_size);
 }
 
-#endif
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* usart)
+{
+	uint8_t *message = connector_start(data);
+	strcpy(data, message);
+	uart_send(data);
+	uart_enable();
+}
+
+//#endif
