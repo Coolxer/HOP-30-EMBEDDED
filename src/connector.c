@@ -10,7 +10,10 @@ uint8_t ***connector_parse(uint8_t* size)
 {
     uint8_t ***args = NULL, *param, *key, *value;
 
-	for (param = strtok((uint8_t*) data, DIALOG_DELIMITER); param != NULL; param = strtok(NULL, DIALOG_DELIMITER))
+	uint8_t st[DATA_SIZE];
+	strcpy(st, data);
+
+	for (param = strtok((uint8_t*) st, DIALOG_DELIMITER); param != NULL; param = strtok(NULL, DIALOG_DELIMITER))
 	{
 		key = strtok_r(param, PARAM_DELIMITER, &value);
 		args = (uint8_t ***) realloc(args, ++(*size) * sizeof(uint8_t *));
@@ -25,7 +28,7 @@ uint8_t ***connector_parse(uint8_t* size)
 
 	strcpy(data, ""); // clear the data array, will be use to save process result
 
-	if((*size) == 1) // if there is only one record -> command incorrect
+	if((*size) <= 1) // if there is only one record or less -> command incorrect
 	{
 		strcpy(data, "ERROR:one_parameter_only");
 		return NULL;
