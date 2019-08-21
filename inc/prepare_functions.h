@@ -4,15 +4,10 @@
 
 #include <stdint.h> // includes uint8_t data type
 
-#include "stepper.h"
-
-struct Stepper s1, s2, *current;
-
-void prepare_steppers(); //initialize steppers structures
+#include "device_manager.h"
 
 /* prepare functions */
 
 void prepare_turn(uint8_t ***args, uint8_t *size); // passing the parameters to stepper_enable function
-
 
 #endif // PREPARE_FUNCTIONS_H
