@@ -7,7 +7,7 @@
 void setUp();// default setup function
 void tearDown(); // default release function
 
-/***************************************CONNECTOR_STRING_SIZE TESTS ******************************************************/
+/************************************** CONNECTOR_STRING_SIZE TESTS ******************************************************/
 
 // test if the string is empty
 void test_connector_string_size_should_be_zero() 
@@ -30,7 +30,7 @@ void test_connector_string_size_should_be_five()
     TEST_ASSERT_EQUAL_UINT8(5, connector_string_size(string));
 }
 
-/****************************************CONNECTOR_PARSE TESTS ***********************************************************/
+/*************************************** CONNECTOR_PARSE TESTS ***********************************************************/
 
 // test if connector_parse returns NULL if the dialog is empty
 void test_connector_parse_should_give_null_if_dialog_empty() 
@@ -82,7 +82,7 @@ void test_connector_parse_should_give_three_records()
     TEST_ASSERT_EQUAL_STRING("value3", args[2][1]);
 }
 
-/**********************************CONNECTOR_MANAGE_DATA TESTS ***********************************************************/
+/********************************* CONNECTOR_MANAGE_DATA TESTS ***********************************************************/
 
 // test if connector_manage_data no manipulate size if input array is NULL
 void test_connector_manage_data_fixed_size_should_be_zero() 
@@ -114,7 +114,18 @@ void test_connector_manage_data_opt_value_should_be_mov()
     TEST_ASSERT_TRUE(strcmp((void *)args[0][1], "mov") == 0);
 }
 
-/*****************************************CONNECTOR_BUILD TESTS **********************************************************/
+/**************************************** CONNECTOR_CLEAR_DATA TESTS ****************************************************/
+
+void test_connector_clear_data()
+{
+    strcpy(data, "01234567890012345678900123345564");
+
+    connector_clear_data();
+
+    TEST_ASSERT_EQUAL_STRING("", data);
+}
+
+/**************************************** CONNECTOR_BUILD TESTS **********************************************************/
 
 // test if connector_build_data fills in empty data array with space_filler's
 void test_connector_build_data_should_fill_all_with_space_filler_if_data_empty()
@@ -160,6 +171,8 @@ int main()
     RUN_TEST(test_connector_manage_data_fixed_size_should_be_zero);
     RUN_TEST(test_connector_manage_data_fixed_size_should_be_two_if_three_records);
     RUN_TEST(test_connector_manage_data_opt_value_should_be_mov);
+
+    RUN_TEST(test_connector_clear_data);
 
     RUN_TEST(test_connector_build_data_should_fill_all_with_space_filler_if_data_empty);
     RUN_TEST(test_connector_build_data_should_fill_all_with_space_filler_if_data_spaces_only);
