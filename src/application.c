@@ -1,6 +1,8 @@
 #ifdef STSTM32
 #include "application.h"
 
+#include <stdbool.h>
+
 #include "uart.h"
 #include "device_manager.h"
 
@@ -15,6 +17,7 @@ void application_run()
     while(1)
     {
         if(end_flag)
+            break;
     }
 }
 

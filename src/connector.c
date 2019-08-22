@@ -77,27 +77,39 @@ void connector_start()
 
 	connector_manage_data(connector_parse(&size), &size);
 
-	connector_build_result();
+	connector_build_data();
 }
 
-void connector_build_result()
+void connector_build_data()
 {
 	uint8_t i;
 
 	for(i = 0; i < DATA_SIZE; i++)
 	{
-		if(data[i] != "")
+		if(data[i] == '\0' || data[i] == ' ')
 			data[i] = SPACE_FILLER;
 	}
+
+	data[DATA_SIZE] = '\0';
 }
 
-void connector_raw_string()
+void connector_cut_data()
 {
 	uint8_t i;
 
 	for(i = 0; i < DATA_SIZE; i++)
 		if(data[i] == SPACE_FILLER)
 			data[i] = "";
+
+	data[DATA_SIZE] = '\0';
+}
+
+void connector_clear_data()
+{
+	uint8_t i;
+
+	for(i = 0; i < DATA_SIZE ; i++)
+		data[i] = 0;
 }
 
 uint8_t connector_string_equals(uint8_t string[])

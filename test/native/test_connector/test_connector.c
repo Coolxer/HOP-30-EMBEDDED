@@ -4,42 +4,44 @@
 #include <string.h>
 #include "connector.h"
 
-void setUp() // default setup function
-{
-    strcpy(data, "");
-} 
+void setUp();// default setup function
 void tearDown(); // default release function
 
-/* CONNECTOR_STRING_SIZE TESTS ******************************************************/
+/***************************************CONNECTOR_STRING_SIZE TESTS ******************************************************/
 
-void test_connector_string_size_should_be_zero() // test if the string is empty
+// test if the string is empty
+void test_connector_string_size_should_be_zero() 
 {
     uint8_t string[] = "";
     TEST_ASSERT_EQUAL_UINT8(0, connector_string_size(string));
 }
 
-void test_connector_string_size_should_be_three() // test if the string is length is 3
+// test if the string is length is 3
+void test_connector_string_size_should_be_three() 
 {
     uint8_t string[] = "123";
     TEST_ASSERT_EQUAL_UINT8(3, connector_string_size(string));
 }
 
-void test_connector_string_size_should_be_five() // test if the string length is 5
+// test if the string length is 5
+void test_connector_string_size_should_be_five() 
 {
     uint8_t string[] = "12345";
     TEST_ASSERT_EQUAL_UINT8(5, connector_string_size(string));
 }
 
-/* CONNECTOR_PARSE TESTS ***********************************************************/
+/****************************************CONNECTOR_PARSE TESTS ***********************************************************/
 
-void test_connector_parse_should_give_null_if_dialog_empty() // test if connector_parse returns NULL if the dialog is empty
+// test if connector_parse returns NULL if the dialog is empty
+void test_connector_parse_should_give_null_if_dialog_empty() 
 {
     uint8_t ***args = NULL, size = 0;
     args = connector_parse(&size);
     TEST_ASSERT_NULL(args);
 }
 
-void test_connector_parse_should_give_null_if_pipes_only() // test if connector_parse returns NULL if the dialog consists pipes only
+// test if connector_parse returns NULL if the dialog consists pipes only
+void test_connector_parse_should_give_null_if_pipes_only() 
 {
     uint8_t ***args = NULL, size = 0;
     strcpy(data, "|||||");
@@ -47,7 +49,8 @@ void test_connector_parse_should_give_null_if_pipes_only() // test if connector_
     TEST_ASSERT_NULL(args);
 }
 
-void test_connector_parse_should_give_null_if_one_record_only() // test if connector_parse returns NULL if only 1 record (that's incorrect, because you cannnot build correct, working command with only one sentence)
+// test if connector_parse returns NULL if only 1 record (that's incorrect, because you cannnot build correct, working command with only one sentence)
+void test_connector_parse_should_give_null_if_one_record_only() 
 {
     uint8_t ***args = NULL, size = 0;
     strcpy(data, "opt=value1|");
@@ -55,7 +58,8 @@ void test_connector_parse_should_give_null_if_one_record_only() // test if conne
     TEST_ASSERT_NULL(args);
 }
 
-void test_connector_parse_should_give_null_if_no_opt_parameter() // test if connector_parse return NULL if there is no opt parameter at start
+// test if connector_parse return NULL if there is no opt parameter at start
+void test_connector_parse_should_give_null_if_no_opt_parameter() 
 {
     uint8_t ***args = NULL, size = 0;
     strcpy(data, "key1=value1|");
@@ -63,7 +67,8 @@ void test_connector_parse_should_give_null_if_no_opt_parameter() // test if conn
     TEST_ASSERT_NULL(args); 
 }
 
-void test_connector_parse_should_give_three_records() // test if connector_parse returns 3 records with correct keys & values
+// test if connector_parse returns 3 records with correct keys & values
+void test_connector_parse_should_give_three_records() 
 {
     uint8_t ***args = NULL, size = 0;
     strcpy(data, "opt=value1|key2=value2|key3=value3|");
@@ -77,9 +82,10 @@ void test_connector_parse_should_give_three_records() // test if connector_parse
     TEST_ASSERT_EQUAL_STRING("value3", args[2][1]);
 }
 
-/* CONNECTOR_PARSE TESTS ***********************************************************/
+/**********************************CONNECTOR_MANAGE_DATA TESTS ***********************************************************/
 
-void test_connector_manage_data_fixed_size_should_be_zero() // test if connector_manage_data no manipulate size if input array is NULL
+// test if connector_manage_data no manipulate size if input array is NULL
+void test_connector_manage_data_fixed_size_should_be_zero() 
 {
     uint8_t size = 0;
     connector_manage_data(NULL, &size);
@@ -87,7 +93,8 @@ void test_connector_manage_data_fixed_size_should_be_zero() // test if connector
     TEST_ASSERT_EQUAL_UINT8(0, size);
 }
 
-void test_connector_manage_data_fixed_size_should_be_two_if_three_records() // test if connector_manage_data manipulate size from 3 to 2 if array has 3 records
+// test if connector_manage_data manipulate size from 3 to 2 if array has 3 records
+void test_connector_manage_data_fixed_size_should_be_two_if_three_records() 
 {
     uint8_t ***args = NULL, size = 0;
     strcpy(data, "opt=value1|key2=value2|key3=value3");
@@ -96,7 +103,8 @@ void test_connector_manage_data_fixed_size_should_be_two_if_three_records() // t
     TEST_ASSERT_EQUAL_UINT8(2, size);
 }
 
-void test_connector_opt_value_should_be_mov() // test if strcpm builded in function property compares strings
+// test if strcpm builded in function property compares strings
+void test_connector_manage_data_opt_value_should_be_mov() 
 {
     uint8_t ***args = NULL, size = 0;
     strcpy(data, "opt=mov|key2=value2|key3=value3");
@@ -104,6 +112,35 @@ void test_connector_opt_value_should_be_mov() // test if strcpm builded in funct
     args = connector_parse(&size);
 
     TEST_ASSERT_TRUE(strcmp((void *)args[0][1], "mov") == 0);
+}
+
+/*****************************************CONNECTOR_BUILD TESTS **********************************************************/
+
+// test if connector_build_data fills in empty data array with space_filler's
+void test_connector_build_data_should_fill_all_with_space_filler_if_data_empty()
+{
+    connector_clear_data();
+    connector_build_data();
+
+    TEST_ASSERT_EQUAL_STRING("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", data);
+}
+
+// test if connector_build_data fills in data array (filled with spaces) with space_filler's
+void test_connector_build_data_should_fill_all_with_space_filler_if_data_spaces_only()
+{
+    strcpy(data, "                                                                ");
+    connector_build_data();
+
+    TEST_ASSERT_EQUAL_STRING("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", data);
+}
+
+// test if connector_build_data fills in data array (half-filled) with space_filler's
+void test_connector_build_data_should_fill_only_second_half_with_space_filler_if_half_filled()
+{
+    strcpy(data, "01234567890123456789012345678901");
+    connector_build_data();
+
+    TEST_ASSERT_EQUAL_STRING("01234567890123456789012345678901~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", data);
 }
 
 int main()
@@ -122,8 +159,11 @@ int main()
 
     RUN_TEST(test_connector_manage_data_fixed_size_should_be_zero);
     RUN_TEST(test_connector_manage_data_fixed_size_should_be_two_if_three_records);
+    RUN_TEST(test_connector_manage_data_opt_value_should_be_mov);
 
-    RUN_TEST(test_connector_opt_value_should_be_mov);
+    RUN_TEST(test_connector_build_data_should_fill_all_with_space_filler_if_data_empty);
+    RUN_TEST(test_connector_build_data_should_fill_all_with_space_filler_if_data_spaces_only);
+    RUN_TEST(test_connector_build_data_should_fill_only_second_half_with_space_filler_if_half_filled);
 
     UNITY_END();
 }

@@ -7,7 +7,7 @@
 
 #define DIALOG_DELIMITER "|" 
 #define PARAM_DELIMITER "="
-#define SPACE_FILLER "~"
+#define SPACE_FILLER '~'
 
 uint8_t data[DATA_SIZE]; // array using for receiving data and stores messages
 
@@ -25,8 +25,9 @@ uint8_t connector_string_size(uint8_t *string); // returns size of array of uint
 
 void connector_start(); // parse dialog with connector_parse() and passes it to connector_manage_data()
 
-void connector_build_result(); // fills in SPACE_FILLER to data array into free spaces
-void connector_raw_string(); // removes SPACE_FILLER's from data array
+void connector_build_data(); // fills in SPACE_FILLER to data array into free spaces
+void connector_cut_data(); // removes SPACE_FILLER's from data array
+void connector_clear_data(); // clears data array
 
 uint8_t connector_string_equals(uint8_t string[]); // compares data and string; if equals returns 0; else <0 or >0
 
