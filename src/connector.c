@@ -26,7 +26,7 @@ uint8_t ***connector_parse(uint8_t* size)
 		args[*size - 1][1] = value;
 	}
 
-	strcpy(data, ""); // clear the data array, will be use to save process result
+	// clear the data array, will be use to save process result
 
 	if((*size) <= 1) // if there is only one record or less -> command incorrect
 	{
@@ -61,59 +61,13 @@ void connector_manage_data(uint8_t ***args, uint8_t* size)
 	
 }
 
-uint8_t connector_string_size(uint8_t *string)
-{
-	uint8_t i = 0; // number of letters
-
-	while(string[i] != '\0')
-		i++;
-
-	return i;
-}
-
 void connector_start()
 {
-	uint8_t size = 0; // number of records
+	uint8_t size = 0; // number of records [key, value]
 
 	connector_manage_data(connector_parse(&size), &size);
 
 	connector_build_data();
 }
 
-void connector_build_data()
-{
-	uint8_t i;
-
-	for(i = 0; i < DATA_SIZE; i++)
-	{
-		if(data[i] == '\0' || data[i] == ' ')
-			data[i] = SPACE_FILLER;
-	}
-
-	data[DATA_SIZE] = '\0';
-}
-
-void connector_cut_data()
-{
-	uint8_t i;
-
-	for(i = 0; i < DATA_SIZE; i++)
-		if(data[i] == SPACE_FILLER)
-			data[i] = "";
-
-	data[DATA_SIZE] = '\0';
-}
-
-void connector_clear_data()
-{
-	uint8_t i;
-
-	for(i = 0; i < DATA_SIZE ; i++)
-		data[i] = 0;
-}
-
-uint8_t connector_string_equals(uint8_t string[])
-{
-	return strcmp(data, string);
-}
 

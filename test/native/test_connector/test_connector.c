@@ -125,7 +125,7 @@ void test_connector_clear_data()
     TEST_ASSERT_EQUAL_STRING("", data);
 }
 
-/**************************************** CONNECTOR_BUILD TESTS **********************************************************/
+/**************************************** CONNECTOR_BUILD_DATA TESTS *****************************************************/
 
 // test if connector_build_data fills in empty data array with space_filler's
 void test_connector_build_data_should_fill_all_with_space_filler_if_data_empty()
@@ -153,6 +153,10 @@ void test_connector_build_data_should_fill_only_second_half_with_space_filler_if
 
     TEST_ASSERT_EQUAL_STRING("01234567890123456789012345678901~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", data);
 }
+
+/**************************************** CONNECTOR_CUT_DATA TESTS *******************************************************/
+
+
 
 int main()
 {
