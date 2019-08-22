@@ -14,7 +14,7 @@ void application_run()
 {
     while(1)
     {
-
+        if(end_flag)
     }
 }
 
@@ -22,6 +22,11 @@ void application_close()
 {
     uart_deinit();
     device_manager_deinit();
+}
+
+void application_exec()
+{
+    
 }
 
 #endif // STSTM32

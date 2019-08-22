@@ -1,10 +1,13 @@
 #ifndef UART_H
 #define UART_H
 
+#include <stdbool.h>
 #include "stm32f4xx_hal.h"
 
 DMA_HandleTypeDef hdma_uart_rx; // rx interface 
-DMA_HandleTypeDef hdma_uart_tx; // tx interface 
+DMA_HandleTypeDef hdma_uart_tx; // tx interface
+
+static bool end_flag = false;
 
 void uart_setup_dma(); // prepares tx & rx interface to work in DMA mode 
 void uart_setup_nvic(); // sets the nvic interrupts priorities 

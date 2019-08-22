@@ -91,4 +91,17 @@ void connector_build_result()
 	}
 }
 
+void connector_raw_string()
+{
+	uint8_t i;
+
+	for(i = 0; i < DATA_SIZE; i++)
+		if(data[i] == SPACE_FILLER)
+			data[i] = "";
+}
+
+uint8_t connector_string_equals(uint8_t string[])
+{
+	return strcmp(data, string);
+}
 

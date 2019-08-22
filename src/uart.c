@@ -1,8 +1,6 @@
 #ifdef STSTM32
 #include "uart.h"
 
-#include <string.h>
-
 #include "uart_min.h"
 #include "connector.h"
 
@@ -86,9 +84,14 @@ void uart_send(uint8_t *message)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* usart)
 {
-	connector_start();
-	uart_send(data);
-	uart_enable();
+	if(connector_string_equals("FINISH") == 0)
+		end_flag = true;
+	else
+	{
+		connector_start();
+		uart_send(data);
+		uart_enable();
+	}
 }
 
 #endif // STSTM32

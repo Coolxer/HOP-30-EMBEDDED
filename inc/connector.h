@@ -25,6 +25,9 @@ uint8_t connector_string_size(uint8_t *string); // returns size of array of uint
 
 void connector_start(); // parse dialog with connector_parse() and passes it to connector_manage_data()
 
-void connector_build_result();
+void connector_build_result(); // fills in SPACE_FILLER to data array into free spaces
+void connector_raw_string(); // removes SPACE_FILLER's from data array
+
+uint8_t connector_string_equals(uint8_t string[]); // compares data and string; if equals returns 0; else <0 or >0
 
 #endif // CONNECTOR_H

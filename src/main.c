@@ -1,8 +1,10 @@
 #ifndef UNIT_TEST
 
+#include "application.h"
+
 int main() 
 {
-  while (1);
+  
 }
 
 #endif
