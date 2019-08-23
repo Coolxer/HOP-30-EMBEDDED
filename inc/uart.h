@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include "stm32f4xx_hal.h"
 
+#define DATA_SIZE 64  // size of data transmission    
+
+uint8_t data[DATA_SIZE]; // array using for receiving data and stores messages
+
 DMA_HandleTypeDef hdma_uart_rx; // rx interface 
 DMA_HandleTypeDef hdma_uart_tx; // tx interface
 

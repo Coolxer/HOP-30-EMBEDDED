@@ -4,7 +4,7 @@
 
 int main() 
 {
-  
+    application_exec();
 }
 
 #endif

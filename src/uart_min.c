@@ -1,4 +1,4 @@
-#ifdef STSTM32
+//ifdef STSTM32
 
 #include "uart_min.h"
 
@@ -55,4 +55,4 @@ void uart_end()
     __HAL_RCC_USART2_CLK_DISABLE();
 }
 
-#endif // STSTM32
+//#endif // STSTM32

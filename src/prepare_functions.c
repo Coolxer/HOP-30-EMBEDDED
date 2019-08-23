@@ -1,5 +1,7 @@
-#ifdef STSTM32
+//ifdef STSTM32
 #include "prepare_functions.h"
+
+#include "device_manager.h"
 
 void prepare_turn(uint8_t ***args, uint8_t *size)
 {
@@ -15,4 +17,4 @@ void prepare_turn(uint8_t ***args, uint8_t *size)
 	}
 }
 
-#endif //STSTM32
+//#endif //STSTM32

@@ -5,10 +5,10 @@
 #include "stm32f4xx_hal.h"
 #include "stepper.h"
 
-const int devices_count = 2;
+#define DEVICES_COUNT 2
 
-struct Stepper devices[devices_count];
-struct Stepper *current;
+extern struct Stepper devices[DEVICES_COUNT];
+extern struct Stepper *current;
 
 void device_manager_init();
 void device_manager_deinit();

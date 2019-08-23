@@ -7,9 +7,8 @@ extern "C" {
 
 #include "stm32f4xx_hal.h"
 
-// defined consts 
-const uint16_t USART2_TX = GPIO_PIN_2;
-const uint16_t USART2_RX = GPIO_PIN_3;
+#define USART2_TX GPIO_PIN_2
+#define USART2_RX GPIO_PIN_3
 
 static UART_HandleTypeDef uart; // uart interface 
 
