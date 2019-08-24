@@ -1,4 +1,4 @@
-//ifdef STSTM32
+#ifdef STSTM32
 #include "application.h"
 
 #include <stdbool.h>
@@ -32,4 +32,4 @@ void application_exec()
     
 }
 
-//#endif // STSTM32
+#endif // STSTM32

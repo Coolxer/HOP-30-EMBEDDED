@@ -6,13 +6,11 @@
 
 #include "data_assistant.h"
 
-uint8_t ***connector_parse(uint8_t *dt, uint8_t dt_size, uint8_t *args_size)
+uint8_t ***connector_parse(uint8_t *dt, uint8_t *args_size)
 {
-    uint8_t ***args = NULL, *param, *key, *value, dta[dt_size];
+    uint8_t ***args = NULL, *param, *key, *value;
 
-	strcpy(dta, dt);
-
-	for (param = strtok((uint8_t*) dta, DIALOG_DELIMITER); param != NULL; param = strtok(NULL, DIALOG_DELIMITER))
+	for (param = strtok((uint8_t*) dt, DIALOG_DELIMITER); param != NULL; param = strtok(NULL, DIALOG_DELIMITER))
 	{
 		key = strtok_r(param, PARAM_DELIMITER, &value);
 		args = (uint8_t ***) realloc(args, ++(*args_size) * sizeof(uint8_t *));
@@ -25,50 +23,49 @@ uint8_t ***connector_parse(uint8_t *dt, uint8_t dt_size, uint8_t *args_size)
 		args[*args_size - 1][1] = value;
 	}
 
-	data_clear(dt);// clear the data array, will be use to save process result
-
-	if((*args_size) <= 1) // if there is only one record or less -> command incorrect
-	{
-		strcpy(dt, "ERROR:one_parameter_only");
-		return NULL;
-	}
-
-	if(args != NULL && strcmp(args[0][0], "opt") != 0) // if there is no "opt" key -> command incorrect
-	{
-		strcpy(dt, "ERROR:no_opt_key");
-		return NULL;
-	}
-
 	return args;
 }
 
-uint8_t *connector_manage_data(uint8_t ***args, uint8_t* args_size, uint8_t *dt)
+uint8_t *connector_manage_data(uint8_t ***args, uint8_t* args_size)
 {
-	uint8_t *opt;
+	uint8_t *opt, *fb; //operation type and feedback message
 
-	if(args == NULL)
-		return;
+	if(*args_size < 1) // no records detected!
+	{
+		strcpy(fb, "ERROR_one_parameters");
+		return fb;
+	}
+		
+	if(*args_size == 1) // if there is only one record or less -> command incorrect
+		strcat(fb, "ERROR:one_parameter_only");
+		
+	if(args != NULL && strcmp(args[0][0], "opt") != 0) // if there is no "opt" key -> command incorrect
+	{
+		strcat(fb, "ERROR:no_opt_key");
+		return fb;
+	}	
 
 	opt = args[0][1], // get first value, which means operation type
 	
 	memmove(args, args + 1, --(*args_size) * sizeof(uint8_t *)); // move the array one place forward (removes first row with opt type)
 
 	if(strcmp((void *)opt, "sth") == 0){}
-		//prepare_turn(args, size);
+		feedback = prepare_turn(args, size);
 	else
-		strcpy(dt, "ERROR:invalid_opt_value");
+		strcat(fb, "ERROR:invalid_opt_value");
 	
+	return fb;
 }
 
-uint8_t *connector_start(uint8_t dt[], uint8_t dt_size)
+uint8_t *connector_process(uint8_t *dt)
 {
-	uint8_t size = 0; // number of records [key, value]
+	uint8_t size = 0, *feedback; // number of records [key, value]
 
-	strcpy(dt, connector_manage_data(connector_parse(dt, dt_size, &size), &size, dt));
+	feedback = connector_manage_data(connector_parse(dt, &size), &size);
 
-	data_build(dt);
+	data_build(feedback);
 
-	return dt;
+	return feedback;
 }
 
 

@@ -1,4 +1,5 @@
-//ifdef STSTM32
+//#ifdef STSTM32
+
 #include "uart.h"
 
 #include <string.h>
@@ -90,8 +91,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* usart)
 		end_flag = true;
 	else
 	{
-		strcmp(data, connector_start(data, DATA_SIZE));
-		uart_send(data);
+		uart_send(connector_process(data));
+		// clear data
 		uart_enable();
 	}
 }
