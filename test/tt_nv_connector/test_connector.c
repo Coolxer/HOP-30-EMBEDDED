@@ -1,4 +1,4 @@
-//#ifdef UNIT_TEST
+#ifdef UNIT_TEST
 
 #include <unity.h> // includes unit testing library
 #include <string.h>
@@ -135,4 +135,4 @@ int main()
     UNITY_END();
 }
 
-//#endif // UNIT_TEST
+#endif // UNIT_TEST

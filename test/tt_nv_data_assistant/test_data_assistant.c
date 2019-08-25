@@ -1,4 +1,4 @@
-#ifdef UNIT_TEST
+//#ifdef UNIT_TEST
 
 #include <unity.h> // includes unit testing library
 #include <string.h>
@@ -60,7 +60,7 @@ void test_data_clear()
 void test_data_build_should_fill_all_with_space_filler_if_data_empty()
 {
     uint8_t string[64];
-    strcpy(string, "");
+    data_clear(string);
     data_build(string);
 
     TEST_ASSERT_EQUAL_STRING("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", string);
@@ -80,6 +80,7 @@ void test_data_build_should_fill_all_with_space_filler_if_data_spaces_only()
 void test_data_build_should_fill_only_second_half_with_space_filler_if_half_filled()
 {
     uint8_t string[64];
+    data_clear(string);
     strcpy(string, "01234567890123456789012345678901");
     data_build(string);
 
@@ -107,4 +108,4 @@ int main()
 
 
 
-#endif // UNIT_TEST
+//#endif // UNIT_TEST
