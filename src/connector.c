@@ -30,18 +30,20 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t* args_size)
 {
 	uint8_t *opt, *fb; //operation type and feedback message
 
-	if(*args_size < 1) // no records detected!
+	fb = (uint8_t*)malloc(64 * sizeof(uint8_t));
+
+	if(args == NULL || *args_size < 1) // no records detected!
 	{
-		strcpy(fb, "ERROR_one_parameters");
+		strcpy(fb, "_ERROR_no_params");
 		return fb;
 	}
 		
 	if(*args_size == 1) // if there is only one record or less -> command incorrect
-		strcat(fb, "ERROR:one_parameter_only");
+		strcat(fb, "_ERROR:one_param_only");
 		
 	if(args != NULL && strcmp(args[0][0], "opt") != 0) // if there is no "opt" key -> command incorrect
 	{
-		strcat(fb, "ERROR:no_opt_key");
+		strcat(fb, "_ERROR:no_opt_key");
 		return fb;
 	}	
 
@@ -50,9 +52,9 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t* args_size)
 	memmove(args, args + 1, --(*args_size) * sizeof(uint8_t *)); // move the array one place forward (removes first row with opt type)
 
 	if(strcmp((void *)opt, "sth") == 0){}
-		feedback = prepare_turn(args, size);
-	else
-		strcat(fb, "ERROR:invalid_opt_value");
+		//fb = prepare_turn(args, args_size);
+	else{}
+		//strcat(fb, "_ERROR:invalid_opt_value");
 	
 	return fb;
 }

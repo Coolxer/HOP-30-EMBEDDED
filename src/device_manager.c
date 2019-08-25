@@ -1,7 +1,7 @@
 #ifdef STSTM32
 #include "device_manager.h"
 
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 struct Stepper devices[DEVICES_COUNT];

@@ -1,4 +1,4 @@
-//#ifdef STSTM32
+#ifdef STSTM32
 
 #include "uart.h"
 
@@ -97,4 +97,4 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* usart)
 	}
 }
 
-//#endif // STSTM32
+#endif // STSTM32

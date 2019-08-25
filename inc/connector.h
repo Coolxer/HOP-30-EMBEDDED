@@ -6,7 +6,6 @@
 #define DIALOG_DELIMITER "|" // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=s1|
 #define PARAM_DELIMITER "=" // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
 
-
 uint8_t ***connector_parse(uint8_t *dt, uint8_t *args_size); // explodes data and parses it to 2d array, first column = key, second columns = value
                                             // [key],[value]
                                             // [opt],[move]
