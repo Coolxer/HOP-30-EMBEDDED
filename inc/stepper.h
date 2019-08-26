@@ -6,7 +6,7 @@
 
 struct Stepper
 {
-    uint8_t name[2];           // 2-character stepper name (id)
+    uint8_t name[2];      // 2-character stepper name (id)
 
     uint16_t enable_pin;  // enable pin
     uint16_t dir_pin;     // direction(dir) pin

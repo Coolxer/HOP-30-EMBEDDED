@@ -14,7 +14,7 @@ uint8_t data_length(uint8_t *dt)
                   
 uint8_t data_size(uint8_t *dt)
 {
-	return sizeof(dt) * 8;
+	return sizeof(dt) * 8; 
 }
 
 void data_build(uint8_t *dt)

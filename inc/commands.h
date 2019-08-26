@@ -3,8 +3,8 @@
 
 #include <stdint.h> // includes uint8_t data type
 
-#define CMD_COUNT 5
-#define CMD_LENGTH 3
+#define CMD_COUNT 5 // number of commands
+#define CMD_LENGTH 3 // max command length
 
 uint8_t tags[CMD_COUNT][CMD_LENGTH]=
 {

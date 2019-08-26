@@ -4,20 +4,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct Stepper devices[DEVICES_COUNT];
-struct Stepper *current;
-
 void device_manager_init()
 {
-    stepper_init(&devices[0], "s1", GPIO_PIN_5, 0, 0, 0, 0, 0, 0);
-    stepper_init(&devices[1], "s2", 0, 0, 0, 0, 0, 0, 0);
+    stepper_init(&devices[0], "s1", GPIO_PIN_5, 0, 0, 0, 0, 0, 0); // set for "s1" stepper
+    stepper_init(&devices[1], "s2", 0, 0, 0, 0, 0, 0, 0); // set for "s2" stepper
 
-    current = (struct Stepper *) malloc(sizeof(struct Stepper));
+    current = (struct Stepper *) malloc(sizeof(struct Stepper)); // reserve memory for current device
 }
 
 void device_manager_deinit()
 {
-    free(current);
+    free(current); // free memory for current
 }
 
 void device_manager_set_current(uint8_t *name)

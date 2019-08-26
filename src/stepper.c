@@ -29,15 +29,15 @@ void stepper_setup_gpio(struct Stepper *s)
 
 	HAL_GPIO_Init(GPIOA, &gpio);
 
-	HAL_GPIO_WritePin(GPIOA, s->enable_pin, GPIO_PIN_RESET); // turns OFF stepper motor
+	HAL_GPIO_WritePin(GPIOA, s->enable_pin, GPIO_PIN_RESET); // turn OFF stepper motor
 }
 
 void stepper_enable(struct Stepper *s, bool state)
 {
     if(state)
-	    HAL_GPIO_WritePin(GPIOA, s->enable_pin, GPIO_PIN_SET); // turns ON stepper motor
+	    HAL_GPIO_WritePin(GPIOA, s->enable_pin, GPIO_PIN_SET); // turn ON stepper motor
     else
-        HAL_GPIO_WritePin(GPIOA, s->enable_pin, GPIO_PIN_RESET); // turns OFF stepper motor
+        HAL_GPIO_WritePin(GPIOA, s->enable_pin, GPIO_PIN_RESET); // turn OFF stepper motor
 }
 
 #endif // STSTM32

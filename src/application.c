@@ -1,7 +1,7 @@
 #ifdef STSTM32
 #include "application.h"
 
-#include <stdbool.h>
+#include <stdbool.h> // includes uint8_t data type
 
 #include "uart.h"
 #include "device_manager.h"
