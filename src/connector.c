@@ -51,10 +51,10 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t* args_size)
 	
 	memmove(args, args + 1, --(*args_size) * sizeof(uint8_t *)); // move the array one place forward (removes first row with opt type)
 
-	if(strcmp((void *)opt, "sth") == 0){}
-		//fb = prepare_turn(args, args_size);
-	else{}
-		//strcat(fb, "_ERROR:invalid_opt_value");
+	if(data_equal(opt, "sth"))
+		fb = prepare_turn(args, args_size);
+	else
+		strcat(fb, "_ERROR:invalid_opt_value");
 	
 	return fb; // return feedback
 }

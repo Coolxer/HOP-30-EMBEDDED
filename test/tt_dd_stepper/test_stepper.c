@@ -1,4 +1,5 @@
-//#ifdef UNIT_TEST
+#ifdef UNIT_TEST
+
 #include <unity.h> // includes unit testing library
 #include <stdint.h>
 #include "stm32f4xx_hal.h"
@@ -45,4 +46,4 @@ void SysTick_Handler(void) {
     HAL_IncTick();
 }
 
-//#endif // UNIT_TEST
+#endif // UNIT_TEST

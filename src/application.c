@@ -1,15 +1,13 @@
-#ifdef STSTM32
+//#ifdef STSTM32
 #include "application.h"
 
 #include <stdbool.h> // includes uint8_t data type
 
 #include "uart.h"
-#include "device_manager.h"
 
 void application_setup()
 {
     uart_init();
-    device_manager_init();
 }
 
 void application_run()
@@ -24,12 +22,13 @@ void application_run()
 void application_close()
 {
     uart_deinit();
-    device_manager_deinit();
 }
 
 void application_exec()
 {
-    
+    application_setup();
+    application_run();
+    application_close();
 }
 
-#endif // STSTM32
+//#endif  // STSTM32

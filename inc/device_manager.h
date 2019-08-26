@@ -1,14 +1,13 @@
 #ifndef DEVICE_MANAGER_H
 #define DEVICE_MANAGER_H
 
-#include <stdint.h> // includes uint8_t data type
-//#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal.h"
 #include "stepper.h"
 
 #define DEVICES_COUNT 2 // count of supported devices
 
 struct Stepper devices[DEVICES_COUNT]; // array of desvices
-struct Stepper *current; // pointer to the current operating device
+struct Stepper current; // pointer to the current operating device
 
 void device_manager_init(); // sets devices parameters and reset current device
 void device_manager_deinit(); // frees memory for current device
