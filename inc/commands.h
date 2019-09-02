@@ -13,6 +13,7 @@ uint8_t tags[CMD_COUNT][CMD_LENGTH]=
     "spd", // speed
     "stp", // steps
     "msp" // microstepping
+    "stt" // stepper state
 };
 
 uint8_t opts[4][3]=

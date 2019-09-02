@@ -24,4 +24,4 @@ struct Stepper *device_manager_current()
     return &current;
 }
 
-//#endif  // STSTM32
+//#endif // STSTM32

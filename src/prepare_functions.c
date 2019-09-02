@@ -1,16 +1,22 @@
 //#ifdef STSTM32
 #include "prepare_functions.h"
 
+#include <stdlib.h>
 #include <string.h>
+
 #include "device_manager.h"
 
-uint8_t * prepare_turn(uint8_t ***args, uint8_t *size)
+#include "data_assistant.h"
+
+uint8_t *prepare_turn(uint8_t ***args, uint8_t size, uint8_t dt_size)
 {
-	uint8_t i, spp_cnt = 0, sth_cnt = 0, *fb;
+	uint8_t i, spp_cnt = 0, sth_cnt = 0, *feedback;
 
-	fb = (uint8_t*)malloc(64 * sizeof(uint8_t)); // reserve memory for feedback (same length as data) --- to change
+	feedback = (uint8_t *)malloc(dt_size * sizeof(uint8_t));
 
-	for(i = 0; i < *size; i++)
+	data_clear(feedback, dt_size);
+
+	for(i = 0; i < size; i++)
 	{
 		if(strcmp((void *)args[i][0], "spp") == 0) // check if the selected string is "spp" (stepper)
 		{
@@ -18,31 +24,33 @@ uint8_t * prepare_turn(uint8_t ***args, uint8_t *size)
 			spp_cnt++;
 		}
 			
-	    if(strcmp((void *)args[i][0], "sth") == 0) // check if the selected string is "sth" (switch)
+	    if(strcmp((void *)args[i][0], "stt") == 0) // check if the selected string is "sth" (switch)
 		{
-			stepper_enable(current, (bool)args[i][1]);
+			stepper_enable(device_manager_current(), args[i][1]);
 			sth_cnt++;
 		}
 	}
 
-	free(args); // free memory allocated to args
-
 	if(spp_cnt == 0) // check if there is no stepper keys
-		strcpy(fb, "ERROR_no_spp_parameter");
+		strcpy(feedback, "_ERROR_no_spp_param");
 	
 	if(sth_cnt == 0) // check if there is no sth keys
-		strcat(fb, "ERROR_no_sth_parameter");
+		strcat(feedback, "_ERROR_no_sth_parameter");
 
 	if(spp_cnt > sth_cnt) // check if there is more spp than sth keys
-		strcat(fb, "ERROR_no_sth_parameter_for_spp");
+		strcat(feedback, "_ERROR_no_sth_parameter_for_spp");
 	
 	if(sth_cnt > spp_cnt) // check if there is more sth than spp keys
-		strcat(fb, "ERROR_no_spp_parameter_for_sth");
+		strcpy(feedback, "_ERROR_no_spp_parameter_for_sth");
 
-	if(strcmp(fb, "") == 0) // check if there are not errors = operation success
-		strcpy(fb, "SUCCESS");
+	if(strcmp(feedback, "") == 0) // check if there are not errors = operation success
+		strcpy(feedback, "_SUCCESS");
 
-	return fb; // return feedback
+	//strcat(feedback, '\0');
+
+	free(args); // free memory allocated to args
+
+	return feedback;
 }
 
-//#endif  // STSTM32
+//#endif // STSTM32

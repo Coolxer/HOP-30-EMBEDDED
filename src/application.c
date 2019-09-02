@@ -1,26 +1,29 @@
 //#ifdef STSTM32
 #include "application.h"
 
-#include <stdbool.h> // includes uint8_t data type
+#include "stm32f4xx_hal.h"
 
 #include "uart.h"
 
+#include "device_manager.h"
+
 void application_setup()
 {
+    HAL_Init();
     uart_init();
+    device_manager_init();
 }
 
 void application_run()
 {
-    while(1)
-    {
-        if(end_flag)
-            break;
-    }
+    uart_read();
+
+    uart_write(data);
 }
 
 void application_close()
 {
+    HAL_DeInit();
     uart_deinit();
 }
 
@@ -31,4 +34,8 @@ void application_exec()
     application_close();
 }
 
-//#endif  // STSTM32
+void SysTick_Handler() {
+    HAL_IncTick();
+}
+
+//#endif // STSTM32
