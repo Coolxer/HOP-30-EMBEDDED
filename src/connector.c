@@ -36,7 +36,7 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t dt_size)
 	data_clear(feedback, dt_size);
 
 	if(args == NULL || records < 1) // no records detected!
-		return "_ERROR_no_params\0";
+		return "_ERROR_no_params";
 
 	if(records == 1) // if there is only one record -> command incorrect
 		strcpy(feedback, "_ERROR:one_param_only");
@@ -55,8 +55,6 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t dt_size)
 		strcat(feedback, prepare_turn(args, records, dt_size));
 	else
 		strcat(feedback, "_ERROR:invalid_opt_value");
-
-	//strcat(feedback, '\0');
 
 	return feedback;
 }

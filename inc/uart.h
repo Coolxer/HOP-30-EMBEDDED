@@ -7,7 +7,7 @@
 
 #include <stdbool.h>
 
-#define DATA_SIZE 22 // data size
+#define DATA_SIZE 64 // data size
 
 uint8_t data[DATA_SIZE]; // array using for receiving data and stores messages
 

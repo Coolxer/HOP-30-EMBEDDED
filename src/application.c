@@ -1,11 +1,9 @@
-//#ifdef STSTM32
+////#ifdef STSTM32
 #include "application.h"
 
 #include "stm32f4xx_hal.h"
 
 #include "uart.h"
-
-#include "device_manager.h"
 
 void application_setup()
 {
@@ -38,4 +36,4 @@ void SysTick_Handler() {
     HAL_IncTick();
 }
 
-//#endif // STSTM32
+////#endif // STSTM32
