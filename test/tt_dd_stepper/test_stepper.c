@@ -8,23 +8,26 @@
 void setUp();// default setup function
 void tearDown(); // default release function
 
-void test_stepper_enable()
+// test if stepper_toggle switch ON
+void test_stepper_toggle_should_turn_on()
 {
     struct Stepper s;
     stepper_init(&s, "s1", GPIOA, GPIO_PIN_5, 0, 0, 0, 0, 0, 0);
 
-    stepper_enable(&s, true);
-    TEST_ASSERT_EQUAL(GPIO_PIN_SET, HAL_GPIO_ReadPin(s.port, s.enable_pin));
+    HAL_GPIO_WritePin(s.port, s.enable_pin, GPIO_PIN_RESET);
 
+    TEST_ASSERT_TRUE(stepper_toggle(&s));
 }
 
-void test_stepper_disable()
+// test if stepper_toggle switch OFF
+void test_stepper_toggle_should_turn_off()
 {
     struct Stepper s;
     stepper_init(&s, "s1", GPIOA, GPIO_PIN_5, 0, 0, 0, 0, 0, 0);
 
-    stepper_enable(&s, false);
-    TEST_ASSERT_EQUAL(GPIO_PIN_RESET, HAL_GPIO_ReadPin(s.port, s.enable_pin));
+    HAL_GPIO_WritePin(s.port, s.enable_pin, GPIO_PIN_SET);
+
+    TEST_ASSERT_TRUE(stepper_toggle(&s));
 }
 
 int main()
@@ -34,16 +37,12 @@ int main()
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_stepper_enable);
+    RUN_TEST(test_stepper_toggle_should_turn_on);
     HAL_Delay(500);
-    RUN_TEST(test_stepper_disable);
+    RUN_TEST(test_stepper_toggle_should_turn_off);
     HAL_Delay(500);
 
     UNITY_END();
-}
-
-void SysTick_Handler(void) {
-    HAL_IncTick();
 }
 
 #endif // UNIT_TEST
