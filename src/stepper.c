@@ -1,4 +1,4 @@
-//#ifdef STSTM32
+#ifdef STSTM32
 
 #include "stepper.h"
 #include <string.h>
@@ -41,4 +41,4 @@ void stepper_enable(struct Stepper *s, uint8_t *state)
         HAL_GPIO_WritePin(s->port, s->enable_pin, GPIO_PIN_RESET); // turn OFF stepper motor
 }
 
-//#endif // STSTM32
+#endif // STSTM32

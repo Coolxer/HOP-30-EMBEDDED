@@ -6,15 +6,21 @@
 
 #include "data_assistant.h"
 
+uint8_t *dialog_delimiter = "|";
+uint8_t *param_delimiter = "=";
+
 uint8_t ***connector_parse(uint8_t* dialog)
 {
-    uint8_t ***args = NULL, *param, *key, *value;
+    uint8_t ***args = NULL, *param = NULL, *key = NULL, *value = NULL;
 
 	records = 0;
 
-	for (param = strtok((uint8_t*)dialog, DIALOG_DELIMITER); param != NULL; param = strtok(NULL, DIALOG_DELIMITER))
+	for (param = strtok(dialog, dialog_delimiter); param != NULL; param = strtok(NULL, dialog_delimiter))
 	{
-		key = strtok_r(param, PARAM_DELIMITER, &value); // assign key & values contents
+		if(strchr(param, *param_delimiter) == NULL)
+			continue;
+
+		key = strtok_r(param, param_delimiter, &value); // assign key & values contents
 		args = (uint8_t ***) realloc(args, (++records) * sizeof(uint8_t *)); // extend array by one row (2 columns)
 
 		args[records-1] = (uint8_t **) malloc(2 * sizeof(uint8_t *)); // reserve memory for one row with 2 columns
@@ -52,7 +58,7 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t dt_size)
 	memmove(args, args + 1, --(records) * sizeof(uint8_t *)); // move the array one place forward (removes first row with opt type)
 
 	if(strcmp(opt, "sth") == 0)
-		strcat(feedback, prepare_turn(args, records, dt_size));
+		{}//strcat(feedback, prepare_turn(args, records, dt_size));
 	else
 		strcat(feedback, "_ERROR:invalid_opt_value");
 

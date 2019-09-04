@@ -1,4 +1,4 @@
-//#ifdef STSTM32
+#ifdef STSTM32
 
 #include "prepare_functions.h"
 
@@ -52,4 +52,4 @@ uint8_t *prepare_turn(uint8_t ***args, uint8_t size, uint8_t dt_size)
 	return feedback;
 }
 
-//#endif // STSTM32
+#endif // STSTM32

@@ -1,4 +1,4 @@
-//#ifdef STSTM32
+#ifdef STSTM32
 
 #include "uart.h"
 
@@ -60,4 +60,4 @@ bool uart_manage()
 	}	
 }
 
-//#endif // STSTM32
+#endif // STSTM32
