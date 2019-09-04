@@ -2,6 +2,7 @@
 #define STEPPER_H
 
 #include <stdint.h> // includes uint8_t, uint16_t data types
+#include <stdbool.h>
 
 struct Stepper
 {
@@ -20,7 +21,7 @@ struct Stepper
 void stepper_init(struct Stepper *s, uint8_t *_name, uint32_t _port, uint16_t _enable_pin, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3, uint16_t _endstop_pin);
 void stepper_setup_gpio(struct Stepper *s); // setups gpio pins
 
-void stepper_enable(struct Stepper *s, uint8_t *state); // turns on the motor if the state is true or turns off if its false
+bool stepper_toggle(struct Stepper *s); // toggle stepper motor
 
 
 #endif // STEPPER_H

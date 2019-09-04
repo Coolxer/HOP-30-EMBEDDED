@@ -58,7 +58,7 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t dt_size)
 	memmove(args, args + 1, --(records) * sizeof(uint8_t *)); // move the array one place forward (removes first row with opt type)
 
 	if(strcmp(opt, "sth") == 0)
-		{}//strcat(feedback, prepare_turn(args, records, dt_size));
+		strcat(feedback, prepare_turn(args, records, dt_size));
 	else
 		strcat(feedback, "_ERROR:invalid_opt_value");
 

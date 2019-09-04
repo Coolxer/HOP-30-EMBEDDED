@@ -10,13 +10,19 @@ void device_manager_init()
     stepper_init(&devices[1], "s2", GPIOA, GPIO_PIN_5, 0, 0, 0, 0, 0, 0); // set for "s2" stepper
 }
 
-void device_manager_set_current(uint8_t *name)
+bool device_manager_set_current(uint8_t *name)
 {
     uint8_t i;
 
     for(i = 0; i < DEVICES_COUNT; i++)
+    {
         if(strcmp(devices[i].name, name) == 0)
-                current = devices[i];
+        {
+            current = devices[i];
+            return true; 
+        }
+    }
+    return false;
 }
 
 struct Stepper *device_manager_current()

@@ -41,7 +41,9 @@ void uart_send(uint8_t *message)
 
 bool uart_manage()
 {
-	data_cut(data, DATA_SIZE);
+	uint8_t *feedback;
+
+	data_crop(data, DATA_SIZE);
 
 	if(strcmp(data, "FINISH") == 0)
 	{
@@ -49,15 +51,17 @@ bool uart_manage()
 		data_fullfill(data, DATA_SIZE);
 		return false;
 	}
+
+	if(strlen(data) == 0)
+		strcpy(feedback, "NULL_DATA_EXCEPTION");
 	else
-	{
-		uint8_t *feedback = connector_manage_data(connector_parse(data), DATA_SIZE);
-		data_fullfill(feedback, DATA_SIZE);
-		uart_send(feedback);
-		data_clear(data, DATA_SIZE);
-		free(feedback);
-		return true;
-	}	
+		feedback = connector_manage_data(connector_parse(data), DATA_SIZE);
+	
+	data_fullfill(feedback, DATA_SIZE);
+	uart_send(feedback);
+	data_clear(data, DATA_SIZE);
+	free(feedback);
+	return true;
 }
 
 //#endif // STSTM32

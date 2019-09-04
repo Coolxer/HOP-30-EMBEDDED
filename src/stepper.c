@@ -33,12 +33,17 @@ void stepper_setup_gpio(struct Stepper *s)
 	HAL_GPIO_WritePin(s->port, s->enable_pin, GPIO_PIN_RESET); // turn OFF stepper motor
 }
 
-void stepper_enable(struct Stepper *s, uint8_t *state)
+bool stepper_toggle(struct Stepper *s)
 {
-	if(strcmp(state, "1") == 0)
-	    HAL_GPIO_WritePin(s->port, s->enable_pin, GPIO_PIN_SET); // turn ON stepper motor
-    else
-        HAL_GPIO_WritePin(s->port, s->enable_pin, GPIO_PIN_RESET); // turn OFF stepper motor
+	GPIO_PinState state = HAL_GPIO_ReadPin(s->port, s->enable_pin);
+	
+	HAL_GPIO_TogglePin(s->port, s->enable_pin);
+
+	if(state != HAL_GPIO_ReadPin(s->port, s->enable_pin))
+		return true;
+	
+	return false; // something goes wrong and the pin state does not changed
 }
+        
 
 //#endif // STSTM32
