@@ -1,4 +1,4 @@
-#ifdef STSTM32
+//#ifdef STSTM32
 
 #include "uart_min.h"
 
@@ -39,7 +39,7 @@ void uart_start()
     uart_setup_interface();
 }
 
-void uart_send(char c)
+void uart_write(char c)
 {
     HAL_UART_Transmit(&uart, (uint8_t*)(&c), 1, 1000);
 }
@@ -55,4 +55,4 @@ void uart_end()
     __HAL_RCC_USART2_CLK_DISABLE();
 }
 
-#endif // STSTM32
+//#endif // STSTM32

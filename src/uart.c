@@ -1,4 +1,4 @@
-#ifdef STSTM32
+//#ifdef STSTM32
 
 #include "uart.h"
 
@@ -20,12 +20,7 @@ void uart_deinit()
 	uart_end();
 }
 
-void uart_write(uint8_t *message)
-{
-	HAL_UART_Transmit(&uart, (uint8_t*)message, DATA_SIZE, 1000);
-}
-
-void uart_read()
+void uart_listen()
 {
 	while(1)
 	{
@@ -39,6 +34,11 @@ void uart_read()
 	}	
 }
 
+void uart_send(uint8_t *message)
+{
+	HAL_UART_Transmit(&uart, (uint8_t*)message, DATA_SIZE, 1000);
+}
+
 bool uart_manage()
 {
 	data_cut(data, DATA_SIZE);
@@ -46,18 +46,18 @@ bool uart_manage()
 	if(strcmp(data, "FINISH") == 0)
 	{
 		strcpy(data, "FINISHED");
-		data_build(data, DATA_SIZE);
+		data_fullfill(data, DATA_SIZE);
 		return false;
 	}
 	else
 	{
 		uint8_t *feedback = connector_manage_data(connector_parse(data), DATA_SIZE);
-		data_build(feedback, DATA_SIZE);
-		uart_write(feedback);
+		data_fullfill(feedback, DATA_SIZE);
+		uart_send(feedback);
 		data_clear(data, DATA_SIZE);
 		free(feedback);
 		return true;
 	}	
 }
 
-#endif // STSTM32
+//#endif // STSTM32

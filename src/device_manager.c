@@ -1,4 +1,4 @@
-#ifdef STSTM32
+//#ifdef STSTM32
 #include "device_manager.h"
 
 #include <stdlib.h>
@@ -24,4 +24,4 @@ struct Stepper *device_manager_current()
     return &current;
 }
 
-#endif // STSTM32
+//#endif // STSTM32

@@ -1,4 +1,4 @@
-#ifdef STSTM32
+//#ifdef STSTM32
 #include "application.h"
 
 #include "stm32f4xx_hal.h"
@@ -14,9 +14,9 @@ void application_setup()
 
 void application_run()
 {
-    uart_read();
+    uart_listen();
 
-    uart_write(data);
+    uart_send(data);
 }
 
 void application_close()
@@ -36,4 +36,4 @@ void SysTick_Handler() {
     HAL_IncTick();
 }
 
-#endif // STSTM32
+//#endif // STSTM32

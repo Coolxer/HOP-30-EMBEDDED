@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-void data_build(uint8_t dt[], uint8_t dt_size)
+void data_fullfill(uint8_t dt[], uint8_t dt_size)
 {
 	uint8_t i;
 
@@ -15,7 +15,7 @@ void data_build(uint8_t dt[], uint8_t dt_size)
 	dt[dt_size] = '\0';
 }
 
-void data_cut(uint8_t dt[], uint8_t dt_size)
+void data_crop(uint8_t dt[], uint8_t dt_size)
 {
 	uint8_t i;
 
