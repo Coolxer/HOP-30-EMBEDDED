@@ -6,5 +6,6 @@
 
 /* prepare functions */
 uint8_t *prepare_turn(uint8_t ***args, uint8_t size, uint8_t dt_size); // passing the parameters to stepper_enable function
+uint8_t *prepare_set(uint8_t ***args, uint8_t size, uint8_t dt_size); // passing the parameters to stepper_set_microstepping function
 
 #endif // PREPARE_FUNCTIONS_H

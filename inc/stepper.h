@@ -13,7 +13,7 @@ struct Stepper
     uint16_t dir_pin;     // direction(dir) pin
     uint16_t step_pin;    // step pin
 
-    uint16_t m1, m2, m3;  // microstepping pins
+    uint16_t m_pins[3];  // microstepping pins
 
     uint16_t endstop_pin; // associated endstop pin
 };
@@ -22,6 +22,6 @@ void stepper_init(struct Stepper *s, uint8_t *_name, uint32_t _port, uint16_t _e
 void stepper_setup_gpio(struct Stepper *s); // setups gpio pins
 
 bool stepper_toggle(struct Stepper *s); // toggle stepper motor
-
+bool stepper_set_microstepping(struct Stepper *s, uint8_t *states); // set microstepping of stepper
 
 #endif // STEPPER_H
