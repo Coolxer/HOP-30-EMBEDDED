@@ -32,6 +32,7 @@ void application_close()
 
     HAL_DeInit();
     uart_deinit();
+    device_manager_deinit();
 }
 
 void application_exec()

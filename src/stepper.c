@@ -43,11 +43,6 @@ void stepper_setup_gpio(struct Stepper *s)
 
 void stepper_setup_timer(struct Stepper *s)
 {
-	if(s->timer.Instance == TIM2)
-		__HAL_RCC_TIM2_CLK_ENABLE();
-	else if(s->timer.Instance == TIM5)
-		__HAL_RCC_TIM5_CLK_ENABLE();
-
 	s->timer.Init.CounterMode = TIM_COUNTERMODE_UP;
 	
 	s->timer.Init.RepetitionCounter = 0;
