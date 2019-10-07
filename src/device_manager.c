@@ -6,13 +6,9 @@
 
 void device_manager_init()
 {
-    SystemCoreClock = 8000000; // set default system core main clock frequency
-
-    __HAL_RCC_GPIOA_CLK_ENABLE(); // pins should be read from and depend on it the correct RCC_GPIOX should be turn on
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-
-    stepper_init(&devices[0], "s1", GPIOC, TIM3, 0, 0, 0, GPIO_PIN_9, GPIO_PIN_8, GPIO_PIN_6, 0); // set for "s1" stepper
-    stepper_init(&devices[1], "s2", GPIOA, TIM4, GPIO_PIN_5, 0, 0, 0, 0, 0, 0); // set for "s2" stepper
+    //void stepper_init( Stepper *s,  *_name, TIM_TypeDef *_instance,  _port,  _enable_pin,  _dir_pin,  _step_pin,  _m1,  _m2,  _m3,  _endstop_pin);
+    stepper_init(&devices[0], "s1", DIVIDER_TIMER, DIVIDER_PORT, DIVIDER_DIR, DIVIDER_STEP, DIVIDER_ENABLE, DIVIDER_M1, DIVIDER_M2, DIVIDER_M3, 0); // set for "s1" stepper
+    stepper_init(&devices[1], "s2", TABLE_TIMER, TABLE_PORT, TABLE_DIR, TABLE_STEP, TABLE_ENABLE, TABLE_M1, TABLE_M2, TABLE_M3, TABLE_ENDSTOP); // set for "s2" stepper
 }
 
 bool device_manager_set_current(uint8_t *name)

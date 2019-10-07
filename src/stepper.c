@@ -3,33 +3,28 @@
 #include "stepper.h"
 #include <string.h>
 
-void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, uint16_t _enable_pin, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3, uint16_t _endstop_pin)
+void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3, uint16_t _endstop_pin)
 {
 	strcpy(s->name, _name);
 	s->timer.Instance = _instance; 
 	s->port = _port;
-	s->enable_pin = _enable_pin;
+
 	s->dir_pin = _dir_pin;
 	s->step_pin = _step_pin;
+	s->enable_pin = _enable_pin;
+
 	s->m_pins[0] = _m1;
 	s->m_pins[1] = _m2;
 	s->m_pins[2] = _m3;
-	s->endstop_pin = _endstop_pin;
+
+	if(_endstop_pin != 0) // if theres is 0 as endstop pin that means the stepper has no endstop connected to
+		s->endstop_pin = _endstop_pin;
 
 	stepper_setup_gpio(s);
 }
 
 void stepper_setup_gpio(struct Stepper *s)
 {
-	// i could use TIM2 and TIM5 for operation mode beacuse they are more precisly(32 bit instead 16), but under TIM2 control
-	// are UART2 pins so i had to connect 2 small cables from e.x. USART3 pins to connector and then could i use
-	// TIM2 too 
-
-	if(s->timer.Instance == TIM3)
-		__HAL_RCC_TIM2_CLK_ENABLE();
-	else if(s->timer.Instance == TIM4)
-		__HAL_RCC_TIM5_CLK_ENABLE();
-
 	GPIO_InitTypeDef gpio;
 
 	gpio.Pin = s->enable_pin | s->dir_pin | s->step_pin | s->m_pins[0] | s->m_pins[1] | s->m_pins[2] | s->endstop_pin;

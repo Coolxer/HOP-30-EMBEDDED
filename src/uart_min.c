@@ -2,10 +2,10 @@
 
 #include "uart_min.h"
 
+#include "settings.h"
+
 void uart_setup_gpio()
 {
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-
 	GPIO_InitTypeDef gpio;
 
 	gpio.Pin = USART2_TX | USART2_RX;
@@ -21,8 +21,8 @@ void uart_setup_interface()
 {
     __HAL_RCC_USART2_CLK_ENABLE();
 
-	uart.Instance = USART2;
-	uart.Init.BaudRate = 115200;
+	uart.Instance = UART_NAME;
+	uart.Init.BaudRate = UART_BAUDRATE;
 	uart.Init.WordLength = USART_WORDLENGTH_8B;
 	uart.Init.Parity = USART_PARITY_NONE;
 	uart.Init.StopBits = UART_STOPBITS_1;
@@ -50,8 +50,7 @@ void uart_flush()
 }
 
 void uart_end()
-{
-    __HAL_RCC_GPIOA_CLK_DISABLE();
+{  
     __HAL_RCC_USART2_CLK_DISABLE();
 }
 

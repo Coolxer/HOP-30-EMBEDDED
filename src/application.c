@@ -1,13 +1,19 @@
 //#ifdef STSTM32
 #include "application.h"
 
-#include "stm32f4xx_hal.h"
+#include "settings.h"
 
 #include "uart.h"
 
 void application_setup()
 {
     HAL_Init();
+
+    SystemCoreClock = CLOCK_SPEED; // set default system core main clock frequency
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();  // init port A, where divider motor is connected 
+    __HAL_RCC_GPIOC_CLK_ENABLE();  // init port C, where table motor is connected 
+
     uart_init();
     device_manager_init();
 }
@@ -21,6 +27,9 @@ void application_run()
 
 void application_close()
 {
+    __HAL_RCC_GPIOA_CLK_DISABLE();
+    __HAL_RCC_GPIOC_CLK_DISABLE();
+
     HAL_DeInit();
     uart_deinit();
 }
