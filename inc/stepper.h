@@ -23,10 +23,12 @@ struct Stepper
 
     uint16_t m_pins[3];  // microstepping pins
 
-    uint16_t endstop_pin; // associated endstop pin
+    uint16_t endstop_min_pin; // associated endstop min pin
+    uint16_t endstop_max_pin; // associated endstop max pin
+
 };
 
-void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3, uint16_t _endstop_pin);
+void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3, uint16_t _endstop_min_pin, uint16_t _endstop_max_pin);
 void stepper_setup_gpio(struct Stepper *s); // setups gpio pins
 void stepper_setup_timer(struct Stepper *s);
 

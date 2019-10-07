@@ -3,7 +3,7 @@
 #include "stepper.h"
 #include <string.h>
 
-void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3, uint16_t _endstop_pin)
+void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3, uint16_t _endstop_min_pin, uint16_t _endstop_max_pin)
 {
 	strcpy(s->name, _name);
 	s->timer.Instance = _instance; 
@@ -17,8 +17,11 @@ void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uin
 	s->m_pins[1] = _m2;
 	s->m_pins[2] = _m3;
 
-	if(_endstop_pin != 0) // if theres is 0 as endstop pin that means the stepper has no endstop connected to
-		s->endstop_pin = _endstop_pin;
+	if(_endstop_min_pin != 0) // if theres is 0 as endstop pin that means the stepper has no endstop connected to
+		s->endstop_min_pin = _endstop_min_pin;
+
+	if(_endstop_max_pin != 0) // if theres is 0 as endstop pin that means the stepper has no endstop connected to
+		s->endstop_min_pin = _endstop_max_pin;
 
 	stepper_setup_gpio(s);
 }

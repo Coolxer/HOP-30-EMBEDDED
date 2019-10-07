@@ -57,7 +57,8 @@
 #define TABLE_M2 GPIO_PIN_11 
 #define TABLE_M3 GPIO_PIN_12
 
-#define TABLE_ENDSTOP GPIO_PIN_13
+#define TABLE_MIN_ENDSTOP GPIO_PIN_13
+#define TABLE_MAX_ENDSTOP GPIO_PIN_14
 
 #define TABLE_TIMER_INIT() __HAL_RCC_TIM4_CLK_ENABLE();   // init TIM4, which service table motor
 #define TABLE_TIMER_DEINIT() __HAL_RCC_TIM4_CLK_DISABLE();  // deinit TIM3, which service divider motor
