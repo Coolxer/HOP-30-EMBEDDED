@@ -13,7 +13,7 @@
 
 /* COMMUNICATION SECTION */
 
-#define UART_PORT COM3 // signature of serial port
+#define UART_PORT "COM3" // signature of serial port
 #define UART_BAUDRATE 115200 // default baudrate of UART communication
 
 #define UART_NAME USART2;
