@@ -9,8 +9,8 @@
 
 #define DEVICES_COUNT 2 // count of supported devices
 
-struct Stepper devices[DEVICES_COUNT]; // array of desvices
-struct Stepper current; // pointer to the current operating device
+struct Stepper *devices[DEVICES_COUNT]; // array of desvices
+struct Stepper *current; // pointer to the current operating device
 
 void device_manager_init(); // sets devices parameters and reset current device
 void device_manager_deinit(); // frees memory for current device

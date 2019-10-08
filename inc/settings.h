@@ -24,47 +24,4 @@
 
 /*************************************************************************************************************/
 
-/* DEVICES SECTION */
-
-/* divider motor  */
-
-#define DIVIDER_TIMER TIM3
-#define DIVIDER_PORT GPIOA
-
-#define DIVIDER_DIR GPIO_PIN_1
-#define DIVIDER_STEP GPIO_PIN_2
-#define DIVIDER_ENABLE GPIO_PIN_3
-
-#define DIVIDER_M1 GPIO_PIN_4
-#define DIVIDER_M2 GPIO_PIN_5 
-#define DIVIDER_M3 GPIO_PIN_6
-
-#define DIVIDER_TIMER_INIT() __HAL_RCC_TIM3_CLK_ENABLE();   // init TIM3, which service divider motor
-#define DIVIDER_TIMER_DEINIT() __HAL_RCC_TIM3_CLK_DISABLE();   // deinit TIM3, which service divider motor
-
-/* end of divider motor declaration  */
-
-/* table motor  */
-
-#define TABLE_TIMER TIM4
-#define TABLE_PORT GPIOC
-
-#define TABLE_DIR GPIO_PIN_7
-#define TABLE_STEP GPIO_PIN_8
-#define TABLE_ENABLE GPIO_PIN_9
-
-#define TABLE_M1 GPIO_PIN_10
-#define TABLE_M2 GPIO_PIN_11 
-#define TABLE_M3 GPIO_PIN_12
-
-#define TABLE_MIN_ENDSTOP GPIO_PIN_13
-#define TABLE_MAX_ENDSTOP GPIO_PIN_14
-
-#define TABLE_TIMER_INIT() __HAL_RCC_TIM4_CLK_ENABLE();   // init TIM4, which service table motor
-#define TABLE_TIMER_DEINIT() __HAL_RCC_TIM4_CLK_DISABLE();  // deinit TIM3, which service divider motor
-
-/* end of table motor declaration  */
-
-/*************************************************************************************************************/
-
 #endif // SETTINGS_H 

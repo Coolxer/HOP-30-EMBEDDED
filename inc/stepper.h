@@ -1,7 +1,6 @@
 #ifndef STEPPER_H
 #define STEPPER_H
 
-#include <stdint.h> // includes uint8_t, uint16_t data types
 #include <stdbool.h>
 #include "stm32f4xx_hal.h"
 
@@ -23,17 +22,12 @@ struct Stepper
 
     uint16_t m_pins[3];  // microstepping pins
 
-    uint16_t endstop_min_pin; // associated endstop min pin
-    uint16_t endstop_max_pin; // associated endstop max pin
-
     uint8_t state;
-
 };
 
 void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3, uint16_t _endstop_min_pin, uint16_t _endstop_max_pin);
 void stepper_setup_gpio(struct Stepper *s); // setups gpio pins
 void stepper_setup_timer(struct Stepper *s);
-
 
 bool stepper_set_microstepping(struct Stepper *s, uint8_t *states); // set microstepping of stepper
 void stepper_set_speed(struct Stepper *s, uint8_t speed); // set speed of stepper

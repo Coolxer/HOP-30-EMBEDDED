@@ -19,20 +19,16 @@ void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uin
 
 	s->state = 0;
 
-	if(_endstop_min_pin != 0) // if theres is 0 as endstop pin that means the stepper has no endstop connected to
-		s->endstop_min_pin = _endstop_min_pin;
-
-	if(_endstop_max_pin != 0) // if theres is 0 as endstop pin that means the stepper has no endstop connected to
-		s->endstop_min_pin = _endstop_max_pin;
-
 	stepper_setup_gpio(s);
+
+	return s;
 }
 
 void stepper_setup_gpio(struct Stepper *s)
 {
 	GPIO_InitTypeDef gpio;
 
-	gpio.Pin = s->enable_pin | s->dir_pin | s->step_pin | s->m_pins[0] | s->m_pins[1] | s->m_pins[2] | s->endstop_pin;
+	gpio.Pin = s->enable_pin | s->dir_pin | s->step_pin | s->m_pins[0] | s->m_pins[1] | s->m_pins[2];
 	gpio.Mode = GPIO_MODE_AF_PP;
 	gpio.Pull = GPIO_NOPULL;
 	gpio.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -112,5 +108,4 @@ bool stepper_move_until(struct Stepper *s)
 	return true;
 }
 
-        
 //#endif // STSTM32
