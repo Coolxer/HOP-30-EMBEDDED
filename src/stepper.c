@@ -17,6 +17,8 @@ void stepper_init(struct Stepper *s, uint8_t *_name, TIM_TypeDef *_instance, uin
 	s->m_pins[1] = _m2;
 	s->m_pins[2] = _m3;
 
+	s->state = 0;
+
 	if(_endstop_min_pin != 0) // if theres is 0 as endstop pin that means the stepper has no endstop connected to
 		s->endstop_min_pin = _endstop_min_pin;
 
@@ -51,12 +53,18 @@ void stepper_setup_timer(struct Stepper *s)
 	s->timer.Init.RepetitionCounter = 0;
 	//s->timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
 	HAL_TIM_PWM_Init(&s->timer);
+	//HAL_TIM_Base_Init(&s->timer);
+	
+	//HAL_NVIC_EnableIRQ(TIM3_IRQn);
 }
 
 void stepper_set_speed(struct Stepper *s, uint8_t speed)
 {
-	s->timer.Init.Period = 1000 - 1;
-	s->timer.Init.Prescaler = 8000 - 1;
+	// in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
+	// you need to use Prescaler
+
+	s->timer.Init.Period = 999;
+	s->timer.Init.Prescaler = 7999;
 	s->timer.Init.ClockDivision = 0;
 }
 
@@ -93,15 +101,16 @@ bool stepper_set_microstepping(struct Stepper *s, uint8_t *states)
 	return true;
 }
 
-bool stepper_move_by_steps(uint8_t steps)
+bool stepper_move_by_steps(struct Stepper *s, uint8_t steps)
+{	
+	HAL_TIM_Base_Start_IT(&s->timer);
+	return true;
+}
+
+bool stepper_move_until(struct Stepper *s)
 {
 	return true;
 }
 
-bool stepper_move_until()
-{
-	return true;
-}
         
-
 //#endif // STSTM32
