@@ -1,16 +1,17 @@
 //#ifdef STSTM32
 #include "device_manager.h"
 
-#include "divider_stepper.h"
-#include "table_stepper.h"
-
 #include <stdlib.h>
 #include <string.h>
 
+#include "settings.h"
+
 void device_manager_init()
 {
-    devices[0] = create_divider_stepper();
-    devices[1] = create_table_stepper();
+    devices[0] = (struct Device*)stepper_init(DIVIDER_NAME, DIVIDER_TIMER, DIVIDER_PORT, DIVIDER_DIR, DIVIDER_STEP, DIVIDER_ENABLE, DIVIDER_M1, DIVIDER_M2, DIVIDER_M3);
+    devices[1] = (struct Device*)stepper_init(TABLE_NAME, TABLE_TIMER, TABLE_PORT, TABLE_DIR, TABLE_STEP, TABLE_ENABLE, TABLE_M1, TABLE_M2, TABLE_M3);
+
+    devices[2] = (struct Device*)endstop_init(DIVIDER_MIN_ENDSTOP_NAME, DIVIDER_MIN_ENDSTOP_PORT, DIVIDER_MIN_ENDSTOP_EXT, DIVIDER_MIN_ENDSTOP_PIN);
 }
 
 bool device_manager_set_current(uint8_t *name)
@@ -19,24 +20,33 @@ bool device_manager_set_current(uint8_t *name)
 
     for(i = 0; i < DEVICES_COUNT; i++)
     {
-        if(strcmp(devices[i]->name, name) == 0)
+        Device * const device = devices[i];
+
+        if(strcmp(device->name, name) == 0)
         {
-            current = devices[i];
-            return true; 
+            if(device->type == STEPPER)
+                stepper = device;
+                
+            else if (device->type == ENDSTOP)
+                endstop = device; 
+
+            current = device;
+            
+            return true;
         }
     }
-    return false;
-}
 
-struct Stepper *device_manager_current()
-{
-    return &current;
+    return false;
 }
 
 void device_manager_deinit()
 {
-    release_divider_stepper();
-    release_table_stepper();
+    device_manager_set_current("s1");
+    stepper_deinit();
+    device_manager_set_current("s2");
+    stepper_deinit();
+    device_manager_set_current("e1");
+    endstop_deinit();
 }
 
 //#endif // STSTM32

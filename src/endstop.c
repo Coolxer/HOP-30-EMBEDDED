@@ -1,14 +1,17 @@
 //#ifdef STSTM32
 #include "endstop.h"
 
-void endstop_init(struct Endstop* e, uint8_t *_name, uint32_t _port, uint8_t _ext, uint16_t _pin)
+Endstop *endstop_init(uint8_t *_name, uint32_t _port, uint8_t _ext, uint16_t _pin)
 {
-    strcpy(e->name, _name);
-    e->port = _port;
-    e->pin = _pin;
-    e->ext = _ext;
+    enum types type = ENDSTOP;
+	endstop->device.type = type;
+    strcpy(endstop->device.name, _name);
 
-    endstop_setup_gpio(e);
+    endstop->port = _port;
+    endstop->pin = _pin;
+    endstop->ext = _ext;
+
+    endstop_setup_gpio();
 
     //there are 3 groups of EXT interrupts
     // EXTI0_IRQn - EXTI4_IRQn  -> 0-4
@@ -16,21 +19,28 @@ void endstop_init(struct Endstop* e, uint8_t *_name, uint32_t _port, uint8_t _ex
     // EXTI15_10_IRQn -> 10-15
 
     //HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-    HAL_NVIC_EnableIRQ(e->ext);
+    HAL_NVIC_EnableIRQ(endstop->ext);
+    
+    return endstop;
 }
 
-void endstop_setup_gpio(struct Endstop *e)
+void endstop_deinit()
+{
+    free(endstop);
+}
+
+void endstop_setup_gpio()
 {
     GPIO_InitTypeDef gpio;
 
-	gpio.Pin = e->pin;
+	gpio.Pin = endstop->pin;
 	gpio.Mode = GPIO_MODE_IT_RISING_FALLING;
 	gpio.Pull = GPIO_NOPULL;
 
-	HAL_GPIO_Init(e->port, &gpio);
+	HAL_GPIO_Init(endstop->port, &gpio);
 }
 
-uint8_t endstop_clicked(struct Endstop *e)
+uint8_t endstop_clicked()
 {
     /*
     if(HAL_GPIO_ReadPin(e->port, e->pin))
@@ -38,8 +48,19 @@ uint8_t endstop_clicked(struct Endstop *e)
     else
         return 0;
     */
-   e->clicked = HAL_GPIO_ReadPin(e->port, e->pin);
-   return e->clicked;
+   endstop->clicked = HAL_GPIO_ReadPin(endstop->port, endstop->pin);
+   return endstop->clicked;
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if(GPIO_Pin == endstop->pin)
+    {
+        if(HAL_GPIO_ReadPin(endstop->port, endstop->pin))
+            endstop->clicked = 1;
+        else
+            endstop->clicked = 0;
+    }
 }
 
 //#endif // STSTM32
