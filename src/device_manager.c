@@ -11,7 +11,7 @@ void device_manager_init()
     devices[0] = (struct Device*)stepper_init(DIVIDER_NAME, DIVIDER_TIMER, DIVIDER_PORT, DIVIDER_DIR, DIVIDER_STEP, DIVIDER_ENABLE, DIVIDER_M1, DIVIDER_M2, DIVIDER_M3);
     devices[1] = (struct Device*)stepper_init(TABLE_NAME, TABLE_TIMER, TABLE_PORT, TABLE_DIR, TABLE_STEP, TABLE_ENABLE, TABLE_M1, TABLE_M2, TABLE_M3);
 
-    devices[2] = (struct Device*)endstop_init(DIVIDER_MIN_ENDSTOP_NAME, DIVIDER_MIN_ENDSTOP_PORT, DIVIDER_MIN_ENDSTOP_EXT, DIVIDER_MIN_ENDSTOP_PIN);
+    //devices[2] = (struct Device*)endstop_init(DIVIDER_MIN_ENDSTOP_NAME, DIVIDER_MIN_ENDSTOP_PORT, DIVIDER_MIN_ENDSTOP_EXT, DIVIDER_MIN_ENDSTOP_PIN);
 }
 
 bool device_manager_set_current(uint8_t *name)

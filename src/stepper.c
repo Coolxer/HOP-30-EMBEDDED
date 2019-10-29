@@ -26,6 +26,7 @@ Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, ui
 	stepper->state = 0;
 
 	stepper_setup_gpio();
+	//stepper_setup_timer();
 
 	return stepper;
 }
@@ -44,12 +45,24 @@ void stepper_setup_gpio()
 {
 	GPIO_InitTypeDef gpio;
 
-	gpio.Pin = stepper->enable_pin | stepper->dir_pin | stepper->step_pin | stepper->m_pins[0] | stepper->m_pins[1] | stepper->m_pins[2];
-	gpio.Mode = GPIO_MODE_AF_PP;
+	gpio.Pin = stepper->enable_pin | stepper->dir_pin | stepper->m_pins[0] | stepper->m_pins[1] | stepper->m_pins[2];
+	gpio.Mode = GPIO_MODE_OUTPUT_PP;
+	gpio.Pull = GPIO_NOPULL;
+	gpio.Speed = GPIO_SPEED_FREQ_LOW;
+
+	HAL_GPIO_Init(stepper->port, &gpio);
+
+	gpio.Pin = stepper->step_pin;
+
+	/*
+	if(stepper->device.name == "s1")
+		gpio.Alternate = GPIO_AF2_TIM3;
+
 	gpio.Pull = GPIO_NOPULL;
 	gpio.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 
 	HAL_GPIO_Init(stepper->port, &gpio);
+	*/
 
 	HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, GPIO_PIN_RESET); // turn OFF stepper motor at start
 
@@ -66,12 +79,11 @@ void stepper_setup_timer()
 	//s->timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
 
 	if(stepper->device.name == "s1")
-		__HAL_RCC_TIM3_CLK_DISABLE();
+		__HAL_RCC_TIM3_CLK_ENABLE();
 	else if (stepper->device.name == "s2")
 		__HAL_RCC_TIM4_CLK_ENABLE();
 
 	HAL_TIM_PWM_Init(&stepper->timer);
-
 
 	//HAL_TIM_Base_Init(&s->timer);
 	

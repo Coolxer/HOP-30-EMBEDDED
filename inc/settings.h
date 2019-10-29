@@ -24,36 +24,47 @@
 
 /* DEVICE SECTION */
 
+/*
+    PA13 cannot be
+    PA14 cannot be
+
+    PA0 cannot be
+*/
+
 /* divider motor  */
 #define DIVIDER_NAME "s1"
 #define DIVIDER_TIMER TIM3
 #define DIVIDER_PORT GPIOA
 
-#define DIVIDER_DIR GPIO_PIN_1
-#define DIVIDER_STEP GPIO_PIN_2
-#define DIVIDER_ENABLE GPIO_PIN_3
+#define DIVIDER_DIR GPIO_PIN_15 
+#define DIVIDER_STEP GPIO_PIN_6 //PWM 3/1 
+#define DIVIDER_ENABLE GPIO_PIN_10 
 
-#define DIVIDER_M1 GPIO_PIN_4
-#define DIVIDER_M2 GPIO_PIN_5 
-#define DIVIDER_M3 GPIO_PIN_6
+#define DIVIDER_M1 GPIO_PIN_7 
+#define DIVIDER_M2 GPIO_PIN_9 
+#define DIVIDER_M3 GPIO_PIN_8
 
 /* end of divider motor declaration  */
+
+/*
+    PA11, PA12, PB14 and PB15 I/Os are supplied by VDDUSB
+*/
 
 /* table motor  */
 #define TABLE_NAME "s2"
 #define TABLE_TIMER TIM4
-#define TABLE_PORT GPIOC
+#define TABLE_PORT GPIOB
 
-#define TABLE_DIR GPIO_PIN_7
-#define TABLE_STEP GPIO_PIN_8
-#define TABLE_ENABLE GPIO_PIN_9
+#define TABLE_DIR GPIO_PIN_9
+#define TABLE_STEP GPIO_PIN_7 //PWM 4/2
+#define TABLE_ENABLE GPIO_PIN_6
 
-#define TABLE_M1 GPIO_PIN_10
-#define TABLE_M2 GPIO_PIN_11 
-#define TABLE_M3 GPIO_PIN_12
+#define TABLE_M1 GPIO_PIN_5 
+#define TABLE_M2 GPIO_PIN_8 
+#define TABLE_M3 GPIO_PIN_13
 
-#define TABLE_MIN_ENDSTOP GPIO_PIN_13
-#define TABLE_MAX_ENDSTOP GPIO_PIN_14
+//#define TABLE_MIN_ENDSTOP GPIO_PIN_13
+//#define TABLE_MAX_ENDSTOP GPIO_PIN_14
 
 /* end of table motor declaration  */
 
