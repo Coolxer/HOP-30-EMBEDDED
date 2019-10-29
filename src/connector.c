@@ -61,6 +61,10 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t dt_size)
 		strcat(feedback, prepare_turn(args, records, dt_size));
 	else if(strcmp(opt, "set") == 0)
 		strcat(feedback, prepare_set(args, records, dt_size));
+	else if(strcmp(opt, "hom") == 0)
+		strcat(feedback, prepare_home(args, records, dt_size));
+	else if(strcmp(opt, "mov") == 0)
+		strcat(feedback, prepare_move(args, records, dt_size));
 	else
 		strcat(feedback, "_ERROR:invalid_opt_value");
 

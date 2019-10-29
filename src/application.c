@@ -7,9 +7,8 @@
 
 void application_setup()
 {
+    //SystemCoreClock = 8000000; // set default system core main clock frequency
     HAL_Init();
-
-    //SystemCoreClock = 180000; // set default system core main clock frequency
 
     __HAL_RCC_GPIOA_CLK_ENABLE();  // init port A, where divider motor is connected 
     __HAL_RCC_GPIOB_CLK_ENABLE();  // init port B, where table motor is connected 
@@ -31,6 +30,7 @@ void application_close()
 {
     __HAL_RCC_GPIOA_CLK_DISABLE();
     __HAL_RCC_GPIOB_CLK_DISABLE();
+    __HAL_RCC_GPIOC_CLK_DISABLE();
 
     HAL_DeInit();
     uart_deinit();

@@ -37,9 +37,11 @@ bool stepper_set_microstepping(uint8_t *states); // set microstepping of stepper
 void stepper_set_speed(uint8_t speed); // set speed of stepper
 
 bool stepper_toggle(); // toggle stepper motor
-bool stepper_move_by_steps(uint8_t steps); // move stepper motor by given number of steps
-bool stepper_move_until(); // move stepper motor by small step count unit signal detected
+bool stepper_move(uint8_t steps); // move stepper motor by given number of steps
+bool stepper_home(); // move stepper motor by small step count unit signal detected
 
+void TIM3_IRQHandler(void);
+void TIM4_IRQHandler(void);
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 #endif // STEPPER_H
