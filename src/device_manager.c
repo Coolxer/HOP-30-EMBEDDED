@@ -4,14 +4,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "settings.h"
+
 void device_manager_init()
 {
-    //void stepper_init( Stepper *s,  *_name, TIM_TypeDef *_instance,  _port,  _enable_pin,  _dir_pin,  _step_pin,  _m1,  _m2,  _m3,  _endstop_pin);
-    stepper_init(&devices[0], "s1", DIVIDER_TIMER, DIVIDER_PORT, DIVIDER_DIR, DIVIDER_STEP, DIVIDER_ENABLE, DIVIDER_M1, DIVIDER_M2, DIVIDER_M3, 0, 0); // set for "s1" stepper
-    stepper_init(&devices[1], "s2", TABLE_TIMER, TABLE_PORT, TABLE_DIR, TABLE_STEP, TABLE_ENABLE, TABLE_M1, TABLE_M2, TABLE_M3, TABLE_MIN_ENDSTOP, TABLE_MAX_ENDSTOP); // set for "s2" stepper
+    devices[0] = (struct Device*)stepper_init(DIVIDER_NAME, DIVIDER_TIMER, DIVIDER_PORT, DIVIDER_DIR, DIVIDER_STEP, DIVIDER_ENABLE, DIVIDER_M1, DIVIDER_M2, DIVIDER_M3);
+    devices[1] = (struct Device*)stepper_init(TABLE_NAME, TABLE_TIMER, TABLE_PORT, TABLE_DIR, TABLE_STEP, TABLE_ENABLE, TABLE_M1, TABLE_M2, TABLE_M3);
 
-    DIVIDER_TIMER_INIT();
-    TABLE_TIMER_INIT()
+    //devices[2] = (struct Device*)endstop_init(DIVIDER_MIN_ENDSTOP_NAME, DIVIDER_MIN_ENDSTOP_PORT, DIVIDER_MIN_ENDSTOP_EXT, DIVIDER_MIN_ENDSTOP_PIN);
 }
 
 bool device_manager_set_current(uint8_t *name)
@@ -20,24 +20,33 @@ bool device_manager_set_current(uint8_t *name)
 
     for(i = 0; i < DEVICES_COUNT; i++)
     {
-        if(strcmp(devices[i].name, name) == 0)
+        Device * const device = devices[i];
+
+        if(strcmp(device->name, name) == 0)
         {
-            current = devices[i];
-            return true; 
+            if(device->type == STEPPER)
+                stepper = device;
+                
+            else if (device->type == ENDSTOP)
+                endstop = device; 
+
+            current = device;
+            
+            return true;
         }
     }
-    return false;
-}
 
-struct Stepper *device_manager_current()
-{
-    return &current;
+    return false;
 }
 
 void device_manager_deinit()
 {
-    DIVIDER_TIMER_DEINIT();
-    TABLE_TIMER_DEINIT();
+    device_manager_set_current("s1");
+    stepper_deinit();
+    device_manager_set_current("s2");
+    stepper_deinit();
+    device_manager_set_current("e1");
+    endstop_deinit();
 }
 
 //#endif // STSTM32

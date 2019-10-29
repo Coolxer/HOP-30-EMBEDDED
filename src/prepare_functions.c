@@ -26,7 +26,7 @@ uint8_t *prepare_turn(uint8_t ***args, uint8_t size, uint8_t dt_size)
 				strcat(feedback, "_ERROR_invalid_stepper_name");
 			else
 			{
-				if(!stepper_toggle(device_manager_current()))
+				if(!stepper_toggle())
 					strcat(feedback, "_ERROR_toggle_not_worked");
 			}	
 		}
@@ -65,7 +65,7 @@ uint8_t *prepare_set(uint8_t ***args, uint8_t size, uint8_t dt_size)
 
 		if(strcmp((void *)args[i][0], "msp") == 0)
 		{
-			if(!stepper_set_microstepping(device_manager_current(), args[i][1]))
+			if(!stepper_set_microstepping(args[i][1]))
 				strcat(feedback, "_ERROR_set_microstepping_not_worked");
 
 			msp_cnt++;
