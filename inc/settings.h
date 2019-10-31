@@ -34,6 +34,10 @@
 /* divider motor  */
 #define DIVIDER_NAME "s1"
 #define DIVIDER_TIMER TIM3
+
+#define DIVIDER_ALTERNATE GPIO_AF2_TIM3
+#define DIVIDER_CHANNEL TIM_CHANNEL_1
+
 #define DIVIDER_PORT GPIOA
 
 #define DIVIDER_DIR GPIO_PIN_15 
@@ -53,6 +57,10 @@
 /* table motor  */
 #define TABLE_NAME "s2"
 #define TABLE_TIMER TIM4
+
+#define TABLE_ALTERNATE GPIO_AF2_TIM4
+#define TABLE_CHANNEL TIM_CHANNEL_2
+
 #define TABLE_PORT GPIOB
 
 #define TABLE_DIR GPIO_PIN_9

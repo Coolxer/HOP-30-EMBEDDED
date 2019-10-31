@@ -4,7 +4,7 @@
 
 #include "stepper.h"
 
-Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3)
+Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_timer, uint8_t _alternate, uint32_t _channel, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3)
 {
 	stepper = (Stepper *)malloc(sizeof(Stepper));
 
@@ -12,7 +12,9 @@ Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_instance, uint32_t _port, ui
 	stepper->device.type = type;
 	strcpy(stepper->device.name, _name);
 	
-	stepper->timer.Instance = _instance; 
+	stepper->timer.Instance = _timer; 
+	stepper->alternate = _alternate;
+	stepper->channel = _channel;
 	stepper->port = _port;
 
 	stepper->dir_pin = _dir_pin;
@@ -45,51 +47,55 @@ void stepper_setup_gpio()
 {
 	GPIO_InitTypeDef gpio;
 
-	gpio.Pin = stepper->enable_pin | stepper->dir_pin | stepper->step_pin | stepper->m_pins[0] | stepper->m_pins[1] | stepper->m_pins[2];
+	gpio.Pin = stepper->enable_pin | stepper->dir_pin | stepper->m_pins[0] | stepper->m_pins[1] | stepper->m_pins[2];
 	gpio.Mode = GPIO_MODE_OUTPUT_PP;
 	gpio.Pull = GPIO_NOPULL;
 	gpio.Speed = GPIO_SPEED_FREQ_LOW;
 
 	HAL_GPIO_Init(stepper->port, &gpio);
 
-	HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, GPIO_PIN_RESET); // turn OFF stepper motor at start
+	gpio.Pin = stepper->step_pin;
+	gpio.Mode = GPIO_MODE_AF_PP;
+	gpio.Pull = GPIO_NOPULL;
+  	gpio.Speed = GPIO_SPEED_FREQ_HIGH;
+	gpio.Alternate = stepper->alternate;
 
-	HAL_GPIO_WritePin(stepper->port, stepper->m_pins[0], GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(stepper->port, stepper->m_pins[1], GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(stepper->port, stepper->m_pins[2], GPIO_PIN_RESET);
+	HAL_GPIO_Init(stepper->port, &gpio);
+
+	HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, GPIO_PIN_RESET); // turn OFF stepper motor at start
 }
 
 void stepper_setup_timer()
 {
-	stepper->timer.Init.CounterMode = TIM_COUNTERMODE_UP;
-	
-	stepper->timer.Init.RepetitionCounter = 0;
-	//s->timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
-
 	if (strcmp((void *)stepper->device.name, "s1") == 0)
-	{
 		__HAL_RCC_TIM3_CLK_ENABLE();
-		HAL_NVIC_EnableIRQ(TIM3_IRQn);
-	}	
+
 	else if (strcmp((void *)stepper->device.name, "s2") == 0)
-	{
 		__HAL_RCC_TIM4_CLK_ENABLE();
-		HAL_NVIC_EnableIRQ(TIM4_IRQn);
-	}
-		
-	HAL_TIM_Base_Init(&stepper->timer);
+
+	stepper->timer.Init.CounterMode = TIM_COUNTERMODE_UP;
+	stepper->timer.Init.RepetitionCounter = 0;
+	stepper->timer.Init.ClockDivision = 0;
+
+	TIM_OC_InitTypeDef oc;
+	oc.OCMode = TIM_OCMODE_PWM1;
+	oc.Pulse = 100;
+	oc.OCPolarity = TIM_OCPOLARITY_HIGH;
+	oc.OCNPolarity = TIM_OCNPOLARITY_LOW;
+	oc.OCFastMode = TIM_OCFAST_ENABLE;
+	oc.OCIdleState = TIM_OCIDLESTATE_SET;
+	oc.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+
+	HAL_TIM_PWM_ConfigChannel(&stepper->timer, &oc, stepper->channel);	
 }
 
 void stepper_set_speed(uint8_t speed)
 {
 	// in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
 	// you need to use Prescaler
-
 	stepper->timer.Init.Period = 1000 - 1;
 	stepper->timer.Init.Prescaler = 8000 - 1;
-	stepper->timer.Init.ClockDivision = 0;
-
-	HAL_TIM_Base_Init(&stepper->timer);
+	HAL_TIM_PWM_Init(&stepper->timer);
 }
 
 bool stepper_toggle()
@@ -127,41 +133,15 @@ bool stepper_set_microstepping(uint8_t *states)
 
 bool stepper_move(uint8_t steps)
 {	
-	HAL_TIM_Base_Start_IT(&stepper->timer);
+	HAL_TIM_PWM_Start(&stepper->timer, stepper->channel);
 	return true;
 }
 
 bool stepper_home()
 {
-	HAL_TIM_Base_Start_IT(&stepper->timer);
+	HAL_TIM_PWM_Start(&stepper->timer, stepper->channel);
 	return true;
 }
 
-void TIM3_IRQHandler(void)
-{
-	HAL_TIM_IRQHandler(&stepper->timer);
-}
-
-void TIM4_IRQHandler(void)
-{
-	HAL_TIM_IRQHandler(&stepper->timer);
-}
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == stepper->timer.Instance)
-    {
-        if(!stepper->state)
-        {
-            HAL_GPIO_WritePin(stepper->port, stepper->step_pin, GPIO_PIN_SET);
-            stepper->state = 1;
-        }
-        else
-        {
-            HAL_GPIO_WritePin(stepper->port, stepper->step_pin, GPIO_PIN_RESET);
-            stepper->state = 0;
-        }
-    }
-}
 
 //#endif // STSTM32
