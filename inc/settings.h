@@ -31,6 +31,11 @@
     PA0 cannot be
 */
 
+//there are 3 groups of EXT interrupts
+    // EXTI0_IRQn - EXTI4_IRQn  -> 0-4
+    // EXTI9_5_IRQn -> 5-9
+    // EXTI15_10_IRQn -> 10-15
+
 /* divider motor  */
 #define DIVIDER_NAME "s1"
 #define DIVIDER_TIMER TIM3

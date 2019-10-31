@@ -93,8 +93,17 @@ void stepper_set_speed(uint8_t speed)
 {
 	// in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
 	// you need to use Prescaler
+
+	if(speed == 0)
+		return;
+	else if(speed < 0)
+		HAL_GPIO_WritePin(stepper->port, stepper->dir_pin, GPIO_PIN_RESET);
+	else
+		HAL_GPIO_WritePin(stepper->port, stepper->dir_pin, GPIO_PIN_SET);
+
 	stepper->timer.Init.Period = 1000 - 1;
 	stepper->timer.Init.Prescaler = 8000 - 1;
+	
 	HAL_TIM_PWM_Init(&stepper->timer);
 }
 
@@ -139,6 +148,7 @@ bool stepper_move(uint8_t steps)
 
 bool stepper_home()
 {
+	HAL_GPIO_WritePin(stepper->port, stepper->dir_pin, GPIO_PIN_SET); //set left direction;
 	HAL_TIM_PWM_Start(&stepper->timer, stepper->channel);
 	return true;
 }
