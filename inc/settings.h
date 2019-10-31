@@ -79,8 +79,8 @@
 /* divider min endstop */
 #define DIVIDER_MIN_ENDSTOP_NAME "e1"
 #define DIVIDER_MIN_ENDSTOP_PORT GPIOA
-#define DIVIDER_MIN_ENDSTOP_PIN GPIO_PIN_5
-#define DIVIDER_MIN_ENDSTOP_EXT EXTI15_10_IRQn
+#define DIVIDER_MIN_ENDSTOP_PIN GPIO_PIN_4
+#define DIVIDER_MIN_ENDSTOP_EXT EXTI4_IRQn
 
 /* end of divider min endstop declaration */
 
