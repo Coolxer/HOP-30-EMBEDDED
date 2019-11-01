@@ -29,8 +29,6 @@ bool device_manager_set_current(uint8_t *name)
                 
             else if (device->type == ENDSTOP)
                 endstop = device; 
-
-            current = device;
             
             return true;
         }

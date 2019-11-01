@@ -24,7 +24,7 @@ typedef struct
    
 }Stepper;
 
-Stepper *stepper;                                // stepper pointer, using to make operations on actual selected stepper
+Stepper *stepper;                               // stepper pointer, using to make operations on actual selected stepper
 
 Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_timer, uint8_t _alternate, uint32_t _channel, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3); // stepper "constructor" function
 

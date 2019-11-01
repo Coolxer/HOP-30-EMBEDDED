@@ -38,7 +38,7 @@ void application_exec()
 {
     application_setup(); // calls all setups
     application_run(); // calls main program loop
-    application_close() // calls all deinit's functions
+    application_close(); // calls all deinit's functions
 }
 
 void SysTick_Handler() { 

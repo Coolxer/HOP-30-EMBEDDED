@@ -6,7 +6,9 @@
 
 Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_timer, uint8_t _alternate, uint32_t _channel, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3)
 {
-	stepper = (Stepper *)malloc(sizeof(Stepper)); // reserves memory for operting stepper
+	// TODO (set stepper to NULL at start)
+	//if(stepper == NULL)
+		stepper = (Stepper *)malloc(sizeof(Stepper)); // reserves memory for operting stepper
 
 	enum types type = STEPPER; // creates ENDSTOP type
 	stepper->device.type = type;
@@ -37,9 +39,9 @@ void stepper_deinit()
 {
 	/* turns off property TIMER depend on current device name */
 
-	if (strcmp((void *)stepper->device.name, "s1") == 0) 
+	if (stepper->timer.Instance == TIM3) 
 		__HAL_RCC_TIM3_CLK_DISABLE();
-	else if (strcmp((void *)stepper->device.name, "s2") == 0)
+	else if (stepper->timer.Instance == TIM4)
 		__HAL_RCC_TIM4_CLK_DISABLE();
 
 	free(stepper); 
@@ -75,10 +77,10 @@ void stepper_setup_timer()
 {
 	/* turns on property TIMER depend on current device name */
 
-	if (strcmp((void *)stepper->device.name, "s1") == 0)
+	if (stepper->timer.Instance == TIM3)
 		__HAL_RCC_TIM3_CLK_ENABLE();
 
-	else if (strcmp((void *)stepper->device.name, "s2") == 0)
+	else if (stepper->timer.Instance == TIM4)
 		__HAL_RCC_TIM4_CLK_ENABLE();
 
 	stepper->timer.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -102,12 +104,16 @@ void stepper_set_speed(uint8_t speed)
 	// in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
 	// you need to use Prescaler
 
+	// TODO -> speed should be only positive value
+
+	/*
 	if(speed == 0) // checks if speed is 0 -> EROR
 		return;
 	else if(speed < 0) // checks if speed is less than 0 or its more than 0 and set correctly dir_pin to it
 		HAL_GPIO_WritePin(stepper->port, stepper->dir_pin, GPIO_PIN_RESET);
 	else
 		HAL_GPIO_WritePin(stepper->port, stepper->dir_pin, GPIO_PIN_SET);
+	*/
 
 	/* speed set */
 	stepper->timer.Init.Period = 1000 - 1;
