@@ -3,9 +3,9 @@
 
 Endstop *endstop_init(Stepper *_stepper, uint8_t *_name, uint32_t _port, uint8_t _ext, uint16_t _pin)
 {
-    endstop = (Endstop *)malloc(sizeof(Endstop));
+    endstop = (Endstop *)malloc(sizeof(Endstop)); // reserves memory for operating endstop
 
-    enum types type = ENDSTOP;
+    enum types type = ENDSTOP; // creates ENDSTOP type
 	endstop->device.type = type;
     strcpy(endstop->device.name, _name);
 
@@ -15,7 +15,7 @@ Endstop *endstop_init(Stepper *_stepper, uint8_t *_name, uint32_t _port, uint8_t
     endstop->pin = _pin;
     endstop->ext = _ext;
 
-    endstop_setup_gpio();
+    endstop_setup_gpio(); // setups endstop gpio
 
     return endstop;
 }
@@ -36,32 +36,24 @@ void endstop_setup_gpio()
 
 	HAL_GPIO_Init(endstop->port, &gpio);
 
-    HAL_NVIC_EnableIRQ(endstop->ext);
+    HAL_NVIC_EnableIRQ(endstop->ext); // enables external interrupt on endstop pin
 }
 
 uint8_t endstop_clicked()
 {
-    endstop->clicked = HAL_GPIO_ReadPin(endstop->port, endstop->pin);
+    endstop->clicked = HAL_GPIO_ReadPin(endstop->port, endstop->pin); // assigns current endstop state by reading state on endstop pin
     return endstop->clicked;
 }
 
 void EXTI4_IRQHandler(void)
 {
-    HAL_GPIO_EXTI_IRQHandler(endstop->pin);
+    HAL_GPIO_EXTI_IRQHandler(endstop->pin); // runs external interrupt on endstop pin
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    if(GPIO_Pin == endstop->pin)
-    {
-        if(HAL_GPIO_ReadPin(endstop->port, endstop->pin))
-        {
-            HAL_TIM_PWM_Stop(&endstop->parent_stepper->timer, endstop->parent_stepper->channel);
-            endstop->clicked = 1;
-        }   
-        else
-            endstop->clicked = 0;
-    }
+    if(GPIO_Pin == endstop->pin) // checks if incoming external interrupt concerns current selected endstop
+        HAL_TIM_PWM_Stop(&endstop->parent_stepper->timer, endstop->parent_stepper->channel); // stop PWM (moving) on assigned stepper
 }
 
 //#endif // STSTM32

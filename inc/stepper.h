@@ -5,42 +5,38 @@
 
 #include "device.h"
 
-// TIM2 and TIM5 are 32-bits
-// there are 12 others timers which have 16-bits precision
-// decided to use TIM2 and TIM5 in main operation and other(16-bit timers) to each another stepper
-// for z axis and y axis beacuse they do not need perfect precision
-
 typedef struct
 {
-    Device device;
+    Device device;                               // device instance
 
-    TIM_HandleTypeDef timer; //timer instance
-    uint8_t alternate;
-    uint32_t channel;
-    uint32_t port;        // port group
+    TIM_HandleTypeDef timer;                     // timer instance
+    uint8_t alternate;                           // alternate function of step_pin
+    uint32_t channel;                            // timer channel to which the step_pin is connected
+    uint32_t port;                               // stepper gpio port group
     
-    uint16_t dir_pin;     // direction(dir) pin
-    uint16_t step_pin;    // step pin
-    uint16_t enable_pin;  // enable pin
+    uint16_t dir_pin;                            // direction(dir) pin
+    uint16_t step_pin;                           // step pin
+    uint16_t enable_pin;                         // enable pin
 
-    uint16_t m_pins[3];  // microstepping pins
+    uint16_t m_pins[3];                          // microstepping pins
 
-    uint8_t state;
+    uint8_t state;                               // stepper current power state
    
 }Stepper;
 
-Stepper *stepper;
+Stepper *stepper;                                // stepper pointer, using to make operations on actual selected stepper
 
-Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_timer, uint8_t _alternate, uint32_t _channel, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3);
-void stepper_deinit();
-void stepper_setup_gpio(); // setups gpio pins
-void stepper_setup_timer();
+Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_timer, uint8_t _alternate, uint32_t _channel, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3); // stepper "constructor" function
 
-bool stepper_set_microstepping(uint8_t *states); // set microstepping of stepper
-void stepper_set_speed(uint8_t speed); // set speed of stepper
+void stepper_deinit();                           // disables stepper timer and frees memory reserved for stepper
+void stepper_setup_gpio();                       // setups gpio pins
+void stepper_setup_timer();                      // setups timer
 
-bool stepper_toggle(); // toggle stepper motor
-bool stepper_move(uint8_t steps); // move stepper motor by given number of steps
-bool stepper_home(); // move stepper motor by small step count unit signal detected
+bool stepper_set_microstepping(uint8_t *states); // sets microstepping of stepper
+void stepper_set_speed(uint8_t speed);           // sets speed of stepper
+
+bool stepper_toggle();                           // toggles stepper motor
+bool stepper_move(uint8_t steps);                // moves stepper motor by given number of steps
+bool stepper_home();                             // moves stepper motor unit endstop signal detected
 
 #endif // STEPPER_H

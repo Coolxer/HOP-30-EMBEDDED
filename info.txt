@@ -1,0 +1,24 @@
+/*
+    PA13 cannot be
+    PA14 cannot be
+
+    PA0 cannot be
+*/
+
+/*
+    there are 3 groups of EXT interrupts
+        EXTI0_IRQn - EXTI4_IRQn  -> 0-4
+        EXTI9_5_IRQn -> 5-9
+        EXTI15_10_IRQn -> 10-15
+*/
+
+/*
+    PA11, PA12, PB14 and PB15 I/Os are supplied by VDDUSB
+*/
+
+/*
+    TIM2 and TIM5 are 32-bits
+    there are 12 others timers which have 16-bits precision
+    decided to use TIM2 and TIM5 in main operation and other(16-bit timers) to each another stepper
+    for z axis and y axis beacuse they do not need perfect precision
+*/

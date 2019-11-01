@@ -10,7 +10,7 @@ extern "C" {
 UART_HandleTypeDef uart;        // uart interface 
 
 void uart_setup_gpio();         // sets both tx & rx gpio ports to be ready for uart transmission 
-void uart_setup_interface();    // prepares uart interface 
+void uart_setup_interface();    // prepares uart interface (name, baudrate, parity, oversampling settings, etc...) 
 
 void uart_start();              // enables -> calls the setup gpio and interface to working as unit test transport 
 void uart_write(char c);        // sends one char to uart port 

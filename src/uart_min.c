@@ -8,8 +8,8 @@ void uart_setup_gpio()
 {
 	GPIO_InitTypeDef gpio;
 
-	gpio.Pin = USART2_TX | USART2_RX;
-	gpio.Mode = GPIO_MODE_AF_PP;
+	gpio.Pin = USART2_TX | USART2_RX; 
+	gpio.Mode = GPIO_MODE_AF_PP;	  
 	gpio.Pull = GPIO_NOPULL;
 	gpio.Speed = GPIO_SPEED_FREQ_LOW;
 	gpio.Alternate = GPIO_AF7_USART2;
@@ -21,14 +21,14 @@ void uart_setup_interface()
 {
     __HAL_RCC_USART2_CLK_ENABLE();
 
-	uart.Instance = UART_NAME;
-	uart.Init.BaudRate = UART_BAUDRATE;
-	uart.Init.WordLength = USART_WORDLENGTH_8B;
-	uart.Init.Parity = USART_PARITY_NONE;
-	uart.Init.StopBits = UART_STOPBITS_1;
+	uart.Instance = UART_NAME;					
+	uart.Init.BaudRate = UART_BAUDRATE;				
+	uart.Init.WordLength = USART_WORDLENGTH_8B;		
+	uart.Init.Parity = USART_PARITY_NONE;			
+	uart.Init.StopBits = UART_STOPBITS_1;			
 	uart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-	uart.Init.OverSampling = UART_OVERSAMPLING_16;
-	uart.Init.Mode = UART_MODE_TX_RX;
+	uart.Init.OverSampling = UART_OVERSAMPLING_16;	
+	uart.Init.Mode = UART_MODE_TX_RX;			    
 
 	HAL_UART_Init(&uart);
 }
@@ -41,7 +41,7 @@ void uart_start()
 
 void uart_write(char c)
 {
-    HAL_UART_Transmit(&uart, (uint8_t*)(&c), 1, 1000);
+    HAL_UART_Transmit(&uart, (uint8_t*)(&c), 1, 1000); // sends 1 char with timeout 1000 through UART
 }
 
 void uart_flush()
@@ -51,7 +51,7 @@ void uart_flush()
 
 void uart_end()
 {  
-    __HAL_RCC_USART2_CLK_DISABLE();
+    __HAL_RCC_USART2_CLK_DISABLE(); // disables USART2 clock
 }
 
 //#endif // STSTM32

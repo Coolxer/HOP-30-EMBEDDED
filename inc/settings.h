@@ -5,7 +5,7 @@
 
 /* GENERAL SECTION */
 
-#define CLOCK_SPEED 8000000 // main clock speed frequency
+#define CLOCK_SPEED 18000000 // main clock speed frequency
 
 /* END OF GENERAL SECTION */
 
@@ -24,18 +24,6 @@
 
 /* DEVICE SECTION */
 
-/*
-    PA13 cannot be
-    PA14 cannot be
-
-    PA0 cannot be
-*/
-
-//there are 3 groups of EXT interrupts
-    // EXTI0_IRQn - EXTI4_IRQn  -> 0-4
-    // EXTI9_5_IRQn -> 5-9
-    // EXTI15_10_IRQn -> 10-15
-
 /* divider motor  */
 #define DIVIDER_NAME "s1"
 #define DIVIDER_TIMER TIM3
@@ -46,7 +34,7 @@
 #define DIVIDER_PORT GPIOA
 
 #define DIVIDER_DIR GPIO_PIN_15 
-#define DIVIDER_STEP GPIO_PIN_6 //PWM 3/1 
+#define DIVIDER_STEP GPIO_PIN_6 // PWM 3/1 
 #define DIVIDER_ENABLE GPIO_PIN_10 
 
 #define DIVIDER_M1 GPIO_PIN_7 
@@ -54,10 +42,6 @@
 #define DIVIDER_M3 GPIO_PIN_8
 
 /* end of divider motor declaration  */
-
-/*
-    PA11, PA12, PB14 and PB15 I/Os are supplied by VDDUSB
-*/
 
 /* table motor  */
 #define TABLE_NAME "s2"
@@ -69,7 +53,7 @@
 #define TABLE_PORT GPIOB
 
 #define TABLE_DIR GPIO_PIN_9
-#define TABLE_STEP GPIO_PIN_7 //PWM 4/2
+#define TABLE_STEP GPIO_PIN_7 // PWM 4/2
 #define TABLE_ENABLE GPIO_PIN_6
 
 #define TABLE_M1 GPIO_PIN_5 
