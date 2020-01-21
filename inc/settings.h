@@ -25,7 +25,7 @@
 /* DEVICE SECTION */
 
 /* divider motor  */
-#define DIVIDER_NAME "s1"
+#define DIVIDER_NAME "x"
 #define DIVIDER_TIMER TIM3
 
 #define DIVIDER_ALTERNATE GPIO_AF2_TIM3
@@ -44,7 +44,7 @@
 /* end of divider motor declaration  */
 
 /* table motor  */
-#define TABLE_NAME "s2"
+#define TABLE_NAME "w"
 #define TABLE_TIMER TIM4
 
 #define TABLE_ALTERNATE GPIO_AF2_TIM4

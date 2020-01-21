@@ -12,7 +12,7 @@ void tearDown(); // default release function
 void test_stepper_toggle_should_turn_on()
 {
     struct Stepper s;
-    stepper_init(&s, "s1", GPIOA, GPIO_PIN_5, 0, 0, 0, 0, 0, 0);
+    stepper_init(&s, "x", GPIOA, GPIO_PIN_5, 0, 0, 0, 0, 0, 0);
 
     HAL_GPIO_WritePin(s.port, s.enable_pin, GPIO_PIN_RESET);
 
@@ -23,7 +23,7 @@ void test_stepper_toggle_should_turn_on()
 void test_stepper_toggle_should_turn_off()
 {
     struct Stepper s;
-    stepper_init(&s, "s1", GPIOA, GPIO_PIN_5, 0, 0, 0, 0, 0, 0);
+    stepper_init(&s, "w", GPIOA, GPIO_PIN_5, 0, 0, 0, 0, 0, 0);
 
     HAL_GPIO_WritePin(s.port, s.enable_pin, GPIO_PIN_SET);
 

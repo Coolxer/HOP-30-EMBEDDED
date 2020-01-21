@@ -39,9 +39,9 @@ bool device_manager_set_current(uint8_t *name)
 
 void device_manager_deinit()
 {
-    device_manager_set_current("s1");
+    device_manager_set_current("x");
     stepper_deinit();
-    device_manager_set_current("s2");
+    device_manager_set_current("w");
     stepper_deinit();
     device_manager_set_current("e1");
     endstop_deinit();
