@@ -36,7 +36,8 @@ void uart_listen()
 
 void uart_send(uint8_t *message)
 {
-	HAL_UART_Transmit(&uart, (uint8_t*)message, DATA_SIZE, 1000); // sends message through UART with 1000 timeout
+	//HAL_UART_Transmit(&uart, (uint8_t*)message, DATA_SIZE, 1000); // sends message through UART with 1000 timeout
+	HAL_UART_Transmit(&uart, '1', 1, 1000); // sends message through UART with 1000 timeout
 }
 
 bool uart_manage()

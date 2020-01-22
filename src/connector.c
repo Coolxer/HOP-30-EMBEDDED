@@ -60,7 +60,7 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t dt_size)
 	/* checks operation (opt) mode and calls appropriate prepare_function */
 
 	if(strcmp(opt, "sth") == 0)
-		strcat(feedback, prepare_turn(args, records, dt_size));
+		strcat(feedback, prepare_switch(args, records, dt_size));
 	else if(strcmp(opt, "set") == 0)
 		strcat(feedback, prepare_set(args, records, dt_size));
 	else if(strcmp(opt, "hom") == 0)

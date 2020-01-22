@@ -35,7 +35,7 @@ void stepper_setup_timer();                      // setups timer
 bool stepper_set_microstepping(uint8_t *states); // sets microstepping of stepper
 void stepper_set_speed(uint8_t speed);           // sets speed of stepper
 
-bool stepper_toggle();                           // toggles stepper motor
+bool stepper_switch(uint8_t *state);                 // switch stepper motor depend on state value (0 -> OFF, 1 -> ON)
 bool stepper_move(uint8_t steps);                // moves stepper motor by given number of steps
 bool stepper_home();                             // moves stepper motor unit endstop signal detected
 

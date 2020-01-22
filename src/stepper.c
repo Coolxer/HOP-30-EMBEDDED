@@ -122,13 +122,22 @@ void stepper_set_speed(uint8_t speed)
 	HAL_TIM_PWM_Init(&stepper->timer);
 }
 
-bool stepper_toggle()
+bool stepper_switch(uint8_t *state)
 {
-	GPIO_PinState state = HAL_GPIO_ReadPin(stepper->port, stepper->enable_pin); // reads power state of stepper
+	GPIO_PinState prevState = HAL_GPIO_ReadPin(stepper->port, stepper->enable_pin); // reads power state of stepper
+
+	GPIO_PinState _state;
+
+	if(strcmp(state, "off") == 0) 
+		_state = GPIO_PIN_RESET;
+	else if(strcmp(state, "on") == 0)
+		_state = GPIO_PIN_SET;
+
+	//_state = (strcmp(state, "off") == 0) ? GPIO_PIN_RESET : GPIO_PIN_SET;
 	
-	HAL_GPIO_TogglePin(stepper->port, stepper->enable_pin); // toggles stepper power
+	HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, _state); // switches the stepper (OFF or ON)
  
-	if(state != HAL_GPIO_ReadPin(stepper->port, stepper->enable_pin)) // checks if stepper power state has changed if it TRUE else FALSE
+	if(prevState != HAL_GPIO_ReadPin(stepper->port, stepper->enable_pin)) // checks if stepper power state has changed if it TRUE else FALSE
 		return true;
 	
 	return false; // something goes wrong, because the power state does not changed

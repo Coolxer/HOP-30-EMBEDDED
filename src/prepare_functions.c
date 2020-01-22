@@ -10,7 +10,7 @@
 
 #include "data_assistant.h"
 
-uint8_t *prepare_turn(uint8_t ***args, uint8_t size, uint8_t dt_size)
+uint8_t *prepare_switch(uint8_t ***args, uint8_t size, uint8_t dt_size)
 {
 	uint8_t i, *feedback;
 
@@ -26,8 +26,13 @@ uint8_t *prepare_turn(uint8_t ***args, uint8_t size, uint8_t dt_size)
 				strcat(feedback, "_ERROR_invalid_stepper_name");
 			else // if successfully selected current device
 			{
-				if(!stepper_toggle()) // toggles stepper motor, if failed returns ERROR
-					strcat(feedback, "_ERROR_toggle_not_worked");
+				if(strcmp((void *)args[i + 1][0], "stt") == 0)
+				{
+					if(!stepper_switch(args[i+1][1])) // toggles stepper motor, if failed returns ERROR
+						strcat(feedback, "_ERROR_switch_not_worked");
+				}
+				else
+					strcat(feedback, "_ERROR_no_stt_key");
 			}	
 		}
 		else if (i == size - 1) // checks if we are on last iteration and the key is not equals to spp
