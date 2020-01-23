@@ -11,8 +11,6 @@
 void uart_init()
 {
 	uart_start(); // setups gpio and interface
-
-	data_clear(data, DATA_SIZE); // clears transmission data
 }
 
 void uart_deinit()
@@ -42,14 +40,11 @@ void uart_send(uint8_t *message)
 
 bool uart_manage()
 {
-	uint8_t *feedback; // declares pointer to feedback message
-
-	data_crop(data, DATA_SIZE); // truncates date with fill characters
+	uint8_t* feedback;
 
 	if(strcmp(data, "FINISH") == 0) // checks if receive command is "FINISH"
 	{
 		strcpy(data, "FINISHED"); // prepares feedback command as "FINISHED"
-		data_fullfill(data, DATA_SIZE); // fullfills data to be DATA_SIZE length
 		return false;
 	}
 
@@ -58,9 +53,7 @@ bool uart_manage()
 	else
 		feedback = connector_manage_data(connector_parse(data), DATA_SIZE); // passes transmission data to connector manage function where it will be processed
 	
-	data_fullfill(feedback, DATA_SIZE); // fullfills data to be DATA_SIZE length
 	uart_send(feedback); // send feedback through UART port
-	data_clear(data, DATA_SIZE); // clears data
 	free(feedback); // free memory reserved for feedback message
 	return true;
 }

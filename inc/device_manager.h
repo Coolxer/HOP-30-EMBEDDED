@@ -14,4 +14,7 @@ void device_manager_init();                     // sets devices parameters and r
 void device_manager_deinit();                   // frees memory for current device
 bool device_manager_set_current(uint8_t *name); // sets current device by name, if device name is not recognized, returns FALSE
 
+bool device_manager_get_current();
+void device_manager_release_device();
+
 #endif // DEVICE_MANAGER_H

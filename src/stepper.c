@@ -27,10 +27,12 @@ Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_timer, uint8_t _alternate, u
 	stepper->m_pins[1] = _m2;
 	stepper->m_pins[2] = _m3;
 
-	stepper->state = 0;
+	stepper->state = GPIO_PIN_RESET;
 
 	stepper_setup_gpio(); // setups stepper gpio
 	stepper_setup_timer(); // setups stepper timer
+	
+	stepper_set_speed(200); // setups stepper speed
 
 	return stepper;
 }
@@ -116,6 +118,7 @@ void stepper_set_speed(uint8_t speed)
 	*/
 
 	/* speed set */
+
 	stepper->timer.Init.Period = 1000 - 1;
 	stepper->timer.Init.Prescaler = 8000 - 1;
 	
@@ -124,23 +127,16 @@ void stepper_set_speed(uint8_t speed)
 
 bool stepper_switch(uint8_t *state)
 {
-	GPIO_PinState prevState = HAL_GPIO_ReadPin(stepper->port, stepper->enable_pin); // reads power state of stepper
-
-	GPIO_PinState _state;
-
-	if(strcmp(state, "off") == 0) 
-		_state = GPIO_PIN_RESET;
-	else if(strcmp(state, "on") == 0)
-		_state = GPIO_PIN_SET;
-
-	//_state = (strcmp(state, "off") == 0) ? GPIO_PIN_RESET : GPIO_PIN_SET;
+	if(strcmp(state, "off") == 0)
+		stepper->state = GPIO_PIN_RESET;
+	else if (strcmp(state, "on") == 0)
+		stepper->state = GPIO_PIN_SET;
+	else
+		return false;
 	
-	HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, _state); // switches the stepper (OFF or ON)
- 
-	if(prevState != HAL_GPIO_ReadPin(stepper->port, stepper->enable_pin)) // checks if stepper power state has changed if it TRUE else FALSE
-		return true;
-	
-	return false; // something goes wrong, because the power state does not changed
+	HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, stepper->state); // switches the stepper (OFF or ON)
+
+	return true;
 }
 
 bool stepper_set_microstepping(uint8_t *states)
@@ -150,31 +146,29 @@ bool stepper_set_microstepping(uint8_t *states)
 
 	for(i = 0; i < 3; i++)
 	{
+		if(strcmp(states[i]) != '0' && strcmp(states[i]) != '1')
+			return false;
+
 		state = (strcmp(states[i], '0') == 0) ? GPIO_PIN_RESET : GPIO_PIN_SET;
 
-		if(state == HAL_GPIO_ReadPin(stepper->port, stepper->m_pins[i])) // checks if the msp pin actually have required state -> skip set and go next
-			continue; 
-
 		HAL_GPIO_WritePin(stepper->port, stepper->m_pins[i], state); // sets required state of concret microstep pin 
-
-		if(state != HAL_GPIO_ReadPin(stepper->port, stepper->m_pins[i])) // checks if microstep state pin has changed if it now then return FALSE
-			return false; // something goes wrong
 	}
 
 	return true;
 }
 
-bool stepper_move(uint8_t steps)
+void stepper_move(uint8_t steps)
 {	
 	HAL_TIM_PWM_Start(&stepper->timer, stepper->channel); // starts moving
 	return true;
 }
 
-bool stepper_home()
+void stepper_home()
 {
+	stepper_switch("on");
+
 	HAL_GPIO_WritePin(stepper->port, stepper->dir_pin, GPIO_PIN_SET); //set left direction;
 	HAL_TIM_PWM_Start(&stepper->timer, stepper->channel); // starts moving
-	return true;
 }
 
 

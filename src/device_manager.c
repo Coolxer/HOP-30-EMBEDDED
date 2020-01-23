@@ -47,4 +47,17 @@ void device_manager_deinit()
     endstop_deinit();
 }
 
+bool device_manager_get_current()
+{
+    if(stepper)
+        return true;
+
+    return false;
+}
+
+void device_manager_release_device()
+{
+    stepper = NULL;
+}
+
 //#endif // STSTM32

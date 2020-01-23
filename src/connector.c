@@ -36,22 +36,16 @@ uint8_t ***connector_parse(uint8_t* dialog)
 
 uint8_t *connector_manage_data(uint8_t ***args, uint8_t dt_size)
 {
-	uint8_t *opt, *feedback;
-
-	feedback = (uint8_t*)malloc(dt_size * sizeof(uint8_t)); // reserves memory for feedback message
-	data_clear(feedback, dt_size); // clears feedback message
+	uint8_t *opt;
 
 	if(args == NULL || records < 1) // checks if no records detected!
 		return "_ERROR_no_params";
 
 	if(records == 1) // if there is only one record -> command incorrect
-		strcpy(feedback, "_ERROR:one_param_only");
-
+		return "_ERROR_one_param_only";
+		
 	if(args != NULL && strcmp(args[0][0], "opt") != 0) // if there is no "opt" key -> command incorrect
-	{
-		strcat(feedback, "_ERROR:no_opt_key\0");
-		return feedback;
-	}	
+		return "_ERROR_no_opt_key";
 
 	opt = args[0][1]; // gets first value, which means operation type
 	
@@ -60,17 +54,15 @@ uint8_t *connector_manage_data(uint8_t ***args, uint8_t dt_size)
 	/* checks operation (opt) mode and calls appropriate prepare_function */
 
 	if(strcmp(opt, "sth") == 0)
-		strcat(feedback, prepare_switch(args, records, dt_size));
+		return prepare_switch(args, records);
 	else if(strcmp(opt, "set") == 0)
-		strcat(feedback, prepare_set(args, records, dt_size));
+		return prepare_set(args, records);
 	else if(strcmp(opt, "hom") == 0)
-		strcat(feedback, prepare_home(args, records, dt_size));
+		return prepare_home(args, records);
 	else if(strcmp(opt, "mov") == 0)
-		strcat(feedback, prepare_move(args, records, dt_size));
+		return prepare_move(args, records);
 	else
-		strcat(feedback, "_ERROR:invalid_opt_value");
-
-	return feedback;
+		return "_ERROR:invalid_opt_value";
 }
 
 
