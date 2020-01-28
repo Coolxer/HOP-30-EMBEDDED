@@ -7,7 +7,7 @@
 
 /* *********************** SETUP FUNCTIONS ***************************** */
 
-void dma_init(UART_HandleTypeDef* uart)
+void dma_setup(UART_HandleTypeDef* uart)
 {
 	dma.uart = uart;
 
@@ -20,12 +20,6 @@ void dma_init(UART_HandleTypeDef* uart)
 
  	dma.head = dma.tail = 0;
  	dma.commands_count = 0;
-}
-
-void dma_setup()
-{
-    dma_setup_interface();
-    dma_setup_interrupts();
 }
 
 void dma_setup_interface()
@@ -55,6 +49,17 @@ void dma_setup_interrupts()
     /* DMA1_Stream5_IRQn interrupt configuration */
     HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+}
+
+void dma_init()
+{
+    dma_setup_interface();
+    dma_setup_interrupts();
+}
+
+void dma_deinit()
+{
+	__HAL_RCC_DMA1_CLK_DISABLE();
 }
 
 /* *********************** OPERATIONAL FUNCTIONS ***************************** */

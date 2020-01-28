@@ -11,17 +11,18 @@
 
 void uart_init()
 {
-	uart_start();
-    dma_setup();
+	uart_min_init();
+    dma_init();
 	
 	__HAL_LINKDMA(&uart,hdmarx,hdma_usart2_rx);
 
-	dma_init(&uart);
+	dma_setup(&uart);
 }
 
 void uart_deinit()
 {
-	uart_end(); // disables USART2 clock
+	uart_min_deinit();
+	dma_deinit();
 }
 
 void uart_listen()
@@ -63,7 +64,7 @@ void uart_send(uint8_t *message)
 	HAL_UART_Transmit(&uart, '1', 1, 1000); // sends message through UART with 1000 timeout
 }
 
-bool uart_manage()
+uint8_t uart_manage()
 {
 	uint8_t* feedback;
 
@@ -83,7 +84,7 @@ bool uart_manage()
 	
 	uart_send(feedback); // send feedback through UART port
 	free(feedback); // free memory reserved for feedback message
-	return true;
+	return 1;
 }
 
 //#endif // STSTM32

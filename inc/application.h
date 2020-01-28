@@ -9,6 +9,6 @@ void application_close(); // closes all modules
 
 void application_exec();  // calls setup, run & close functions
 
-void SysTick_Handler();   // main SysTick function
+/* PRIVATE */   //void SysTick_Handler();   // main SysTick function
 
 #endif //APPLICATION_H

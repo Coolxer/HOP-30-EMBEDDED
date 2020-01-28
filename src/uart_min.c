@@ -33,7 +33,7 @@ void uart_setup_interface()
 	HAL_UART_Init(&uart);
 }
 
-void uart_start()
+void uart_min_init()
 {
     uart_setup_gpio();
     uart_setup_interface();
@@ -49,7 +49,7 @@ void uart_flush()
     
 }
 
-void uart_end()
+void uart_min_deinit()
 {  
     __HAL_RCC_USART2_CLK_DISABLE(); // disables USART2 clock
 }
