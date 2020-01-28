@@ -5,8 +5,6 @@
 
 #include "connector.h"
 
-uint8_t *command;
-
 void uart_init();                 // calls all UART setups
 void uart_deinit();               // frees memmory and disables all periphals in common with UART: timers, etc.
 

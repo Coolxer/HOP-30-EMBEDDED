@@ -25,10 +25,8 @@ uint8_t* str_append(uint8_t *src, uint8_t* str)
 	return tmp;
 }
 
-void data_clear(uint8_t dt[], uint8_t dt_size)
+void data_clear(uint8_t *str)
 {
-	uint8_t i;
-
-	for(i = 0; i < dt_size ; i++)
-		dt[i] = 0;
+	free(str);
+	str = "";
 }

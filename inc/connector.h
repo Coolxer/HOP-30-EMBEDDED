@@ -13,6 +13,6 @@ uint8_t ***connector_parse(uint8_t *dialog);                      // explodes da
                                                                   // [opt],[move]
                                                                   // [spp],[s1]                            
 
-uint8_t *connector_manage_data(uint8_t ***args, uint8_t dt_size); // calls correct function depends on operation type (first row of the args; key:value e.g. opt=mov -> prepare_move()) 
+uint8_t *connector_manage_data(uint8_t ***args); // calls correct function depends on operation type (first row of the args; key:value e.g. opt=mov -> prepare_move()) 
 
 #endif // CONNECTOR_H

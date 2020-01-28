@@ -9,6 +9,9 @@
 #include "dma.h"
 #include "data_assistant.h"
 
+uint8_t *command;
+uint8_t *feedback;
+
 void uart_init()
 {
 	uart_min_init();
@@ -31,59 +34,54 @@ void uart_listen()
 	{
 		if(dma_isReady())
 		{
-			//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_10);
 			command = dma_getCommand();
 
+		/*
 			if(strcmp(command, "ON") == 0)
-			{
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
-			}
-			else if(strcmp(command, "OFF") == 0)
-			{
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
-			}
+	      {
+	        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+	        HAL_UART_Transmit(&uart, "wlaczone", 8, 100);
+	      }
+	      else if(strcmp(command, "OFF") == 0)
+	      {
+	        HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+	        HAL_UART_Transmit(&uart, "wylaczone", 9, 100);
+	      }
+	      free(command);
+
+		  */
+
+			if(!uart_manage())
+				break;
 
 			free(command);
-		}
 
-		/*
-		if (__HAL_UART_GET_FLAG(&uart, UART_FLAG_RXNE) == SET) // checks if transmision Flag is set -> something arrived, ready for read
-		{
-			HAL_UART_Receive(&uart, data, DATA_SIZE, 100); // reads data from UART
-
-			if(!uart_manage()) // checks if upcoming command is "FINISH"
-				break;
+			//data_clear(command);
 		}
-		*/
-	}	
+	}
+
+	//free(command);
 }
 
 void uart_send(uint8_t *message)
 {
-	//HAL_UART_Transmit(&uart, (uint8_t*)message, DATA_SIZE, 1000); // sends message through UART with 1000 timeout
-	HAL_UART_Transmit(&uart, '1', 1, 1000); // sends message through UART with 1000 timeout
+	HAL_UART_Transmit(&uart, (uint8_t*)message, strlen(message), 1000); // sends message through UART with 100 timeout
 }
 
 uint8_t uart_manage()
 {
-	uint8_t* feedback;
-
-	/*
-	if(strcmp(data, "FINISH") == 0) // checks if receive command is "FINISH"
+	if(strlen(command) == 0)
+		feedback = str_append(feedback, "_ERROR_NULL_DATA_EXCEPTION");
+	else if(strcmp(command, "FINISH") == 0) // checks if receive command is "FINISH"
 	{
-		strcpy(data, "FINISHED"); // prepares feedback command as "FINISHED"
-		return false;
+		feedback = str_append(feedback, "FINISHED");
+		return 0;
 	}
-
-	if(strlen(data) == 0) // checks if upcoming data is NULL
-		strcpy(feedback, "NULL_DATA_EXCEPTION");
 	else
-		feedback = connector_manage_data(connector_parse(data), DATA_SIZE); // passes transmission data to connector manage function where it will be processed
-
-	*/
+		feedback = connector_manage_data(connector_parse(command)); // passes transmission data to connector manage function where it will be processed
 	
 	uart_send(feedback); // send feedback through UART port
-	free(feedback); // free memory reserved for feedback message
+	data_clear(feedback);
 	return 1;
 }
 
