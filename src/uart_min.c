@@ -8,10 +8,12 @@ void uart_setup_gpio()
 {
 	GPIO_InitTypeDef gpio;
 
+	__HAL_RCC_USART2_CLK_ENABLE();
+
 	gpio.Pin = USART2_TX | USART2_RX; 
 	gpio.Mode = GPIO_MODE_AF_PP;	  
-	gpio.Pull = GPIO_NOPULL;
-	gpio.Speed = GPIO_SPEED_FREQ_LOW;
+	gpio.Pull = GPIO_PULLUP;
+	gpio.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	gpio.Alternate = GPIO_AF7_USART2;
 
 	HAL_GPIO_Init(GPIOA, &gpio);
@@ -19,8 +21,6 @@ void uart_setup_gpio()
 
 void uart_setup_interface()
 {
-    __HAL_RCC_USART2_CLK_ENABLE();
-
 	uart.Instance = UART_NAME;					
 	uart.Init.BaudRate = UART_BAUDRATE;				
 	uart.Init.WordLength = USART_WORDLENGTH_8B;		

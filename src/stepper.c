@@ -146,7 +146,7 @@ bool stepper_set_microstepping(uint8_t *states)
 
 	for(i = 0; i < 3; i++)
 	{
-		if(strcmp(states[i]) != '0' && strcmp(states[i]) != '1')
+		if((strcmp(states[i], '0') != 0) && (strcmp(states[i], '1') != '1'))
 			return false;
 
 		state = (strcmp(states[i], '0') == 0) ? GPIO_PIN_RESET : GPIO_PIN_SET;

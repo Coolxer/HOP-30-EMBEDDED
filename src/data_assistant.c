@@ -1,29 +1,28 @@
 #include "data_assistant.h"
 
 #include <string.h>
+#include <stdlib.h>
 
-void data_fullfill(uint8_t dt[], uint8_t dt_size)
+uint8_t* char_append(uint8_t *src, uint8_t ch)
 {
-	uint8_t i;
+	int s = strlen(src);
+	uint8_t *tmp = (uint8_t*)malloc(s + 1); // not sure if there should be (s + 2) -> ?? SHOULD I reserve memory for '\0'
+	strcpy(tmp, src);
+	tmp[s] = ch;
+	tmp[s+1] = '\0';
 
-	for(i = 0; i < dt_size; i++)
-	{
-		if(dt[i] == '\0' || dt[i] == ' ') // checks if current char is null or its white space and if it is, set this this char by SPACE_FILLER
-			dt[i] = SPACE_FILLER; 
-	}
-
-	dt[dt_size] = '\0';
+	return tmp;
 }
 
-void data_crop(uint8_t dt[], uint8_t dt_size)
+uint8_t* str_append(uint8_t *src, uint8_t* str)
 {
-	uint8_t i;
+	int s = strlen(src) + strlen(str);
+	uint8_t *tmp = (uint8_t*)malloc(s); // not sure if there should be (s + 2) -> ?? SHOULD I reserve memory for '\0'
+	strcpy(tmp, src);
+	strcpy(tmp, str);
+	tmp[s + 1] = '\0';
 
-	for(i = 0; i < dt_size; i++)
-		if(dt[i] == SPACE_FILLER) // checks if current char is SPACE_FILLER 
-			dt[i] = 0;
-
-	dt[dt_size] = '\0';
+	return tmp;
 }
 
 void data_clear(uint8_t dt[], uint8_t dt_size)

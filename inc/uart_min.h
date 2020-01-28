@@ -15,7 +15,7 @@ void uart_setup_interface();    // prepares uart interface (name, baudrate, pari
 void uart_start();              // enables -> calls the setup gpio and interface to working as unit test transport 
 void uart_write(char c);        // sends one char to uart port 
 void uart_flush();              // flushes uart interface 
-void uart_end();                // disables all peripherals related to uart 
+void uart_end();                // disables all peripherals related to uart
 
 #ifdef __cplusplus
 }

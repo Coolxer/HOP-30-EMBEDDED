@@ -7,9 +7,7 @@
 
 #include <stdbool.h>
 
-#define DATA_SIZE 64              // communication data size
-
-uint8_t data[DATA_SIZE];          // array using for receiving data and stores messages
+uint8_t *command;
 
 void uart_init();                 // calls all UART setups
 void uart_deinit();               // frees memmory and disables all periphals in common with UART: timers, etc.
