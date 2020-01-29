@@ -84,19 +84,19 @@ uint8_t dma_getChar()
 uint8_t* dma_getCommand()
 {
     uint8_t ch;
-	uint8_t* command = "";
+	uint8_t* cmd = "";
 
 	while((ch = dma_getChar()))
 	{
 		if(ch == '\n') // check if there is end of line (LF), which means command end?
 			break;
 
-		command = char_append(command, ch); // append char to command
+		cmd = char_append(cmd, ch); // append char to command
 	}
 
 	dma.commands_count--; // decrease number of commands, which exists in buffer
 
-	return command;
+	return cmd;
 }
 
 

@@ -10,7 +10,7 @@
 
 uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 {
-	data_clear(feedback);
+	feedback = "";
 
 	for(i = 0; i < size ; i++)
 	{
@@ -54,7 +54,7 @@ uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 
 uint8_t *prepare_set(uint8_t ***args, uint8_t size)
 {
-	data_clear(feedback);
+	feedback = "";
 
 	for(i = 0; i < size; i++)
 	{
@@ -107,7 +107,7 @@ uint8_t *prepare_set(uint8_t ***args, uint8_t size)
 
 uint8_t *prepare_home(uint8_t ***args, uint8_t size)
 {
-	data_clear(feedback);
+	feedback = "";
 
 	for(i = 0; i < size; i++)
 	{
@@ -135,7 +135,7 @@ uint8_t *prepare_home(uint8_t ***args, uint8_t size)
 
 uint8_t *prepare_move(uint8_t ***args, uint8_t size)
 {
-	data_clear(feedback);
+	feedback = "";
 
 	for(i = 0; i < size; i++)
 	{

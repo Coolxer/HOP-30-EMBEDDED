@@ -36,31 +36,14 @@ void uart_listen()
 		{
 			command = dma_getCommand();
 
-		/*
-			if(strcmp(command, "ON") == 0)
-	      {
-	        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
-	        HAL_UART_Transmit(&uart, "wlaczone", 8, 100);
-	      }
-	      else if(strcmp(command, "OFF") == 0)
-	      {
-	        HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
-	        HAL_UART_Transmit(&uart, "wylaczone", 9, 100);
-	      }
-	      free(command);
-
-		  */
-
 			if(!uart_manage())
 				break;
 
-			free(command);
-
-			//data_clear(command);
+			//free(command);
 		}
 	}
 
-	//free(command);
+	free(command);
 }
 
 void uart_send(uint8_t *message)
@@ -70,6 +53,8 @@ void uart_send(uint8_t *message)
 
 uint8_t uart_manage()
 {
+	feedback = "";
+
 	if(strlen(command) == 0)
 		feedback = str_append(feedback, "_ERROR_NULL_DATA_EXCEPTION");
 	else if(strcmp(command, "FINISH") == 0) // checks if receive command is "FINISH"
@@ -81,7 +66,7 @@ uint8_t uart_manage()
 		feedback = connector_manage_data(connector_parse(command)); // passes transmission data to connector manage function where it will be processed
 	
 	uart_send(feedback); // send feedback through UART port
-	data_clear(feedback);
+	//free(feedback);
 	return 1;
 }
 
