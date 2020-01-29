@@ -10,6 +10,7 @@
 
 uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 {
+	uint8_t steppers = 0, states = 0;
 	feedback = "";
 
 	for(i = 0; i < size ; i++)
@@ -21,13 +22,16 @@ uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
 				break;
 			}
+			steppers++;
 		}
-		else if(strcmp((void *)args[i + 1][0], "stt") == 0)
+		else if(strcmp((void *)args[i][0], "stt") == 0)
 		{
 			if(device_manager_get_current())
 			{
-				if(!stepper_switch(args[i + 1][1]))
+				if(!stepper_switch(args[i][1]))
+				{
 					feedback = str_append(feedback, "_ERROR_invalid_state_given");
+				}
 
 				device_manager_release_device();
 			}
@@ -35,7 +39,8 @@ uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 			{
 				feedback = str_append(feedback, "_ERROR_no_spp_key");
 				break;
-			}	
+			}
+			states++;
 		}
 		else
 		{
@@ -44,8 +49,16 @@ uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 		}
 	}
 
-	if(strcmp(feedback, "") == 0) // checks if there are not errors = operation success
+	if((strcmp(feedback, "") == 0) && (steppers == states)) // checks if there are not errors = operation success
 		feedback = str_append(feedback, "_SUCCESS");
+	else
+	{
+		if(steppers < states)
+			feedback = str_append(feedback, "_ERROR_no_spp_key");
+		else if(steppers > states)
+			feedback = str_append(feedback, "_ERROR_no_stt_key");
+	}
+	
 
 	free(args); // frees memory allocated to args
 
