@@ -44,6 +44,7 @@ void uart_listen()
 	}
 
 	free(command);
+	free(feedback);
 }
 
 void uart_send(uint8_t *message)
