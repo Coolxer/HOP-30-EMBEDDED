@@ -10,11 +10,6 @@
 
 void device_manager_init()
 {
-    __HAL_RCC_TIM3_CLK_ENABLE();
-    __HAL_RCC_TIM4_CLK_ENABLE();
-    //__HAL_RCC_TIM3_CLK_DISABLE();
-    //__HAL_RCC_TIM3_CLK_DISABLE();
-
     steppers[0] = stepper_init("x", TIM3, TIM_CHANNEL_1, TIM4, TIM_TS_ITR2, TIM4_IRQn, GPIO_AF2_TIM3, GPIOA, 15, 6, 10, 7, 9, 8);
 
     //devices[0] = (Device*)stepper_init(DIVIDER_NAME, DIVIDER_TIMER, DIVIDER_ALTERNATE, DIVIDER_CHANNEL, DIVIDER_PORT, DIVIDER_DIR, DIVIDER_STEP, DIVIDER_ENABLE, DIVIDER_M1, DIVIDER_M2, DIVIDER_M3);
@@ -29,7 +24,7 @@ void device_manager_init()
     endstop = (Endstop *)malloc(sizeof(Endstop)); // reserves memory for operating endstop
 }
 
-bool device_manager_set_current(uint8_t *name)
+uint8_t device_manager_set_current(uint8_t *name)
 {
     uint8_t i;
 
@@ -38,11 +33,11 @@ bool device_manager_set_current(uint8_t *name)
         if(strcmp(steppers[i]->name, name) == 0)
         {
             stepper = steppers[i];
-            return true;
+            return 1;
         }
     }
 
-    return false;
+    return 0;
 }
 
 void device_manager_deinit()
@@ -62,12 +57,12 @@ void device_manager_deinit()
    //__HAL_RCC_TIM3_CLK_DISABLE();
 }
 
-bool device_manager_get_current()
+uint8_t device_manager_get_current()
 {
     if(stepper)
-        return true;
+        return 1;
 
-    return false;
+    return 0;
 }
 
 void device_manager_release_device()

@@ -2,6 +2,7 @@
 #include "application.h"
 
 #include "settings.h"
+#include "clock_manager.h"
 #include "uart.h"
 #include "device_manager.h"
 
@@ -10,8 +11,7 @@ void application_setup()
     //SystemCoreClock = 8000000; // sets default system core main clock frequency
     HAL_Init(); // inits HAL library
 
-    __HAL_RCC_GPIOA_CLK_ENABLE();  // enables port A clock, where divider motor is connected 
-    __HAL_RCC_GPIOB_CLK_ENABLE();  // enables port B clock, where table motor is connected 
+    clocks_init();
 
     uart_init(); // inits uart module
     device_manager_init(); // inits device manager kit
@@ -26,10 +26,9 @@ void application_run()
 
 void application_close()
 {
-    __HAL_RCC_GPIOA_CLK_DISABLE(); // disables port A clock
-    __HAL_RCC_GPIOB_CLK_DISABLE(); // disables port A clock
-
     HAL_DeInit(); // deinits HAL library
+
+    clocks_deinit();
     uart_deinit(); // deinits uart module
     device_manager_deinit(); // deinits device manager kit
 }
