@@ -27,22 +27,20 @@ typedef struct
    
 }Stepper;
 
-Stepper *stepper;                               // stepper pointer, using to make operations on actual selected stepper
-
 Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_master_timer, uint32_t _channel, TIM_TypeDef *_slave_timer, uint32_t _itr, uint8_t _irq, uint8_t _alternate, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3); // stepper "constructor" function
-void stepper_deinit();
+void stepper_deinit(Stepper* stepper);
 
-/* PRIVATE */   //void stepper_setup_gpio();                       // setups gpio pins
-/* PRIVATE */   //void stepper_setup_master_timer();   
-/* PRIVATE */   //void stepper_setup_slave_timer();            
-/* PRIVATE */   //void stepper_setup_timers();
+/* PRIVATE */   //void stepper_setup_gpio(Stepper* stepper);                       // setups gpio pins
+/* PRIVATE */   //void stepper_setup_master_timer(Stepper* stepper);   
+/* PRIVATE */   //void stepper_setup_slave_timer(Stepper* stepper);            
+/* PRIVATE */   //void stepper_setup_timers(Stepper* stepper);
 
-uint8_t stepper_set_microstepping(uint8_t *states); // sets microstepping of stepper
-void stepper_set_speed(uint8_t speed);           // sets speed of stepper
+uint8_t stepper_set_microstepping(Stepper* stepper, uint8_t *states); // sets microstepping of stepper
+void stepper_set_speed(Stepper* stepper, uint8_t speed);           // sets speed of stepper
 
-uint8_t stepper_switch(uint8_t *state);             // switch stepper motor depend on state value (0 -> OFF, 1 -> ON)
-void stepper_move(uint8_t steps);                // moves stepper motor by given number of steps
-void stepper_home();                             // moves stepper motor unit endstop signal detected
+uint8_t stepper_switch(Stepper* stepper, uint8_t *state);             // switch stepper motor depend on state value (0 -> OFF, 1 -> ON)
+void stepper_move(Stepper* stepper, uint8_t steps);                // moves stepper motor by given number of steps
+void stepper_home(Stepper* stepper);                             // moves stepper motor unit endstop signal detected
 
 
 #endif // STEPPER_H

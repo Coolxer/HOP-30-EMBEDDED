@@ -30,7 +30,6 @@ void application_close()
 
     clocks_deinit();
     uart_deinit(); // deinits uart module
-    device_manager_deinit(); // deinits device manager kit
 }
 
 void application_exec()
