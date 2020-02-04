@@ -1,13 +1,10 @@
 #ifndef ENDSTOP_H
 #define ENDSTOP_H
 
-#include "device.h"
-
 #include "stepper.h"
 
 typedef struct 
 {
-    Device device;                              // device instance
     Stepper *parent_stepper;                    // pointer to parent stepper to which the endstop will affect
 
     uint32_t port;                              // gpio port, where the pin is connected        

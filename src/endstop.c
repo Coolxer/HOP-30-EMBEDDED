@@ -3,12 +3,6 @@
 
 Endstop *endstop_init(Stepper *_stepper, uint8_t *_name, uint32_t _port, uint8_t _ext, uint16_t _pin)
 {
-    endstop = (Endstop *)malloc(sizeof(Endstop)); // reserves memory for operating endstop
-
-    enum types type = ENDSTOP; // creates ENDSTOP type
-	endstop->device.type = type;
-    strcpy(endstop->device.name, _name);
-
     endstop->parent_stepper = _stepper;
 
     endstop->port = _port;
@@ -52,7 +46,11 @@ void EXTI4_IRQHandler(void)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if(GPIO_Pin == endstop->pin) // checks if incoming external interrupt concerns current selected endstop
-        HAL_TIM_PWM_Stop(&endstop->parent_stepper->timer, endstop->parent_stepper->channel); // stop PWM (moving) on assigned stepper
+    {
+        HAL_TIM_PWM_Stop(&endstop->parent_stepper->master_timer, endstop->parent_stepper->channel); // stop PWM (moving) on assigned stepper
+        HAL_TIM_Base_Stop_IT(&endstop->parent_stepper->slave_timer);
+    }
+        
 }
 
 //#endif // STSTM32

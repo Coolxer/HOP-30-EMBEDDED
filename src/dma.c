@@ -119,14 +119,14 @@ void dma_dma_handler()
 	uint16_t temp;
 	DMA_HandleTypeDef *hdma = dma.uart->hdmarx;
 
-	struct Dma_registers
+	typedef struct
 	{
 		__IO uint32_t ISR;   // DMA interrupt status register
 		__IO uint32_t Reserved0;
 		__IO uint32_t IFCR;  // DMA interrupt flag clear register
-	};
+	}Dma_registers;
 
-	struct Dma_registers *regs = (struct Dma_registers *)hdma->StreamBaseAddress; // get base address of registers
+	Dma_registers *regs = (Dma_registers *)hdma->StreamBaseAddress; // get base address of registers
 
 	if(__HAL_DMA_GET_IT_SOURCE(hdma, DMA_IT_TC) != RESET)
 	{
