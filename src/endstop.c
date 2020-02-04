@@ -7,6 +7,8 @@ Endstop *endstop_init(Stepper *_stepper, uint8_t *_name, uint32_t _port, uint8_t
 
     endstop.parent_stepper = _stepper;
 
+    strcpy(endstop.name, _name);
+
     endstop.port = _port;
     endstop.pin = _pin;
     endstop.ext = _ext;

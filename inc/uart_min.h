@@ -15,7 +15,6 @@ UART_HandleTypeDef uart;        // uart interface
 void uart_min_init();               // enables -> calls the setup gpio and interface to working as unit test transport 
 void uart_write(char c);        // sends one char to uart port 
 void uart_flush();              // flushes uart interface 
-void uart_min_deinit();             // disables all peripherals related to uart
 
 #ifdef __cplusplus
 }

@@ -27,7 +27,7 @@ typedef struct
    
 }Stepper;
 
-Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_master_timer, uint32_t _channel, TIM_TypeDef *_slave_timer, uint32_t _itr, uint8_t _irq, uint8_t _alternate, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3); // stepper "constructor" function
+Stepper *stepper_init(Stepper* stepper, uint8_t *_name, TIM_TypeDef* _master_timer, uint32_t _channel, TIM_TypeDef* _slave_timer, uint32_t _itr, uint8_t _irq, uint8_t _alternate, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3); // stepper "constructor" function
 void stepper_deinit(Stepper* stepper);
 
 /* PRIVATE */   //void stepper_setup_gpio(Stepper* stepper);                       // setups gpio pins

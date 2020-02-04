@@ -73,6 +73,23 @@
 
 /* end of divider min endstop declaration */
 
+#define NM "x"
+#define MT TIM3
+#define CH TIM_CHANNEL_1
+#define ST TIM4
+#define IT TIM_TS_ITR2
+#define IR TIM4_IRQn
+#define A GPIO_AF2_TIM3
+#define P GPIOA
+#define D GPIO_PIN_15
+#define S GPIO_PIN_6
+#define E GPIO_PIN_10
+#define M1 GPIO_PIN_7
+#define M2 GPIO_PIN_8
+#define M3 GPIO_PIN_9
+
+
+
 /* END OF DEVICE SECTION */
 
 /*************************************************************************************************************/

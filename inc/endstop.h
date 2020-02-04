@@ -5,6 +5,7 @@
 
 typedef struct 
 {
+    uint8_t name[2];
     Stepper *parent_stepper;                    // pointer to parent stepper to which the endstop will affect
 
     uint32_t port;                              // gpio port, where the pin is connected        

@@ -6,7 +6,6 @@
 #include "connector.h"
 
 void uart_init();                 // calls all UART setups
-void uart_deinit();               // frees memmory and disables all periphals in common with UART: timers, etc.
 
 void uart_listen();               // enables listening to connected COM port
 void uart_send(uint8_t *message); // sends message through uart interface

@@ -1,40 +1,38 @@
 //#ifdef STSTM32
 
-#include <string.h>
-
 #include "stepper.h"
 
-Stepper *stepper_init(uint8_t* _name, TIM_TypeDef *_master_timer, uint32_t _channel, TIM_TypeDef *_slave_timer, uint32_t _itr, uint8_t _irq, uint8_t _alternate, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3)
+#include <string.h>
+
+Stepper *stepper_init(Stepper* stepper, uint8_t* _name, TIM_TypeDef *_master_timer, uint32_t _channel, TIM_TypeDef *_slave_timer, uint32_t _itr, uint8_t _irq, uint8_t _alternate, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3)
 {
-	Stepper stepper;
+	strcpy(stepper->name, _name);
 
-	strcpy(stepper.name, _name);
+	stepper->master_timer.Instance = _master_timer;
+	stepper->channel = _channel; // PWM channel of master timer
 
-	stepper.master_timer.Instance = _master_timer;
-	stepper.channel = _channel; // PWM channel of master timer
+	stepper->slave_timer.Instance = _slave_timer; 
+	stepper->itr = _itr;
+	stepper->irq = _irq;
 
-	stepper.slave_timer.Instance = _slave_timer; 
-	stepper.itr = _itr;
-	stepper.irq = _irq;
-
-	stepper.alternate = _alternate;
+	stepper->alternate = _alternate;
 	
-	stepper.port = _port;
+	stepper->port = _port;
 
-	stepper.dir_pin = _dir_pin;
-	stepper.step_pin = _step_pin;
-	stepper.enable_pin = _enable_pin;
+	stepper->dir_pin = _dir_pin;
+	stepper->step_pin = _step_pin;
+	stepper->enable_pin = _enable_pin;
 
-	stepper.m_pins[0] = _m1;
-	stepper.m_pins[1] = _m2;
-	stepper.m_pins[2] = _m3;
+	stepper->m_pins[0] = _m1;
+	stepper->m_pins[1] = _m2;
+	stepper->m_pins[2] = _m3;
 
-	stepper.state = GPIO_PIN_RESET;
+	stepper->state = GPIO_PIN_RESET;
 
-	stepper_setup_gpio(&stepper); // setups stepper gpio
-	stepper_setup_timers(&stepper); // setups stepper timer
+	stepper_setup_gpio(stepper); // setups stepper gpio
+	stepper_setup_timers(stepper); // setups stepper timer
 	
-	stepper_set_speed(&stepper, 200); // setups stepper speed
+	stepper_set_speed(stepper, 200); // setups stepper speed
 
 	return &stepper;
 }
@@ -80,13 +78,16 @@ void stepper_setup_master_timer(Stepper* stepper)
 	
 	stepper->master_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
 	stepper->master_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+
+	stepper->master_timer.Init.Prescaler = 4000 - 1;
+	stepper->master_timer.Init.Period = 5000 - 1;
+
+	//__HAL_TIM_SET_AUTORELOAD(&stepper->master_timer, 0);
 	//stepper->master_timer.Init.AutoReloadPreload = 0x00000000U;
 	HAL_TIM_Base_Init(&stepper->master_timer);
 
 	//clockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
 	//HAL_TIM_ConfigClockSource(&stepper->master_timer, &clockSourceConfig);
-
-	HAL_TIM_PWM_Init(&stepper->master_timer);
 
 	masterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
 	masterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
@@ -96,7 +97,7 @@ void stepper_setup_master_timer(Stepper* stepper)
 	configOC.Pulse = 1000;
 	configOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   	configOC.OCFastMode = TIM_OCFAST_DISABLE;
-	HAL_TIM_PWM_ConfigChannel(&stepper->master_timer, &configOC, TIM_CHANNEL_1);
+	HAL_TIM_PWM_ConfigChannel(&stepper->master_timer, &configOC, stepper->channel);
 }
 
 void stepper_setup_slave_timer(Stepper* stepper)
@@ -107,6 +108,9 @@ void stepper_setup_slave_timer(Stepper* stepper)
   	stepper->slave_timer.Init.Prescaler = 0;
   	stepper->slave_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
   	stepper->slave_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+
+	stepper->slave_timer.Init.Period = 10 - 1;
+	//__HAL_TIM_SET_AUTORELOAD(&stepper->slave_timer, 0);
   	//stepper->slave_timer.Init.AutoReloadPreload = 0x00000000U;
 
   	HAL_TIM_Base_Init(&stepper->slave_timer);
@@ -145,10 +149,11 @@ void stepper_set_speed(Stepper* stepper, uint8_t speed)
 
 	/* speed set */
 
-	stepper->master_timer.Init.Period = speed - 1;
+	//__HAL_TIM_SET_AUTORELOAD(&stepper->master_timer, speed - 1);
+	//stepper->master_timer.Init.Period = speed - 1;
 	//stepper->timer.Init.Prescaler = 8000 - 1;
 	
-	//HAL_TIM_PWM_Init(&stepper->master_timer); <- do i need to call it again to assign new speed ? ???????
+	//HAL_TIM_PWM_Init(&stepper->master_timer); //<- do i need to call it again to assign new speed ? ???????
 }
 
 uint8_t stepper_switch(Stepper* stepper, uint8_t *state)
@@ -185,13 +190,19 @@ uint8_t stepper_set_microstepping(Stepper* stepper, uint8_t *states)
 
 void stepper_move(Stepper* stepper, uint8_t steps)
 {	
+	//__HAL_TIM_SET_AUTORELOAD(&stepper->slave_timer, steps);
+	//stepper->slave_timer.Init.Period = steps;
+
+	//HAL_TIM_Base_Init(&stepper->slave_timer);
+
 	HAL_TIM_Base_Start_IT(&stepper->slave_timer);
 	HAL_TIM_PWM_Start(&stepper->master_timer, stepper->channel); // starts moving
 }
 
 void stepper_home(Stepper* stepper)
 {
-	stepper_switch("on");
+	//stepper_switch(stepper, "on");
+	HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, GPIO_PIN_SET);
 
 	HAL_GPIO_WritePin(stepper->port, stepper->dir_pin, GPIO_PIN_SET); //set left direction;
 	

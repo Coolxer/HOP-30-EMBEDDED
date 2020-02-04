@@ -22,12 +22,6 @@ void uart_init()
 	dma_setup(&uart);
 }
 
-void uart_deinit()
-{
-	uart_min_deinit();
-	dma_deinit();
-}
-
 void uart_listen()
 {
 	while(1)

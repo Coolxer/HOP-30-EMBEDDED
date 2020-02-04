@@ -8,8 +8,6 @@ void uart_setup_gpio()
 {
 	GPIO_InitTypeDef gpio;
 
-	__HAL_RCC_USART2_CLK_ENABLE();
-
 	gpio.Pin = USART2_TX | USART2_RX; 
 	gpio.Mode = GPIO_MODE_AF_PP;	  
 	gpio.Pull = GPIO_PULLUP;
@@ -47,11 +45,6 @@ void uart_write(char c)
 void uart_flush()
 {
     
-}
-
-void uart_min_deinit()
-{  
-    __HAL_RCC_USART2_CLK_DISABLE(); // disables USART2 clock
 }
 
 //#endif // STSTM32

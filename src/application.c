@@ -29,7 +29,6 @@ void application_close()
     HAL_DeInit(); // deinits HAL library
 
     clocks_deinit();
-    uart_deinit(); // deinits uart module
 }
 
 void application_exec()

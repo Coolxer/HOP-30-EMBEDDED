@@ -24,8 +24,6 @@ void dma_setup(UART_HandleTypeDef* uart)
 
 void dma_setup_interface()
 {
-	__HAL_RCC_DMA1_CLK_ENABLE();
-
     hdma_usart2_rx.Instance = DMA1_Stream5;
     hdma_usart2_rx.Init.Channel = DMA_CHANNEL_4;
     hdma_usart2_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
@@ -55,11 +53,6 @@ void dma_init()
 {
     dma_setup_interface();
     dma_setup_interrupts();
-}
-
-void dma_deinit()
-{
-	__HAL_RCC_DMA1_CLK_DISABLE();
 }
 
 /* *********************** OPERATIONAL FUNCTIONS ***************************** */

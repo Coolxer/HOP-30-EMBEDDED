@@ -8,13 +8,13 @@
 #include "stepper.h"
 #include "endstop.h"
 
-Stepper* current;
+Stepper steppers[STEPPERS_COUNT];                 
+Endstop endstops[ENDSTOPS_COUNT];
 
 void device_manager_init()
 {
-    current = NULL;
-
-    steppers[0] = *stepper_init("x", TIM3, TIM_CHANNEL_1, TIM4, TIM_TS_ITR2, TIM4_IRQn, GPIO_AF2_TIM3, GPIOA, 15, 6, 10, 7, 9, 8);
+    //steppers[0] = *stepper_init("x", TIM3, TIM_CHANNEL_1, TIM4, TIM_TS_ITR2, TIM4_IRQn, GPIO_AF2_TIM3, GPIOA, 15, 6, 10, 7, 9, 8);
+    stepper_init(&steppers[0], NM, MT, CH, ST, IT, IR, A, P, D, S, E, M1, M2, M3);
 
     //devices[0] = (Device*)stepper_init(DIVIDER_NAME, DIVIDER_TIMER, DIVIDER_ALTERNATE, DIVIDER_CHANNEL, DIVIDER_PORT, DIVIDER_DIR, DIVIDER_STEP, DIVIDER_ENABLE, DIVIDER_M1, DIVIDER_M2, DIVIDER_M3);
     //devices[1] = (Device*)stepper_init(TABLE_NAME, TABLE_TIMER, TABLE_ALTERNATE, TABLE_CHANNEL, TABLE_PORT, TABLE_DIR, TABLE_STEP, TABLE_ENABLE, TABLE_M1, TABLE_M2, TABLE_M3);
@@ -22,7 +22,7 @@ void device_manager_init()
     //devices[2] = (Device*)endstop_init(devices[0], DIVIDER_MIN_ENDSTOP_NAME, DIVIDER_MIN_ENDSTOP_PORT, DIVIDER_MIN_ENDSTOP_EXT, DIVIDER_MIN_ENDSTOP_PIN);
 
     //stepper = (Stepper *)calloc(sizeof(Stepper)); // reserves memory for operting stepper
-    //endstop = (Endstop *)calloc(sizeof(Endstop)); // reserves memory for operating 
+    //endstops[0] = *endstop_init(&steppers[0], "e1", GPIOA, GPIO_PIN_4, EXTI4_IRQn); // reserves memory for operating 
 }
 
 void device_manager_deinit()
@@ -36,7 +36,7 @@ void device_manager_deinit()
         endstop_deinit(&endstops[i]);
 }
 
-Stepper* device_manager_set_current(uint8_t *name)
+Stepper* device_manager_get_stepper(uint8_t *name)
 {
     uint8_t i;
 
@@ -69,6 +69,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
             HAL_TIM_Base_Stop_IT(&endstop->parent_stepper->slave_timer);
         }
     }   
+}
+
+void TIM4_IRQHandler(void)
+{
+    HAL_TIM_IRQHandler(&steppers[0].slave_timer);
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)

@@ -29,7 +29,6 @@ void dma_setup(UART_HandleTypeDef* uart); // inits structure, enables interrupts
 /* PRIVATE */   //void dma_setup_interrupts(); // turns on USART2 interrupt and DMA RX stream channel interrupt
 
 void dma_init(); // calls setups of interface and interrupts
-void dma_deinit(); // disables DMA clock
 
 /* ******************* OPERATIONAL FUNCTIONS *************** ***** */
 
