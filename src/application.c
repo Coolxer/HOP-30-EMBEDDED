@@ -2,8 +2,8 @@
 #include "application.h"
 
 #include "settings.h"
-
 #include "uart.h"
+#include "device_manager.h"
 
 void application_setup()
 {

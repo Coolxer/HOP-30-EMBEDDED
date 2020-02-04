@@ -3,8 +3,7 @@
 
 #include <stdbool.h>
 
-#include "stepper.h"
-#include "endstop.h"
+#include "device.h"
 
 #define DEVICES_COUNT 3                         // number of serviced devices
 

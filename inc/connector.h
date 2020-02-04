@@ -3,8 +3,8 @@
 
 #include <stdint.h>                                               // includes uint8_t data type" 
 
-extern uint8_t *dialog_delimiter;                                 // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=x|
-extern uint8_t *param_delimiter;                                  // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
+// extern uint8_t *dialog_delimiter;                                 // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=x|
+// extern uint8_t *param_delimiter;                                  // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
 
 uint8_t records;                                                  // number of rows (key:value) of parsered dialog 
 

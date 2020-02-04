@@ -3,9 +3,9 @@
 
 #include "stm32f4xx.h"
 
-void application_setup(); // setups all modules
-void application_run();   // runs main application loop
-void application_close(); // closes all modules
+/* PRIVATE */   //void application_setup(); // setups all modules
+/* PRIVATE */   //void application_run();   // runs main application loop
+/* PRIVATE */   //void application_close(); // closes all modules
 
 void application_exec();  // calls setup, run & close functions
 

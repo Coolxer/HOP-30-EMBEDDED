@@ -28,9 +28,10 @@ Stepper *stepper;                               // stepper pointer, using to mak
 
 Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_timer, uint8_t _alternate, uint32_t _channel, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3); // stepper "constructor" function
 
-void stepper_deinit();                           // disables stepper timer and frees memory reserved for stepper
-void stepper_setup_gpio();                       // setups gpio pins
-void stepper_setup_timer();                      // setups timer
+/* PRIVATE */   //void stepper_setup_gpio();                       // setups gpio pins
+/* PRIVATE */   //void stepper_setup_master_timer();   
+/* PRIVATE */   //void stepper_setup_slave_timer();            
+/* PRIVATE */   //void stepper_setup_timers();
 
 bool stepper_set_microstepping(uint8_t *states); // sets microstepping of stepper
 void stepper_set_speed(uint8_t speed);           // sets speed of stepper

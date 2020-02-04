@@ -6,11 +6,10 @@
 
 Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_timer, uint8_t _alternate, uint32_t _channel, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3)
 {
-	// TODO (set stepper to NULL at start)
-	//if(stepper == NULL)
-		stepper = (Stepper *)malloc(sizeof(Stepper)); // reserves memory for operting stepper
+	stepper = (Stepper *)malloc(sizeof(Stepper)); // reserves memory for operting stepper
 
-	enum types type = STEPPER; // creates ENDSTOP type
+	enum types type = STEPPER; // creates STEPPER 
+	
 	stepper->device.type = type;
 	strcpy(stepper->device.name, _name);
 	
@@ -30,23 +29,11 @@ Stepper *stepper_init(uint8_t *_name, TIM_TypeDef *_timer, uint8_t _alternate, u
 	stepper->state = GPIO_PIN_RESET;
 
 	stepper_setup_gpio(); // setups stepper gpio
-	stepper_setup_timer(); // setups stepper timer
+	stepper_setup_timers(); // setups stepper timer
 	
 	stepper_set_speed(200); // setups stepper speed
 
 	return stepper;
-}
-
-void stepper_deinit()
-{
-	/* turns off property TIMER depend on current device name */
-
-	if (stepper->timer.Instance == TIM3) 
-		__HAL_RCC_TIM3_CLK_DISABLE();
-	else if (stepper->timer.Instance == TIM4)
-		__HAL_RCC_TIM4_CLK_DISABLE();
-
-	free(stepper); 
 }
 
 void stepper_setup_gpio()
@@ -75,16 +62,21 @@ void stepper_setup_gpio()
 	HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, GPIO_PIN_RESET); // turns OFF stepper motor at start
 }
 
-void stepper_setup_timer()
+void stepper_setup_master_timer()
 {
-	/* turns on property TIMER depend on current device name */
 
-	if (stepper->timer.Instance == TIM3)
-		__HAL_RCC_TIM3_CLK_ENABLE();
+}
 
-	else if (stepper->timer.Instance == TIM4)
-		__HAL_RCC_TIM4_CLK_ENABLE();
+void stepper_setup_slave_timer()
+{
 
+}
+
+void stepper_setup_timers()
+{
+	stepper_setup_master_timer();
+	stepper_setup_slave_timer();
+	/*
 	stepper->timer.Init.CounterMode = TIM_COUNTERMODE_UP;
 	stepper->timer.Init.RepetitionCounter = 0;
 	stepper->timer.Init.ClockDivision = 0;
@@ -99,6 +91,9 @@ void stepper_setup_timer()
 	oc.OCNIdleState = TIM_OCNIDLESTATE_RESET;
 
 	HAL_TIM_PWM_ConfigChannel(&stepper->timer, &oc, stepper->channel);	
+	*/
+
+
 }
 
 void stepper_set_speed(uint8_t speed)
