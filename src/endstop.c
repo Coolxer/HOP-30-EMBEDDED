@@ -20,7 +20,6 @@ Endstop *endstop_init(Stepper *_stepper, uint8_t *_name, uint32_t _port, uint8_t
     return endstop;
 }
 
-
 void endstop_deinit()
 {
     free(endstop);
