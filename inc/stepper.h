@@ -39,7 +39,7 @@ uint8_t stepper_set_microstepping(Stepper* stepper, uint8_t *states); // sets mi
 void stepper_set_speed(Stepper* stepper, uint8_t speed);           // sets speed of stepper
 
 uint8_t stepper_switch(Stepper* stepper, uint8_t *state);             // switch stepper motor depend on state value (0 -> OFF, 1 -> ON)
-void stepper_move(Stepper* stepper, uint8_t steps);                // moves stepper motor by given number of steps
+void stepper_move(Stepper* stepper, uint8_t* steps);                // moves stepper motor by given number of steps
 void stepper_home(Stepper* stepper);                             // moves stepper motor unit endstop signal detected
 
 

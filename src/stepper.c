@@ -3,6 +3,7 @@
 #include "stepper.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 Stepper *stepper_init(Stepper* stepper, uint8_t* _name, TIM_TypeDef *_master_timer, uint32_t _channel, TIM_TypeDef *_slave_timer, uint32_t _itr, uint8_t _irq, uint8_t _alternate, uint32_t _port, uint16_t _dir_pin, uint16_t _step_pin, uint16_t _enable_pin, uint16_t _m1, uint16_t _m2, uint16_t _m3)
 {
@@ -78,12 +79,8 @@ void stepper_setup_master_timer(Stepper* stepper)
 	
 	stepper->master_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
 	stepper->master_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-
 	stepper->master_timer.Init.Prescaler = 4000 - 1;
 	stepper->master_timer.Init.Period = 5000 - 1;
-
-	//__HAL_TIM_SET_AUTORELOAD(&stepper->master_timer, 0);
-	//stepper->master_timer.Init.AutoReloadPreload = 0x00000000U;
 	HAL_TIM_Base_Init(&stepper->master_timer);
 
 	//clockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
@@ -108,11 +105,6 @@ void stepper_setup_slave_timer(Stepper* stepper)
   	stepper->slave_timer.Init.Prescaler = 0;
   	stepper->slave_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
   	stepper->slave_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-
-	stepper->slave_timer.Init.Period = 10 - 1;
-	//__HAL_TIM_SET_AUTORELOAD(&stepper->slave_timer, 0);
-  	//stepper->slave_timer.Init.AutoReloadPreload = 0x00000000U;
-
   	HAL_TIM_Base_Init(&stepper->slave_timer);
 
 	__HAL_TIM_CLEAR_FLAG(&stepper->slave_timer, TIM_SR_UIF); // clear interrupt flag
@@ -148,6 +140,8 @@ void stepper_set_speed(Stepper* stepper, uint8_t speed)
 		return;
 
 	/* speed set */
+
+	uint16t max = 1000;
 
 	//__HAL_TIM_SET_AUTORELOAD(&stepper->master_timer, speed - 1);
 	//stepper->master_timer.Init.Period = speed - 1;
@@ -188,12 +182,26 @@ uint8_t stepper_set_microstepping(Stepper* stepper, uint8_t *states)
 	return 1;
 }
 
-void stepper_move(Stepper* stepper, uint8_t steps)
+void stepper_move(Stepper* stepper, uint8_t* steps)
 {	
-	//__HAL_TIM_SET_AUTORELOAD(&stepper->slave_timer, steps);
-	//stepper->slave_timer.Init.Period = steps;
+	int32_t nSteps;
+	sscanf(steps, "%d", &nSteps);
 
-	//HAL_TIM_Base_Init(&stepper->slave_timer);
+	if(nSteps == 0)
+		return;
+	else if(nSteps < 0)
+		HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, GPIO_PIN_RESET);
+	else
+		HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, GPIO_PIN_SET);
+
+	nSteps = abs(nSteps);
+	
+	if(nSteps == 1)
+		__HAL_TIM_SET_COUNTER(&stepper->slave_timer, 1);
+	else
+		nSteps -= 1;
+
+	__HAL_TIM_SET_AUTORELOAD(&stepper->slave_timer, nSteps);
 
 	HAL_TIM_Base_Start_IT(&stepper->slave_timer);
 	HAL_TIM_PWM_Start(&stepper->master_timer, stepper->channel); // starts moving
