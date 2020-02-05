@@ -33,7 +33,7 @@ Stepper *stepper_init(Stepper* stepper, uint8_t* _name, TIM_TypeDef *_master_tim
 	stepper_setup_gpio(stepper); // setups stepper gpio
 	stepper_setup_timers(stepper); // setups stepper timer
 	
-	stepper_set_speed(stepper, 200); // setups stepper speed
+	//stepper_set_speed(stepper, 200); // setups stepper speed
 
 	return &stepper;
 }
@@ -127,8 +127,10 @@ void stepper_setup_timers(Stepper* stepper)
 	stepper_setup_slave_timer(stepper);
 }
 
-void stepper_set_speed(Stepper* stepper, uint8_t speed)
+uint8_t stepper_set_speed(Stepper* stepper, uint8_t* speed)
 {
+	uint32_t nSpeed;
+	uint32_t rSpeed;
 	// in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
 	// you need to use Prescaler
 
@@ -136,18 +138,23 @@ void stepper_set_speed(Stepper* stepper, uint8_t speed)
 	// so we need to cast this, but not this moment, because it's need to set up clocks frequency
 	// and see in real time, what speed we need
 
-	if(speed == 0) // checks if speed is 0 -> ERROR
-		return;
+	sscanf(speed, "%d", &nSpeed);
 
-	/* speed set */
+	// min - max
+	// <1000, 11000>
 
-	uint16t max = 1000;
-
-	//__HAL_TIM_SET_AUTORELOAD(&stepper->master_timer, speed - 1);
-	//stepper->master_timer.Init.Period = speed - 1;
-	//stepper->timer.Init.Prescaler = 8000 - 1;
+	// 1% = 100
 	
-	//HAL_TIM_PWM_Init(&stepper->master_timer); //<- do i need to call it again to assign new speed ? ???????
+	if(nSpeed < 1 || nSpeed > 100) // checks if speed is in range
+		return 0;
+
+	nSpeed = 101 - nSpeed; // reverse value
+
+	rSpeed = (nSpeed * (11000 - 1000) / 100) + 1000;
+
+	__HAL_TIM_SET_AUTORELOAD(&stepper->master_timer, rSpeed);
+
+	return 1;
 }
 
 uint8_t stepper_switch(Stepper* stepper, uint8_t *state)
@@ -182,13 +189,13 @@ uint8_t stepper_set_microstepping(Stepper* stepper, uint8_t *states)
 	return 1;
 }
 
-void stepper_move(Stepper* stepper, uint8_t* steps)
+uint8_t stepper_move(Stepper* stepper, uint8_t* steps)
 {	
 	int32_t nSteps;
 	sscanf(steps, "%d", &nSteps);
 
 	if(nSteps == 0)
-		return;
+		return 0;
 	else if(nSteps < 0)
 		HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, GPIO_PIN_RESET);
 	else
@@ -205,6 +212,8 @@ void stepper_move(Stepper* stepper, uint8_t* steps)
 
 	HAL_TIM_Base_Start_IT(&stepper->slave_timer);
 	HAL_TIM_PWM_Start(&stepper->master_timer, stepper->channel); // starts moving
+
+	return 1;
 }
 
 void stepper_home(Stepper* stepper)
@@ -212,7 +221,7 @@ void stepper_home(Stepper* stepper)
 	//stepper_switch(stepper, "on");
 	HAL_GPIO_WritePin(stepper->port, stepper->enable_pin, GPIO_PIN_SET);
 
-	HAL_GPIO_WritePin(stepper->port, stepper->dir_pin, GPIO_PIN_SET); //set left direction;
+	HAL_GPIO_WritePin(stepper->port, stepper->dir_pin, GPIO_PIN_RESET); //set left direction;
 	
 	HAL_TIM_PWM_Start(&stepper->master_timer, stepper->channel); // starts moving
 }

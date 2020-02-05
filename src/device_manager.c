@@ -8,8 +8,6 @@
 #include "stepper.h"
 #include "endstop.h"
 
-#include "uart.h"
-
 Stepper steppers[STEPPERS_COUNT];                 
 Endstop endstops[ENDSTOPS_COUNT];
 
@@ -86,7 +84,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
         if(htim->Instance == steppers[i].slave_timer.Instance)
         {
-            uart_send("INTERRUPT");
             HAL_TIM_PWM_Stop(&steppers[i].master_timer, steppers[i].channel); // stop PWM (moving) on assigned stepper
 		    HAL_TIM_Base_Stop_IT(&steppers[i].slave_timer);
         }

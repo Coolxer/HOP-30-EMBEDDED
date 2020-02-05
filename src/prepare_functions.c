@@ -100,8 +100,10 @@ uint8_t *prepare_set(uint8_t ***args, uint8_t size)
 		{
 			if(stepper)
 			{
-				stepper_set_speed(stepper, args[i][1]);
-				cs++;
+				if(!stepper_set_speed(stepper, args[i][1]))
+					feedback = str_append(feedback, "_ERROR_invalid_speed_given");
+				else
+					cs++;
 			}
 			else
 			{
@@ -186,8 +188,10 @@ uint8_t *prepare_move(uint8_t ***args, uint8_t size)
 		{
 			if(stepper)
 			{
-				stepper_move(stepper, args[i][1]);
-				stepper = NULL;
+				if(!stepper_move(stepper, args[i][1]))
+					feedback = str_append(feedback, "_ERROR_move_by_0_steps");
+				else
+					stepper = NULL;
 			}
 			else
 			{
