@@ -3,15 +3,14 @@
 
 #include "stm32f4xx_hal.h"
 
-/* GENERAL SECTION */
+/************************************* GENERAL SECTION ****************************************/
 
 #define CLOCK_SPEED 18000000 // main clock speed frequency
 
-/* END OF GENERAL SECTION */
+/********************************** END OF GENERAL SECTION ************************************/
 
-/*************************************************************************************************************/
 
-/* COMMUNICATION SECTION */
+/*********************************** COMMUNICATION SECTION ***********************************/
 
 #define UART_PORT "COM3" // signature of serial port
 #define UART_BAUDRATE 115200 // default baudrate of UART communication
@@ -20,78 +19,113 @@
 #define USART2_TX GPIO_PIN_2 // define uart tx pin as 2 (send)
 #define USART2_RX GPIO_PIN_3 // define uart rx pins as 3 (receive)
 
-/* END OF COMMUNICATION SECTION */
+/******************************* END OF COMMUNICATION SECTION *********************************/
 
-/* DEVICE SECTION */
+/*************************************** DEVICE SECTION ***************************************/
 
-/* divider motor  */
-#define DIVIDER_NAME "x"
-#define DIVIDER_TIMER TIM3
+/**************** X STEPPER  ******************/
 
-#define DIVIDER_ALTERNATE GPIO_AF2_TIM3
-#define DIVIDER_CHANNEL TIM_CHANNEL_1
+#define X_NAME "x"
+#define X_PORT GPIOA
 
-#define DIVIDER_PORT GPIOA
+#define X_MASTER_TIMER TIM3
+#define X_SLAVE_TIMER TIM2
 
-#define DIVIDER_DIR GPIO_PIN_15 
-#define DIVIDER_STEP GPIO_PIN_6 // PWM 3/1 
-#define DIVIDER_ENABLE GPIO_PIN_10 
+#define X_ALTERNATE_FUNCTION GPIO_AF2_TIM3
+#define X_CHANNEL TIM_CHANNEL_1
 
-#define DIVIDER_M1 GPIO_PIN_7 
-#define DIVIDER_M2 GPIO_PIN_9 
-#define DIVIDER_M3 GPIO_PIN_8
+#define X_STEP GPIO_PIN_6
+#define X_DIR GPIO_PIN_7
+#define X_ENABLE GPIO_PIN_8
 
-/* end of divider motor declaration  */
+#define X_M1 GPIO_PIN_9
+#define X_M2 GPIO_PIN_10
+#define X_M3 GPIO_PIN_11
 
-/* table motor  */
-#define TABLE_NAME "w"
-#define TABLE_TIMER TIM4
+/************* END OF X STEPPER  **************/
 
-#define TABLE_ALTERNATE GPIO_AF2_TIM4
-#define TABLE_CHANNEL TIM_CHANNEL_2
+/**************** Y STEPPER  ******************/
 
-#define TABLE_PORT GPIOB
+#define Y_NAME "y"
+#define Y_PORT GPIOB
 
-#define TABLE_DIR GPIO_PIN_9
-#define TABLE_STEP GPIO_PIN_7 // PWM 4/2
-#define TABLE_ENABLE GPIO_PIN_6
+#define Y_MASTER_TIMER TIM4
+#define Y_SLAVE_TIMER TIM5
 
-#define TABLE_M1 GPIO_PIN_5 
-#define TABLE_M2 GPIO_PIN_8 
-#define TABLE_M3 GPIO_PIN_13
+#define Y_ALTERNATE_FUNCTION GPIO_AF2_TIM4
+#define Y_CHANNEL TIM_CHANNEL_1
 
-//#define TABLE_MIN_ENDSTOP GPIO_PIN_13
-//#define TABLE_MAX_ENDSTOP GPIO_PIN_14
+#define Y_STEP GPIO_PIN_6
+#define Y_DIR GPIO_PIN_5
+#define Y_ENABLE GPIO_PIN_7
 
-/* end of table motor declaration  */
+#define GPIO_PIN_9
+#define GPIO_PIN_10
+#define GPIO_PIN_12
 
-/* divider min endstop */
-#define DIVIDER_MIN_ENDSTOP_NAME "e1"
-#define DIVIDER_MIN_ENDSTOP_PORT GPIOA
-#define DIVIDER_MIN_ENDSTOP_PIN GPIO_PIN_4
-#define DIVIDER_MIN_ENDSTOP_EXT EXTI4_IRQn
+/************* END OF Y STEPPER  **************/
 
-/* end of divider min endstop declaration */
+/**************** Z STEPPER  ******************/
 
-#define NM "x"
-#define MT TIM3
-#define CH TIM_CHANNEL_1
-#define ST TIM4
-#define IT TIM_TS_ITR2
-#define IR TIM4_IRQn
-#define A GPIO_AF2_TIM3
-#define P GPIOA
-#define D GPIO_PIN_15
-#define S GPIO_PIN_6
-#define E GPIO_PIN_10
-#define M1 GPIO_PIN_7
-#define M2 GPIO_PIN_8
-#define M3 GPIO_PIN_9
+#define Z_NAME "z"
+#define Z_PORT GPIOB
 
+#define Z_MASTER_TIMER TIM10
+#define Z_SLAVE_TIMER TIM9
 
+#define Z_ALTERNATE_FUNCTION GPIO_AF3_TIM10
+#define Z_CHANNEL TIM_CHANNEL_1
 
-/* END OF DEVICE SECTION */
+#define Z_STEP GPIO_PIN_8
+#define Z_DIR GPIO_PIN_14
+#define Z_ENABLE GPIO_PIN_15
 
-/*************************************************************************************************************/
+#define Z_M1 GPIO_PIN_2
+#define Z_M2 GPIO_PIN_3
+#define Z_M3 GPIO_PIN_4
+
+/************* END OF Z STEPPER  **************/
+
+/**************** W STEPPER  ******************/
+
+#define W_NAME "w"
+#define W_PORT GPIOA
+
+#define W_MASTER_TIMER TIM13
+#define W_SLAVE_TIMER TIM12
+
+#define W_ALTERNATE_FUNCTION GPIO_AF9_TIM13
+#define W_CHANNEL TIM_CHANNEL_1
+
+#define W_STEP GPIO_PIN_6
+#define W_DIR GPIO_PIN_7
+#define W_ENABLE GPIO_PIN_8
+
+#define W_M1 GPIO_PIN_13
+#define W_M2 GPIO_PIN_14
+#define W_M3 GPIO_PIN_15
+
+/************* END OF W STEPPER  **************/
+
+/**************** K STEPPER  ******************/
+
+#define K_NAME "k"
+#define K_PORT GPIOA
+
+#define K_MASTER_TIMER TIM1
+#define K_SLAVE_TIMER TIM8
+
+#define K_ALTERNATE_FUNCTION GPIO_AF1_TIM1
+#define K_CHANNEL TIM_CHANNEL_2
+
+#define K_STEP GPIO_PIN_9
+#define K_DIR GPIO_PIN_10
+#define K_ENABLE GPIO_PIN_11
+
+#define K_M1 GPIO_PIN_1
+#define K_M2 GPIO_PIN_4
+#define K_M3 GPIO_PIN_12
+
+/************* END OF K STEPPER  **************/
 
 #endif // SETTINGS_H 
