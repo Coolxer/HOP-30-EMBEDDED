@@ -26,13 +26,15 @@
 /**************** X STEPPER  ******************/
 
 #define X_NAME "x"
-#define X_PORT GPIOA
+#define X_PORT GPIOC
 
 #define X_MASTER_TIMER TIM3
 #define X_SLAVE_TIMER TIM2
 
 #define X_ALTERNATE_FUNCTION GPIO_AF2_TIM3
 #define X_CHANNEL TIM_CHANNEL_1
+#define X_ITR TIM_TS_ITR2
+#define X_IRQ TIM2_IRQn
 
 #define X_STEP GPIO_PIN_6
 #define X_DIR GPIO_PIN_7
@@ -47,21 +49,25 @@
 /**************** Y STEPPER  ******************/
 
 #define Y_NAME "y"
-#define Y_PORT GPIOB
+#define Y_PORT GPIOA
 
-#define Y_MASTER_TIMER TIM4
-#define Y_SLAVE_TIMER TIM5
+#define Y_MASTER_TIMER TIM13
+#define Y_SLAVE_TIMER TIM12
 
-#define Y_ALTERNATE_FUNCTION GPIO_AF2_TIM4
+#define Y_ALTERNATE_FUNCTION GPIO_AF9_TIM13
 #define Y_CHANNEL TIM_CHANNEL_1
+#define Y_ITR TIM_TS_ITR2
+#define Y_IRQ TIM8_BRK_TIM12_IRQn
 
 #define Y_STEP GPIO_PIN_6
-#define Y_DIR GPIO_PIN_5
-#define Y_ENABLE GPIO_PIN_7
+#define Y_DIR GPIO_PIN_7
+#define Y_ENABLE GPIO_PIN_8
 
-#define GPIO_PIN_9
-#define GPIO_PIN_10
-#define GPIO_PIN_12
+//#define W_M1 GPIO_PIN_13 // cannot be
+#define Y_M1 GPIO_PIN_1
+//#define W_M2 GPIO_PIN_14 // cannot be
+#define Y_M2 GPIO_PIN_4
+#define Y_M3 GPIO_PIN_12
 
 /************* END OF Y STEPPER  **************/
 
@@ -75,40 +81,44 @@
 
 #define Z_ALTERNATE_FUNCTION GPIO_AF3_TIM10
 #define Z_CHANNEL TIM_CHANNEL_1
+#define Z_ITR TIM_TS_ITR2
+#define Z_IRQ TIM1_BRK_TIM9_IRQn
 
 #define Z_STEP GPIO_PIN_8
 #define Z_DIR GPIO_PIN_14
 #define Z_ENABLE GPIO_PIN_15
 
-#define Z_M1 GPIO_PIN_2
-#define Z_M2 GPIO_PIN_3
-#define Z_M3 GPIO_PIN_4
+#define Z_M1 GPIO_PIN_9
+#define Z_M2 GPIO_PIN_10
+#define Z_M3 GPIO_PIN_12
 
 /************* END OF Z STEPPER  **************/
 
 /**************** W STEPPER  ******************/
 
 #define W_NAME "w"
-#define W_PORT GPIOA
+#define W_PORT GPIOB
 
-#define W_MASTER_TIMER TIM13
-#define W_SLAVE_TIMER TIM12
+#define W_MASTER_TIMER TIM4
+#define W_SLAVE_TIMER TIM5
 
-#define W_ALTERNATE_FUNCTION GPIO_AF9_TIM13
+#define W_ALTERNATE_FUNCTION GPIO_AF2_TIM4
 #define W_CHANNEL TIM_CHANNEL_1
+#define W_ITR TIM_TS_ITR2
+#define W_IRQ TIM5_IRQn
 
 #define W_STEP GPIO_PIN_6
-#define W_DIR GPIO_PIN_7
-#define W_ENABLE GPIO_PIN_8
+#define W_DIR GPIO_PIN_5
+#define W_ENABLE GPIO_PIN_7
 
-#define W_M1 GPIO_PIN_13
-#define W_M2 GPIO_PIN_14
-#define W_M3 GPIO_PIN_15
+#define W_M1 GPIO_PIN_9
+#define W_M2 GPIO_PIN_10
+#define W_M3 GPIO_PIN_12
 
 /************* END OF W STEPPER  **************/
 
 /**************** K STEPPER  ******************/
-
+/*
 #define K_NAME "k"
 #define K_PORT GPIOA
 
@@ -117,6 +127,7 @@
 
 #define K_ALTERNATE_FUNCTION GPIO_AF1_TIM1
 #define K_CHANNEL TIM_CHANNEL_2
+#define K_ITR TIM_TS_ITR0
 
 #define K_STEP GPIO_PIN_9
 #define K_DIR GPIO_PIN_10
@@ -125,7 +136,7 @@
 #define K_M1 GPIO_PIN_1
 #define K_M2 GPIO_PIN_4
 #define K_M3 GPIO_PIN_12
-
+*/
 /************* END OF K STEPPER  **************/
 
 #endif // SETTINGS_H 

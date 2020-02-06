@@ -7,7 +7,7 @@
 /* PRIVATE */   //void application_run();   // runs main application loop
 /* PRIVATE */   //void application_close(); // closes all modules
 
-void application_exec();  // calls setup, run & close functions
+void application_exec();                    // calls setup, run & close functions
 
 /* PRIVATE */   //void SysTick_Handler();   // main SysTick function
 

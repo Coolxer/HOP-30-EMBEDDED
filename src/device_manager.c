@@ -13,16 +13,10 @@ Endstop endstops[ENDSTOPS_COUNT];
 
 void device_manager_init()
 {
-    //steppers[0] = *stepper_init("x", TIM3, TIM_CHANNEL_1, TIM4, TIM_TS_ITR2, TIM4_IRQn, GPIO_AF2_TIM3, GPIOA, 15, 6, 10, 7, 9, 8);
-    stepper_init(&steppers[0], NM, MT, CH, ST, IT, IR, A, P, D, S, E, M1, M2, M3);
-
-    //devices[0] = (Device*)stepper_init(DIVIDER_NAME, DIVIDER_TIMER, DIVIDER_ALTERNATE, DIVIDER_CHANNEL, DIVIDER_PORT, DIVIDER_DIR, DIVIDER_STEP, DIVIDER_ENABLE, DIVIDER_M1, DIVIDER_M2, DIVIDER_M3);
-    //devices[1] = (Device*)stepper_init(TABLE_NAME, TABLE_TIMER, TABLE_ALTERNATE, TABLE_CHANNEL, TABLE_PORT, TABLE_DIR, TABLE_STEP, TABLE_ENABLE, TABLE_M1, TABLE_M2, TABLE_M3);
-
-    //devices[2] = (Device*)endstop_init(devices[0], DIVIDER_MIN_ENDSTOP_NAME, DIVIDER_MIN_ENDSTOP_PORT, DIVIDER_MIN_ENDSTOP_EXT, DIVIDER_MIN_ENDSTOP_PIN);
-
-    //stepper = (Stepper *)calloc(sizeof(Stepper)); // reserves memory for operting stepper
-    //endstops[0] = *endstop_init(&steppers[0], "e1", GPIOA, GPIO_PIN_4, EXTI4_IRQn); // reserves memory for operating 
+    stepper_init(&steppers[0], X_NAME, X_PORT, X_MASTER_TIMER, X_SLAVE_TIMER, X_ALTERNATE_FUNCTION, X_CHANNEL, X_ITR, X_IRQ, X_STEP, X_DIR, X_ENABLE, X_M1, X_M2, X_M3);
+    stepper_init(&steppers[1], Y_NAME, Y_PORT, Y_MASTER_TIMER, Y_SLAVE_TIMER, Y_ALTERNATE_FUNCTION, Y_CHANNEL, Y_ITR, Y_IRQ, Y_STEP, Y_DIR, Y_ENABLE, Y_M1, Y_M2, Y_M3);
+    stepper_init(&steppers[2], Z_NAME, Z_PORT, Z_MASTER_TIMER, Z_SLAVE_TIMER, Z_ALTERNATE_FUNCTION, Z_CHANNEL, Z_ITR, Z_IRQ, Z_STEP, Z_DIR, Z_ENABLE, Z_M1, Z_M2, Z_M3);
+    stepper_init(&steppers[3], W_NAME, W_PORT, W_MASTER_TIMER, W_SLAVE_TIMER, W_ALTERNATE_FUNCTION, W_CHANNEL, W_ITR, W_IRQ, W_STEP, W_DIR, W_ENABLE, W_M1, W_M2, W_M3);
 }
 
 void device_manager_deinit()
@@ -49,6 +43,8 @@ Stepper* device_manager_get_stepper(uint8_t *name)
     return NULL;
 }
 
+/******************* ENDSTOPS INTERRUPTS HANDLERS *****************************/
+
 void EXTI4_IRQHandler(void)
 {
     uint8_t i;
@@ -56,6 +52,8 @@ void EXTI4_IRQHandler(void)
     for(int i = 0; i < ENDSTOPS_COUNT; i++)
         HAL_GPIO_EXTI_IRQHandler(endstops[i].pin); // runs external interrupt on endstop pin
 }
+
+/******************** ENDSTOP INRERRUPT PROCEDURE *****************************/
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -65,16 +63,35 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
         if(GPIO_Pin == endstops[i].pin)
         {
-            HAL_TIM_PWM_Stop(&endstop->parent_stepper->master_timer, endstop->parent_stepper->channel); // stop PWM (moving) on assigned stepper
-            HAL_TIM_Base_Stop_IT(&endstop->parent_stepper->slave_timer);
+            HAL_TIM_PWM_Stop(&endstop->parent_stepper->masterTimer, endstop->parent_stepper->channel); // stop PWM (moving) on assigned stepper
+            HAL_TIM_Base_Stop_IT(&endstop->parent_stepper->slaveTimer);
         }
     }   
 }
 
-void TIM4_IRQHandler(void)
+/******************* STEPPERS INTERRUPTS HANDLERS *****************************/
+
+void TIM2_IRQHandler(void)
 {
-    HAL_TIM_IRQHandler(&steppers[0].slave_timer);
+    HAL_TIM_IRQHandler(&steppers[0].slaveTimer);
 }
+
+void TIM5_IRQHandler(void)
+{
+    HAL_TIM_IRQHandler(&steppers[1].slaveTimer);
+}
+
+void TIM1_BRK_TIM9_IRQHandler(void)
+{
+    HAL_TIM_IRQHandler(&steppers[2].slaveTimer);
+}
+
+void TIM8_BRK_TIM12_IRQHandler(void)
+{
+    HAL_TIM_IRQHandler(&steppers[3].slaveTimer);
+}
+
+/**************** STEPPER SLAVE TIMER INTERRUPT PROCEDURE  ********************/
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -82,10 +99,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
     for(i = 0; i < STEPPERS_COUNT; i++)
     {
-        if(htim->Instance == steppers[i].slave_timer.Instance)
+        if(htim->Instance == steppers[i].slaveTimer.Instance)
         {
-            HAL_TIM_PWM_Stop(&steppers[i].master_timer, steppers[i].channel); // stop PWM (moving) on assigned stepper
-		    HAL_TIM_Base_Stop_IT(&steppers[i].slave_timer);
+            HAL_TIM_PWM_Stop(&steppers[i].masterTimer, steppers[i].channel); // stop PWM (moving) on assigned stepper
+		    HAL_TIM_Base_Stop_IT(&steppers[i].slaveTimer);
         }
     }
 }

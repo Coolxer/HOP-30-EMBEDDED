@@ -11,7 +11,7 @@ void application_setup()
     //SystemCoreClock = 8000000; // sets default system core main clock frequency
     HAL_Init(); // inits HAL library
 
-    clocks_init();
+    clocks_init(); // enables clocks
 
     uart_init(); // inits uart module
     device_manager_init(); // inits device manager kit
@@ -28,7 +28,7 @@ void application_close()
 {
     HAL_DeInit(); // deinits HAL library
 
-    clocks_deinit();
+    clocks_deinit(); // disables clocks
 }
 
 void application_exec()
