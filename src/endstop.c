@@ -1,29 +1,26 @@
 //#ifdef STSTM32
 #include "endstop.h"
 
-Endstop *endstop_init(Stepper *stepper, uint8_t *name, uint32_t port, uint8_t irq, uint16_t pin)
+Endstop *endstop_init(Endstop *endstop, Stepper *parentStepper, uint32_t port, uint16_t pin, uint8_t irq)
 {
-    Endstop endstop;
+    endstop->parentStepper = parentStepper;
 
-    endstop.parent_stepper = stepper;
+    endstop->port = port;
+    endstop->pin = pin;
 
-    strcpy(endstop.name, name);
+    endstop->irq = irq;
 
-    endstop.port = port;
-    endstop.pin = pin;
-    endstop.irq = irq;
-
-    endstop_setup_gpio(&endstop); // setups endstop gpio
+    endstop_setupGpio(&endstop); // setups endstop gpio
 
     return &endstop;
 }
 
-void endstop_deinit(Endstop* endstop)
+void endstop_deinit(Endstop *endstop)
 {
     HAL_NVIC_DisableIRQ(endstop->irq);
 }
 
-void endstop_setup_gpio(Endstop* endstop)
+void endstop_setupGpio(Endstop *endstop)
 {
     GPIO_InitTypeDef gpio;
 
@@ -33,10 +30,11 @@ void endstop_setup_gpio(Endstop* endstop)
 
 	HAL_GPIO_Init(endstop->port, &gpio);
 
+    HAL_NVIC_SetPriority(endstop->irq, 0, 0);
     HAL_NVIC_EnableIRQ(endstop->irq); // enables external interrupt on endstop pin
 }
 
-uint8_t endstop_clicked(Endstop* endstop)
+uint8_t endstop_isClicked(Endstop *endstop)
 {
     return HAL_GPIO_ReadPin(endstop->port, endstop->pin);
 }

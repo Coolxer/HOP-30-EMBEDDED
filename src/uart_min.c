@@ -4,7 +4,7 @@
 
 #include "settings.h"
 
-void uart_setup_gpio()
+void uart_setupGpio()
 {
 	GPIO_InitTypeDef gpio;
 
@@ -17,7 +17,7 @@ void uart_setup_gpio()
 	HAL_GPIO_Init(GPIOA, &gpio);
 }
 
-void uart_setup_interface()
+void uart_setupInterface()
 {
 	uart.Instance = UART_NAME;					
 	uart.Init.BaudRate = UART_BAUDRATE;				
@@ -33,8 +33,8 @@ void uart_setup_interface()
 
 void uart_min_init()
 {
-    uart_setup_gpio();
-    uart_setup_interface();
+    uart_setupGpio();
+    uart_setupInterface();
 }
 
 void uart_write(char c)

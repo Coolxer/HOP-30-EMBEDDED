@@ -10,7 +10,7 @@ DMA_HandleTypeDef hdma_usart2_rx;          // dma uart rx channel
 
 typedef struct
 {
-	UART_HandleTypeDef* uart; 		       // pointer to UART structure
+	UART_HandleTypeDef *uart; 		       // pointer to UART structure
 
 	uint8_t dma_buffer[DMA_BUFFER_SIZE];   // dma buffer
 	uint8_t uart_buffer[UART_BUFFER_SIZE]; // uart buffer
@@ -23,23 +23,23 @@ DMA dma; 								   // create structure instance
 
 /* *********************** SETUP FUNCTIONS *********************** */
 
-void dma_setup(UART_HandleTypeDef* uart); 	   // inits structure, enables interrupts
+void dma_setup(UART_HandleTypeDef *uart); 	   // inits structure, enables interrupts
 
-/* PRIVATE */   //void dma_setup_interface();  // setups interface of DMA
-/* PRIVATE */   //void dma_setup_interrupts(); // turns on USART2 interrupt and DMA RX stream channel interrupt
+/* PRIVATE */   //void dma_setupInterface();  // setups interface of DMA
+/* PRIVATE */   //void dma_setupInterrupts(); // turns on USART2 interrupt and DMA RX stream channel interrupt
 
 void dma_init(); 							   // calls setups of interface and interrupts
 
 /* ******************* OPERATIONAL FUNCTIONS *************** ***** */
 
 uint8_t dma_isReady(); 						   // checks if DMA is ready to read, 1 - yes, 0 - no
-uint8_t dma_getChar(); 						   // returns one char from DMA
+/* PRIVATE */	//uint8_t dma_getChar(); 	   // returns one char from DMA
 uint8_t* dma_getCommand(); 					   // returns command from DMA
 
 /* ************************ HANDLERS ***************************** */
 
-/* PRIVATE */   //void dma_uart_handler(); 			  // own implementation of uart interrupt handler
-/* PRIVATE */   //void dma_dma_handler(); 			  // own implementation of dma interrupt handler
+/* PRIVATE */   //void dma_uartHandler(); 			  // own implementation of uart interrupt handler
+/* PRIVATE */   //void dma_dmaHandler(); 			  // own implementation of dma interrupt handler
 
 /* PRIVATE */   //void USART2_IRQHandler(void); 	  // USART2 irq handler
 /* PRIVATE */   //void DMA1_Stream5_IRQHandler(void); // DMA1 RX irq handler

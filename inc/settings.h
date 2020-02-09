@@ -21,7 +21,7 @@
 
 /******************************* END OF COMMUNICATION SECTION *********************************/
 
-/*************************************** DEVICE SECTION ***************************************/
+/************************************* DEVICES SECTION ****************************************/
 
 /**************** X STEPPER  ******************/
 
@@ -111,9 +111,10 @@
 #define W_DIR GPIO_PIN_5
 #define W_ENABLE GPIO_PIN_7
 
-#define W_M1 GPIO_PIN_9
-#define W_M2 GPIO_PIN_10
-#define W_M3 GPIO_PIN_12
+// not sure about this 3 pins
+#define W_M1 GPIO_PIN_0
+#define W_M2 GPIO_PIN_1
+#define W_M3 GPIO_PIN_13
 
 /************* END OF W STEPPER  **************/
 
@@ -138,5 +139,72 @@
 #define K_M3 GPIO_PIN_12
 */
 /************* END OF K STEPPER  **************/
+
+/********************************* END OF DEVICES SECTION ************************************/
+
+/************************************ ENDSTOPS SECTION ***************************************/
+
+/*********** X STEPPER ENDSTOPS ***************/
+
+/***** LEFT ENDSTOP *****/
+
+#define XL_PORT GPIOC
+#define XL_PIN GPIO_PIN_0
+#define XL_IRQ EXTI0_IRQn
+
+/** END OF LEFT ENDSTOP */
+
+/**** RIGHT ENDSTOP *****/
+
+#define XR_PORT GPIOC
+#define XR_PIN GPIO_PIN_1
+#define XR_IRQ EXTI1_IRQn
+
+/* END OF RIGHT ENDSTOP */
+
+/******** END OF X STEPPER ENDSTOPS ***********/
+
+/*********** Y STEPPER ENDSTOPS ***************/
+
+/***** LEFT ENDSTOP *****/
+
+#define YL_PORT GPIOC
+#define YL_PIN GPIO_PIN_2
+#define YL_IRQ EXTI2_IRQn
+
+/** END OF LEFT ENDSTOP */
+
+/**** RIGHT ENDSTOP *****/
+
+#define YR_PORT GPIOC
+#define YR_PIN GPIO_PIN_3
+#define YR_IRQ EXTI3_IRQn
+
+/* END OF RIGHT ENDSTOP */
+
+/******** END OF Y STEPPER ENDSTOPS ***********/
+
+/*********** Z STEPPER ENDSTOPS ***************/
+
+/***** LEFT ENDSTOP *****/
+
+#define ZL_PORT GPIOC
+#define ZL_PIN GPIO_PIN_4
+#define ZL_IRQ EXTI4_IRQn
+
+/** END OF LEFT ENDSTOP */
+
+/**** RIGHT ENDSTOP *****/
+
+#define ZR_PORT GPIOC
+#define ZR_PIN GPIO_PIN_5
+#define ZR_IRQ EXTI9_5_IRQn
+
+/* END OF RIGHT ENDSTOP */
+
+/******** END OF Z STEPPER ENDSTOPS ***********/
+
+
+/********************************* END OF ENDSTOPS SECTION ***********************************/
 
 #endif // SETTINGS_H 

@@ -58,7 +58,7 @@ uint8_t uart_manage()
 		return 0;
 	}
 	else
-		feedback = connector_manage_data(connector_parse(command)); // passes transmission data to connector manage function where it will be processed
+		feedback = connector_manageData(connector_parse(command)); // passes transmission data to connector manage function where it will be processed
 	
 	uart_send(feedback); // send feedback through UART port
 	//free(feedback);

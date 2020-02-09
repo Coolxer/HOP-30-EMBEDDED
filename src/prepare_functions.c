@@ -10,126 +10,137 @@
 
 uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 {
-	uint8_t steppers = 0, states = 0;
-	Stepper* stepper = NULL;
+	Stepper *stepper = NULL;
 	feedback = "";
 
-	for(i = 0; i < size ; i++)
+	for(i = 0; i < size ; i += 2)
 	{
 		if(strcmp((void *)args[i][0], "spp") == 0) // checks if the selected string is "spp" (stepper)
 		{
-			if(!(stepper = device_manager_get_stepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
+			if(!(stepper = device_manager_getStepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
 			{
 				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
 				break;
 			}
-			steppers++;
-		}
-		else if(strcmp((void *)args[i][0], "stt") == 0)
-		{
-			if(stepper)
-			{
-				if(!stepper_switch(stepper, args[i][1]))
-					feedback = str_append(feedback, "_ERROR_invalid_state_given");
-				else
-					stepper = NULL;
-			}
 			else
 			{
-				feedback = str_append(feedback, "_ERROR_no_spp_key");
-				break;
+				if(strcmp((void *)args[i + 1][0], "stt") == 0)
+				{
+					if(!stepper_switch(stepper, args[i + 1][1]))
+					{
+						feedback = str_append(feedback, "_ERROR_invalid_state_given");
+						break;
+					}		
+				}
+				else
+				{
+					feedback = str_append(feedback, "_ERROR_unknown_key");
+					break;
+				}
 			}
-			states++;
 		}
-		else
+		else 
 		{
-			feedback = str_append(feedback, "_ERROR_unknown key");
+			feedback = str_append(feedback, "_ERROR_no_spp_key");
 			break;
 		}
 	}
 
-	if((strcmp(feedback, "") == 0) && (steppers == states)) // checks if there are not errors = operation success
+	if(strcmp(feedback, "") == 0)
 		feedback = str_append(feedback, "_SUCCESS");
-	else
-	{
-		if(steppers < states)
-			feedback = str_append(feedback, "_ERROR_no_spp_key");
-		else if(steppers > states)
-			feedback = str_append(feedback, "_ERROR_no_stt_key");
-	}
 	
 	free(args); // frees memory allocated to args
 
 	return feedback;
 }
 
-uint8_t *prepare_set(uint8_t ***args, uint8_t size)
+uint8_t *prepare_setSpeed(uint8_t ***args, uint8_t size)
 {
-	uint8_t steppers = 0, settings = 0, cs = 0; // cs - current settings, max 2 for each stepper
-	Stepper* stepper = NULL;
+	Stepper *stepper = NULL;
 	feedback = "";
 
-	for(i = 0; i < size; i++)
+	for(i = 0; i < size ; i += 2)
 	{
-		if(strcmp((void *)args[i][0], "spp") == 0)
+		if(strcmp((void *)args[i][0], "spp") == 0) // checks if the selected string is "spp" (stepper)
 		{
-			if(!(stepper = device_manager_get_stepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
+			if(!(stepper = device_manager_getStepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
 			{
 				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
 				break;
 			}
-			steppers++;
-		}
-		else if (strcmp((void *)args[i][0], "msp") == 0)
-		{
-			if(stepper)
-			{
-				if(!stepper_set_microstepping(stepper, args[i][1]))
-					feedback = str_append(feedback, "_ERROR_invalid_combination");
-				else
-					cs++;
-			}
 			else
 			{
-				feedback = str_append(feedback, "_ERROR_no_spp_key");
-				break;
-			}
-			settings++;
-		}
-		else if (strcmp((void *)args[i][0], "spd") == 0)
-		{
-			if(stepper)
-			{
-				if(!stepper_set_speed(stepper, args[i][1]))
-					feedback = str_append(feedback, "_ERROR_invalid_speed_given");
+				if(strcmp((void *)args[i + 1][0], "spd") == 0)
+				{
+					if(!stepper_setSpeed(stepper, args[i + 1][1]))
+					{
+						feedback = str_append(feedback, "_ERROR_invalid_speed_given");
+						break;
+					}		
+				}
 				else
-					cs++;
+				{
+					feedback = str_append(feedback, "_ERROR_unknown_key");
+					break;
+				}
 			}
-			else
-			{
-				feedback = str_append(feedback, "_ERROR_no_spp_key");
-				break;
-			}
-			settings++;
 		}
-		else
+		else 
 		{
-			feedback = str_append(feedback, "_ERROR_unknown key");
+			feedback = str_append(feedback, "_ERROR_no_spp_key");
 			break;
 		}
-
-		if(cs == 2)
-		{
-			cs = 0;
-			stepper = NULL;
-		}		
 	}
 
-	if((strcmp(feedback, "") == 0) && (settings >= steppers)) // checks if there are not errors = operation success
+	if(strcmp(feedback, "") == 0)
 		feedback = str_append(feedback, "_SUCCESS");
-	else if (settings < steppers)
-		feedback = str_append(feedback, "_ERROR_no_setting_given");
+	
+	free(args); // frees memory allocated to args
 
+	return feedback;
+}
+
+uint8_t *prepare_setMicrostepping(uint8_t ***args, uint8_t size)
+{
+	Stepper *stepper = NULL;
+	feedback = "";
+
+	for(i = 0; i < size ; i += 2)
+	{
+		if(strcmp((void *)args[i][0], "spp") == 0) // checks if the selected string is "spp" (stepper)
+		{
+			if(!(stepper = device_manager_getStepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
+			{
+				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
+				break;
+			}
+			else
+			{
+				if(strcmp((void *)args[i + 1][0], "spd") == 0)
+				{
+					if(!stepper_setMicrostepping(stepper, args[i + 1][1]))
+					{
+						feedback = str_append(feedback, "_ERROR_invalid_combination_given");
+						break;
+					}		
+				}
+				else
+				{
+					feedback = str_append(feedback, "_ERROR_unknown_key");
+					break;
+				}
+			}
+		}
+		else 
+		{
+			feedback = str_append(feedback, "_ERROR_no_spp_key");
+			break;
+		}
+	}
+
+	if(strcmp(feedback, "") == 0)
+		feedback = str_append(feedback, "_SUCCESS");
+	
 	free(args); // frees memory allocated to args
 
 	return feedback;
@@ -137,24 +148,24 @@ uint8_t *prepare_set(uint8_t ***args, uint8_t size)
 
 uint8_t *prepare_home(uint8_t ***args, uint8_t size)
 {
-	Stepper* stepper = NULL;
+	Stepper *stepper = NULL;
 	feedback = "";
 
 	for(i = 0; i < size; i++)
 	{
 		if(strcmp((void *)args[i][0], "spp") == 0) // checks if the selected string is "spp" (stepper)
 		{
-			if(!(stepper = device_manager_get_stepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
-				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
-			else
+			if(!(stepper = device_manager_getStepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
 			{
-				stepper_home(stepper); // homes selected stepper motor
-				stepper = NULL;
+				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
+				break;
 			}
+			else
+				stepper_home(stepper); // homes selected stepper motor
 		}
 		else
 		{
-			feedback = str_append(feedback, "_ERROR_unknown key");
+			feedback = str_append(feedback, "_ERROR_no_spp_key");
 			break;
 		}
 	}
@@ -169,59 +180,196 @@ uint8_t *prepare_home(uint8_t ***args, uint8_t size)
 
 uint8_t *prepare_move(uint8_t ***args, uint8_t size)
 {
-	uint8_t steppers = 0, steps = 0;
-	Stepper* stepper = NULL;
+	Stepper *stepper = NULL;
 	feedback = "";
 
-	for(i = 0; i < size; i++)
+	for(i = 0; i < size; i += 2)
 	{
 		if(strcmp((void *)args[i][0], "spp") == 0)
 		{
-			if(!(stepper = device_manager_get_stepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
+			if(!(stepper = device_manager_getStepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
 			{
 				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
 				break;
 			}
-			steppers++;
-		}
-		else if (strcmp((void *)args[i][0], "stp") == 0)
-		{
-			if(stepper)
-			{
-				if(!stepper_move(stepper, args[i][1]))
-					feedback = str_append(feedback, "_ERROR_move_by_0_steps");
-				else
-					stepper = NULL;
-			}
 			else
 			{
-				feedback = str_append(feedback, "_ERROR_no_spp_key");
-				break;
-			}	
-			steps++;
+				if(strcmp((void *)args[i + 1][0], "stp") == 0)
+				{
+					if(!stepper_move(stepper, args[i + 1]))
+					{
+						feedback = str_append(feedback, "_ERROR_move_by_0_steps");
+						break;
+					}
+				}
+				else
+				{
+					feedback = str_append(feedback, "_ERROR_unknown_key");
+					break;
+				}
+			}
 		}
 		else
 		{
-			feedback = str_append(feedback, "_ERROR_unknown key");
+			feedback = str_append(feedback, "_ERROR_no_spp_key");
 			break;
 		}
 	}
 
-	if((strcmp(feedback, "") == 0) && (steppers == steps)) // check if there are not errors = operation success
+	if(strcmp(feedback, "") == 0)
 		feedback = str_append(feedback, "_SUCCESS");
-	else
-	{
-		if(steppers < steps)
-			feedback = str_append(feedback, "_ERROR_no_spp_key");
-		else if(steppers > steps)
-			feedback = str_append(feedback, "_ERROR_no_stp_key");
-		
-	}
 	
 	free(args); // free memory allocated to args
 
 	return feedback;
 }
 
+uint8_t *prepare_process(uint8_t ***args, uint8_t size) // opt=pro|spp=x|spd=40|spp=w|dir=1|spd=70
+{
+	feedback = "";
+
+	if(strcmp((void *)args[0][0], "dir") == 0)
+	{
+		Stepper *x = NULL, *w = NULL;
+
+		x = device_manager_getStepper("x");
+		w = device_manager_getStepper("w");
+
+		stepper_setDirection(w, args[0][1]);
+		
+		stepper_run(x);
+		stepper_run(w);
+
+		PROCESS_FORWARD = 1;
+
+		feedback = str_append(feedback, "_SUCCESS");
+	}
+	else
+		feedback = str_append(feedback, "_ERROR_no_dir_key");
+
+	free(args); // frees memory allocated to args
+
+	return feedback;
+}
+
+uint8_t *prepare_pause(uint8_t ***args, uint8_t size)
+{
+	Stepper *stepper = NULL;
+	feedback = "";
+
+	for(i = 0; i < size ; i += 2)
+	{
+		if(strcmp((void *)args[i][0], "spp") == 0) // checks if the selected string is "spp" (stepper)
+		{
+			if(!(stepper = device_manager_getStepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
+			{
+				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
+				break;
+			}
+			else
+			{
+				if(strcmp((void *)args[i + 1][0], "mode") == 0)
+					stepper_pause(stepper, args[i + 1][1]);
+				else
+				{
+					feedback = str_append(feedback, "_ERROR_unknown_key");
+					break;
+				}
+			}
+		}
+		else 
+		{
+			feedback = str_append(feedback, "_ERROR_no_spp_key");
+			break;
+		}
+	}
+
+	if(strcmp(feedback, "") == 0)
+		feedback = str_append(feedback, "_SUCCESS");
+	
+	free(args); // frees memory allocated to args
+
+	return feedback;
+}
+
+uint8_t *prepare_resume(uint8_t ***args, uint8_t size)
+{
+	Stepper *stepper = NULL;
+	feedback = "";
+
+	for(i = 0; i < size ; i += 2)
+	{
+		if(strcmp((void *)args[i][0], "spp") == 0) // checks if the selected string is "spp" (stepper)
+		{
+			if(!(stepper = device_manager_getStepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
+			{
+				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
+				break;
+			}
+			else
+			{
+				if(strcmp((void *)args[i + 1][0], "mode") == 0)
+					stepper_resume(stepper, args[i + 1][1]);
+				else
+				{
+					feedback = str_append(feedback, "_ERROR_unknown_key");
+					break;
+				}
+			}
+		}
+		else 
+		{
+			feedback = str_append(feedback, "_ERROR_no_spp_key");
+			break;
+		}
+	}
+
+	if(strcmp(feedback, "") == 0)
+		feedback = str_append(feedback, "_SUCCESS");
+	
+	free(args); // frees memory allocated to args
+
+	return feedback;
+}
+
+uint8_t *prepare_stop(uint8_t ***args, uint8_t size)
+{
+	Stepper *stepper = NULL;
+	feedback = "";
+
+	for(i = 0; i < size ; i += 2)
+	{
+		if(strcmp((void *)args[i][0], "spp") == 0) // checks if the selected string is "spp" (stepper)
+		{
+			if(!(stepper = device_manager_getStepper(args[i][1]))) // checks if set current device goes successfull, if no returns ERROR
+			{
+				feedback = str_append(feedback, "_ERROR_invalid_stepper_name");
+				break;
+			}
+			else
+			{
+				if(strcmp((void *)args[i + 1][0], "mode") == 0)
+					stepper_stop(stepper, args[i + 1][1]);
+				else
+				{
+					feedback = str_append(feedback, "_ERROR_unknown_key");
+					break;
+				}
+			}
+		}
+		else 
+		{
+			feedback = str_append(feedback, "_ERROR_no_spp_key");
+			break;
+		}
+	}
+
+	if(strcmp(feedback, "") == 0)
+		feedback = str_append(feedback, "_SUCCESS");
+	
+	free(args); // frees memory allocated to args
+
+	return feedback;
+}
 
 //#endif // STSTM32

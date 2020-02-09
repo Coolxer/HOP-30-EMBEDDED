@@ -36,7 +36,7 @@ uint8_t ***connector_parse(uint8_t* dialog)
 	return args; // returns 2d array of array of uint8_t
 }
 
-uint8_t *connector_manage_data(uint8_t ***args)
+uint8_t *connector_manageData(uint8_t ***args)
 {
 	uint8_t *opt;
 
@@ -57,12 +57,22 @@ uint8_t *connector_manage_data(uint8_t ***args)
 
 	if(strcmp(opt, "sth") == 0)
 		return prepare_switch(args, records);
-	else if(strcmp(opt, "set") == 0)
-		return prepare_set(args, records);
+	else if(strcmp(opt, "spd") == 0)
+		return prepare_setSpeed(args, records);
+	else if(strcmp(opt, "msp") == 0)
+		return prepare_setMicrostepping(args, records);
 	else if(strcmp(opt, "hom") == 0)
 		return prepare_home(args, records);
 	else if(strcmp(opt, "mov") == 0)
 		return prepare_move(args, records);
+	else if(strcmp(opt, "pro") == 0)
+		return prepare_process(args, records);
+	else if(strcmp(opt, "pau") == 0)
+		return prepare_pause(args, records);
+	else if(strcmp(opt, "res") == 0)
+		return prepare_resume(args, records);
+	else if(strcmp(opt, "sto") == 0)
+		return prepare_stop(args, records);
 	else
 		return "_ERROR:invalid_opt_value";
 }

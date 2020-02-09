@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-uint8_t* char_append(uint8_t *src, uint8_t ch)
+uint8_t *char_append(uint8_t *src, uint8_t ch)
 {
 	int s = strlen(src);
 	
@@ -16,7 +16,7 @@ uint8_t* char_append(uint8_t *src, uint8_t ch)
 	return strdup(tmp);
 }
 
-uint8_t* str_append(uint8_t *src, uint8_t* str)
+uint8_t *str_append(uint8_t *src, uint8_t *str)
 {
 	int s = strlen(src) + strlen(str);
 

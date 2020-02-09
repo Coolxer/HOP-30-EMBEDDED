@@ -7,7 +7,7 @@
 
 /* *********************** SETUP FUNCTIONS ***************************** */
 
-void dma_setup(UART_HandleTypeDef* uart)
+void dma_setup(UART_HandleTypeDef *uart)
 {
 	dma.uart = uart;
 
@@ -22,7 +22,7 @@ void dma_setup(UART_HandleTypeDef* uart)
  	dma.commands_count = 0;
 }
 
-void dma_setup_interface()
+void dma_setupInterface()
 {
     hdma_usart2_rx.Instance = DMA1_Stream5;
     hdma_usart2_rx.Init.Channel = DMA_CHANNEL_4;
@@ -38,7 +38,7 @@ void dma_setup_interface()
 	HAL_DMA_Init(&hdma_usart2_rx);
 }
 
-void dma_setup_interrupts()
+void dma_setupInterrupts()
 {
     /* USART2 interrupt Init */
     HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
@@ -51,8 +51,8 @@ void dma_setup_interrupts()
 
 void dma_init()
 {
-    dma_setup_interface();
-    dma_setup_interrupts();
+    dma_setupInterface();
+    dma_setupInterrupts();
 }
 
 /* *********************** OPERATIONAL FUNCTIONS ***************************** */
@@ -77,7 +77,7 @@ uint8_t dma_getChar()
 uint8_t* dma_getCommand()
 {
     uint8_t ch;
-	uint8_t* cmd = "";
+	uint8_t *cmd = "";
 
 	while((ch = dma_getChar()))
 	{
@@ -95,7 +95,7 @@ uint8_t* dma_getCommand()
 
 /* ***************************** HANDLERS ********************************** */
 
-void dma_uart_handler()
+void dma_uartHandler()
 {
     if(dma.uart->Instance->SR & UART_FLAG_IDLE) // check if idle flag is set
 	{
@@ -106,7 +106,7 @@ void dma_uart_handler()
 	}
 }
 
-void dma_dma_handler()
+void dma_dmaHandler()
 {
     uint8_t i, response_length = 0;
 	uint16_t temp;
@@ -154,10 +154,10 @@ void dma_dma_handler()
 
 void USART2_IRQHandler(void)
 {
-	dma_uart_handler();
+	dma_uartHandler();
 }
 
 void DMA1_Stream5_IRQHandler(void)
 {
-    dma_dma_handler();
+    dma_dmaHandler();
 }

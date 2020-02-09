@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-Stepper* stepper_init(Stepper* stepper, uint8_t* name, uint32_t port, TIM_TypeDef* masterTimer, TIM_TypeDef* slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3)
+Stepper* stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3)
 {
 	strcpy(stepper->name, name);
 
@@ -27,20 +27,20 @@ Stepper* stepper_init(Stepper* stepper, uint8_t* name, uint32_t port, TIM_TypeDe
 	stepper->m[1] = m2;
 	stepper->m[2] = m3;
 
-	stepper_setup_gpio(stepper); 
-	stepper_setup_timers(stepper);
+	stepper_setupGpio(stepper); 
+	stepper_setupTimers(stepper);
 
 	return &stepper;
 }
 
-void stepper_deinit(Stepper* stepper)
+void stepper_deinit(Stepper *stepper)
 {
 	HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel);
 	HAL_TIM_Base_Stop_IT(&stepper->slaveTimer);
 	HAL_NVIC_DisableIRQ(stepper->irq);
 }
 
-void stepper_setup_gpio(Stepper* stepper)
+void stepper_setupGpio(Stepper *stepper)
 {
 	GPIO_InitTypeDef gpio;
 
@@ -62,10 +62,12 @@ void stepper_setup_gpio(Stepper* stepper)
 
 	HAL_GPIO_Init(stepper->port, &gpio);
 
-	HAL_GPIO_WritePin(stepper->port, stepper->enable, GPIO_PIN_RESET); // turns OFF stepper motor at start
+	//HAL_GPIO_WritePin(stepper->port, stepper->enable, GPIO_PIN_RESET); // turns OFF stepper motor at start
+
+	stepper_switch(stepper, "0");
 }
 
-void stepper_setup_master_timer(Stepper* stepper)
+void stepper_setupMasterTimer(Stepper *stepper)
 {
 	TIM_ClockConfigTypeDef clockSourceConfig = {0};
   	TIM_MasterConfigTypeDef masterConfig = {0};
@@ -91,7 +93,7 @@ void stepper_setup_master_timer(Stepper* stepper)
 	HAL_TIM_PWM_ConfigChannel(&stepper->masterTimer, &configOC, stepper->channel);
 }
 
-void stepper_setup_slave_timer(Stepper* stepper)
+void stepper_setupSlaveTimer(Stepper *stepper)
 {
 	TIM_SlaveConfigTypeDef slaveConfig = {0};
   	TIM_MasterConfigTypeDef masterConfig = {0};
@@ -115,13 +117,13 @@ void stepper_setup_slave_timer(Stepper* stepper)
 	HAL_NVIC_EnableIRQ(stepper->irq);
 }
 
-void stepper_setup_timers(Stepper* stepper)
+void stepper_setupTimers(Stepper *stepper)
 {
-	stepper_setup_master_timer(stepper);
-	stepper_setup_slave_timer(stepper);
+	stepper_setupMasterTimer(stepper);
+	stepper_setupSlaveTimer(stepper);
 }
 
-uint8_t stepper_set_speed(Stepper* stepper, uint8_t* speed)
+uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 {
 	uint32_t nSpeed;
 	uint32_t rSpeed;
@@ -151,7 +153,7 @@ uint8_t stepper_set_speed(Stepper* stepper, uint8_t* speed)
 	return 1;
 }
 
-uint8_t stepper_switch(Stepper* stepper, uint8_t* state)
+uint8_t stepper_switch(Stepper *stepper, uint8_t *state)
 {
 	GPIO_PinState st;
 
@@ -167,7 +169,7 @@ uint8_t stepper_switch(Stepper* stepper, uint8_t* state)
 	return 1;
 }
 
-uint8_t stepper_set_microstepping(Stepper* stepper, uint8_t* states)
+uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
 {
 	uint8_t i;
 	GPIO_PinState state;
@@ -185,7 +187,7 @@ uint8_t stepper_set_microstepping(Stepper* stepper, uint8_t* states)
 	return 1;
 }
 
-uint8_t stepper_move(Stepper* stepper, uint8_t* steps)
+uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 {	
 	int32_t nSteps;
 	sscanf(steps, "%d", &nSteps);
@@ -212,21 +214,69 @@ uint8_t stepper_move(Stepper* stepper, uint8_t* steps)
 	
 	__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, nSteps);
 
+	
+	stepper_switch(stepper, "1");
 	HAL_TIM_Base_Start_IT(&stepper->slaveTimer);
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 
 	return 1;
 }
 
-void stepper_home(Stepper* stepper)
+void stepper_home(Stepper *stepper)
 {
-	//stepper_switch(stepper, "on");
-	HAL_GPIO_WritePin(stepper->port, stepper->enable, GPIO_PIN_SET);
+	stepper_setDirection(stepper, 0);
+	stepper_run(stepper);
+}
 
-	HAL_GPIO_WritePin(stepper->port, stepper->dir, GPIO_PIN_RESET); //set left direction;
-	
+void stepper_setDirection(Stepper *stepper, uint8_t dir)
+{
+	if(dir)
+		HAL_GPIO_WritePin(stepper->port, stepper->dir, GPIO_PIN_SET);
+	else
+		HAL_GPIO_WritePin(stepper->port, stepper->dir, GPIO_PIN_RESET);
+}
+
+void stepper_changeDirection(Stepper *stepper)
+{
+	HAL_GPIO_TogglePin(stepper->port, stepper->dir);
+}
+
+void stepper_run(Stepper *stepper)
+{
+	stepper_switch(stepper, "1");
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 }
 
+void stepper_pause(Stepper *stepper, uint8_t mode)
+{
+	if(mode)
+	{
+		stepper->target = stepper->slaveTimer.Instance->ARR;
+		stepper->cnt = stepper->slaveTimer.Instance->CNT;
+	}
+	
+	stepper_stop(stepper, mode);
+}
+
+void stepper_resume(Stepper *stepper, uint8_t mode)
+{
+	if(mode)
+	{
+		__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, stepper->target);
+		__HAL_TIM_SET_COUNTER(&stepper->slaveTimer, stepper->cnt);
+
+		HAL_TIM_Base_Start_IT(&stepper->slaveTimer);
+	}
+
+	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel);
+}
+
+void stepper_stop(Stepper *stepper, uint8_t mode)
+{
+	HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel);
+
+	if(mode)
+		HAL_TIM_Base_Stop_IT(&stepper->slaveTimer);
+}
 
 //#endif // STSTM32
