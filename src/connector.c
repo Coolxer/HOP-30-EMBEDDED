@@ -6,6 +6,8 @@
 
 #include "data_assistant.h"
 
+#include "stepper.h"
+
 uint8_t *dialog_delimiter = "|"; // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=x|
 uint8_t *param_delimiter = "=";	// the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
 
@@ -56,11 +58,11 @@ uint8_t *connector_manage(uint8_t ***args)
 	/* checks operation (opt) mode and calls appropriate prepare_function */
 
 	if(strcmp(opt, "sth") == 0)
-		return prepare_switch(args, records);
+		return prepare_settings(args, records, "stt", stepper_switch);
 	else if(strcmp(opt, "spd") == 0)
-		return prepare_setSpeed(args, records);
+		return prepare_settings(args, records, "spd", stepper_setSpeed);
 	else if(strcmp(opt, "msp") == 0)
-		return prepare_setMicrostepping(args, records);
+		return prepare_settings(args, records, "msp", stepper_setMicrostepping);
 	else if(strcmp(opt, "hom") == 0)
 		return prepare_home(args, records);
 	else if(strcmp(opt, "mov") == 0)
@@ -68,11 +70,11 @@ uint8_t *connector_manage(uint8_t ***args)
 	else if(strcmp(opt, "pro") == 0)
 		return prepare_process(args, records);
 	else if(strcmp(opt, "pau") == 0)
-		return prepare_pause(args, records);
+		return prepare_intervention(args, records, stepper_pause);
 	else if(strcmp(opt, "res") == 0)
-		return prepare_resume(args, records);
+		return prepare_intervention(args, records, stepper_resume);
 	else if(strcmp(opt, "sto") == 0)
-		return prepare_stop(args, records);
+		return prepare_intervention(args, records, stepper_stop);
 	else
 		return "_ERROR:invalid_opt_value";
 }

@@ -91,9 +91,8 @@ void test_connector_manage_should_give_one_param_only_error()
 {
     //args = connector_parse("opt=aaaaaaaaaa|\n");
     uint8_t data[] = "opt=aaaaaaaaaa|\n";
-    args = connector_parse(data);
 
-    result = connector_manage(args);
+    result = connector_manage(connector_parse(data));
 
     TEST_ASSERT_EQUAL_STRING("_ERROR_one_param_only", result);
 }
@@ -102,9 +101,8 @@ void test_connector_manage_should_give_no_opt_key_error()
 {
     //args = connector_parse("abc=123|spp=12|\n");
     uint8_t data[] = "abc=123|spp=12|\n";
-    args = connector_parse(data);
 
-    result = connector_manage(args);
+    result = connector_manage(connector_parse(data));
 
     TEST_ASSERT_EQUAL_STRING("_ERROR_no_opt_key", result);
 }
@@ -113,9 +111,8 @@ void test_connector_manage_should_give_invalid_opt_value_error()
 {
     //args = connector_parse("opt=123|spp=12|\n");
     uint8_t data[] = "opt=123|spp=12|\n";
-    args = connector_parse(data);
 
-    result = connector_manage(args);
+    result = connector_manage(connector_parse(data));
 
     TEST_ASSERT_EQUAL_STRING("_ERROR:invalid_opt_value", result);
 }
@@ -138,8 +135,6 @@ int main()
     RUN_TEST(test_connector_manage_should_give_one_param_only_error);
     RUN_TEST(test_connector_manage_should_give_no_opt_key_error);
     RUN_TEST(test_connector_manage_should_give_invalid_opt_value_error);
-
-    //RUN_TEST(test_led_state_low);
 
     UNITY_END();
 }

@@ -80,7 +80,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
             HAL_TIM_PWM_Stop(&endstop->parentStepper->masterTimer, endstop->parentStepper->channel); // stop PWM (moving) on assigned stepper
             HAL_TIM_Base_Stop_IT(&endstop->parentStepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying antything
 
-            uart_send("CRANCOWKA HIT HARD");
+            uart_send("CRANCOWKA HIT HARD"); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
         }
     }   
 }
