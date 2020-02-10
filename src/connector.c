@@ -36,7 +36,7 @@ uint8_t ***connector_parse(uint8_t* dialog)
 	return args; // returns 2d array of array of uint8_t
 }
 
-uint8_t *connector_manageData(uint8_t ***args)
+uint8_t *connector_manage(uint8_t ***args)
 {
 	uint8_t *opt;
 
