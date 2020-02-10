@@ -19,18 +19,18 @@ uint8_t ***connector_parse(uint8_t* dialog)
 
 	for (param = strtok(dialog, dialog_delimiter); param != NULL; param = strtok(NULL, dialog_delimiter))
 	{
-		if(strchr(param, *param_delimiter) == NULL) // checks if there is NULL
-			continue;
+		if(strcmp(param[0], '=') == 0 || strchr(param, *param_delimiter) == NULL)
+			break;
 
 		key = strtok_r(param, param_delimiter, &value); // assigns key & values contents
 		args = (uint8_t ***) realloc(args, (++records) * sizeof(uint8_t *)); // extends array by one row (2 columns)
 
-		args[records-1] = (uint8_t **) malloc(2 * sizeof(uint8_t *)); // reserves memory for one row with 2 columns
-        args[records-1][0] = (uint8_t *)malloc((sizeof(key) * 8) * sizeof(uint8_t)); // reserves memory for key column
-        args[records-1][1] = (uint8_t *)malloc((sizeof(value) * 8) * sizeof(uint8_t)); // reserves memory for value column
+		args[records - 1] = (uint8_t **) malloc(2 * sizeof(uint8_t *)); // reserves memory for one row with 2 columns
+        args[records - 1][0] = (uint8_t *)malloc((sizeof(key) * 8) * sizeof(uint8_t)); // reserves memory for key column
+        args[records - 1][1] = (uint8_t *)malloc((sizeof(value) * 8) * sizeof(uint8_t)); // reserves memory for value column
 
-		strcpy(args[records-1][0], key); // copie  key string to the array
-        strcpy(args[records-1][1], value); // copies value string to the array
+		strcpy(args[records - 1][0], key); // copie  key string to the array
+        strcpy(args[records - 1][1], value); // copies value string to the array
 	}
 
 	return args; // returns 2d array of array of uint8_t
@@ -41,7 +41,7 @@ uint8_t *connector_manageData(uint8_t ***args)
 	uint8_t *opt;
 
 	if(args == NULL || records < 1) // checks if no records detected!
-		return "_ERROR_no_params\0";
+		return "_ERROR_no_params";
 
 	if(records == 1) // if there is only one record -> command incorrect
 		return "_ERROR_one_param_only";

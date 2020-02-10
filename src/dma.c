@@ -20,6 +20,8 @@ void dma_setup(UART_HandleTypeDef *uart)
 
  	dma.head = dma.tail = 0;
  	dma.commands_count = 0;
+
+	dma.empty = 1;
 }
 
 void dma_setupInterface()
@@ -57,6 +59,16 @@ void dma_init()
 
 /* *********************** OPERATIONAL FUNCTIONS ***************************** */
 
+uint8_t dma_isEmpty()
+{
+	return dma.empty;
+}
+
+void dma_clear()
+{
+	dma.empty = 1;
+}
+
 uint8_t dma_isReady()
 {
     if(dma.commands_count) // check if commands_count > 0
@@ -68,7 +80,8 @@ uint8_t dma_isReady()
 uint8_t dma_getChar()
 {
     if(dma.head == dma.tail)
-		return -1;
+		return 0;
+		//return -1;
 
 	dma.tail = (dma.tail + 1) % UART_BUFFER_SIZE; // get tail index
 	return dma.uart_buffer[dma.tail];
@@ -87,11 +100,11 @@ uint8_t* dma_getCommand()
 		cmd = char_append(cmd, ch); // append char to command
 	}
 
-	dma.commands_count--; // decrease number of commands, which exists in buffer
+	if(dma.commands_count)
+		dma.commands_count--; // decrease number of commands, which exists in buffer
 
 	return cmd;
 }
-
 
 /* ***************************** HANDLERS ********************************** */
 
@@ -128,20 +141,25 @@ void dma_dmaHandler()
 
 		response_length = DMA_BUFFER_SIZE - hdma->Instance->NDTR;
 
-		for(i = 0; i < response_length; i++)
+		dma.empty = 0;
+
+		if(response_length >= 15) // min length of command is 15
 		{
-			temp = (dma.head + 1) % UART_BUFFER_SIZE;
-
-			if(temp == dma.tail)
-				dma.head = dma.tail;
-			else
+			for(i = 0; i < response_length; i++)
 			{
-				dma.uart_buffer[temp] = dma.dma_buffer[i];
+				temp = (dma.head + 1) % UART_BUFFER_SIZE;
 
-				if(dma.uart_buffer[temp] == '\n') // if there is end of line sign, that means this is end of command
-					dma.commands_count++; // so increase number of commands
+				if(temp == dma.tail)
+					dma.head = dma.tail;
+				else
+				{
+					dma.uart_buffer[temp] = dma.dma_buffer[i];
 
-				dma.head = temp;
+					if(dma.uart_buffer[temp] == '\n') // if there is end of line sign, that means this is end of command
+						dma.commands_count++; // so increase number of commands
+
+					dma.head = temp;
+				}
 			}
 		}
 

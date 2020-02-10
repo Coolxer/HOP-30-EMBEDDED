@@ -26,15 +26,20 @@ void uart_listen()
 {
 	while(1)
 	{
-		if(dma_isReady())
+		if(!dma_isEmpty()) // info if something come
 		{
-			command = dma_getCommand();
+			if(dma_isReady())
+			{
+				command = dma_getCommand();
 
-			if(!uart_manage())
-				break;
+				if(!uart_manage())
+					break;
+			}
+			else
+				uart_send("_ERROR_invalid_command_length");
 
-			//free(command);
-		}
+			dma_clear();
+		}	
 	}
 
 	free(command);
@@ -50,9 +55,7 @@ uint8_t uart_manage()
 {
 	feedback = "";
 
-	if(strlen(command) == 0)
-		feedback = str_append(feedback, "_ERROR_NULL_DATA_EXCEPTION");
-	else if(strcmp(command, "FINISH") == 0) // checks if receive command is "FINISH"
+	if(strcmp(command, "FINISH") == 0) // checks if receive command is "FINISH"
 	{
 		feedback = str_append(feedback, "FINISHED");
 		return 0;

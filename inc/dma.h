@@ -8,6 +8,8 @@ DMA_HandleTypeDef hdma_usart2_rx;          // dma uart rx channel
 #define DMA_BUFFER_SIZE 64 				   // dma buffer size
 #define UART_BUFFER_SIZE 256			   // uart buffer size
 
+uint8_t DMA_STATUS_FLAG;
+
 typedef struct
 {
 	UART_HandleTypeDef *uart; 		       // pointer to UART structure
@@ -17,6 +19,8 @@ typedef struct
 
 	uint16_t head, tail; 				   // head, tail indexes
 	uint8_t commands_count; 			   // number of commands
+
+	uint8_t empty;
 }DMA;
 
 DMA dma; 								   // create structure instance
@@ -31,6 +35,9 @@ void dma_setup(UART_HandleTypeDef *uart); 	   // inits structure, enables interr
 void dma_init(); 							   // calls setups of interface and interrupts
 
 /* ******************* OPERATIONAL FUNCTIONS *************** ***** */
+
+uint8_t dma_isEmpty();
+void dma_clear();
 
 uint8_t dma_isReady(); 						   // checks if DMA is ready to read, 1 - yes, 0 - no
 /* PRIVATE */	//uint8_t dma_getChar(); 	   // returns one char from DMA
