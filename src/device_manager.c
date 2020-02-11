@@ -53,7 +53,7 @@ Stepper *device_manager_getStepper(uint8_t *name)
 
     for(i = 0; i < STEPPERS_COUNT; i++)
     {
-        if(strcmp(steppers[i].name, name) == 0)
+        if(strcmp((void *)steppers[i].name, (void *)name) == 0)
             return &steppers[i];
     }
 
@@ -73,7 +73,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
     uint8_t i;
 
-    for(int i = 0; i < ENDSTOPS_COUNT; i++)
+    for(i = 0; i < ENDSTOPS_COUNT; i++)
     {
         if(GPIO_Pin == endstops[i].pin)
         {
@@ -89,12 +89,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
                
             HAL_TIM_Base_Stop_IT(&endstop->parentStepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying antything
 
-            uint8_t* feedback = str_append(endstop->name, "_ENDSTOP_HIT");
+            uint8_t* feedback = str_append(endstop->name, (uint8_t*)"_ENDSTOP_HIT");
 
             if(cnt)
             {
-                feedback = str_append(feedback, "_STEPS=");
-                feedback = str_append(feedback, cnt);
+                feedback = str_append(feedback, (uint8_t*)"_STEPS=");
+
+                uint8_t *str = (uint8_t*)"";
+                sprintf((void*)str, "%d", cnt);
+
+                feedback = str_append(feedback, str);
             }
 
             uart_send(feedback); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
@@ -115,7 +119,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
             steppers[i].stEnabled = 0;
 
-            uint8_t *feedback = str_append("_SUCCESS_", (uint8_t*)steppers[i].masterTimer.Instance);
+            uint8_t *feedback = str_append((uint8_t*)"_SUCCESS_", (uint8_t*)steppers[i].masterTimer.Instance);
 
             uart_send(feedback);
 

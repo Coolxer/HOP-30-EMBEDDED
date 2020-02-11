@@ -1,6 +1,7 @@
 #ifdef UNIT_TEST
 
 #include <unity.h> // includes unit testing library
+#include "stm32f4xx_hal.h"
 #include "connector.h"
 
 void setUp();// default setup function

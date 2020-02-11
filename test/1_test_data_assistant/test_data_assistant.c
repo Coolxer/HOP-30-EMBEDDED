@@ -1,6 +1,7 @@
 #ifdef UNIT_TEST
 
 #include <unity.h> // includes unit testing library
+#include "stm32f4xx_hal.h"
 #include "data_assistant.h"
 
 void setUp();// default setup function
@@ -10,21 +11,21 @@ void tearDown(); // default release function
 
 void test_char_append_should_be_white_space()
 {
-    uint8_t* feedback = "";
+    uint8_t* feedback = (uint8_t*)"";
     feedback = char_append(feedback, ' ');
     TEST_ASSERT_EQUAL_STRING(" ", feedback);
 }
 
 void test_char_append_should_be_a()
 {
-    uint8_t* feedback = "";
+    uint8_t* feedback = (uint8_t*)"";
     feedback = char_append(feedback, 'a');
     TEST_ASSERT_EQUAL_STRING("a", feedback);
 }
 
 void test_char_append_should_be_abc_after_append_to_ab()
 {
-    uint8_t* feedback = "ab";
+    uint8_t* feedback = (uint8_t*)"ab";
 
     feedback = char_append(feedback, 'c');
     TEST_ASSERT_EQUAL_STRING("abc", feedback);
@@ -32,7 +33,7 @@ void test_char_append_should_be_abc_after_append_to_ab()
 
 void test_char_append_should_be_fine_if_double_append()
 {
-    uint8_t* feedback = "";
+    uint8_t* feedback = (uint8_t*)"";
     feedback = char_append(feedback, 'a');
     feedback = char_append(feedback, 'b');
 
@@ -43,32 +44,32 @@ void test_char_append_should_be_fine_if_double_append()
 
 void test_str_append_should_be_empty_if_double_quotes()
 {
-    uint8_t* feedback = "";
-    feedback = str_append(feedback, "");
+    uint8_t* feedback = (uint8_t*)"";
+    feedback = str_append(feedback, (uint8_t*)"");
     TEST_ASSERT_EQUAL_STRING("", feedback);
 }
 
 void test_str_append_should_be_a()
 {
-    uint8_t* feedback = "";
-    feedback = str_append(feedback, "a");
+    uint8_t* feedback = (uint8_t*)"";
+    feedback = str_append(feedback, (uint8_t*)"a");
     TEST_ASSERT_EQUAL_STRING("a", feedback);
 }
 
 void test_str_append_should_be_abc_after_append_to_a()
 {
-    uint8_t* feedback = "a";
+    uint8_t* feedback = (uint8_t*)"a";
 
-    feedback = str_append(feedback, "bc");
+    feedback = str_append(feedback, (uint8_t*)"bc");
     TEST_ASSERT_EQUAL_STRING("abc", feedback);
 }
 
 void test_str_append_should_be_fine_if_double_append()
 {
-    uint8_t* feedback = "ab";
+    uint8_t* feedback = (uint8_t*)"ab";
 
-    feedback = str_append(feedback, "cd");
-    feedback = str_append(feedback, "ef");
+    feedback = str_append(feedback, (uint8_t*)"cd");
+    feedback = str_append(feedback, (uint8_t*)"ef");
 
     TEST_ASSERT_EQUAL_STRING("abcdef", feedback);
 }

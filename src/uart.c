@@ -36,7 +36,7 @@ void uart_listen()
 					break;
 			}
 			else
-				uart_send("_ERROR_invalid_command_length");
+				uart_send((uint8_t*)"_ERROR_invalid_command_length");
 
 			dma_clear();
 		}	
@@ -48,16 +48,16 @@ void uart_listen()
 
 void uart_send(uint8_t *message)
 {
-	HAL_UART_Transmit(&uart, (uint8_t*)message, strlen(message), 1000); // sends message through UART with 100 timeout
+	HAL_UART_Transmit(&uart, (uint8_t*)message, strlen((void*)message), 1000); // sends message through UART with 100 timeout
 }
 
 uint8_t uart_manage()
 {
-	feedback = "";
+	feedback = (uint8_t*)"";
 
-	if(strcmp(command, "FINISH") == 0) // checks if receive command is "FINISH"
+	if(strcmp((void*)command, "FINISH") == 0) // checks if receive command is "FINISH"
 	{
-		feedback = str_append(feedback, "FINISHED");
+		feedback = str_append(feedback, (uint8_t*)"FINISHED");
 		return 0;
 	}
 	else
