@@ -19,7 +19,7 @@ uint8_t *char_append(uint8_t *src, uint8_t ch)
 
 uint8_t *str_append(uint8_t *src, uint8_t *str)
 {
-	uint8_t s = strlen(src) + strlen(str);
+	uint8_t s = strlen(src) + strlen(str) + 1;
 
 	uint8_t tmp[s];
 	tmp[0] = 0;

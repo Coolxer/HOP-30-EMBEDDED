@@ -24,6 +24,9 @@ uint8_t ***connector_parse(uint8_t* dialog)
 		if(strcmp(param[0], '=') == 0 || strchr(param, *param_delimiter) == NULL)
 			break;
 
+		//if(strchr(param, *param_delimiter) == NULL)
+		//	continue;
+
 		key = strtok_r(param, param_delimiter, &value); // assigns key & values contents
 		args = (uint8_t ***) realloc(args, (++records) * sizeof(uint8_t *)); // extends array by one row (2 columns)
 

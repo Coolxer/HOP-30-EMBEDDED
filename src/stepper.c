@@ -155,16 +155,10 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 
 uint8_t stepper_switch(Stepper *stepper, uint8_t *state)
 {
-	GPIO_PinState st;
-
-	if(strcmp(state, "off") == 0)
-		st = GPIO_PIN_RESET;
-	else if (strcmp(state, "on") == 0)
-		st = GPIO_PIN_SET;
-	else
+	if(strcmp(state, "0") != 0 && strcmp(state, "1") != 0)
 		return 0;
-	
-	HAL_GPIO_WritePin(stepper->port, stepper->enable, st); // switches the stepper (OFF or ON)
+
+	HAL_GPIO_WritePin(stepper->port, stepper->enable, (uint8_t)state); // switches the stepper (OFF or ON)
 
 	return 1;
 }
@@ -173,6 +167,9 @@ uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
 {
 	uint8_t i;
 	GPIO_PinState state;
+
+	if(strlen(states) != 3)
+		return 0;
 
 	for(i = 0; i < 3; i++)
 	{
@@ -228,12 +225,14 @@ void stepper_home(Stepper *stepper)
 	stepper_run(stepper);
 }
 
-void stepper_setDirection(Stepper *stepper, uint8_t dir)
+uint8_t stepper_setDirection(Stepper *stepper, uint8_t dir)
 {
-	if(dir)
-		HAL_GPIO_WritePin(stepper->port, stepper->dir, GPIO_PIN_SET);
-	else
-		HAL_GPIO_WritePin(stepper->port, stepper->dir, GPIO_PIN_RESET);
+	if(dir != 0 && dir != 1)
+		return 0;
+
+	HAL_GPIO_WritePin(stepper->port, stepper->dir, dir);
+	
+	return 1;
 }
 
 void stepper_changeDirection(Stepper *stepper)

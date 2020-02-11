@@ -1,4 +1,4 @@
-//#ifdef UNIT_TEST
+#ifdef UNIT_TEST
 
 #include <unity.h> // includes unit testing library
 #include <string.h>
@@ -6,12 +6,8 @@
 
 #include "stm32f4xx_hal.h"
 
-uint8_t* feedback;
 
-void setUp()// default setup function
-{
-    feedback = "";
-}
+void setUp();// default setup function
 
 void tearDown(); // default release function
 
@@ -19,19 +15,21 @@ void tearDown(); // default release function
 
 void test_char_append_should_be_white_space()
 {
+    uint8_t* feedback = "";
     feedback = char_append(feedback, ' ');
     TEST_ASSERT_EQUAL_STRING(" ", feedback);
 }
 
 void test_char_append_should_be_a()
 {
+    uint8_t* feedback = "";
     feedback = char_append(feedback, 'a');
     TEST_ASSERT_EQUAL_STRING("a", feedback);
 }
 
 void test_char_append_should_be_abc_after_append_to_ab()
 {
-    feedback = "ab";
+    uint8_t* feedback = "ab";
 
     feedback = char_append(feedback, 'c');
     TEST_ASSERT_EQUAL_STRING("abc", feedback);
@@ -47,6 +45,7 @@ void test_char_append_should_pass_through_if_a_in_double_quotes()
 
 void test_char_append_should_be_fine_if_double_append()
 {
+    uint8_t* feedback = "";
     feedback = char_append(feedback, 'a');
     feedback = char_append(feedback, 'b');
 
@@ -57,19 +56,21 @@ void test_char_append_should_be_fine_if_double_append()
 
 void test_str_append_should_be_empty_if_double_quotes()
 {
+    uint8_t* feedback = "";
     feedback = str_append(feedback, "");
     TEST_ASSERT_EQUAL_STRING("", feedback);
 }
 
 void test_str_append_should_be_a()
 {
+    uint8_t* feedback = "";
     feedback = str_append(feedback, "a");
     TEST_ASSERT_EQUAL_STRING("a", feedback);
 }
 
 void test_str_append_should_be_abc_after_append_to_a()
 {
-    feedback = "a";
+    uint8_t* feedback = "a";
 
     feedback = str_append(feedback, "bc");
     TEST_ASSERT_EQUAL_STRING("abc", feedback);
@@ -77,11 +78,12 @@ void test_str_append_should_be_abc_after_append_to_a()
 
 void test_str_append_should_be_fine_if_double_append()
 {
-    feedback = "a";
+    uint8_t* feedback = "ab";
 
-    feedback = str_append(feedback, "b");
     feedback = str_append(feedback, "cd");
-    TEST_ASSERT_EQUAL_STRING("abcd", feedback);
+    feedback = str_append(feedback, "ef");
+
+    TEST_ASSERT_EQUAL_STRING("abcdef", feedback);
 }
 
 int main()
@@ -90,7 +92,7 @@ int main()
     HAL_Delay(2000);    // service delay
 
     UNITY_BEGIN();
-    
+
     RUN_TEST(test_char_append_should_be_white_space);
     RUN_TEST(test_char_append_should_be_a);
     RUN_TEST(test_char_append_should_be_abc_after_append_to_ab);
@@ -105,4 +107,4 @@ int main()
     UNITY_END();
 }
 
-//#endif // UNIT_TEST
+#endif // UNIT_TEST

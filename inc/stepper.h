@@ -41,7 +41,7 @@ uint8_t stepper_switch(Stepper *stepper, uint8_t *state);               // switc
 uint8_t stepper_move(Stepper *stepper, uint8_t *steps);                 // moves stepper motor by given number of steps
 void stepper_home(Stepper *stepper);                                    // moves stepper motor until endstop signal detected
 
-void stepper_setDirection(Stepper *stepper, uint8_t dir);               // setups stepper motor direction
+uint8_t stepper_setDirection(Stepper *stepper, uint8_t dir);               // setups stepper motor direction
 void stepper_changeDirection(Stepper *stepper);                         // changes stepper motor 
 
 void stepper_run(Stepper *stepper);                                     // runs stepper motor to move immediately (no given steps)
