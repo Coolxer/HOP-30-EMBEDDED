@@ -89,6 +89,15 @@ void test_connector_manage_should_give_one_param_only_error()
     TEST_ASSERT_EQUAL_STRING("_ERROR_one_param_only", result);
 }
 
+void test_connector_manage_should_give_to_many_argument_error()
+{
+    uint8_t data[] = "abc=123|spp=12|spd=1|alf=56|\n";
+
+    uint8_t *result = connector_manage(connector_parse(data));
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_to_many_arguments", result);
+}
+
 void test_connector_manage_should_give_no_opt_key_error()
 {
     //args = connector_parse("abc=123|spp=12|\n");
@@ -125,6 +134,7 @@ int main()
 
     RUN_TEST(test_connector_manage_should_give_no_params_error);
     RUN_TEST(test_connector_manage_should_give_one_param_only_error);
+    RUN_TEST(test_connector_manage_should_give_to_many_argument_error)
     RUN_TEST(test_connector_manage_should_give_no_opt_key_error);
     RUN_TEST(test_connector_manage_should_give_invalid_opt_value_error);
  

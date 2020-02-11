@@ -6,9 +6,7 @@
 
 #include "stm32f4xx_hal.h"
 
-
 void setUp();// default setup function
-
 void tearDown(); // default release function
 
 /************************** char_append() ****************************/

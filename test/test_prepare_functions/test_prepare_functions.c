@@ -26,7 +26,7 @@ void test_prepare_settings_switch_should_give_no_spp_key_error()
     TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
 }
 
-void test_prepare_settings_switch_should_give_invalid_stepper_name_error()
+void test_prepare_settings_switch_should_give_invalid_spp_value_error()
 {
     uint8_t data[] = "opt=sth|spp=a|\n";
     uint8_t ***args = connector_parse(data);
@@ -43,7 +43,7 @@ void test_prepare_settings_switch_should_give_unknown_key_error()
 
     uint8_t *result = connector_manage(args);
 
-    TEST_ASSERT_EQUAL_STRING("_ERROR_unknown_key", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_stt_key", result);
 }
 
 void test_prepare_settings_switch_should_give_invalid_stt_value()
@@ -78,7 +78,7 @@ void test_prepare_settings_speed_should_give_no_spp_key_error()
     TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
 }
 
-void test_prepare_settings_spd_should_give_invalid_stepper_name_error()
+void test_prepare_settings_spd_should_give_invalid_spp_value_error()
 {
     uint8_t data[] = "opt=spd|spp=a|\n";
     uint8_t ***args = connector_parse(data);
@@ -95,7 +95,7 @@ void test_prepare_settings_speed_should_give_unknown_key_error()
 
     uint8_t *result = connector_manage(args);
 
-    TEST_ASSERT_EQUAL_STRING("_ERROR_unknown_key", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_spd_key", result);
 }
 
 void test_prepare_settings_speed_should_give_invalid_spd_value()
@@ -160,7 +160,7 @@ void test_prepare_settings_microstepping_should_give_no_spp_key_error()
     TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
 }
 
-void test_prepare_settings_microstepping_should_give_invalid_stepper_name_error()
+void test_prepare_settings_microstepping_should_give_invalid_spp_value_error()
 {
     uint8_t data[] = "opt=msp|spp=a|\n";
     uint8_t ***args = connector_parse(data);
@@ -177,7 +177,7 @@ void test_prepare_settings_microstepping_should_give_unknown_key_error()
 
     uint8_t *result = connector_manage(args);
 
-    TEST_ASSERT_EQUAL_STRING("_ERROR_unknown_key", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_msp_key", result);
 }
 
 void test_prepare_settings_microstepping_should_give_invalid_msp_value()
@@ -242,7 +242,7 @@ void test_prepare_home_should_give_no_spp_key_error()
     TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
 }
 
-void test_prepare_home_should_give_invalid_stepper_name_error()
+void test_prepare_home_should_give_invalid_spp_value_error()
 {
     uint8_t data[] = "opt=hom|spp=a|\n";
     uint8_t ***args = connector_parse(data);
@@ -254,7 +254,7 @@ void test_prepare_home_should_give_invalid_stepper_name_error()
 
 void test_prepare_home_should_give_valid_command()
 {
-    uint8_t data[] = "opt=msp|spp=x|\n";
+    uint8_t data[] = "opt=hom|spp=x|\n";
     uint8_t ***args = connector_parse(data);
 
     uint8_t *result = connector_manage(args);
@@ -274,7 +274,7 @@ void test_prepare_move_should_give_no_spp_key_error()
     TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
 }
 
-void test_prepare_move_should_give_invalid_stepper_name_error()
+void test_prepare_move_should_give_invalid_spp_value_error()
 {
     uint8_t data[] = "opt=mov|spp=a|\n";
     uint8_t ***args = connector_parse(data);
@@ -311,7 +311,7 @@ void test_prepare_move_should_give_success_if_negative_steps()
 
     uint8_t *result = connector_manage(args);
 
-    TEST_ASSERT_EQUAL_STRING("_SUCCESS", result);
+    TEST_ASSERT_EQUAL_STRING("_VALID_COMMAND", result);
 }
 
 void test_prepare_move_should_give_success_if_positive_steps()
@@ -321,7 +321,7 @@ void test_prepare_move_should_give_success_if_positive_steps()
 
     uint8_t *result = connector_manage(args);
 
-    TEST_ASSERT_EQUAL_STRING("_SUCCESS", result);
+    TEST_ASSERT_EQUAL_STRING("_VALID_COMMAND", result);
 }
 
 /*********************** prepare_process ***************************************/
@@ -346,6 +346,172 @@ void test_prepare_process_should_give_invalid_dir_value_error()
     TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_dir_value", result);
 }
 
+void test_prepare_process_should_give_valid_command()
+{
+    uint8_t data[] = "opt=pro|dir=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_VALID_COMMAND", result);
+}
+
+/*********************** prepare_intervention pause ***************************************/
+
+void test_prepare_intervention_pause_should_give_no_spp_key_error()
+{
+    uint8_t data[] = "opt=pau|abc=x|mod=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
+}
+
+void test_prepare_intervention_pause_should_give_invalid_spp_value_error()
+{
+    uint8_t data[] = "opt=pau|spp=a|mod=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spp_value", result);
+}
+
+void test_prepare_intervention_pause_should_give_no_mod_key_error()
+{
+    uint8_t data[] = "opt=pau|spp=x|abc=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_mod_key", result);
+}
+
+void test_prepare_intervention_pause_should_give_invalid_mod_value_error()
+{
+    uint8_t data[] = "opt=pau|spp=x|mod=a|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_mod_key", result);
+}
+
+void test_prepare_intervention_pause_should_give_succes()
+{
+    uint8_t data[] = "opt=pau|spp=x|mod=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_mod_key", result);
+}
+
+/*********************** prepare_intervention resume ***************************************/
+
+void test_prepare_intervention_resume_should_give_no_spp_key_error()
+{
+    uint8_t data[] = "opt=res|abc=x|mod=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
+}
+
+void test_prepare_intervention_resume_should_give_invalid_spp_value_error()
+{
+    uint8_t data[] = "opt=res|spp=a|mod=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spp_value", result);
+}
+
+void test_prepare_intervention_resume_should_give_no_mod_key_error()
+{
+    uint8_t data[] = "opt=res|spp=x|abc=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_mod_key", result);
+}
+
+void test_prepare_intervention_resume_should_give_invalid_mod_value_error()
+{
+    uint8_t data[] = "opt=res|spp=x|mod=a|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_mod_key", result);
+}
+
+void test_prepare_intervention_resume_should_give_succes()
+{
+    uint8_t data[] = "opt=res|spp=x|mod=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_mod_key", result);
+}
+
+/*********************** prepare_intervention stop ***************************************/
+
+void test_prepare_intervention_stop_should_give_no_spp_key_error()
+{
+    uint8_t data[] = "opt=sto|abc=x|mod=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
+}
+
+void test_prepare_intervention_stop_should_give_invalid_spp_value_error()
+{
+    uint8_t data[] = "opt=sto|spp=a|mod=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spp_value", result);
+}
+
+void test_prepare_intervention_stop_should_give_no_mod_key_error()
+{
+    uint8_t data[] = "opt=sto|spp=x|abc=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_mod_key", result);
+}
+
+void test_prepare_intervention_stop_should_give_invalid_mod_value_error()
+{
+    uint8_t data[] = "opt=sto|spp=x|mod=a|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_mod_key", result);
+}
+
+void test_prepare_intervention_stop_should_give_succes()
+{
+    uint8_t data[] = "opt=sto|spp=x|mod=1|\n";
+    uint8_t ***args = connector_parse(data);
+
+    uint8_t *result = connector_manage(args);
+
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_mod_key", result);
+}
+
 int main()
 {
     HAL_Init();         // initialize the HAL library
@@ -355,14 +521,14 @@ int main()
     
     // prepare settings sth
     RUN_TEST(test_prepare_settings_switch_should_give_no_spp_key_error);
-    RUN_TEST(test_prepare_settings_switch_should_give_invalid_stepper_name_error);
+    RUN_TEST(test_prepare_settings_switch_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_settings_switch_should_give_unknown_key_error);
     RUN_TEST(test_prepare_settings_switch_should_give_invalid_stt_value);
     RUN_TEST(test_prepare_settings_switch_should_give_success);
 
     // prepare settings spd
     RUN_TEST(test_prepare_settings_speed_should_give_no_spp_key_error);
-    RUN_TEST(test_prepare_settings_spd_should_give_invalid_stepper_name_error);
+    RUN_TEST(test_prepare_settings_spd_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_settings_speed_should_give_unknown_key_error);
     RUN_TEST(test_prepare_settings_speed_should_give_invalid_spd_value);
     RUN_TEST(test_prepare_settings_speed_should_give_invalid_spd_value_if_negative);
@@ -372,7 +538,7 @@ int main()
 
     // prepare settings msp
     RUN_TEST(test_prepare_settings_microstepping_should_give_no_spp_key_error);
-    RUN_TEST(test_prepare_settings_microstepping_should_give_invalid_stepper_name_error);
+    RUN_TEST(test_prepare_settings_microstepping_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_settings_microstepping_should_give_unknown_key_error);
     RUN_TEST(test_prepare_settings_microstepping_should_give_invalid_msp_value);
     RUN_TEST(test_prepare_settings_microstepping_should_give_invalid_msp_value_if_random_numbers);
@@ -382,16 +548,41 @@ int main()
 
     // prepare home
     RUN_TEST(test_prepare_home_should_give_no_spp_key_error);
-    RUN_TEST(test_prepare_home_should_give_invalid_stepper_name_error);
+    RUN_TEST(test_prepare_home_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_home_should_give_valid_command);
 
     // prepare move
     RUN_TEST(test_prepare_move_should_give_no_spp_key_error);
-    RUN_TEST(test_prepare_move_should_give_invalid_stepper_name_error);
+    RUN_TEST(test_prepare_move_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_move_should_give_move_by_0_steps_error);
     RUN_TEST(test_prepare_move_should_give_success_if_negative_steps);
     RUN_TEST(test_prepare_move_should_give_success_if_positive_steps);
-    
+
+    // prepare process
+    RUN_TEST(test_prepare_process_should_give_no_dir_key_error);
+    RUN_TEST(test_prepare_process_should_give_invalid_dir_value_error);
+    RUN_TEST(test_prepare_process_should_give_valid_command);
+
+    //prepare intervention pause
+    RUN_TEST(test_prepare_intervention_pause_should_give_no_spp_key_error);
+    RUN_TEST(test_prepare_intervention_pause_should_give_invalid_spp_value_error);
+    RUN_TEST(test_prepare_intervention_pause_should_give_no_mod_key_error);
+    RUN_TEST(test_prepare_intervention_pause_should_give_invalid_mod_value_error);
+    RUN_TEST(test_prepare_intervention_pause_should_give_succes);
+
+    //prepare intervention resume
+    RUN_TEST(test_prepare_intervention_resume_should_give_no_spp_key_error);
+    RUN_TEST(test_prepare_intervention_resume_should_give_invalid_spp_value_error);
+    RUN_TEST(test_prepare_intervention_resume_should_give_no_mod_key_error);
+    RUN_TEST(test_prepare_intervention_resume_should_give_invalid_mod_value_error);
+    RUN_TEST(test_prepare_intervention_resume_should_give_succes);
+
+    //prepare intervention pause
+    RUN_TEST(test_prepare_intervention_stop_should_give_no_spp_key_error);
+    RUN_TEST(test_prepare_intervention_stop_should_give_invalid_spp_value_error);
+    RUN_TEST(test_prepare_intervention_stop_should_give_no_mod_key_error);
+    RUN_TEST(test_prepare_intervention_stop_should_give_invalid_mod_value_error);
+    RUN_TEST(test_prepare_intervention_stop_should_give_succes);
 
     UNITY_END();
 }

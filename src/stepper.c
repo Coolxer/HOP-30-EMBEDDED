@@ -227,7 +227,8 @@ void stepper_home(Stepper *stepper)
 
 uint8_t stepper_setDirection(Stepper *stepper, uint8_t dir)
 {
-	if(dir != 0 && dir != 1)
+	//if(dir != 0 && dir != 1)
+	if(strcmp(dir, '0') != 0 && strcmp(dir, '1') != 0)
 		return 0;
 
 	HAL_GPIO_WritePin(stepper->port, stepper->dir, dir);
@@ -246,8 +247,11 @@ void stepper_run(Stepper *stepper)
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 }
 
-void stepper_pause(Stepper *stepper, uint8_t mode)
+uint8_t stepper_pause(Stepper *stepper, uint8_t mode)
 {
+	if(mode != 0 && mode != 1)
+		return 0;
+
 	if(mode)
 	{
 		stepper->target = stepper->slaveTimer.Instance->ARR;
@@ -255,10 +259,14 @@ void stepper_pause(Stepper *stepper, uint8_t mode)
 	}
 	
 	stepper_stop(stepper, mode);
+	return 1;
 }
 
-void stepper_resume(Stepper *stepper, uint8_t mode)
+uint8_t stepper_resume(Stepper *stepper, uint8_t mode)
 {
+	if(mode != 0 && mode != 1)
+		return 0;
+
 	if(mode)
 	{
 		__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, stepper->target);
@@ -268,14 +276,21 @@ void stepper_resume(Stepper *stepper, uint8_t mode)
 	}
 
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel);
+	return 1;
+
 }
 
-void stepper_stop(Stepper *stepper, uint8_t mode)
+uint8_t stepper_stop(Stepper *stepper, uint8_t mode)
 {
+	if(mode != 0 && mode != 1)
+		return 0;
+
 	HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel);
 
 	if(mode)
 		HAL_TIM_Base_Stop_IT(&stepper->slaveTimer);
+
+	return 1;
 }
 
 //#endif // STSTM32

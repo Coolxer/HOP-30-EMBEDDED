@@ -46,8 +46,8 @@ void stepper_changeDirection(Stepper *stepper);                         // chang
 
 void stepper_run(Stepper *stepper);                                     // runs stepper motor to move immediately (no given steps)
 
-void stepper_pause(Stepper *stepper, uint8_t mode);                     // pauses stepper and saves timer parameters to easy resume
-void stepper_resume(Stepper *stepper, uint8_t mode);                    // resumes stepper motor, after it was paused
-void stepper_stop(Stepper *stepper, uint8_t mode);                      // stop stepper motor (no saving timer parameters)
+uint8_t stepper_pause(Stepper *stepper, uint8_t mode);                     // pauses stepper and saves timer parameters to easy resume
+uint8_t stepper_resume(Stepper *stepper, uint8_t mode);                    // resumes stepper motor, after it was paused
+uint8_t stepper_stop(Stepper *stepper, uint8_t mode);                      // stop stepper motor (no saving timer parameters)
 
 #endif // STEPPER_H

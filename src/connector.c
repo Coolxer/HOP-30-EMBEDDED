@@ -45,11 +45,14 @@ uint8_t *connector_manage(uint8_t ***args)
 {
 	uint8_t *opt;
 
-	if(args == NULL || records < 1) // checks if no records detected!
+	if(records < 1) // checks if no records detected!
 		return "_ERROR_no_params";
 
 	if(records == 1) // if there is only one record -> command incorrect
 		return "_ERROR_one_param_only";
+
+	if(records > 3)
+		return "_ERROR_to_many_arguments";
 		
 	if(args != NULL && strcmp(args[0][0], "opt") != 0) // if there is no "opt" key -> command incorrect
 		return "_ERROR_no_opt_key";
@@ -61,7 +64,7 @@ uint8_t *connector_manage(uint8_t ***args)
 	/* checks operation (opt) mode and calls appropriate prepare_function */
 
 	if(strcmp(opt, "sth") == 0)
-		return prepare_settings(args, records, "stt", stepper_switch);
+		return prepare_switch(args, records);
 	else if(strcmp(opt, "spd") == 0)
 		return prepare_settings(args, records, "spd", stepper_setSpeed);
 	else if(strcmp(opt, "msp") == 0)
