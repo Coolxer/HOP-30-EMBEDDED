@@ -123,6 +123,27 @@ void stepper_setupTimers(Stepper *stepper)
 	stepper_setupSlaveTimer(stepper);
 }
 
+uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
+{
+	uint8_t i;
+	GPIO_PinState state;
+
+	if(strlen(states) != 3)
+		return 0;
+
+	for(i = 0; i < 3; i++)
+	{
+		if(states[i] != '0' && states[i] != '1')
+			return 0;
+
+		state = (strcmp(states[i], '0') == 0) ? GPIO_PIN_RESET : GPIO_PIN_SET;
+
+		HAL_GPIO_WritePin(stepper->port, stepper->m[i], state); // sets required state of concret microstep pin 
+	}
+
+	return 1;
+}
+
 uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 {
 	uint32_t nSpeed;
@@ -183,25 +204,10 @@ uint8_t stepper_switch(Stepper *stepper, uint8_t *state)
 	return 1;
 }
 
-uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
+void stepper_home(Stepper *stepper)
 {
-	uint8_t i;
-	GPIO_PinState state;
-
-	if(strlen(states) != 3)
-		return 0;
-
-	for(i = 0; i < 3; i++)
-	{
-		if((strcmp(states[i], '0') != 0) && (strcmp(states[i], '1') != 0))
-			return 0;
-
-		state = (strcmp(states[i], '0') == 0) ? GPIO_PIN_RESET : GPIO_PIN_SET;
-
-		HAL_GPIO_WritePin(stepper->port, stepper->m[i], state); // sets required state of concret microstep pin 
-	}
-
-	return 1;
+	stepper_setDirection(stepper, 0);
+	stepper_run(stepper);
 }
 
 uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
@@ -210,7 +216,7 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 
 	uint8_t len = strlen(steps);
 
-	if(len <= 0)
+	if(len == 0)
 		return 0;
 	else if (len > 1 && steps[0] == '0')
 		return 0;
@@ -255,12 +261,6 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 
 	return 1;
-}
-
-void stepper_home(Stepper *stepper)
-{
-	stepper_setDirection(stepper, 0);
-	stepper_run(stepper);
 }
 
 uint8_t stepper_setDirection(Stepper *stepper, uint8_t *dir)

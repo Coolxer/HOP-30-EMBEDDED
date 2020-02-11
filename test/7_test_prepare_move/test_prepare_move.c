@@ -51,17 +51,7 @@ void test_prepare_move_should_give_move_by_0_steps_error()
     TEST_ASSERT_EQUAL_STRING("_ERROR_move_by_0_steps", result);
 }
 
-void test_prepare_move_should_give_valid_command_if_negative_steps()
-{
-    uint8_t data[] = "opt=mov|spp=x|stp=-25|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_VALID_COMMAND", result);
-}
-
-void test_prepare_move_should_give_valid_command_if_positive_steps()
+void test_prepare_move_should_give_valid_command()
 {
     uint8_t data[] = "opt=mov|spp=x|stp=89|\n";
     uint8_t ***args = connector_parse(data);
@@ -81,8 +71,7 @@ int main()
     RUN_TEST(test_prepare_move_should_give_no_spp_key_error);
     RUN_TEST(test_prepare_move_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_move_should_give_move_by_0_steps_error);
-    RUN_TEST(test_prepare_move_should_give_valid_command_if_negative_steps);
-    RUN_TEST(test_prepare_move_should_give_valid_command_if_positive_steps);
+    RUN_TEST(test_prepare_move_should_give_valid_command);
 
     UNITY_END();
 }

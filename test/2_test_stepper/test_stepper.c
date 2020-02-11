@@ -23,14 +23,14 @@ void test_stepper_setMicrostepping_should_give_false_if_1()
     TEST_ASSERT_FALSE(stepper_setMicrostepping(NULL, "1"));
 }
 
-void test_stepper_setMicrostepping_should_give_false_if_random_numbers()
-{
-    TEST_ASSERT_FALSE(stepper_setMicrostepping(NULL, "408"));
-}
-
 void test_stepper_setMicrostepping_should_give_false_if_too_many_numbers()
 {
     TEST_ASSERT_FALSE(stepper_setMicrostepping(NULL, "0101010"));
+}
+
+void test_stepper_setMicrostepping_should_give_false_if_random_numbers()
+{
+    TEST_ASSERT_FALSE(stepper_setMicrostepping(NULL, "408"));
 }
 
 void test_stepper_setMicrostepping_should_give_false_if_mix()
@@ -264,8 +264,8 @@ int main()
     RUN_TEST(test_stepper_setMicrostepping_should_give_false_if_empty);
     RUN_TEST(test_stepper_setMicrostepping_should_give_false_if_a);
     RUN_TEST(test_stepper_setMicrostepping_should_give_false_if_1);
-    RUN_TEST(test_stepper_setMicrostepping_should_give_false_if_random_numbers);
     RUN_TEST(test_stepper_setMicrostepping_should_give_false_if_too_many_numbers);
+    RUN_TEST(test_stepper_setMicrostepping_should_give_false_if_random_numbers);
     RUN_TEST(test_stepper_setMicrostepping_should_give_false_if_mix);
     RUN_TEST(test_stepper_setMicrostepping_should_give_true);
 

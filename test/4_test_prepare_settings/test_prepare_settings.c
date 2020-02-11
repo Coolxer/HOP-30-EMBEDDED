@@ -53,36 +53,6 @@ void test_prepare_settings_speed_should_give_invalid_spd_value()
     TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spd_value", result);
 }
 
-void test_prepare_settings_speed_should_give_invalid_spd_value_if_negative()
-{
-    uint8_t data[] = "opt=spd|spp=x|spd=-1|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spd_value", result);
-}
-
-void test_prepare_settings_speed_should_give_invalid_spd_value_if_zero()
-{
-    uint8_t data[] = "opt=spd|spp=x|spd=0|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spd_value", result);
-}
-
-void test_prepare_settings_speed_should_give_invalid_spd_value_if_over()
-{
-    uint8_t data[] = "opt=spd|spp=x|spd=101|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spd_value", result);
-}
-
 void test_prepare_settings_speed_should_give_success()
 {
     uint8_t data[] = "opt=spd|spp=x|spd=50|\n";
@@ -135,36 +105,6 @@ void test_prepare_settings_microstepping_should_give_invalid_msp_value()
     TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_msp_value", result);
 }
 
-void test_prepare_settings_microstepping_should_give_invalid_msp_value_if_random_numbers()
-{
-    uint8_t data[] = "opt=msp|spp=x|msp=406\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_msp_value", result);
-}
-
-void test_prepare_settings_microstepping_should_give_invalid_msp_value_if_too_many_characters()
-{
-    uint8_t data[] = "opt=msp|spp=x|msp=01010101|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_msp_value", result);
-}
-
-void test_prepare_settings_microstepping_should_give_invalid_msp_value_if_mix()
-{
-    uint8_t data[] = "opt=msp|spp=x|msp=10a|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_msp_value", result);
-}
-
 void test_prepare_settings_microstepping_should_give_success()
 {
     uint8_t data[] = "opt=msp|spp=x|msp=101|\n";
@@ -187,9 +127,6 @@ int main()
     RUN_TEST(test_prepare_settings_speed_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_settings_speed_should_give_no_spd_key_error);
     RUN_TEST(test_prepare_settings_speed_should_give_invalid_spd_value);
-    RUN_TEST(test_prepare_settings_speed_should_give_invalid_spd_value_if_negative);
-    RUN_TEST(test_prepare_settings_speed_should_give_invalid_spd_value_if_zero);
-    RUN_TEST(test_prepare_settings_speed_should_give_invalid_spd_value_if_over);
     RUN_TEST(test_prepare_settings_speed_should_give_success);
 
     // prepare settings msp
@@ -197,9 +134,6 @@ int main()
     RUN_TEST(test_prepare_settings_microstepping_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_settings_microstepping_should_give_no_msp_key_error);
     RUN_TEST(test_prepare_settings_microstepping_should_give_invalid_msp_value);
-    RUN_TEST(test_prepare_settings_microstepping_should_give_invalid_msp_value_if_random_numbers);
-    RUN_TEST(test_prepare_settings_microstepping_should_give_invalid_msp_value_if_too_many_characters);
-    RUN_TEST(test_prepare_settings_microstepping_should_give_invalid_msp_value_if_mix);
     RUN_TEST(test_prepare_settings_microstepping_should_give_success);
 
     UNITY_END();
