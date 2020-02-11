@@ -9,6 +9,7 @@
 #include "endstop.h"
 
 #include "uart.h"
+#include "data_assistant.h"
 
 #define STEPPERS_COUNT 4                                                        
 #define ENDSTOPS_COUNT 6                                                        
@@ -23,14 +24,14 @@ void device_manager_init()
     stepper_init(&steppers[2], Z_NAME, Z_PORT, Z_MASTER_TIMER, Z_SLAVE_TIMER, Z_ALTERNATE_FUNCTION, Z_CHANNEL, Z_ITR, Z_IRQ, Z_STEP, Z_DIR, Z_ENABLE, Z_M1, Z_M2, Z_M3);
     stepper_init(&steppers[3], W_NAME, W_PORT, W_MASTER_TIMER, W_SLAVE_TIMER, W_ALTERNATE_FUNCTION, W_CHANNEL, W_ITR, W_IRQ, W_STEP, W_DIR, W_ENABLE, W_M1, W_M2, W_M3);
 
-    endstop_init(&endstops[0], &steppers[0], XL_PORT, XL_PIN, XL_IRQ);
-    endstop_init(&endstops[1], &steppers[0], XR_PORT, XR_PIN, XR_IRQ);
+    endstop_init(&endstops[0], XL_NAME, &steppers[0], XL_PORT, XL_PIN, XL_IRQ);
+    endstop_init(&endstops[1], XR_NAME, &steppers[0], XR_PORT, XR_PIN, XR_IRQ);
 
-    endstop_init(&endstops[2], &steppers[1], YL_PORT, YL_PIN, YL_IRQ);
-    endstop_init(&endstops[3], &steppers[1], YR_PORT, YR_PIN, YR_IRQ);
+    endstop_init(&endstops[2], YL_NAME, &steppers[1], YL_PORT, YL_PIN, YL_IRQ);
+    endstop_init(&endstops[3], YR_NAME, &steppers[1], YR_PORT, YR_PIN, YR_IRQ);
 
-    endstop_init(&endstops[3], &steppers[2], ZL_PORT, ZL_PIN, ZL_IRQ);
-    endstop_init(&endstops[4], &steppers[2], ZR_PORT, ZR_PIN, ZR_IRQ);
+    endstop_init(&endstops[3], ZL_NAME, &steppers[2], ZL_PORT, ZL_PIN, ZL_IRQ);
+    endstop_init(&endstops[4], ZR_NAME, &steppers[2], ZR_PORT, ZR_PIN, ZR_IRQ);
 
     PROCESS_FORWARD = 0;
 }
@@ -63,7 +64,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if(GPIO_Pin == XR_PIN && PROCESS_FORWARD)
     {
-        //stepper_setDirection(&steppers[0], 0);
         stepper_changeDirection(&steppers[0]);
         stepper_changeDirection(&steppers[3]);
 
@@ -78,9 +78,26 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         if(GPIO_Pin == endstops[i].pin)
         {
             HAL_TIM_PWM_Stop(&endstop->parentStepper->masterTimer, endstop->parentStepper->channel); // stop PWM (moving) on assigned stepper
+
+            uint8_t cnt = 0;
+
+            if(endstop->parentStepper->stEnabled)
+            {
+                 cnt = endstop->parentStepper->slaveTimer.Instance->CNT;
+                 endstop->parentStepper->stEnabled = 0;
+            }
+               
             HAL_TIM_Base_Stop_IT(&endstop->parentStepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying antything
 
-            uart_send("CRANCOWKA HIT HARD"); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
+            uint8_t* feedback = str_append(endstop->name, "_ENDSTOP_HIT");
+
+            if(cnt)
+            {
+                feedback = str_append(feedback, "_STEPS=");
+                feedback = str_append(feedback, cnt);
+            }
+
+            uart_send(feedback); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
         }
     }   
 }
@@ -95,6 +112,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         {
             HAL_TIM_PWM_Stop(&steppers[i].masterTimer, steppers[i].channel); // stop PWM (moving) on assigned stepper
 		    HAL_TIM_Base_Stop_IT(&steppers[i].slaveTimer);
+
+            steppers[i].stEnabled = 0;
+
+            uint8_t *feedback = str_append("_SUCCESS_", (uint8_t*)steppers[i].masterTimer.Instance);
+
+            uart_send(feedback);
+
+            free(feedback);
         }
     }
 }

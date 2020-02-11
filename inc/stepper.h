@@ -24,6 +24,8 @@ typedef struct
 
     uint16_t cnt;                   // current slaveTimer counter value
     uint16_t target;                // slaveTimer period
+
+    uint8_t stEnabled;
 }Stepper;
 
 Stepper* stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3);

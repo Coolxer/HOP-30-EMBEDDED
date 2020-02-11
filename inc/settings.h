@@ -148,6 +148,7 @@
 
 /***** LEFT ENDSTOP *****/
 
+#define XL_NAME "XL"
 #define XL_PORT GPIOC
 #define XL_PIN GPIO_PIN_0
 #define XL_IRQ EXTI0_IRQn
@@ -156,6 +157,7 @@
 
 /**** RIGHT ENDSTOP *****/
 
+#define XR_NAME "XR"
 #define XR_PORT GPIOC
 #define XR_PIN GPIO_PIN_1
 #define XR_IRQ EXTI1_IRQn
@@ -168,6 +170,7 @@
 
 /***** LEFT ENDSTOP *****/
 
+#define YL_NAME "YL"
 #define YL_PORT GPIOC
 #define YL_PIN GPIO_PIN_2
 #define YL_IRQ EXTI2_IRQn
@@ -176,6 +179,7 @@
 
 /**** RIGHT ENDSTOP *****/
 
+#define YR_NAME "YR"
 #define YR_PORT GPIOC
 #define YR_PIN GPIO_PIN_3
 #define YR_IRQ EXTI3_IRQn
@@ -188,6 +192,7 @@
 
 /***** LEFT ENDSTOP *****/
 
+#define ZL_NAME "ZL"
 #define ZL_PORT GPIOC
 #define ZL_PIN GPIO_PIN_4
 #define ZL_IRQ EXTI4_IRQn
@@ -196,6 +201,7 @@
 
 /**** RIGHT ENDSTOP *****/
 
+#define ZR_NAME "ZR"
 #define ZR_PORT GPIOC
 #define ZR_PIN GPIO_PIN_5
 #define ZR_IRQ EXTI9_5_IRQn

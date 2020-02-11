@@ -1,8 +1,10 @@
 //#ifdef STSTM32
 #include "endstop.h"
 
-Endstop *endstop_init(Endstop *endstop, Stepper *parentStepper, uint32_t port, uint16_t pin, uint8_t irq)
+Endstop *endstop_init(Endstop *endstop, uint8_t *name, Stepper *parentStepper, uint32_t port, uint16_t pin, uint8_t irq)
 {
+    strcpy(endstop->name, name);
+
     endstop->parentStepper = parentStepper;
 
     endstop->port = port;

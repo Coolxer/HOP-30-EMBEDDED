@@ -5,6 +5,7 @@
 
 typedef struct 
 {
+    uint8_t name[2];                            // 2-characters name
     Stepper *parentStepper;                     // pointer to parent stepper to which the endstop will affect
 
     uint32_t port;                              // gpio port, where the pin is connected        
@@ -15,7 +16,7 @@ typedef struct
 
 Endstop *endstop;                               // endstop pointer, using to make operations on actual selected endstop
 
-Endstop *endstop_init(Endstop *endstop, Stepper *parentStepper, uint32_t port, uint16_t pin, uint8_t irq); // endstop "constructor" function
+Endstop *endstop_init(Endstop *endstop, uint8_t *name, Stepper *parentStepper, uint32_t port, uint16_t pin, uint8_t irq); // endstop "constructor" function
 void endstop_deinit(Endstop *endstop);          // disables IRQ
 
 

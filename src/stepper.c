@@ -27,6 +27,8 @@ Stepper* stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDe
 	stepper->m[1] = m2;
 	stepper->m[2] = m3;
 
+	stepper->stEnabled = 0;
+
 	stepper_setupGpio(stepper); 
 	stepper_setupTimers(stepper);
 
@@ -255,6 +257,8 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 	}
 	
 	__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, nSteps);
+
+	stepper->stEnabled = 1;
 
 	stepper_switch(stepper, "1");
 	HAL_TIM_Base_Start_IT(&stepper->slaveTimer);

@@ -22,8 +22,7 @@ uint8_t *prepare_settings(uint8_t ***args, uint8_t size, uint8_t *key, uint8_t (
 			{
 				if(!fun(stepper, args[1][1]))
 				{
-					feedback = "_ERROR_invalid_";
-					feedback = str_append(feedback, key);
+					feedback = str_append("_ERROR_invalid_", key);
 					feedback = str_append(feedback, "_value");
 				}
 				else
@@ -31,8 +30,7 @@ uint8_t *prepare_settings(uint8_t ***args, uint8_t size, uint8_t *key, uint8_t (
 			}
 			else
 			{
-				feedback = "_ERROR_no_";
-				feedback = str_append(feedback, key);
+				feedback = str_append("_ERROR_no_", key);
 				feedback = str_append(feedback, "_key");
 			}				
 		}
