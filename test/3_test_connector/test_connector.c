@@ -1,21 +1,17 @@
 #ifdef UNIT_TEST
 
 #include <unity.h> // includes unit testing library
-#include <string.h>
 #include "connector.h"
-
-#include "stm32f4xx_hal.h"
 
 void setUp();// default setup function
 void tearDown(); // default release function
 
-// connector_parse() function will be called only if givent command has at least 15 characters and the last character is \n (new line)
+// connector_parse() function will be called only if given command has at least 15 characters and the last character is \n (new line terminator)
 
 /******************** connector parse ********************/
 
 void test_connector_parse_should_give_null_if_white_spaces_only()
 {
-    //args = connector_parse("              \n");
     uint8_t data[] = "              \n";
     uint8_t ***args = connector_parse(data);
     TEST_ASSERT_NULL(args);
@@ -23,7 +19,6 @@ void test_connector_parse_should_give_null_if_white_spaces_only()
 
 void test_connector_parse_should_give_null_if_normal_text()
 {
-    //args = connector_parse("aaaaaaaaaaaaaa\n");
     uint8_t data[] = "aaaaaaaaaaaaaa\n";
     uint8_t ***args = connector_parse(data);
     TEST_ASSERT_NULL(args);
@@ -31,7 +26,6 @@ void test_connector_parse_should_give_null_if_normal_text()
 
 void test_connector_parse_should_give_null_if_pipes_only()
 {
-    //args = connector_parse("||||||||||||||\n");
     uint8_t data[] = "||||||||||||||\n";
     uint8_t ***args = connector_parse(data);
     TEST_ASSERT_NULL(args);
@@ -39,7 +33,6 @@ void test_connector_parse_should_give_null_if_pipes_only()
 
 void test_connector_parse_should_give_null_if_equal_signs_only()
 {
-    //args = connector_parse("==============\n");
     uint8_t data[] = "==============\n";
     uint8_t ***args = connector_parse(data);
     TEST_ASSERT_NULL(args);
@@ -47,8 +40,6 @@ void test_connector_parse_should_give_null_if_equal_signs_only()
 
 void test_connector_parse_should_give_one_record()
 {
-    //args = connector_parse("aaaaaaa=bbbbbb|\n");
-
     uint8_t data[] = "aaaaaaa=bbbbbb|\n";
     uint8_t ***args = connector_parse(data);
 
@@ -58,8 +49,6 @@ void test_connector_parse_should_give_one_record()
 
 void test_connector_parse_should_give_three_records()
 {
-    //args = connector_parse("a1=b|c1=d|e1=f|\n");
-
     uint8_t data[] = "a1=b|c1=d|e1=f|\n";
     uint8_t ***args = connector_parse(data);
 
@@ -75,13 +64,13 @@ void test_connector_parse_should_give_three_records()
 
 void test_connector_manage_should_give_no_params_error()
 {
-    uint8_t *result = connector_manage(NULL);
+    uint8_t data[] = "aaaaaaaaaaaaaaa|\n";
+    uint8_t *result = connector_manage(connector_parse(data));
     TEST_ASSERT_EQUAL_STRING("_ERROR_no_params", result);
 }
 
 void test_connector_manage_should_give_one_param_only_error()
 {
-    //args = connector_parse("opt=aaaaaaaaaa|\n");
     uint8_t data[] = "opt=aaaaaaaaaa|\n";
 
     uint8_t *result = connector_manage(connector_parse(data));
@@ -89,7 +78,7 @@ void test_connector_manage_should_give_one_param_only_error()
     TEST_ASSERT_EQUAL_STRING("_ERROR_one_param_only", result);
 }
 
-void test_connector_manage_should_give_to_many_argument_error()
+void test_connector_manage_should_give_to_many_arguments_error()
 {
     uint8_t data[] = "abc=123|spp=12|spd=1|alf=56|\n";
 
@@ -100,7 +89,6 @@ void test_connector_manage_should_give_to_many_argument_error()
 
 void test_connector_manage_should_give_no_opt_key_error()
 {
-    //args = connector_parse("abc=123|spp=12|\n");
     uint8_t data[] = "abc=123|spp=12|\n";
 
     uint8_t *result = connector_manage(connector_parse(data));
@@ -110,7 +98,6 @@ void test_connector_manage_should_give_no_opt_key_error()
 
 void test_connector_manage_should_give_invalid_opt_value_error()
 {
-    //args = connector_parse("opt=123|spp=12|\n");
     uint8_t data[] = "opt=123|spp=12|\n";
 
     uint8_t *result = connector_manage(connector_parse(data));
@@ -134,7 +121,7 @@ int main()
 
     RUN_TEST(test_connector_manage_should_give_no_params_error);
     RUN_TEST(test_connector_manage_should_give_one_param_only_error);
-    RUN_TEST(test_connector_manage_should_give_to_many_argument_error)
+    RUN_TEST(test_connector_manage_should_give_to_many_arguments_error);
     RUN_TEST(test_connector_manage_should_give_no_opt_key_error);
     RUN_TEST(test_connector_manage_should_give_invalid_opt_value_error);
  

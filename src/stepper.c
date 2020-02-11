@@ -134,7 +134,27 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 	// so we need to cast this, but not this moment, because it's need to set up clocks frequency
 	// and see in real time, what speed we need
 
-	sscanf(speed, "%d", &nSpeed);
+
+	uint8_t len = strlen(speed);
+
+	if(len == 0 || len > 3) // check if string is empty or too long
+		return 0;
+	else
+	{
+		if(speed[0] == '0') // check if string starts with 0
+			return 0;
+	}
+	
+	uint8_t i;
+
+	for(i = 0; i < len; i++)
+	{
+		if(speed[i] < 48 || speed[i] > 57)  // check if string contains only numbers
+			return 0;
+	}
+
+	if(!sscanf(speed, "%d", &nSpeed))
+		return 0;
 
 	// min - max
 	// <1000, 11000>
@@ -187,7 +207,27 @@ uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
 uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 {	
 	int32_t nSteps;
-	sscanf(steps, "%d", &nSteps);
+
+	uint8_t len = strlen(steps);
+
+	if(len <= 0)
+		return 0;
+	else if (len > 1 && steps[0] == '0')
+		return 0;
+
+	if((steps[0] < 48 || steps[0] > 58) && steps[0] != '-')
+		return 0;
+
+	uint8_t i;
+
+	for(i = 1; i < len; i++)
+	{
+		if(steps[i] < 48 || steps[i] > 57)  // check if string contains only numbers
+			return 0;
+	}
+
+	if(!sscanf(steps, "%d", &nSteps))
+		return 0;
 
 	if(nSteps == 0)
 		return 0;
@@ -204,14 +244,12 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 		__HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 1);
 	else
 	{
-		// there i noticed something weird, because steppers
 		if(stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5)
 			nSteps -= 1;
 	}
 	
 	__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, nSteps);
 
-	
 	stepper_switch(stepper, "1");
 	HAL_TIM_Base_Start_IT(&stepper->slaveTimer);
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
@@ -225,13 +263,12 @@ void stepper_home(Stepper *stepper)
 	stepper_run(stepper);
 }
 
-uint8_t stepper_setDirection(Stepper *stepper, uint8_t dir)
+uint8_t stepper_setDirection(Stepper *stepper, uint8_t *dir)
 {
-	//if(dir != 0 && dir != 1)
-	if(strcmp(dir, '0') != 0 && strcmp(dir, '1') != 0)
+	if(strcmp(dir, "0") != 0 && strcmp(dir, "1") != 0)
 		return 0;
 
-	HAL_GPIO_WritePin(stepper->port, stepper->dir, dir);
+	HAL_GPIO_WritePin(stepper->port, stepper->dir, (uint8_t)dir);
 	
 	return 1;
 }
@@ -247,9 +284,9 @@ void stepper_run(Stepper *stepper)
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 }
 
-uint8_t stepper_pause(Stepper *stepper, uint8_t mode)
+uint8_t stepper_pause(Stepper *stepper, uint8_t *mode)
 {
-	if(mode != 0 && mode != 1)
+	if(strcmp(mode, "0") != 0 && strcmp(mode, "1") != 0)
 		return 0;
 
 	if(mode)
@@ -262,9 +299,9 @@ uint8_t stepper_pause(Stepper *stepper, uint8_t mode)
 	return 1;
 }
 
-uint8_t stepper_resume(Stepper *stepper, uint8_t mode)
+uint8_t stepper_resume(Stepper *stepper, uint8_t *mode)
 {
-	if(mode != 0 && mode != 1)
+	if(strcmp(mode, "0") != 0 && strcmp(mode, "1") != 0)
 		return 0;
 
 	if(mode)
@@ -276,13 +313,13 @@ uint8_t stepper_resume(Stepper *stepper, uint8_t mode)
 	}
 
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel);
+	
 	return 1;
-
 }
 
-uint8_t stepper_stop(Stepper *stepper, uint8_t mode)
+uint8_t stepper_stop(Stepper *stepper, uint8_t *mode)
 {
-	if(mode != 0 && mode != 1)
+	if(strcmp(mode, "0") != 0 && strcmp(mode, "1") != 0)
 		return 0;
 
 	HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel);

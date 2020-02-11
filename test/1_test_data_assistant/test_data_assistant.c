@@ -1,10 +1,7 @@
 #ifdef UNIT_TEST
 
 #include <unity.h> // includes unit testing library
-#include <string.h>
 #include "data_assistant.h"
-
-#include "stm32f4xx_hal.h"
 
 void setUp();// default setup function
 void tearDown(); // default release function
@@ -32,14 +29,6 @@ void test_char_append_should_be_abc_after_append_to_ab()
     feedback = char_append(feedback, 'c');
     TEST_ASSERT_EQUAL_STRING("abc", feedback);
 }
-
-/*
-void test_char_append_should_pass_through_if_a_in_double_quotes()
-{
-    feedback = char_append(feedback, "a");
-    TEST_ASSERT_EQUAL_STRING("a", feedback);
-}
-*/
 
 void test_char_append_should_be_fine_if_double_append()
 {
@@ -94,7 +83,6 @@ int main()
     RUN_TEST(test_char_append_should_be_white_space);
     RUN_TEST(test_char_append_should_be_a);
     RUN_TEST(test_char_append_should_be_abc_after_append_to_ab);
-    //RUN_TEST(test_char_append_should_pass_through_if_a_in_double_quotes);
     RUN_TEST(test_char_append_should_be_fine_if_double_append);
 
     RUN_TEST(test_str_append_should_be_empty_if_double_quotes);
