@@ -27,7 +27,7 @@ uint8_t ***connector_parse(uint8_t* dialog)
 		//if(strchr(param, *param_delimiter) == NULL)
 		//	continue;
 
-		key = (uint8_t*)strtok_r((void *)param, (void *)param_delimiter, &value); // assigns key & values contents
+		key = (uint8_t*)strtok_r((void *)param, (void *)param_delimiter, (void*)&value); // assigns key & values contents
 		args = (uint8_t ***) realloc(args, (++records) * sizeof(uint8_t *)); // extends array by one row (2 columns)
 
 		args[records - 1] = (uint8_t **) malloc(2 * sizeof(uint8_t *)); // reserves memory for one row with 2 columns

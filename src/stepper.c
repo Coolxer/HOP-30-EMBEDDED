@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 void stepper_setupGpio(Stepper *stepper)
 {
@@ -16,7 +17,7 @@ void stepper_setupGpio(Stepper *stepper)
 	gpio.Pull = GPIO_NOPULL;
 	gpio.Speed = GPIO_SPEED_FREQ_LOW;
 
-	HAL_GPIO_Init(stepper->port, &gpio);
+	HAL_GPIO_Init((GPIO_TypeDef*)stepper->port, &gpio);
 
 	/* setups gpio for step_pin */
 	gpio.Pin = stepper->step;
@@ -25,7 +26,7 @@ void stepper_setupGpio(Stepper *stepper)
   	gpio.Speed = GPIO_SPEED_FREQ_HIGH;
 	gpio.Alternate = stepper->alternateFunction;
 
-	HAL_GPIO_Init(stepper->port, &gpio);
+	HAL_GPIO_Init((GPIO_TypeDef*)stepper->port, &gpio);
 
 	//HAL_GPIO_WritePin(stepper->port, stepper->enable, GPIO_PIN_RESET); // turns OFF stepper motor at start
 
@@ -100,13 +101,13 @@ uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
 		if(states[i] != '0' && states[i] != '1')
 			return 0;
 
-		HAL_GPIO_WritePin(stepper->port, stepper->m[i], (uint8_t)states[i]); // sets required state of concret microstep pin 
+		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->m[i], (uint8_t)states[i]); // sets required state of concret microstep pin 
 	}
 
 	return 1;
 }
 
-Stepper* stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3)
+void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3)
 {
 	strcpy((void*)stepper->name, (void*)name);
 
@@ -132,8 +133,6 @@ Stepper* stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDe
 
 	stepper_setupGpio(stepper); 
 	stepper_setupTimers(stepper);
-
-	return &stepper;
 }
 
 void stepper_deinit(Stepper *stepper)
@@ -145,15 +144,15 @@ void stepper_deinit(Stepper *stepper)
 
 uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 {
-	uint32_t nSpeed;
-	uint32_t rSpeed;
+	uint32_t nSpeed = 0;
+	uint32_t rSpeed = 0;
+
 	// in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
 	// you need to use Prescaler
 
 	// normally greater speed means faster, but there is otherwise, beacuse "speed" meaning is period of time
 	// so we need to cast this, but not this moment, because it's need to set up clocks frequency
 	// and see in real time, what speed we need
-
 
 	uint8_t len = strlen((void*)speed);
 
@@ -173,8 +172,13 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 			return 0;
 	}
 
-	if(!sscanf((void*)speed, "%d", &nSpeed))
-		return 0;
+	//if(!sscanf((void*)speed, "%" SCNu16, &nSpeed))
+	//if(!sscanf((void*)speed, "%2hhx", &nSpeed))
+	//sscanf((void *)speed, "%d", &nSpeed);
+	//sscanf((void*)speed, "%" SCNu16, &nSpeed);
+	//sscanf((void*)speed, "%2hhx", &nSpeed);
+
+	sscanf((void *)speed, "%d", &nSpeed);
 
 	// min - max
 	// <1000, 11000>
@@ -198,7 +202,7 @@ uint8_t stepper_switch(Stepper *stepper, uint8_t *state)
 	if(strcmp((void*)state, "0") != 0 && strcmp((void*)state, "1") != 0)
 		return 0;
 
-	HAL_GPIO_WritePin(stepper->port, stepper->enable, (uint8_t)state); // switches the stepper (OFF or ON)
+	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, (uint8_t)state[0]); // switches the stepper (OFF or ON)
 
 	return 1;
 }
@@ -231,17 +235,16 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 			return 0;
 	}
 
-	if(!sscanf((void*)steps, "%d", &nSteps))
-		return 0;
+	sscanf((void*)steps, "%" SCNd32, &nSteps);
 
 	if(nSteps == 0)
 		return 0;
 	else if(nSteps < 0)
-		HAL_GPIO_WritePin(stepper->port, stepper->enable, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, GPIO_PIN_RESET);
 	else
-		HAL_GPIO_WritePin(stepper->port, stepper->enable, GPIO_PIN_SET);
+		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, GPIO_PIN_SET);
 
-	HAL_GPIO_WritePin(stepper->port, stepper->enable, GPIO_PIN_SET);
+	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, GPIO_PIN_SET);
 
 	nSteps = abs(nSteps);
 	
@@ -269,14 +272,14 @@ uint8_t stepper_setDirection(Stepper *stepper, uint8_t *dir)
 	if(strcmp((void*)dir, "0") != 0 && strcmp((void*)dir, "1") != 0)
 		return 0;
 
-	HAL_GPIO_WritePin(stepper->port, stepper->dir, (uint8_t)dir);
+	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->dir, (uint8_t)dir[0]);
 	
 	return 1;
 }
 
 void stepper_changeDirection(Stepper *stepper)
 {
-	HAL_GPIO_TogglePin(stepper->port, stepper->dir);
+	HAL_GPIO_TogglePin((GPIO_TypeDef*)stepper->port, stepper->dir);
 }
 
 void stepper_run(Stepper *stepper)

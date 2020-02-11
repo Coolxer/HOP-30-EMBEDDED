@@ -79,7 +79,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         {
             HAL_TIM_PWM_Stop(&endstop->parentStepper->masterTimer, endstop->parentStepper->channel); // stop PWM (moving) on assigned stepper
 
-            uint8_t cnt = 0;
+            uint32_t cnt = 0;
 
             if(endstop->parentStepper->stEnabled)
             {
@@ -96,7 +96,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
                 feedback = str_append(feedback, (uint8_t*)"_STEPS=");
 
                 uint8_t *str = (uint8_t*)"";
-                sprintf((void*)str, "%d", cnt);
+                sprintf((void*)str, (void*)cnt);
 
                 feedback = str_append(feedback, str);
             }

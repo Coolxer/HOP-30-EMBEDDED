@@ -16,7 +16,7 @@ typedef struct
 
 Endstop *endstop;                               // endstop pointer, using to make operations on actual selected endstop
 
-Endstop *endstop_init(Endstop *endstop, uint8_t *name, Stepper *parentStepper, uint32_t port, uint16_t pin, uint8_t irq); // endstop "constructor" function
+void endstop_init(Endstop *endstop, uint8_t *name, Stepper *parentStepper, uint32_t port, uint16_t pin, uint8_t irq); // endstop "constructor" function
 void endstop_deinit(Endstop *endstop);          // disables IRQ
 
 
