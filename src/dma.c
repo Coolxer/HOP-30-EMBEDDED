@@ -5,6 +5,8 @@
 
 #include "data_assistant.h"
 
+UART_HandleTypeDef *huart;
+
 /* *********************** SETUP FUNCTIONS ***************************** */
 
 void dma_setup(UART_HandleTypeDef *uart)
@@ -22,6 +24,8 @@ void dma_setup(UART_HandleTypeDef *uart)
  	dma.commands_count = 0;
 
 	dma.empty = 1;
+
+	huart = uart;
 }
 
 void dma_setupInterface()
@@ -38,6 +42,19 @@ void dma_setupInterface()
     hdma_usart2_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
 
 	HAL_DMA_Init(&hdma_usart2_rx);
+
+	hdma_usart2_tx.Instance = DMA1_Stream6;
+    hdma_usart2_tx.Init.Channel = DMA_CHANNEL_4;
+    hdma_usart2_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
+    hdma_usart2_tx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_usart2_tx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_usart2_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_usart2_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    hdma_usart2_tx.Init.Mode = DMA_NORMAL;
+    hdma_usart2_tx.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_usart2_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+
+    HAL_DMA_Init(&hdma_usart2_tx);
 }
 
 void dma_setupInterrupts()
@@ -49,6 +66,9 @@ void dma_setupInterrupts()
     /* DMA1_Stream5_IRQn interrupt configuration */
     HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+
+	HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
+  	HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
 }
 
 void dma_init()
@@ -178,4 +198,14 @@ void USART2_IRQHandler(void)
 void DMA1_Stream5_IRQHandler(void)
 {
     dma_dmaHandler();
+}
+
+void DMA1_Stream6_IRQHandler(void)
+{
+    huart->gState = HAL_UART_STATE_READY;
+	hdma_usart2_tx.State = HAL_DMA_STATE_READY;
+	__HAL_DMA_CLEAR_FLAG(&hdma_usart2_tx, DMA_FLAG_TCIF2_6);
+	__HAL_DMA_CLEAR_FLAG(&hdma_usart2_tx, DMA_FLAG_HTIF2_6);
+	__HAL_DMA_CLEAR_FLAG(&hdma_usart2_tx, DMA_FLAG_FEIF2_6);
+	__HAL_UNLOCK(&hdma_usart2_tx);
 }

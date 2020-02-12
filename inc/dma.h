@@ -2,8 +2,8 @@
 #define DMA_H
 
 #include "stm32f4xx_hal.h"
-
 DMA_HandleTypeDef hdma_usart2_rx;          // dma uart rx channel
+DMA_HandleTypeDef hdma_usart2_tx;		   // dma uart tx channel
 
 #define DMA_BUFFER_SIZE 64 				   // dma buffer size
 #define UART_BUFFER_SIZE 256			   // uart buffer size

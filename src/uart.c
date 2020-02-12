@@ -17,7 +17,8 @@ void uart_init()
 	uart_min_init();
     dma_init();
 	
-	__HAL_LINKDMA(&uart,hdmarx,hdma_usart2_rx);
+	__HAL_LINKDMA(&uart, hdmarx, hdma_usart2_rx);
+	__HAL_LINKDMA(&uart, hdmatx, hdma_usart2_tx);
 
 	dma_setup(&uart);
 }
@@ -49,7 +50,9 @@ void uart_listen()
 void uart_send(uint8_t *message)
 {
 	message = str_append(message, "\r\n");
-	HAL_UART_Transmit(&uart, (uint8_t*)message, strlen((void*)message), 1000); // sends message through UART with 100 timeout
+	HAL_UART_Transmit_DMA(&uart, (uint8_t*)message, strlen((void*)message));
+	//HAL_UART_Transmit(&uart, (uint8_t*)message, strlen((void*)message), 1000); // sends message through UART with 100 timeout
+	// it working in block mode, can use IT or DMA ? (this are options but will work fine with IDLE)
 }
 
 uint8_t uart_manage()
