@@ -56,16 +56,26 @@ uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 			{
 				uint8_t *stt = args[1][1];
 
-				if(strcmp((void*)stt, "0") != 0 && strcmp((void*)stt, "1") != 0)
-					feedback = (uint8_t*)"_ERROR_invalid_stt_value";
-				else 
+				if(strcmp((void*)stt, "0") == 0)
 				{
-					stepper_switch(device_manager_getStepper((uint8_t*)"x"), stt);
-					stepper_switch(device_manager_getStepper((uint8_t*)"y"), stt);
-					stepper_switch(device_manager_getStepper((uint8_t*)"z"), stt);
+					stepper_emergency_shutdown(device_manager_getStepper((uint8_t*)"x"));
+					stepper_emergency_shutdown(device_manager_getStepper((uint8_t*)"y"));
+					stepper_emergency_shutdown(device_manager_getStepper((uint8_t*)"z"));
+					stepper_emergency_shutdown(device_manager_getStepper((uint8_t*)"w"));
 
 					feedback = (uint8_t*)"_SUCCESS";
-				}		
+				}
+				else if(strcmp((void*)stt, "1") == 0)
+				{
+					stepper_switch(device_manager_getStepper((uint8_t*)"x"), 1);
+					stepper_switch(device_manager_getStepper((uint8_t*)"y"), 1);
+					stepper_switch(device_manager_getStepper((uint8_t*)"z"), 1);
+					stepper_switch(device_manager_getStepper((uint8_t*)"w"), 1);
+
+					feedback = (uint8_t*)"_SUCCESS";
+				}
+				else
+					feedback = (uint8_t*)"_ERROR_invalid_stt_value";	
 			}
 			else
 				feedback = (uint8_t*)"_ERROR_no_stt_key";	
@@ -78,10 +88,18 @@ uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 			{
 				if(strcmp((void *)args[1][0], "stt") == 0)
 				{
-					if(!stepper_switch(stepper, args[1][1]))
+					uint8_t *state = args[1][1];
+
+					if(strcmp((void *)state, "0") != 0 && strcmp((void *)state, "1") != 0)
 						feedback = (uint8_t*)"_ERROR_invalid_stt_value";
 					else
-						feedback = (uint8_t*)"_SUCCESS";
+					{
+						if(!stepper_switch(stepper, (uint8_t)args[1][1]))
+							feedback = (uint8_t*)"_ERROR_operation_not_allowed";
+						else
+							feedback = (uint8_t*)"_SUCCESS";
+
+					}	
 				}
 				else
 					feedback = (uint8_t*)"_ERROR_no_stt_key";			
@@ -116,8 +134,10 @@ uint8_t *prepare_home(uint8_t ***args, uint8_t size)
 				feedback = (uint8_t*)"_ERROR_invalid_spp_value";
 			else
 			{
-				stepper_home(stepper); // homes selected stepper motor
-				feedback = (uint8_t*)"_VALID_COMMAND";
+				if(!stepper_home(stepper))
+					feedback = (uint8_t*)"_ERROR_operation_not_allowed";
+				else
+					feedback = (uint8_t*)"_VALID_COMMAND"; 
 			}
 		}	
 	}
@@ -142,10 +162,17 @@ uint8_t *prepare_move(uint8_t ***args, uint8_t size)
 		{
 			if(strcmp((void *)args[1][0], "stp") == 0)
 			{
-				if(!stepper_move(stepper, args[1][1]))
+				uint8_t result = stepper_move(stepper, args[1][1]);
+				if(!result)
 					feedback = (uint8_t*)"_ERROR_move_by_0_steps";
 				else
-					feedback = (uint8_t*)"_VALID_COMMAND";	
+				{
+					if(result == 1)
+						feedback = (uint8_t*)"_VALID_COMMAND";
+					else if(result == 9)
+						feedback = (uint8_t*)"_ERROR_operation_not_allowed";
+				}
+					
 			}
 			else
 				feedback = (uint8_t*)"_ERROR_no_stp_key";
@@ -170,10 +197,12 @@ uint8_t *prepare_process(uint8_t ***args, uint8_t size) // opt=pro|spp=x|spd=40|
 		x = device_manager_getStepper((uint8_t*)"x");
 		w = device_manager_getStepper((uint8_t*)"w");
 
-		if(!stepper_setDirection(w, args[0][1]))
+		if(strcmp((void *)args[0][1], "0") != 0 && strcmp((void *)args[0][1], "1") != 0)
 			feedback = (uint8_t*)"_ERROR_invalid_dir_value";
 		else
-		{
+		{	
+			stepper_setDirection(w, (uint8_t)args[0][1]);
+
 			stepper_run(x);
 			stepper_run(w);
 
@@ -190,7 +219,7 @@ uint8_t *prepare_process(uint8_t ***args, uint8_t size) // opt=pro|spp=x|spd=40|
 	return feedback;
 }
 
-uint8_t *prepare_intervention(uint8_t ***args, uint8_t size, uint8_t (*fun)(Stepper*, uint8_t*))
+uint8_t *prepare_intervention(uint8_t ***args, uint8_t size, uint8_t (*fun)(Stepper*))
 {
 	Stepper *stepper = NULL;
 	uint8_t* feedback = (uint8_t*)"";
@@ -199,17 +228,17 @@ uint8_t *prepare_intervention(uint8_t ***args, uint8_t size, uint8_t (*fun)(Step
 	{
 		if(strcmp((void *)args[0][1], "pro") == 0)
 		{
-			fun(device_manager_getStepper((uint8_t*)"x"), (uint8_t*)"0");
-			fun(device_manager_getStepper((uint8_t*)"w"), (uint8_t*)"0");
+			fun(device_manager_getStepper((uint8_t*)"x"));
+			fun(device_manager_getStepper((uint8_t*)"w"));
 
 			feedback = (uint8_t*)"_SUCCESS";
 		}
 		else if(strcmp((void *)args[0][1], "all") == 0)
 		{
-			fun(device_manager_getStepper((uint8_t*)"x"), (uint8_t*)"1");
-			fun(device_manager_getStepper((uint8_t*)"y"), (uint8_t*)"1");
-			fun(device_manager_getStepper((uint8_t*)"z"), (uint8_t*)"1");
-			fun(device_manager_getStepper((uint8_t*)"w"), (uint8_t*)"1");
+			fun(device_manager_getStepper((uint8_t*)"x"));
+			fun(device_manager_getStepper((uint8_t*)"y"));
+			fun(device_manager_getStepper((uint8_t*)"z"));
+			fun(device_manager_getStepper((uint8_t*)"w"));
 
 			feedback = (uint8_t*)"_SUCCESS";
 		}
@@ -219,15 +248,10 @@ uint8_t *prepare_intervention(uint8_t ***args, uint8_t size, uint8_t (*fun)(Step
 				feedback = (uint8_t*)"_ERROR_invalid_spp_value";
 			else
 			{
-				if(strcmp((void *)args[1][0], "mod") == 0)
-				{
-					if(!fun(stepper, args[1][1]))
-						feedback = (uint8_t*)"_ERROR_invalid_mod_value";
-					else
-						feedback = (uint8_t*)"_SUCCESS";
-				}
+				if(!fun(stepper))
+					feedback = (uint8_t*)"_ERROR_operation_not_allowed";
 				else
-					feedback = (uint8_t*)"_ERROR_no_mod_key";
+					feedback = (uint8_t*)"_SUCCESS";			
 			}
 		}
 	}

@@ -14,11 +14,7 @@ void tearDown(); // default release function
 void test_prepare_switch_should_give_no_spp_key_error()
 {
     uint8_t data[] = "opt=sth|abc=x|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", connector_manage(connector_parse(data)));
 }
 
 /************************* switch all ********************************/
@@ -26,31 +22,25 @@ void test_prepare_switch_should_give_no_spp_key_error()
 void test_prepare_switch_all_should_give_no_stt_key_error()
 {
     uint8_t data[] = "opt=sth|spp=all|abc=1|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_no_stt_key", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_stt_key", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_switch_all_should_give_invalid_stt_value_error()
 {
     uint8_t data[] = "opt=sth|spp=all|stt=a|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_stt_value", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_stt_value", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_switch_all_should_give_success()
+void test_prepare_switch_all_should_give_success_if_0()
+{
+    uint8_t data[] = "opt=sth|spp=all|stt=0|\n";
+    TEST_ASSERT_EQUAL_STRING("_SUCCESS", connector_manage(connector_parse(data)));
+}
+
+void test_prepare_switch_all_should_give_success_if_1()
 {
     uint8_t data[] = "opt=sth|spp=all|stt=1|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_SUCCESS", result);
+    TEST_ASSERT_EQUAL_STRING("_SUCCESS", connector_manage(connector_parse(data)));
 }
 
 /*********************** switch individual ****************************/
@@ -58,41 +48,37 @@ void test_prepare_switch_all_should_give_success()
 void test_prepare_switch_should_give_invalid_spp_value_error()
 {
     uint8_t data[] = "opt=sth|spp=a|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spp_value", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spp_value", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_switch_should_give_no_stt_key_error()
 {
     uint8_t data[] = "opt=sth|spp=x|abc=4|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_no_stt_key", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_stt_key", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_switch_should_give_invalid_stt_value()
 {
     uint8_t data[] = "opt=sth|spp=x|stt=4|\n";
-    uint8_t ***args = connector_parse(data);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_stt_value", connector_manage(connector_parse(data)));
+}
 
-    uint8_t *result = connector_manage(args);
+void test_prepare_switch_should_give_operation_not_allowed_error()
+{
+    Stepper *stepper = (Stepper*)device_manager_getStepper((uint8_t*)"x");
+    stepper->state = HOMING;
 
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_stt_value", result);
+    uint8_t data[] = "opt=sth|spp=x|stt=1|\n";
+    TEST_ASSERT_EQUAL_STRING("_ERROR_operation_not_allowed", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_switch_should_give_success()
 {
+    Stepper *stepper = (Stepper*)device_manager_getStepper((uint8_t*)"x");
+    stepper->state = ON;
+
     uint8_t data[] = "opt=sth|spp=x|stt=1|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_SUCCESS", result);
+    TEST_ASSERT_EQUAL_STRING("_SUCCESS", connector_manage(connector_parse(data)));
 }
 
 int main()
@@ -107,12 +93,14 @@ int main()
     // switch all
     RUN_TEST(test_prepare_switch_all_should_give_no_stt_key_error);
     RUN_TEST(test_prepare_switch_all_should_give_invalid_stt_value_error);
-    RUN_TEST(test_prepare_switch_all_should_give_success);
+    RUN_TEST(test_prepare_switch_all_should_give_success_if_0);
+    RUN_TEST(test_prepare_switch_all_should_give_success_if_1);
 
     // switch individual
     RUN_TEST(test_prepare_switch_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_switch_should_give_no_stt_key_error);
     RUN_TEST(test_prepare_switch_should_give_invalid_stt_value);
+    RUN_TEST(test_prepare_switch_should_give_operation_not_allowed_error);
     RUN_TEST(test_prepare_switch_should_give_success);
 
     UNITY_END();

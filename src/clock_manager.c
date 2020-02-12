@@ -19,7 +19,6 @@ void clocks_init()
     __HAL_RCC_TIM10_CLK_ENABLE();
     __HAL_RCC_TIM12_CLK_ENABLE();
     __HAL_RCC_TIM13_CLK_ENABLE();
-
 }
 
 void clocks_deinit()
@@ -39,5 +38,4 @@ void clocks_deinit()
     __HAL_RCC_TIM10_CLK_DISABLE();
     __HAL_RCC_TIM12_CLK_DISABLE();
     __HAL_RCC_TIM13_CLK_DISABLE();
-
 }

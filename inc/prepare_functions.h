@@ -14,6 +14,6 @@ uint8_t *prepare_move(uint8_t ***args, uint8_t size);   // passes parameters to 
 
 uint8_t *prepare_process(uint8_t ***args, uint8_t size);
 
-uint8_t *prepare_intervention(uint8_t ***args, uint8_t size, uint8_t (*fun)(Stepper*, uint8_t*)); // pause, resume, stop
+uint8_t *prepare_intervention(uint8_t ***args, uint8_t size, uint8_t (*fun)(Stepper*)); // pause, resume, stop
 
 #endif // PREPARE_FUNCTIONS_H

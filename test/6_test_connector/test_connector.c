@@ -14,29 +14,25 @@ void tearDown(); // default release function
 void test_connector_parse_should_give_null_if_white_spaces_only()
 {
     uint8_t data[] = "              \n";
-    uint8_t ***args = connector_parse(data);
-    TEST_ASSERT_NULL(args);
+    TEST_ASSERT_NULL(connector_parse(data));
 }
 
 void test_connector_parse_should_give_null_if_normal_text()
 {
     uint8_t data[] = "aaaaaaaaaaaaaa\n";
-    uint8_t ***args = connector_parse(data);
-    TEST_ASSERT_NULL(args);
+    TEST_ASSERT_NULL(connector_parse(data));
 }
 
 void test_connector_parse_should_give_null_if_pipes_only()
 {
     uint8_t data[] = "||||||||||||||\n";
-    uint8_t ***args = connector_parse(data);
-    TEST_ASSERT_NULL(args);
+    TEST_ASSERT_NULL(connector_parse(data));
 }
 
 void test_connector_parse_should_give_null_if_equal_signs_only()
 {
     uint8_t data[] = "==============\n";
-    uint8_t ***args = connector_parse(data);
-    TEST_ASSERT_NULL(args);
+    TEST_ASSERT_NULL(connector_parse(data));
 }
 
 void test_connector_parse_should_give_one_record()
@@ -66,44 +62,31 @@ void test_connector_parse_should_give_three_records()
 void test_connector_manage_should_give_no_params_error()
 {
     uint8_t data[] = "aaaaaaaaaaaaaaa|\n";
-    uint8_t *result = connector_manage(connector_parse(data));
-    TEST_ASSERT_EQUAL_STRING("_ERROR_no_params", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_params", connector_manage(connector_parse(data)));
 }
 
 void test_connector_manage_should_give_one_param_only_error()
 {
     uint8_t data[] = "opt=aaaaaaaaaa|\n";
-
-    uint8_t *result = connector_manage(connector_parse(data));
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_one_param_only", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_one_param_only", connector_manage(connector_parse(data)));
 }
 
 void test_connector_manage_should_give_to_many_arguments_error()
 {
     uint8_t data[] = "abc=123|spp=12|spd=1|alf=56|\n";
-
-    uint8_t *result = connector_manage(connector_parse(data));
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_to_many_arguments", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_to_many_arguments", connector_manage(connector_parse(data)));
 }
 
 void test_connector_manage_should_give_no_opt_key_error()
 {
     uint8_t data[] = "abc=123|spp=12|\n";
-
-    uint8_t *result = connector_manage(connector_parse(data));
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_no_opt_key", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_opt_key", connector_manage(connector_parse(data)));
 }
 
 void test_connector_manage_should_give_invalid_opt_value_error()
 {
     uint8_t data[] = "opt=123|spp=12|\n";
-
-    uint8_t *result = connector_manage(connector_parse(data));
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR:invalid_opt_value", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR:invalid_opt_value", connector_manage(connector_parse(data)));
 }
 
 int main()

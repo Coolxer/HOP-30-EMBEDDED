@@ -48,6 +48,7 @@ void uart_listen()
 
 void uart_send(uint8_t *message)
 {
+	message = str_append(message, "\r\n");
 	HAL_UART_Transmit(&uart, (uint8_t*)message, strlen((void*)message), 1000); // sends message through UART with 100 timeout
 }
 

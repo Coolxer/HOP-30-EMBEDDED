@@ -77,16 +77,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
         if(GPIO_Pin == endstops[i].pin)
         {
+            if(endstop->parentStepper->state != HOMING && endstop->parentStepper->state != MOVING)
+                return;
+
             HAL_TIM_PWM_Stop(&endstop->parentStepper->masterTimer, endstop->parentStepper->channel); // stop PWM (moving) on assigned stepper
 
             uint32_t cnt = 0;
 
-            if(endstop->parentStepper->stEnabled)
-            {
+            if(endstop->parentStepper->state == MOVING)
                  cnt = endstop->parentStepper->slaveTimer.Instance->CNT;
-                 endstop->parentStepper->stEnabled = 0;
-            }
-               
+ 
             HAL_TIM_Base_Stop_IT(&endstop->parentStepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying antything
 
             uint8_t* feedback = str_append(endstop->name, (uint8_t*)"_ENDSTOP_HIT");
@@ -100,6 +100,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
                 feedback = str_append(feedback, str);
             }
+
+            endstop->parentStepper->lastState = endstop->parentStepper->state = ON;
 
             uart_send(feedback); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
         }
@@ -117,13 +119,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             HAL_TIM_PWM_Stop(&steppers[i].masterTimer, steppers[i].channel); // stop PWM (moving) on assigned stepper
 		    HAL_TIM_Base_Stop_IT(&steppers[i].slaveTimer);
 
-            steppers[i].stEnabled = 0;
+            stepper_reset(&steppers[i]);
 
-            uint8_t *feedback = str_append((uint8_t*)"_SUCCESS_", (uint8_t*)steppers[i].masterTimer.Instance);
+            steppers[i].lastState = steppers[i].state = ON;
+
+            uint8_t *feedback = str_append((uint8_t*)"_SUCCESS_", (uint8_t*)steppers[i].name);
 
             uart_send(feedback);
 
-            free(feedback);
+            //free(feedback);
         }
     }
 }

@@ -11,7 +11,7 @@ void TIM2_IRQHandler(void)
 void TIM5_IRQHandler(void)
 {
     //HAL_TIM_IRQHandler(&steppers[1].slaveTimer);
-    HAL_TIM_IRQHandler(&device_manager_getStepper((uint8_t*)"y")->slaveTimer);
+    HAL_TIM_IRQHandler(&device_manager_getStepper((uint8_t*)"w")->slaveTimer);
 }
 
 void TIM1_BRK_TIM9_IRQHandler(void)
@@ -23,5 +23,5 @@ void TIM1_BRK_TIM9_IRQHandler(void)
 void TIM8_BRK_TIM12_IRQHandler(void)
 {
     //HAL_TIM_IRQHandler(&steppers[3].slaveTimer);
-    HAL_TIM_IRQHandler(&device_manager_getStepper((uint8_t*)"w")->slaveTimer);
+    HAL_TIM_IRQHandler(&device_manager_getStepper((uint8_t*)"y")->slaveTimer);
 }

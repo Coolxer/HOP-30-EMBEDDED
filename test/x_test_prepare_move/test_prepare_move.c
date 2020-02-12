@@ -14,51 +14,40 @@ void tearDown(); // default release function
 void test_prepare_move_should_give_no_spp_key_error()
 {
     uint8_t data[] = "opt=mov|abc=x|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_spp_key", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_invalid_spp_value_error()
 {
     uint8_t data[] = "opt=mov|spp=a|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spp_value", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_invalid_spp_value", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_no_stp_key_error()
 {
     uint8_t data[] = "opt=mov|spp=x|abc=4|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_ERROR_no_stp_key", result);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_no_stp_key", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_move_by_0_steps_error()
 {
     uint8_t data[] = "opt=mov|spp=x|stp=0|\n";
-    uint8_t ***args = connector_parse(data);
+    TEST_ASSERT_EQUAL_STRING("_ERROR_move_by_0_steps", connector_manage(connector_parse(data)));
+}
 
-    uint8_t *result = connector_manage(args);
+void test_prepare_move_should_give_operation_not_allowed_error()
+{
+    Stepper *stepper = (Stepper*)device_manager_getStepper((uint8_t*)"x");
+    stepper->state = HOMING;
 
-    TEST_ASSERT_EQUAL_STRING("_ERROR_move_by_0_steps", result);
+    uint8_t data[] = "opt=mov|spp=x|stp=89|\n";
+    TEST_ASSERT_EQUAL_STRING("_ERROR_operation_not_allowed", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_valid_command()
 {
     uint8_t data[] = "opt=mov|spp=x|stp=89|\n";
-    uint8_t ***args = connector_parse(data);
-
-    uint8_t *result = connector_manage(args);
-
-    TEST_ASSERT_EQUAL_STRING("_VALID_COMMAND", result);
+    TEST_ASSERT_EQUAL_STRING("_VALID_COMMAND", connector_manage(connector_parse(data)));
 }
 
 int main()
@@ -71,6 +60,7 @@ int main()
     RUN_TEST(test_prepare_move_should_give_no_spp_key_error);
     RUN_TEST(test_prepare_move_should_give_invalid_spp_value_error);
     RUN_TEST(test_prepare_move_should_give_move_by_0_steps_error);
+    RUN_TEST(test_prepare_move_should_give_operation_not_allowed_error);
     RUN_TEST(test_prepare_move_should_give_valid_command);
 
     UNITY_END();

@@ -43,6 +43,7 @@ void stepper_setupMasterTimer(Stepper *stepper)
 	stepper->masterTimer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	stepper->masterTimer.Init.Prescaler = 4000 - 1;
 	stepper->masterTimer.Init.Period = 5000 - 1;
+	stepper->masterTimer.Instance->CNT = 0;
 	HAL_TIM_Base_Init(&stepper->masterTimer);
 
 	//clockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
@@ -67,9 +68,11 @@ void stepper_setupSlaveTimer(Stepper *stepper)
   	stepper->slaveTimer.Init.Prescaler = 0;
   	stepper->slaveTimer.Init.CounterMode = TIM_COUNTERMODE_UP;
   	stepper->slaveTimer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	stepper->slaveTimer.Instance->CNT = 0;
   	HAL_TIM_Base_Init(&stepper->slaveTimer);
 
 	__HAL_TIM_CLEAR_FLAG(&stepper->slaveTimer, TIM_SR_UIF); // clear interrupt flag
+	__HAL_TIM_CLEAR_IT(&stepper->slaveTimer ,TIM_IT_UPDATE);
 
 	slaveConfig.SlaveMode = TIM_SLAVEMODE_EXTERNAL1;
   	slaveConfig.InputTrigger = stepper->itr;
@@ -87,24 +90,6 @@ void stepper_setupTimers(Stepper *stepper)
 {
 	stepper_setupMasterTimer(stepper);
 	stepper_setupSlaveTimer(stepper);
-}
-
-uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
-{
-	uint8_t i;
-
-	if(strlen((void*)states) != 3)
-		return 0;
-
-	for(i = 0; i < 3; i++)
-	{
-		if(states[i] != '0' && states[i] != '1')
-			return 0;
-
-		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->m[i], (uint8_t)states[i]); // sets required state of concret microstep pin 
-	}
-
-	return 1;
 }
 
 void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3)
@@ -129,7 +114,7 @@ void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *m
 	stepper->m[1] = m2;
 	stepper->m[2] = m3;
 
-	stepper->stEnabled = 0;
+	stepper->lastState = stepper->state = OFF;
 
 	stepper_setupGpio(stepper); 
 	stepper_setupTimers(stepper);
@@ -140,6 +125,24 @@ void stepper_deinit(Stepper *stepper)
 	HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel);
 	HAL_TIM_Base_Stop_IT(&stepper->slaveTimer);
 	HAL_NVIC_DisableIRQ(stepper->irq);
+}
+
+uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
+{
+	uint8_t i;
+
+	if(strlen((void*)states) != 3)
+		return 0;
+
+	for(i = 0; i < 3; i++)
+	{
+		if(states[i] != '0' && states[i] != '1')
+			return 0;
+
+		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->m[i], (uint8_t)states[i]); // sets required state of concret microstep pin 
+	}
+
+	return 1;
 }
 
 uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
@@ -189,7 +192,6 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 		return 0;
 
 	nSpeed = 101 - nSpeed; // reverse value
-
 	rSpeed = (nSpeed * (11000 - 1000) / 100) + 1000;
 
 	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed);
@@ -197,27 +199,50 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 	return 1;
 }
 
-uint8_t stepper_switch(Stepper *stepper, uint8_t *state)
+uint8_t stepper_switch(Stepper *stepper, uint8_t state)
 {
-	if(strcmp((void*)state, "0") != 0 && strcmp((void*)state, "1") != 0)
+	if(stepper->state == HOMING || stepper->state == MOVING) // cannot switch motor if stepper is homing or moving
 		return 0;
 
-	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, (uint8_t)state[0]); // switches the stepper (OFF or ON)
+	stepper->lastState = stepper->state = state;
+
+	if(stepper->state != HAL_GPIO_ReadPin((GPIO_TypeDef*)stepper->port, stepper->enable))
+		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, stepper->state); // switches the stepper (OFF or ON)
 
 	return 1;
 }
 
-void stepper_home(Stepper *stepper)
+uint8_t stepper_emergency_shutdown(Stepper *stepper)
 {
+	stepper->lastState = stepper->state = OFF;
+
+	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, GPIO_PIN_RESET); // switches the stepper (OFF or ON)
+
+	return 1;
+}
+
+uint8_t stepper_home(Stepper *stepper)
+{
+	if(stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot home if motor is homing or moving right now
+		return 0;
+
 	stepper_setDirection(stepper, 0);
 	stepper_run(stepper);
+
+	stepper->lastState = stepper->state;
+	stepper->state = HOMING;
+
+	return 1;
 }
 
 uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 {	
-	int32_t nSteps;
+	int32_t nSteps = 0;
 
 	uint8_t len = strlen((void*)steps);
+
+	if(stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot move if motor is homing or moving or is paused right now 
+		return 9;
 
 	if(len == 0)
 		return 0;
@@ -253,28 +278,24 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 	else
 	{
 		if(stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5)
-			nSteps -= 1;
+			nSteps -= 1;	
 	}
 	
 	__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, nSteps);
-
-	stepper->stEnabled = 1;
 
 	stepper_switch(stepper, (uint8_t*)"1");
 	HAL_TIM_Base_Start_IT(&stepper->slaveTimer);
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 
+	stepper->lastState = stepper->state;
+	stepper->state = MOVING;
+
 	return 1;
 }
 
-uint8_t stepper_setDirection(Stepper *stepper, uint8_t *dir)
+void stepper_setDirection(Stepper *stepper, uint8_t dir)
 {
-	if(strcmp((void*)dir, "0") != 0 && strcmp((void*)dir, "1") != 0)
-		return 0;
-
-	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->dir, (uint8_t)dir[0]);
-	
-	return 1;
+	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->dir, dir);
 }
 
 void stepper_changeDirection(Stepper *stepper)
@@ -288,27 +309,33 @@ void stepper_run(Stepper *stepper)
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 }
 
-uint8_t stepper_pause(Stepper *stepper, uint8_t *mode)
+uint8_t stepper_pause(Stepper *stepper)
 {
-	if(strcmp((void*)mode, "0") != 0 && strcmp((void*)mode, "1") != 0)
+	if(stepper->state != HOMING && stepper->state != MOVING || stepper->state == PAUSED) // cannot pause if stepper is not homing, not moving or if it is already paused
 		return 0;
 
-	if(mode)
+	if(stepper->state == MOVING)
 	{
 		stepper->target = stepper->slaveTimer.Instance->ARR;
 		stepper->cnt = stepper->slaveTimer.Instance->CNT;
+
+		if(stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5)
+			stepper->target--;
 	}
 	
-	stepper_stop(stepper, mode);
+	stepper_stop(stepper);
+
+	stepper->lastState = stepper->state;
+	stepper->state = PAUSED;
 	return 1;
 }
 
-uint8_t stepper_resume(Stepper *stepper, uint8_t *mode)
+uint8_t stepper_resume(Stepper *stepper)
 {
-	if(strcmp((void*)mode, "0") != 0 && strcmp((void*)mode, "1") != 0)
+	if(stepper->state != PAUSED) // cannot resume stepper if it's not paused
 		return 0;
 
-	if(mode)
+	if(stepper->state == MOVING)
 	{
 		__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, stepper->target);
 		__HAL_TIM_SET_COUNTER(&stepper->slaveTimer, stepper->cnt);
@@ -317,21 +344,36 @@ uint8_t stepper_resume(Stepper *stepper, uint8_t *mode)
 	}
 
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel);
+
+	stepper->state = stepper->lastState;
 	
 	return 1;
 }
 
-uint8_t stepper_stop(Stepper *stepper, uint8_t *mode)
+uint8_t stepper_stop(Stepper *stepper)
 {
-	if(strcmp((void*)mode, "0") != 0 && strcmp((void*)mode, "1") != 0)
+	if(stepper->state != HOMING && stepper->state != MOVING && stepper->state != PAUSED) // cannot stop motor if its not homing, moving or not paused
 		return 0;
 
 	HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel);
 
-	if(mode)
+	if(stepper->state == MOVING)
 		HAL_TIM_Base_Stop_IT(&stepper->slaveTimer);
 
+	stepper_reset(stepper);
+
+	stepper->lastState = stepper->state = ON;
+
 	return 1;
+}
+
+void stepper_reset(Stepper *stepper)
+{
+	__HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 0);
+	__HAL_TIM_SET_COUNTER(&stepper->masterTimer, 0);
+
+	__HAL_TIM_CLEAR_FLAG(&stepper->slaveTimer, TIM_SR_UIF); // clear interrupt flag
+	__HAL_TIM_CLEAR_IT(&stepper->slaveTimer, TIM_IT_UPDATE);
 }
 
 //#endif // STSTM32
