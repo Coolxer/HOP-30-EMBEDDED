@@ -42,9 +42,8 @@ void uart_listen()
 			dma_clear();
 		}	
 	}
-
-	free(command);
-	free(feedback);
+	//free(command);
+	//free(feedback);
 }
 
 void uart_send(uint8_t *message)

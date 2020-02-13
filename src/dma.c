@@ -5,6 +5,7 @@
 
 #include "data_assistant.h"
 
+DMA dma;
 UART_HandleTypeDef *huart;
 
 /* *********************** SETUP FUNCTIONS ***************************** */
@@ -20,12 +21,12 @@ void dma_setup(UART_HandleTypeDef *uart)
 
  	dma.uart->hdmarx->Instance->CR &= ~DMA_SxCR_HTIE; // for sure, disable HC (half-transfer complete) interrupt
 
- 	dma.head = dma.tail = 0;
- 	dma.commands_count = 0;
+ 	dma.head = dma.tail = 0; // reset head and tail (means the positions in buffer)
+ 	dma.commands_count = 0; // reset number of commands ready to process
 
-	dma.empty = 1;
+	dma.empty = 1; // set the state of dma (if data come this will be set to 0)
 
-	huart = uart;
+	huart = uart; // set pointer to uart (using by DMA1_Stream6 -> for TX transfer with DMA)
 }
 
 void dma_setupInterface()
@@ -91,7 +92,7 @@ void dma_clear()
 
 uint8_t dma_isReady()
 {
-    if(dma.commands_count) // check if commands_count > 0
+    if(dma.commands_count) // check if commands_count is greater than 0
 		return 1;
 
 	return 0;
@@ -101,10 +102,9 @@ uint8_t dma_getChar()
 {
     if(dma.head == dma.tail)
 		return 0;
-		//return -1;
 
-	dma.tail = (dma.tail + 1) % UART_BUFFER_SIZE; // get tail index
-	return dma.uart_buffer[dma.tail];
+	dma.tail = (dma.tail + 1) % UART_BUFFER_SIZE; // set tail index
+	return dma.uart_buffer[dma.tail]; // return character from buffer
 }
 
 uint8_t* dma_getCommand()
@@ -159,11 +159,11 @@ void dma_dmaHandler()
 		// there was a difference DMA_FLAG_TCIF1_5
 		regs->IFCR = DMA_FLAG_TCIF0_4 << hdma->StreamIndex; // Clear Transfer Complete flag
 
-		response_length = DMA_BUFFER_SIZE - hdma->Instance->NDTR;
+		response_length = DMA_BUFFER_SIZE - hdma->Instance->NDTR; // read incoming data length
 
-		dma.empty = 0;
+		dma.empty = 0; // set empty flag to 0 means that dma is not empty
 
-		if(response_length >= 15) // min length of command is 15
+		if(response_length >= 15) // min length of command is 15 (calculated, first validation)
 		{
 			for(i = 0; i < response_length; i++)
 			{

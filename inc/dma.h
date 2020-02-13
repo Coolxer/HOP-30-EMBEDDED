@@ -8,8 +8,6 @@ DMA_HandleTypeDef hdma_usart2_tx;		   // dma uart tx channel
 #define DMA_BUFFER_SIZE 64 				   // dma buffer size
 #define UART_BUFFER_SIZE 256			   // uart buffer size
 
-uint8_t DMA_STATUS_FLAG;
-
 typedef struct
 {
 	UART_HandleTypeDef *uart; 		       // pointer to UART structure
@@ -20,10 +18,8 @@ typedef struct
 	uint16_t head, tail; 				   // head, tail indexes
 	uint8_t commands_count; 			   // number of commands
 
-	uint8_t empty;
+	uint8_t empty;						   // informs if data come
 }DMA;
-
-DMA dma; 								   // create structure instance
 
 /* *********************** SETUP FUNCTIONS *********************** */
 

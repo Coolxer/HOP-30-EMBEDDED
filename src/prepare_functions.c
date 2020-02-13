@@ -88,17 +88,18 @@ uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 			{
 				if(strcmp((void *)args[1][0], "stt") == 0)
 				{
-					uint8_t *state = args[1][1];
-
-					if(strcmp((void *)state, "0") != 0 && strcmp((void *)state, "1") != 0)
+					if(strcmp((void *)args[1][1], "0") != 0 && strcmp((void *)args[1][1], "1") != 0)
 						feedback = (uint8_t*)"_ERROR_invalid_stt_value";
 					else
 					{
-						if(!stepper_switch(stepper, (uint8_t)args[1][1]))
+						uint8_t state = 0;
+
+						sscanf((void *)args[1][1], "%d", &state);
+
+						if(!stepper_switch(stepper, state))
 							feedback = (uint8_t*)"_ERROR_operation_not_allowed";
 						else
 							feedback = (uint8_t*)"_SUCCESS";
-
 					}	
 				}
 				else
@@ -126,6 +127,7 @@ uint8_t *prepare_home(uint8_t ***args, uint8_t size)
 			stepper_home(device_manager_getStepper((uint8_t*)"x"));
 			stepper_home(device_manager_getStepper((uint8_t*)"y"));
 			stepper_home(device_manager_getStepper((uint8_t*)"z"));
+			
 			feedback = (uint8_t*)"_VALID_COMMAND";
 		}
 		else
@@ -201,7 +203,11 @@ uint8_t *prepare_process(uint8_t ***args, uint8_t size) // opt=pro|spp=x|spd=40|
 			feedback = (uint8_t*)"_ERROR_invalid_dir_value";
 		else
 		{	
-			stepper_setDirection(w, (uint8_t)args[0][1]);
+			uint8_t dir;
+			
+			sscanf((void *)args[0][1], "%d", &dir);
+
+			stepper_setDirection(w, dir);
 
 			stepper_run(x);
 			stepper_run(w);

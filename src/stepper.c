@@ -27,10 +27,6 @@ void stepper_setupGpio(Stepper *stepper)
 	gpio.Alternate = stepper->alternateFunction;
 
 	HAL_GPIO_Init((GPIO_TypeDef*)stepper->port, &gpio);
-
-	//HAL_GPIO_WritePin(stepper->port, stepper->enable, GPIO_PIN_RESET); // turns OFF stepper motor at start
-
-	stepper_switch(stepper, (uint8_t*)"0");
 }
 
 void stepper_setupMasterTimer(Stepper *stepper)
@@ -72,7 +68,7 @@ void stepper_setupSlaveTimer(Stepper *stepper)
   	HAL_TIM_Base_Init(&stepper->slaveTimer);
 
 	__HAL_TIM_CLEAR_FLAG(&stepper->slaveTimer, TIM_SR_UIF); // clear interrupt flag
-	__HAL_TIM_CLEAR_IT(&stepper->slaveTimer ,TIM_IT_UPDATE);
+	__HAL_TIM_CLEAR_IT(&stepper->slaveTimer ,TIM_IT_UPDATE); // clear update flag
 
 	slaveConfig.SlaveMode = TIM_SLAVEMODE_EXTERNAL1;
   	slaveConfig.InputTrigger = stepper->itr;
@@ -82,8 +78,8 @@ void stepper_setupSlaveTimer(Stepper *stepper)
   	masterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   	HAL_TIMEx_MasterConfigSynchronization(&stepper->slaveTimer, &masterConfig);
 
-	HAL_NVIC_SetPriority(stepper->irq, 0, 0);
-	HAL_NVIC_EnableIRQ(stepper->irq);
+	HAL_NVIC_SetPriority(stepper->irq, 0, 0); // set priority of stepper slaveTimer interrupt
+	HAL_NVIC_EnableIRQ(stepper->irq); // enable stepper slaveTimer interrupt
 }
 
 void stepper_setupTimers(Stepper *stepper)
@@ -114,10 +110,12 @@ void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *m
 	stepper->m[1] = m2;
 	stepper->m[2] = m3;
 
-	stepper->lastState = stepper->state = OFF;
+	stepper->lastState = stepper->state = OFF; // reset stepper state 
 
 	stepper_setupGpio(stepper); 
 	stepper_setupTimers(stepper);
+
+	stepper_switch(stepper, 0); // turn of stepper motor
 }
 
 void stepper_deinit(Stepper *stepper)
@@ -131,15 +129,21 @@ uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
 {
 	uint8_t i;
 
-	if(strlen((void*)states) != 3)
+	if(strlen((void*)states) != 3) // check if length is not equal to 3
 		return 0;
 
-	for(i = 0; i < 3; i++)
+	for(i = 0; i < 3; i++) // there i am checking if all characters of combination are fine (without setting same time)
 	{
 		if(states[i] != '0' && states[i] != '1')
 			return 0;
+	}
 
-		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->m[i], (uint8_t)states[i]); // sets required state of concret microstep pin 
+	uint8_t state = 0;
+
+	for(i = 0; i < 3; i++) // here i am sure that everything is fine so i can just set properly pins
+	{
+		state = states[i] == '0' ? 0 : 1;
+		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->m[i], state); // sets required state of concret microstep pin 
 	}
 
 	return 1;
@@ -147,8 +151,8 @@ uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
 
 uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 {
-	uint32_t nSpeed = 0;
-	uint32_t rSpeed = 0;
+	uint32_t nSpeed = 0; // speed percentage
+	uint32_t rSpeed = 0; // real speed
 
 	// in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
 	// you need to use Prescaler
@@ -192,9 +196,9 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 		return 0;
 
 	nSpeed = 101 - nSpeed; // reverse value
-	rSpeed = (nSpeed * (11000 - 1000) / 100) + 1000;
+	rSpeed = (nSpeed * (11000 - 1000) / 100) + 1000; // calcaulte real speed
 
-	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed);
+	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed); // set speed
 
 	return 1;
 }
@@ -204,19 +208,18 @@ uint8_t stepper_switch(Stepper *stepper, uint8_t state)
 	if(stepper->state == HOMING || stepper->state == MOVING) // cannot switch motor if stepper is homing or moving
 		return 0;
 
-	stepper->lastState = stepper->state = state;
+	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, state); // switches the stepper (OFF or ON)
 
-	if(stepper->state != HAL_GPIO_ReadPin((GPIO_TypeDef*)stepper->port, stepper->enable))
-		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, stepper->state); // switches the stepper (OFF or ON)
+	stepper->state = state; // update stepper state
 
 	return 1;
 }
 
 uint8_t stepper_emergency_shutdown(Stepper *stepper)
 {
-	stepper->lastState = stepper->state = OFF;
-
 	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, GPIO_PIN_RESET); // switches the stepper (OFF or ON)
+
+	stepper->state = OFF; // update stepper state
 
 	return 1;
 }
@@ -226,11 +229,10 @@ uint8_t stepper_home(Stepper *stepper)
 	if(stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot home if motor is homing or moving right now
 		return 0;
 
-	stepper_setDirection(stepper, 0);
-	stepper_run(stepper);
+	stepper_setDirection(stepper, 0); // set left direction
+	stepper_run(stepper); // start motor moving
 
-	stepper->lastState = stepper->state;
-	stepper->state = HOMING;
+	stepper->state = HOMING; // update stepper state
 
 	return 1;
 }
@@ -244,12 +246,12 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 	if(stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot move if motor is homing or moving or is paused right now 
 		return 9;
 
-	if(len == 0)
+	if(len == 0) // check if lenght of string is 0
 		return 0;
-	else if (len > 1 && steps[0] == '0')
+	else if (len > 1 && steps[0] == '0') // check if length is more than 1 (OK), but not ok if it's starting with 0
 		return 0;
 
-	if((steps[0] < 48 || steps[0] > 58) && steps[0] != '-')
+	if((steps[0] < 48 || steps[0] > 58) && steps[0] != '-') // check if it's not number and not "-" (minus) sign
 		return 0;
 
 	uint8_t i;
@@ -260,35 +262,32 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 			return 0;
 	}
 
-	sscanf((void*)steps, "%" SCNd32, &nSteps);
+	sscanf((void*)steps, "%" SCNd32, &nSteps); // translate string to number
 
-	if(nSteps == 0)
+	if(nSteps == 0) // if steps is equals to 0, error
 		return 0;
-	else if(nSteps < 0)
-		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, GPIO_PIN_RESET);
-	else
-		HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, GPIO_PIN_SET);
+	else if(nSteps < 0) // check if steos are negative, set LEFT direction
+		stepper_setDirection(stepper, 0);
+	else // set RIGHT direction
+		stepper_setDirection(stepper, 1);
 
-	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, GPIO_PIN_SET);
-
-	nSteps = abs(nSteps);
+	nSteps = abs(nSteps); // calc absolute value
 	
-	if(nSteps == 1)
+	if(nSteps == 1) // this is weird situation if we want to move by 1 step, i need to set counter to 1
 		__HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 1);
 	else
 	{
-		if(stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5)
+		if(stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5) // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease steps for them
 			nSteps -= 1;	
 	}
 	
-	__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, nSteps);
+	__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, nSteps); // set target value
 
-	stepper_switch(stepper, (uint8_t*)"1");
-	HAL_TIM_Base_Start_IT(&stepper->slaveTimer);
+	stepper_switch(stepper, 1); // turn ON stepper motor
+	HAL_TIM_Base_Start_IT(&stepper->slaveTimer); // starts counting of PWM cycles
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 
-	stepper->lastState = stepper->state;
-	stepper->state = MOVING;
+	stepper->state = MOVING; // update stepper state
 
 	return 1;
 }
@@ -305,7 +304,7 @@ void stepper_changeDirection(Stepper *stepper)
 
 void stepper_run(Stepper *stepper)
 {
-	stepper_switch(stepper, (uint8_t*)"1");
+	stepper_switch(stepper, 1); // turn ON stepper
 	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 }
 
@@ -314,19 +313,20 @@ uint8_t stepper_pause(Stepper *stepper)
 	if(stepper->state != HOMING && stepper->state != MOVING || stepper->state == PAUSED) // cannot pause if stepper is not homing, not moving or if it is already paused
 		return 0;
 
-	if(stepper->state == MOVING)
+	if(stepper->state == MOVING) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
 	{
 		stepper->target = stepper->slaveTimer.Instance->ARR;
 		stepper->cnt = stepper->slaveTimer.Instance->CNT;
 
-		if(stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5)
+		if(stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5) // if TIM2 and TIM5 i need to decrease target
 			stepper->target--;
 	}
 	
-	stepper_stop(stepper);
+	stepper_stopTimers(stepper); // stop timers
 
-	stepper->lastState = stepper->state;
-	stepper->state = PAUSED;
+	stepper->lastState = stepper->state; // remember last state
+	stepper->state = PAUSED; // update state
+
 	return 1;
 }
 
@@ -335,18 +335,18 @@ uint8_t stepper_resume(Stepper *stepper)
 	if(stepper->state != PAUSED) // cannot resume stepper if it's not paused
 		return 0;
 
-	if(stepper->state == MOVING)
+	if(stepper->lastState == MOVING) // if stepper was in MOVING state before pause, we need to set target and counter to previous values
 	{
 		__HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, stepper->target);
 		__HAL_TIM_SET_COUNTER(&stepper->slaveTimer, stepper->cnt);
 
-		HAL_TIM_Base_Start_IT(&stepper->slaveTimer);
+		HAL_TIM_Base_Start_IT(&stepper->slaveTimer); // enable slaveTimer
 	}
 
-	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel);
+	HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // enable masterTimer
 
-	stepper->state = stepper->lastState;
-	
+	stepper->state = stepper->lastState; // recover state
+
 	return 1;
 }
 
@@ -355,25 +355,30 @@ uint8_t stepper_stop(Stepper *stepper)
 	if(stepper->state != HOMING && stepper->state != MOVING && stepper->state != PAUSED) // cannot stop motor if its not homing, moving or not paused
 		return 0;
 
-	HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel);
+	stepper_stopTimers(stepper); // stop timers
 
-	if(stepper->state == MOVING)
-		HAL_TIM_Base_Stop_IT(&stepper->slaveTimer);
-
-	stepper_reset(stepper);
-
-	stepper->lastState = stepper->state = ON;
+	stepper->lastState = stepper->state = ON; // reset stepper state
 
 	return 1;
 }
 
+void stepper_stopTimers(Stepper *stepper)
+{
+	HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel); // stop masterTimer
+
+	if(stepper->state == MOVING) // check if stepper is in MOVING state i need to stop slaveTimer too
+		HAL_TIM_Base_Stop_IT(&stepper->slaveTimer); // stop slaveTimer
+
+	stepper_reset(stepper); // reset stepper
+}
+
 void stepper_reset(Stepper *stepper)
 {
-	__HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 0);
-	__HAL_TIM_SET_COUNTER(&stepper->masterTimer, 0);
+	__HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 0); // reset slaveTimer counter
+	__HAL_TIM_SET_COUNTER(&stepper->masterTimer, 0); // reset masterTimer counter
 
 	__HAL_TIM_CLEAR_FLAG(&stepper->slaveTimer, TIM_SR_UIF); // clear interrupt flag
-	__HAL_TIM_CLEAR_IT(&stepper->slaveTimer, TIM_IT_UPDATE);
+	__HAL_TIM_CLEAR_IT(&stepper->slaveTimer, TIM_IT_UPDATE); // clear update_flag
 }
 
 //#endif // STSTM32

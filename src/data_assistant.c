@@ -5,28 +5,28 @@
 
 uint8_t *char_append(uint8_t *src, uint8_t ch)
 {
-	uint8_t s = strlen((void *)src);
+	uint8_t s = strlen((void *)src); // read length of src string
 	
-	uint8_t tmp[s + 1];
-	tmp[0] = 0;
+	uint8_t tmp[s + 1]; // declare table with additional place for char
+	tmp[0] = 0; // clear table
 
-	strcpy((void *)tmp, (void *)src);
-	tmp[s] = ch;
-	tmp[s + 1] = '\0';
+	strcpy((void *)tmp, (void *)src); // copy src to new table
+	tmp[s] = ch; // set char at the pre-last pos
+	tmp[s + 1] = '\0'; // set end of string
 
-	return (uint8_t*)strdup((void*)tmp);
+	return (uint8_t*)strdup((void*)tmp); // return new string
 }
 
 uint8_t *str_append(uint8_t *src, uint8_t *str)
 {
-	uint8_t s = strlen((void *)src) + strlen((void *)str) + 1;
+	uint8_t s = strlen((void *)src) + strlen((void *)str) + 1; // read length of src and str
 
-	uint8_t tmp[s];
-	tmp[0] = 0;
+	uint8_t tmp[s]; // declare table for keep 2 strings
+	tmp[0] = 0; // clear table
 
-	strcat((void *)tmp, (void *)src);
-	strcat((void *)tmp, (void *)str);
-	tmp[s + 1] = '\0';
+	strcat((void *)tmp, (void *)src); // copy src to new table
+	strcat((void *)tmp, (void *)str); // copy str to new table
+	tmp[s + 1] = '\0'; // set end of string
 
-	return (uint8_t*)strdup((void *)tmp);
+	return (uint8_t*)strdup((void *)tmp); // return new string
 }

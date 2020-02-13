@@ -43,18 +43,16 @@ uint8_t ***connector_parse(uint8_t* dialog)
 
 uint8_t *connector_manage(uint8_t ***args)
 {
-	uint8_t *opt;
+	uint8_t *opt = (uint8_t*)"";
 
-	if(records < 1) // checks if no records detected!
+	if(records == 0) // check if no records detected
 		return (uint8_t*)"_ERROR_no_params";
-
-	if(records == 1) // if there is only one record -> command incorrect
+	else if(records == 1) // check if there is only one record 
 		return (uint8_t*)"_ERROR_one_param_only";
-
-	if(records > 3)
+	else if(records > 3) // check if there is more than 3 records 
 		return (uint8_t*)"_ERROR_to_many_arguments";
 		
-	if(args != NULL && strcmp((void*)args[0][0], "opt") != 0) // if there is no "opt" key -> command incorrect
+	if(args != NULL && strcmp((void*)args[0][0], "opt") != 0) // check if there is no "opt" key
 		return (uint8_t*)"_ERROR_no_opt_key";
 
 	opt = args[0][1]; // gets first value, which means operation type
