@@ -43,6 +43,31 @@ uint8_t *prepare_settings(uint8_t ***args, uint8_t size, uint8_t *key, uint8_t (
 	return feedback;
 }
 
+uint8_t *prepare_getEndstopState(uint8_t ***args, uint8_t size)
+{
+	Endstop *endstop = NULL;
+	uint8_t* feedback = (uint8_t*)"";
+
+	if(strcmp((void *)args[0][0], "end") == 0)
+	{
+		if(!(endstop = device_manager_getEndstop(args[0][1]))) // checks if set current device goes successfull, if no returns ERROR
+			feedback = (uint8_t*)"_ERROR_invalid_end_value";
+		else
+		{
+			feedback = (uint8_t*)"_SUCCESS_";
+			feedback = str_append(feedback, args[0][1]);
+			feedback = str_append(feedback, (uint8_t*)"_STATE_");
+			feedback = char_append(feedback, (uint8_t*)endstop_isClicked(endstop));
+		}
+	}
+	else
+		feedback = (uint8_t*)"_ERROR_no_end_key";
+	
+	free(args); // free memory allocated to args
+
+	return feedback;
+}
+
 uint8_t *prepare_switch(uint8_t ***args, uint8_t size)
 {
 	Stepper *stepper = NULL;

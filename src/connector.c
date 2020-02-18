@@ -61,12 +61,14 @@ uint8_t *connector_manage(uint8_t ***args)
 
 	/* checks operation (opt) mode and calls appropriate prepare_function */
 
-	if(strcmp((void *)opt, "sth") == 0)
-		return prepare_switch(args, records);
-	else if(strcmp((void *)opt, "ses") == 0)
+	if(strcmp((void *)opt, "ses") == 0)
 		return prepare_settings(args, records, (uint8_t*)"spd", stepper_setSpeed);
 	else if(strcmp((void *)opt, "sem") == 0)
 		return prepare_settings(args, records, (uint8_t*)"msp", stepper_setMicrostepping);
+	else if(strcmp((void *)opt, "ges") == 0)
+		return prepare_getEndstopState(args, records);
+	else if(strcmp((void *)opt, "sth") == 0)
+		return prepare_switch(args, records);
 	else if(strcmp((void *)opt, "hom") == 0)
 		return prepare_home(args, records);
 	else if(strcmp((void *)opt, "mov") == 0)

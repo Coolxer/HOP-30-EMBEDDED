@@ -8,7 +8,8 @@ uint8_t PROCESS_FORWARD;
 
 void device_manager_init();                                                     // sets devices
 void device_manager_deinit();                                                   // resets devices
-Stepper *device_manager_getStepper(uint8_t *name);                             // returns pointer to device by name, if device name is not recognized, returns NULL
+Stepper *device_manager_getStepper(uint8_t *name);                              // returns pointer to stepper by name, if device name is not recognized, returns NULL
+Endstop *device_manager_getEndstop(uint8_t *name);                              // return pointer to endstopp by name
 
 /* PRIVATE */   //void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);               /* endstop interrupt procedure */
 /* PRIVATE */   //void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);  /* SLAVE timer interrupt procedure */

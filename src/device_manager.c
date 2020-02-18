@@ -60,6 +60,19 @@ Stepper *device_manager_getStepper(uint8_t *name)
     return NULL;
 }
 
+Endstop *device_manager_getEndstop(uint8_t *name)
+{
+    uint8_t i;
+
+    for(i = 0; i < ENDSTOPS_COUNT; i++)
+    {
+        if(strcmp((void *)endstops[i].name, (void *)name) == 0)
+            return &endstops[i];
+    }
+
+    return NULL;
+}
+
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     uint8_t i = 0;
