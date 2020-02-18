@@ -63,9 +63,9 @@ uint8_t *connector_manage(uint8_t ***args)
 
 	if(strcmp((void *)opt, "sth") == 0)
 		return prepare_switch(args, records);
-	else if(strcmp((void *)opt, "spd") == 0)
+	else if(strcmp((void *)opt, "ses") == 0)
 		return prepare_settings(args, records, (uint8_t*)"spd", stepper_setSpeed);
-	else if(strcmp((void *)opt, "msp") == 0)
+	else if(strcmp((void *)opt, "sem") == 0)
 		return prepare_settings(args, records, (uint8_t*)"msp", stepper_setMicrostepping);
 	else if(strcmp((void *)opt, "hom") == 0)
 		return prepare_home(args, records);
