@@ -1,8 +1,7 @@
 //#ifdef STSTM32
 #include "device_manager.h"
 
-#include <stdlib.h>
-#include <string.h>
+#include "cmd_builder.h"
 
 #include "settings.h"
 #include "stepper.h"
@@ -102,24 +101,24 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
             if(endstop->clicked == state) // check if the endstop has actually current interrupt state, just break it (security of multi calling)
                 break;
 
-            uart_send("A");
-
             endstop->clicked = state; // update endstop->clicked state
 
             if(!endstop->clicked || (endstop->parentStepper->state != HOMING && endstop->parentStepper->state != MOVING)) // check if endstop->clicked is false or the current operation of
                 break;                                                                                                    // parent stepper is not HOMING or MOVING just break (prevent from random clicked) 
                                                                                                                           // for example if endstop was clicked by hand
             HAL_TIM_PWM_Stop(&endstop->parentStepper->masterTimer, endstop->parentStepper->channel); // stop PWM (moving) on assigned stepper
-
-            /*
+           
+           /*
             if(endstop->parentStepper->state == MOVING)
             {
                 cnt = endstop->parentStepper->slaveTimer.Instance->CNT;
                 HAL_TIM_Base_Stop_IT(&endstop->parentStepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying antything
             }
-              */   
-            uint8_t* feedback = str_append(endstop->name, (uint8_t*)"_ENDSTOP_HIT\n"); // send feedback with endstop name that fired the interrupt
-            
+            */
+              
+            //uint8_t* feedback = str_append(endstop->name, (uint8_t*)"_ENDSTOP_HIT\n"); // send feedback with endstop name that fired the interrupt
+
+            /*
             if(cnt) // check if cnt is greater than 0, means that the movement was MOVING not HOMING, and i want to send number of steps made
             {
                 feedback = str_append(feedback, (uint8_t*)"_STEPS="); // append steps label to feedback
@@ -129,12 +128,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
                 feedback = str_append(feedback, str); // append number of steps made to feedback
             }
+            */
+
+           if(endstop->parentStepper->state == MOVING)
+                HAL_TIM_Base_Stop_IT(&endstop->parentStepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying antything
 
             stepper_reset(endstop->parentStepper); // reset stepper motor after finished his work
 
             endstop->parentStepper->state = endstop->parentStepper->state = ON; // reset state of parent motor
-
-            uart_send(feedback); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
+            
+            uart_send(cmd_builder_buildFin(endstop->parentStepper->index, -1)); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
         }
     }   
 }
@@ -151,9 +154,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
             steppers[i].lastState = steppers[i].state = ON; // reset state of motor
 
-            uint8_t *feedback = str_append((uint8_t*)"_SUCCESS_", (uint8_t*)steppers[i].name); // prepare feedback
-
-            uart_send(feedback); // send feedback
+            uart_send(cmd_builder_buildFin(endstop->parentStepper->index, -1)); // send feedback
         }
     }
 }

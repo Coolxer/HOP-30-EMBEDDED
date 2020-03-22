@@ -2,6 +2,7 @@
 #include "application.h"
 
 #include "settings.h"
+#include "cmd_builder.h"
 #include "clock_manager.h"
 #include "uart.h"
 #include "device_manager.h"
@@ -13,6 +14,7 @@ void application_setup()
 
     clocks_init(); // enables clocks
 
+    cmd_builder_init(); // creates opts & keys structures
     uart_init(); // inits uart module
     device_manager_init(); // inits device manager kit
 }

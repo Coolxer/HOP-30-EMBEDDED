@@ -3,8 +3,6 @@
 
 #include "stm32f4xx_hal.h"
 
-#include "connector.h"
-
 void uart_init();                 // calls all UART setups
 
 void uart_listen();               // enables listening to connected COM port

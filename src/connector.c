@@ -4,7 +4,7 @@
 #include <string.h> // includes defintion and use of strtok function
 #include <stddef.h> // includes NULL value
 
-#include "data_assistant.h"
+#include "cmd_builder.h"
 #include "prepare_functions.h"
 #include "stepper.h"
 
@@ -43,46 +43,59 @@ uint8_t ***connector_parse(uint8_t* dialog)
 
 uint8_t *connector_manage(uint8_t ***args)
 {
-	uint8_t *opt = (uint8_t*)"";
+	//uint8_t *opt = (uint8_t*)"";
 
 	if(records == 0) // check if no records detected
-		return (uint8_t*)"_ERROR_no_params";
+		return cmd_builder_buildErr(0, 1);
 	else if(records == 1) // check if there is only one record 
-		return (uint8_t*)"_ERROR_one_param_only";
-	else if(records > 3) // check if there is more than 3 records 
-		return (uint8_t*)"_ERROR_to_many_arguments";
-		
-	if(args != NULL && strcmp((void*)args[0][0], "opt") != 0) // check if there is no "opt" key
-		return (uint8_t*)"_ERROR_no_opt_key";
+		return cmd_builder_buildErr(0, 2);
+	else if(records > 4) // check if there is more than 34 records 
+		return cmd_builder_buildErr(0, 3);
 
-	opt = args[0][1]; // gets first value, which means operation type
+	if(args != NULL && strcmp((void*)args[0][0], KEYS.INDEX) != 0) // check if there is no "idx" key
+		return cmd_builder_buildErr(0, 4);
+
+	uint8_t i;
+	for(i = 0; i < strlen(args[0][1]); i++)
+	{
+		if(args[0][1] < 48 || args[0][1] > 57)  // check if string contains only numbers
+			break;
+	}
+
+	if(i != strlen(args[0][1]))
+		return cmd_builder_buildErr(0, 5); 
+		
+	if(args != NULL && strcmp((void*)args[1][0], KEYS.OPERATION) != 0) // check if there is no "opt" key
+		return cmd_builder_buildErr(args[0][1], 6);
+
+	uint8_t *opt = args[1][1]; // gets first value, which means operation type
 	
-	memmove(args, args + 1, --(records) * sizeof(uint8_t *)); // moves the array one place forward (removes first row with opt type)
+	//memmove(args, args + 1, --(records) * sizeof(uint8_t *)); // moves the array one place forward (removes first row with opt type)
 
 	/* checks operation (opt) mode and calls appropriate prepare_function */
 
-	if(strcmp((void *)opt, "ses") == 0)
-		return prepare_settings(args, records, (uint8_t*)"spd", stepper_setSpeed);
-	else if(strcmp((void *)opt, "sem") == 0)
-		return prepare_settings(args, records, (uint8_t*)"msp", stepper_setMicrostepping);
-	else if(strcmp((void *)opt, "ges") == 0)
+	if(strcmp((void *)opt, OPTS.SETUP_SPEED) == 0)
+		return prepare_settings(args, records, OPTS.SETUP_SPEED, stepper_setSpeed);
+	else if(strcmp((void *)opt, OPTS.SETUP_MICROSTEPPING) == 0)
+		return prepare_settings(args, records, OPTS.SETUP_MICROSTEPPING, stepper_setMicrostepping);
+	else if(strcmp((void *)opt, OPTS.GET_STATE) == 0)
 		return prepare_getEndstopState(args, records);
-	else if(strcmp((void *)opt, "sth") == 0)
+	else if(strcmp((void *)opt, OPTS.SWITCH) == 0)
 		return prepare_switch(args, records);
-	else if(strcmp((void *)opt, "hom") == 0)
+	else if(strcmp((void *)opt, OPTS.HOME) == 0)
 		return prepare_home(args, records);
-	else if(strcmp((void *)opt, "mov") == 0)
+	else if(strcmp((void *)opt, OPTS.MOVE) == 0)
 		return prepare_move(args, records);
-	else if(strcmp((void *)opt, "pro") == 0)
+	else if(strcmp((void *)opt, OPTS.PROCESS) == 0)
 		return prepare_process(args, records);
-	else if(strcmp((void *)opt, "pau") == 0)
+	else if(strcmp((void *)opt, OPTS.PAUSE) == 0)
 		return prepare_intervention(args, records, stepper_pause);
-	else if(strcmp((void *)opt, "res") == 0)
+	else if(strcmp((void *)opt, OPTS.RESUME) == 0)
 		return prepare_intervention(args, records, stepper_resume);
-	else if(strcmp((void *)opt, "sto") == 0)
+	else if(strcmp((void *)opt, OPTS.STOP) == 0)
 		return prepare_intervention(args, records, stepper_stop);
 	else
-		return (uint8_t*)"_ERROR:invalid_opt_value";
+		return cmd_builder_buildErr(args[0][1], 7);
 }
 
 

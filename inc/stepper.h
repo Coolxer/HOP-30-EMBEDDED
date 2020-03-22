@@ -15,6 +15,7 @@ enum State
 typedef struct
 {
     uint8_t name[2];                // 2-characters name
+    uint32_t index;                 // command index
     uint32_t port;                  // stepper gpio port group
 
     TIM_HandleTypeDef masterTimer;  // master timer (structure)             
@@ -22,7 +23,7 @@ typedef struct
 
     uint8_t alternateFunction;      // alternate function of step_pin
     uint32_t channel;               // timer channel to which the step_pin is connected    
-    uint32_t itr;                   // ITR macro (on which "port master sends update to slave, port on slave timer")
+    uint32_t itr;                   // ITR macro (on which "port master sends update to slave; port on slave timer")
     uint8_t irq;                    // IRQ macro of slave timer
 
     uint16_t step;                  // step pin

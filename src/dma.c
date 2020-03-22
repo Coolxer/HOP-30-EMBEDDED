@@ -163,7 +163,7 @@ void dma_dmaHandler()
 
 		dma.empty = 0; // set empty flag to 0 means that dma is not empty
 
-		if(response_length >= 15) // min length of command is 15 (calculated, first validation)
+		if(response_length >= 21) // min length of command is 21 (calculated, first validation)
 		{
 			for(i = 0; i < response_length; i++)
 			{

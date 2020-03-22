@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "connector.h"
 #include "uart_min.h"
 #include "dma.h"
 #include "data_assistant.h"
