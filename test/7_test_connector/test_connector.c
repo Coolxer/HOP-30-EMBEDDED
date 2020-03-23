@@ -2,6 +2,8 @@
 
 #include <unity.h> // includes unit testing library
 #include "stm32f4xx_hal.h"
+#include "cmd_builder.h"
+#include "cmd_builder.h"
 #include "connector.h"
 
 void setUp()

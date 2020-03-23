@@ -24,9 +24,6 @@ uint8_t ***connector_parse(uint8_t* dialog)
 		if(param[0] == '=' || strchr((void *)param, *param_delimiter) == NULL)
 			break;
 
-		//if(strchr(param, *param_delimiter) == NULL)
-		//	continue;
-
 		key = (uint8_t*)strtok_r((void *)param, (void *)param_delimiter, (void*)&value); // assigns key & values contents
 		args = (uint8_t ***) realloc(args, (++records) * sizeof(uint8_t *)); // extends array by one row (2 columns)
 
@@ -43,10 +40,8 @@ uint8_t ***connector_parse(uint8_t* dialog)
 
 uint8_t *connector_manage(uint8_t ***args)
 {
-	uint8_t *idx = (uint8_t *)"";
-	uint8_t *opt = (uint8_t *)"";;
+	uint8_t *idx = (uint8_t *)"", *opt =(uint8_t *)"", *str = args[0][1];
 	uint8_t i;
-	uint8_t* str = args[0][1];
 
 	if(records == 0) // check if no records detected
 		return cmd_builder_buildErr((uint8_t*)"0", (uint8_t*)"1");
@@ -64,7 +59,7 @@ uint8_t *connector_manage(uint8_t ***args)
 			break;
 	}
 
-	if(i != strlen((void*)args[0][1]))
+	if(i != strlen((void*)args[0][1])) // if the i is not eqaul to length, there was any char different than digit
 		return cmd_builder_buildErr((uint8_t*)"0", (uint8_t*)"5"); 
 		
 	if(args != NULL && strcmp((void*)args[1][0], (void*)KEYS.OPERATION) != 0) // check if there is no "opt" key
@@ -72,8 +67,8 @@ uint8_t *connector_manage(uint8_t ***args)
 
 	idx = args[0][1]; // get index value 
 	opt = args[1][1]; // get operation type
-
-	records -= 2;
+ 
+	records -= 2; // decrease number of rows by 2 (remove index and operation)
 	
 	memmove(args, args + 2, records * sizeof(uint8_t *)); // moves the array 2 place forward (removes 2 first rows with idx and opt)
 
@@ -100,7 +95,7 @@ uint8_t *connector_manage(uint8_t ***args)
 	else if(strcmp((void *)opt, (void*)OPTS.STOP) == 0)
 		return prepare_intervention(idx, args, stepper_stop);
 	else
-		return cmd_builder_buildErr(idx, (uint8_t*)"7");
+		return cmd_builder_buildErr(idx, (uint8_t*)"7"); // "invalid operation value"
 }
 
 

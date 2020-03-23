@@ -72,7 +72,7 @@ void test_stepper_stop_should_give_false()
     TEST_ASSERT_FALSE(stepper_stop(&stepper));
 
     stepper.state = ON;
-    TEST_ASSERT_FALSE(stepper_stop(&stepper_pause));
+    TEST_ASSERT_FALSE(stepper_stop(&stepper));
 }
 
 void test_stepper_stop_should_give_true()
