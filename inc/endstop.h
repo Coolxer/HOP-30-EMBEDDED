@@ -23,6 +23,6 @@ void endstop_deinit(Endstop *endstop);          // disables IRQ
 
 void endstop_setupGpio(Endstop *endstop);      // setups gpio for endstop
 
-uint8_t endstop_isClicked(Endstop *endstop);
+uint8_t *endstop_isClicked(Endstop *endstop);
 
 #endif // ENDSTOP_H

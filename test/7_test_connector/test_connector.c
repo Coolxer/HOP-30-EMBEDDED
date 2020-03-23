@@ -4,7 +4,10 @@
 #include "stm32f4xx_hal.h"
 #include "connector.h"
 
-void setUp();// default setup function
+void setUp()
+{
+    cmd_builder_init();
+}
 void tearDown(); // default release function
 
 // connector_parse() function will be called only if given command has at least 15 characters and the last character is \n (new line terminator)
@@ -59,34 +62,46 @@ void test_connector_parse_should_give_three_records()
 
 /*********************** connector manage  ********************/
 
-void test_connector_manage_should_give_no_params_error()
+void test_connector_manage_should_give_1()
 {
     uint8_t data[] = "aaaaaaaaaaaaaaa|\n";
-    TEST_ASSERT_EQUAL_STRING("_ERROR_no_params", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=1|\n", connector_manage(connector_parse(data)));
 }
 
-void test_connector_manage_should_give_one_param_only_error()
+void test_connector_manage_should_give_2()
 {
     uint8_t data[] = "opt=aaaaaaaaaa|\n";
-    TEST_ASSERT_EQUAL_STRING("_ERROR_one_param_only", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=2|\n", connector_manage(connector_parse(data)));
 }
 
-void test_connector_manage_should_give_to_many_arguments_error()
+void test_connector_manage_should_give_3()
 {
-    uint8_t data[] = "abc=123|spp=12|spd=1|alf=56|\n";
-    TEST_ASSERT_EQUAL_STRING("_ERROR_to_many_arguments", connector_manage(connector_parse(data)));
+    uint8_t data[] = "abc=123|spp=12|spd=1|alf=56|afk=3|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=3|\n", connector_manage(connector_parse(data)));
 }
 
-void test_connector_manage_should_give_no_opt_key_error()
+void test_connector_manage_should_give_4()
 {
-    uint8_t data[] = "abc=123|spp=12|\n";
-    TEST_ASSERT_EQUAL_STRING("_ERROR_no_opt_key", connector_manage(connector_parse(data)));
+    uint8_t data[] = "abc=123|spp=12|spd=1|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=4|\n", connector_manage(connector_parse(data)));
 }
 
-void test_connector_manage_should_give_invalid_opt_value_error()
+void test_connector_manage_should_give_5()
 {
-    uint8_t data[] = "opt=123|spp=12|\n";
-    TEST_ASSERT_EQUAL_STRING("_ERROR:invalid_opt_value", connector_manage(connector_parse(data)));
+    uint8_t data[] = "idx=ab|spp=12|spd=1|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=5|\n", connector_manage(connector_parse(data)));
+}
+
+void test_connector_manage_should_give_6()
+{
+    uint8_t data[] = "idx=1|abc=123|spp=12|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=6|\n", connector_manage(connector_parse(data)));
+}
+
+void test_connector_manage_should_give_7()
+{
+    uint8_t data[] = "idx=1|opt=123|spp=12|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=7|\n", connector_manage(connector_parse(data)));
 }
 
 int main()
@@ -103,11 +118,13 @@ int main()
     RUN_TEST(test_connector_parse_should_give_one_record);
     RUN_TEST(test_connector_parse_should_give_three_records);
 
-    RUN_TEST(test_connector_manage_should_give_no_params_error);
-    RUN_TEST(test_connector_manage_should_give_one_param_only_error);
-    RUN_TEST(test_connector_manage_should_give_to_many_arguments_error);
-    RUN_TEST(test_connector_manage_should_give_no_opt_key_error);
-    RUN_TEST(test_connector_manage_should_give_invalid_opt_value_error);
+    RUN_TEST(test_connector_manage_should_give_1);
+    RUN_TEST(test_connector_manage_should_give_2);
+    RUN_TEST(test_connector_manage_should_give_3);
+    RUN_TEST(test_connector_manage_should_give_4);
+    RUN_TEST(test_connector_manage_should_give_5);
+    RUN_TEST(test_connector_manage_should_give_6);
+    RUN_TEST(test_connector_manage_should_give_7);
  
     UNITY_END();
 }

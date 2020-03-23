@@ -43,59 +43,64 @@ uint8_t ***connector_parse(uint8_t* dialog)
 
 uint8_t *connector_manage(uint8_t ***args)
 {
-	//uint8_t *opt = (uint8_t*)"";
+	uint8_t *idx = (uint8_t *)"";
+	uint8_t *opt = (uint8_t *)"";;
+	uint8_t i;
+	uint8_t* str = args[0][1];
 
 	if(records == 0) // check if no records detected
-		return cmd_builder_buildErr(0, 1);
+		return cmd_builder_buildErr("0", "1");
 	else if(records == 1) // check if there is only one record 
-		return cmd_builder_buildErr(0, 2);
+		return cmd_builder_buildErr("0", "2");
 	else if(records > 4) // check if there is more than 34 records 
-		return cmd_builder_buildErr(0, 3);
+		return cmd_builder_buildErr("0", "3");
 
 	if(args != NULL && strcmp((void*)args[0][0], KEYS.INDEX) != 0) // check if there is no "idx" key
-		return cmd_builder_buildErr(0, 4);
+		return cmd_builder_buildErr("0", "4");
 
-	uint8_t i;
-	for(i = 0; i < strlen(args[0][1]); i++)
+	for(i = 0; i < strlen(str); i++)
 	{
-		if(args[0][1] < 48 || args[0][1] > 57)  // check if string contains only numbers
+		if(str[i] < 48 || str[i] > 57)  // check if string contains only numbers
 			break;
 	}
 
 	if(i != strlen(args[0][1]))
-		return cmd_builder_buildErr(0, 5); 
+		return cmd_builder_buildErr("0", "5"); 
 		
 	if(args != NULL && strcmp((void*)args[1][0], KEYS.OPERATION) != 0) // check if there is no "opt" key
-		return cmd_builder_buildErr(args[0][1], 6);
+		return cmd_builder_buildErr(args[0][1], "6");
 
-	uint8_t *opt = args[1][1]; // gets first value, which means operation type
+	idx = args[0][1]; // get index value 
+	opt = args[1][1]; // get operation type
+
+	records -= 2;
 	
-	//memmove(args, args + 1, --(records) * sizeof(uint8_t *)); // moves the array one place forward (removes first row with opt type)
+	memmove(args, args + 2, records * sizeof(uint8_t *)); // moves the array 2 place forward (removes 2 first rows with idx and opt)
 
 	/* checks operation (opt) mode and calls appropriate prepare_function */
 
 	if(strcmp((void *)opt, OPTS.SETUP_SPEED) == 0)
-		return prepare_settings(args, records, OPTS.SETUP_SPEED, stepper_setSpeed);
+		return prepare_settings(idx, args, KEYS.SPEED, stepper_setSpeed);
 	else if(strcmp((void *)opt, OPTS.SETUP_MICROSTEPPING) == 0)
-		return prepare_settings(args, records, OPTS.SETUP_MICROSTEPPING, stepper_setMicrostepping);
+		return prepare_settings(idx, args, KEYS.MICROSTEPPING, stepper_setMicrostepping);
 	else if(strcmp((void *)opt, OPTS.GET_STATE) == 0)
-		return prepare_getEndstopState(args, records);
+		return prepare_getEndstopState(idx, args);
 	else if(strcmp((void *)opt, OPTS.SWITCH) == 0)
-		return prepare_switch(args, records);
+		return prepare_switch(idx, args);
 	else if(strcmp((void *)opt, OPTS.HOME) == 0)
-		return prepare_home(args, records);
+		return prepare_home(idx, args);
 	else if(strcmp((void *)opt, OPTS.MOVE) == 0)
-		return prepare_move(args, records);
+		return prepare_move(idx, args);
 	else if(strcmp((void *)opt, OPTS.PROCESS) == 0)
-		return prepare_process(args, records);
+		return prepare_process(idx, args);
 	else if(strcmp((void *)opt, OPTS.PAUSE) == 0)
-		return prepare_intervention(args, records, stepper_pause);
+		return prepare_intervention(idx, args, stepper_pause);
 	else if(strcmp((void *)opt, OPTS.RESUME) == 0)
-		return prepare_intervention(args, records, stepper_resume);
+		return prepare_intervention(idx, args, stepper_resume);
 	else if(strcmp((void *)opt, OPTS.STOP) == 0)
-		return prepare_intervention(args, records, stepper_stop);
+		return prepare_intervention(idx, args, stepper_stop);
 	else
-		return cmd_builder_buildErr(args[0][1], 7);
+		return cmd_builder_buildErr(idx, "7");
 }
 
 

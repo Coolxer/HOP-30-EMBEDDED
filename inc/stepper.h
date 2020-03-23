@@ -15,7 +15,7 @@ enum State
 typedef struct
 {
     uint8_t name[2];                // 2-characters name
-    uint32_t index;                 // command index
+    uint8_t *index;                 // command index
     uint32_t port;                  // stepper gpio port group
 
     TIM_HandleTypeDef masterTimer;  // master timer (structure)             

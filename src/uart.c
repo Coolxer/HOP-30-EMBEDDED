@@ -2,13 +2,9 @@
 
 #include "uart.h"
 
-#include <string.h>
-#include <stdlib.h>
-
 #include "connector.h"
 #include "uart_min.h"
 #include "dma.h"
-#include "data_assistant.h"
 
 uint8_t *command;
 uint8_t *feedback;
@@ -49,7 +45,6 @@ void uart_listen()
 
 void uart_send(uint8_t *message)
 {
-	message = str_append(message, "\r\n");
 	HAL_UART_Transmit_DMA(&uart, (uint8_t*)message, strlen((void*)message));
 	//HAL_UART_Transmit(&uart, (uint8_t*)message, strlen((void*)message), 1000); // sends message through UART with 100 timeout
 	// it working in block mode, can use IT or DMA ? (this are options but will work fine with IDLE)
@@ -61,7 +56,8 @@ uint8_t uart_manage()
 
 	if(strcmp((void*)command, "FINISH") == 0) // checks if receive command is "FINISH"
 	{
-		feedback = str_append(feedback, (uint8_t*)"FINISHED");
+		//feedback = str_append(feedback, (uint8_t*)"FINISHED");
+		feedback = (uint8_t*) "FINISHED";
 		return 0;
 	}
 	else
