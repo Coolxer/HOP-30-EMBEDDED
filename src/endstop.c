@@ -40,9 +40,9 @@ void endstop_setupGpio(Endstop *endstop)
 uint8_t* endstop_isClicked(Endstop *endstop)
 {
     if(!HAL_GPIO_ReadPin((GPIO_TypeDef*)endstop->port, endstop->pin))
-        return "0";
+        return (uint8_t*)"0";
 
-    return "1";
+    return (uint8_t*)"1";
 }
 
 //#endif // STSTM32

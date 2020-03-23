@@ -1,6 +1,8 @@
 //#ifdef STSTM32
-
 #include "uart.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 #include "connector.h"
 #include "uart_min.h"

@@ -1,8 +1,10 @@
 //#ifdef STSTM32
 #include "device_manager.h"
 
-#include "cmd_builder.h"
+#include <string.h>
+#include <stdlib.h>
 
+#include "cmd_builder.h"
 #include "settings.h"
 #include "stepper.h"
 #include "endstop.h"
@@ -95,7 +97,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
         if(GPIO_Pin == endstops[i].pin) // check if concret endstop fired interrupt
         {
-            uint8_t cnt = 0;
+            //uint8_t cnt = 0;
             Endstop *endstop = &endstops[i];
 
             if(endstop->clicked == state) // check if the endstop has actually current interrupt state, just break it (security of multi calling)
@@ -135,9 +137,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
             stepper_reset(endstop->parentStepper); // reset stepper motor after finished his work
 
-            endstop->parentStepper->state = endstop->parentStepper->state = ON; // reset state of parent motor
+            endstop->parentStepper->state = ON; // reset state of parent motor
             
-            uart_send(cmd_builder_buildFin(endstop->parentStepper->index, -1)); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
+            uart_send(cmd_builder_buildFin(endstop->parentStepper->index, (uint8_t *)"2")); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
         }
     }   
 }
@@ -154,7 +156,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
             steppers[i].lastState = steppers[i].state = ON; // reset state of motor
 
-            uart_send(cmd_builder_buildFin(endstop->parentStepper->index, -1)); // send feedback
+            uart_send(cmd_builder_buildFin(endstop->parentStepper->index, (uint8_t *)"2")); // send feedback
         }
     }
 }

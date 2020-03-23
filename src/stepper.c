@@ -310,7 +310,7 @@ void stepper_run(Stepper *stepper)
 
 uint8_t stepper_pause(Stepper *stepper)
 {
-	if(stepper->state != HOMING && stepper->state != MOVING || stepper->state == PAUSED) // cannot pause if stepper is not homing, not moving or if it is already paused
+	if((stepper->state != HOMING && stepper->state != MOVING) || stepper->state == PAUSED) // cannot pause if stepper is not homing, not moving or if it is already paused
 		return 0;
 
 	if(stepper->state == MOVING) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
