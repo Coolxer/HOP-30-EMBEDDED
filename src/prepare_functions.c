@@ -115,13 +115,27 @@ uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
 			feedback = cmd_builder_buildErr(idx, (uint8_t*)"9"); // "invalid stepper name"
 		else // success getStepper
 		{
-			if(!stepper_home(stepper)) // try to home stepper
-				feedback = cmd_builder_buildErr(idx, (uint8_t*)"18"); // "operation not allowed"
-			else // success home
+			if(strcmp((void *)args[1][0], (void*)KEYS.DIRECTION) == 0) // check if there is direction key
 			{
-				feedback = cmd_builder_buildPas(idx); // passed
-				strcpy((void*)stepper->index, (void*)idx);
+				if(strcmp((void *)args[1][1], "0") != 0 && strcmp((void *)args[1][1], "1") != 0) // check if value is 0 or 1
+					feedback = cmd_builder_buildErr(idx, (uint8_t*)"22"); // "invalid direction value
+				else 
+				{
+					uint8_t direction = 0; // init any value
+
+					sscanf((void *)args[1][1], "%d", &direction); // str to int
+
+					if(!stepper_home(stepper, direction)) // try to home stepper
+						feedback = cmd_builder_buildErr(idx, (uint8_t*)"18"); // "operation not allowed"
+					else // success home
+					{
+						feedback = cmd_builder_buildPas(idx); // passed
+						strcpy((void*)stepper->index, (void*)idx);
+					}
+				}
 			}
+			else // no direction key
+				feedback = cmd_builder_buildErr(idx, (uint8_t*)"21"); // "no direction key"
 				
 		}	
 	}

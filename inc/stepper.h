@@ -52,7 +52,7 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed);           // sets sp
 
 uint8_t stepper_switch(Stepper *stepper, uint8_t state);              // switch stepper motor depend on state value (0 -> OFF, 1 -> ON)
 uint8_t stepper_emergency_shutdown(Stepper *stepper);                 // function that allow easily to only TURN OFF all steppers, without condition
-uint8_t stepper_home(Stepper *stepper);                               // starts moving stepper motor (can be break by endstop clicked or pause / stop)
+uint8_t stepper_home(Stepper *stepper, uint8_t state);                // starts moving stepper motor (can be break by endstop clicked or pause / stop)
 uint8_t stepper_move(Stepper *stepper, uint8_t *steps);               // moves stepper motor by given number of steps (can be break by endstop clicked or pause / stop)
 
 void stepper_setDirection(Stepper *stepper, uint8_t dir);             // setups stepper motor direction

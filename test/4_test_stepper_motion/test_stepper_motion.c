@@ -14,13 +14,13 @@ void test_stepper_home_should_give_false()
     Stepper stepper;
 
     stepper.state = HOMING;
-    TEST_ASSERT_FALSE(stepper_home(&stepper));
+    TEST_ASSERT_FALSE(stepper_home(&stepper, 0));
 
     stepper.state = MOVING;
-    TEST_ASSERT_FALSE(stepper_home(&stepper));
+    TEST_ASSERT_FALSE(stepper_home(&stepper, 0));
 
     stepper.state = PAUSED;
-    TEST_ASSERT_FALSE(stepper_home(&stepper));
+    TEST_ASSERT_FALSE(stepper_home(&stepper, 0));
 }
 
 void test_stepper_home_should_give_true()
@@ -28,10 +28,16 @@ void test_stepper_home_should_give_true()
     Stepper stepper;
 
     stepper.state = OFF;
-    TEST_ASSERT_TRUE(stepper_home(&stepper));
+    TEST_ASSERT_TRUE(stepper_home(&stepper, 0));
+
+    stepper.state = OFF;
+    TEST_ASSERT_TRUE(stepper_home(&stepper, 1));
 
     stepper.state = ON;
-    TEST_ASSERT_TRUE(stepper_home(&stepper));
+    TEST_ASSERT_TRUE(stepper_home(&stepper, 0));
+
+    stepper.state = ON;
+    TEST_ASSERT_TRUE(stepper_home(&stepper, 1));
 }
 
 /**************** stepper_move ********************/

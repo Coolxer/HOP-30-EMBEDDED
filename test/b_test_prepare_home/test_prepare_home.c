@@ -25,12 +25,24 @@ void test_prepare_home_should_give_9()
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
 }
 
+void test_prepare_home_should_give_21()
+{
+    uint8_t data[] = "idx=1|opt=hom|spp=x|abc=4|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=21|\n", connector_manage(connector_parse(data)));
+}
+
+void test_prepare_home_should_give_22()
+{
+    uint8_t data[] = "idx=1|opt=hom|spp=x|dir=4|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data)));
+}
+
 void test_prepare_home_should_give_18()
 {
     Stepper *stepper = (Stepper*)device_manager_getStepper((uint8_t*)"x");
     stepper->state = HOMING;
 
-    uint8_t data[] = "idx=1|opt=hom|spp=x|\n";
+    uint8_t data[] = "idx=1|opt=hom|spp=x|dir=0|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
 }
 
@@ -39,7 +51,7 @@ void test_prepare_home_should_give_passed()
     Stepper *stepper = (Stepper*)device_manager_getStepper((uint8_t*)"x");
     stepper->state = ON;
 
-    uint8_t data[] = "idx=1|opt=hom|spp=x|\n";
+    uint8_t data[] = "idx=1|opt=hom|spp=x|dir=0|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=pas|\n", connector_manage(connector_parse(data)));
 }
 
@@ -52,6 +64,8 @@ int main()
 
     RUN_TEST(test_prepare_home_should_give_8);
     RUN_TEST(test_prepare_home_should_give_9);
+    RUN_TEST(test_prepare_home_should_give_21);
+    RUN_TEST(test_prepare_home_should_give_22);
     RUN_TEST(test_prepare_home_should_give_18);
     RUN_TEST(test_prepare_home_should_give_passed);
 

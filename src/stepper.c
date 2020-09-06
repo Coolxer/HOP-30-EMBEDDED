@@ -224,12 +224,12 @@ uint8_t stepper_emergency_shutdown(Stepper *stepper)
 	return 1;
 }
 
-uint8_t stepper_home(Stepper *stepper)
+uint8_t stepper_home(Stepper *stepper, uint8_t direction)
 {
-	if(stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot home if motor is homing or moving right now
+	if(stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot home if motor is homing or moving right now or also paused
 		return 0;
 
-	stepper_setDirection(stepper, 0); // set left direction
+	stepper_setDirection(stepper, direction); // set left direction
 	stepper_run(stepper); // start motor moving
 
 	stepper->state = HOMING; // update stepper state
