@@ -130,7 +130,7 @@ uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
 					else // success home
 					{
 						feedback = cmd_builder_buildPas(idx); // passed
-						strcpy((void*)stepper->index, (void*)idx);
+						stepper->index = idx;
 					}
 				}
 			}
@@ -168,7 +168,8 @@ uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 					if(result == 1) // success
 					{
 						feedback = cmd_builder_buildPas(idx); // passed
-						strcpy((void*)stepper->index, (void*)idx);
+
+						stepper->index = idx;
 					}
 					else if(result == 9) // not allowed
 						feedback = cmd_builder_buildErr(idx, (uint8_t*)"18");  // "operation not allowed"
@@ -213,7 +214,7 @@ uint8_t *prepare_process(uint8_t *idx, uint8_t ***args) // opt=pro|spp=x|spd=40|
 
 			PROCESS_FORWARD = 1; // acutal process status is that it is moving forward
 
-			strcpy((void*)x->index, (void*)idx); // save index to x stepper (it is enough -> why x no w ? beacuse the response will be generate on endstop hitted by x stepper)
+			x->index = idx; // save index to x stepper (it is enough -> why x no w ? beacuse the response will be generate on endstop hitted by x stepper)
 
 			feedback = cmd_builder_buildPas(idx); // build command to info that everything is fine
 		}

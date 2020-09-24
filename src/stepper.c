@@ -22,7 +22,7 @@ void stepper_setupGpio(Stepper *stepper)
 	/* setups gpio for step_pin */
 	gpio.Pin = stepper->step;
 	gpio.Mode = GPIO_MODE_AF_PP;
-	gpio.Pull = GPIO_NOPULL;
+	gpio.Pull = GPIO_PULLUP;
   	gpio.Speed = GPIO_SPEED_FREQ_HIGH;
 	gpio.Alternate = stepper->alternateFunction;
 
@@ -31,14 +31,13 @@ void stepper_setupGpio(Stepper *stepper)
 
 void stepper_setupMasterTimer(Stepper *stepper)
 {
-	//TIM_ClockConfigTypeDef clockSourceConfig = {0};
   	TIM_MasterConfigTypeDef masterConfig = {0};
   	TIM_OC_InitTypeDef configOC = {0};
 	
 	stepper->masterTimer.Init.CounterMode = TIM_COUNTERMODE_UP;
 	stepper->masterTimer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	stepper->masterTimer.Init.Prescaler = 4000 - 1;
-	stepper->masterTimer.Init.Period = 5000 - 1;
+	stepper->masterTimer.Init.Prescaler =  320 - 1;
+	stepper->masterTimer.Init.Period = 0;
 	stepper->masterTimer.Instance->CNT = 0;
 	HAL_TIM_Base_Init(&stepper->masterTimer);
 
@@ -50,7 +49,7 @@ void stepper_setupMasterTimer(Stepper *stepper)
 	HAL_TIMEx_MasterConfigSynchronization(&stepper->masterTimer, &masterConfig);
 
 	configOC.OCMode = TIM_OCMODE_PWM1;
-	configOC.Pulse = 1000;
+	configOC.Pulse = 0;
 	configOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   	configOC.OCFastMode = TIM_OCFAST_DISABLE;
 	HAL_TIM_PWM_ConfigChannel(&stepper->masterTimer, &configOC, stepper->channel);
@@ -179,27 +178,17 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 			return 0;
 	}
 
-	//if(!sscanf((void*)speed, "%" SCNu16, &nSpeed))
-	//if(!sscanf((void*)speed, "%2hhx", &nSpeed))
-	//sscanf((void *)speed, "%d", &nSpeed);
-	//sscanf((void*)speed, "%" SCNu16, &nSpeed);
-	//sscanf((void*)speed, "%2hhx", &nSpeed);
-
 	sscanf((void *)speed, "%d", &nSpeed);
 
-	// min - max
-	// <1000, 11000>
-
-	// 1% = 100
-	
 	if(nSpeed < 1 || nSpeed > 100) // checks if speed is in range
 		return 0;
 
 	nSpeed = 101 - nSpeed; // reverse value
-	rSpeed = (nSpeed * (11000 - 1000) / 100) + 1000; // calcaulte real speed
+	rSpeed = (nSpeed * (MAX_SPEED - MIN_SPEED) / 100) + MIN_SPEED; // calculte real speed
 
 	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed); // set speed
-
+	__HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, round(rSpeed / 2)); // set pulse width
+	
 	return 1;
 }
 
@@ -208,7 +197,9 @@ uint8_t stepper_switch(Stepper *stepper, uint8_t state)
 	if(stepper->state == HOMING || stepper->state == MOVING) // cannot switch motor if stepper is homing or moving
 		return 0;
 
-	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, state); // switches the stepper (OFF or ON)
+	uint8_t s = state == 0 ? 1 : 0;	
+
+	HAL_GPIO_WritePin((GPIO_TypeDef*)stepper->port, stepper->enable, s); // switches the stepper (OFF or ON)
 
 	stepper->state = state; // update stepper state
 

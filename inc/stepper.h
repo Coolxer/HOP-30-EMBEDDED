@@ -3,6 +3,9 @@
 
 #include "stm32f4xx_hal.h"
 
+#define MIN_SPEED 500
+#define MAX_SPEED 1500
+
 enum State 
 {
     OFF = 0,
@@ -15,7 +18,7 @@ enum State
 typedef struct
 {
     uint8_t name[2];                // 2-characters name
-    uint8_t *index;                 // command index
+    uint8_t* index;                 // command index
     uint32_t port;                  // stepper gpio port group
 
     TIM_HandleTypeDef masterTimer;  // master timer (structure)             

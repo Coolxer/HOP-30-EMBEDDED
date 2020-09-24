@@ -23,7 +23,7 @@ void application_run()
 {
     uart_listen(); // turns on listening on UART communication port
 
-    //uart_send(data); // sends "FINISED" through UART after get "FINISH" command
+    //uart_send(data); // sends "FINISHED" through UART after get "FINISH" command
 }
 
 void application_close()

@@ -156,7 +156,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
             steppers[i].lastState = steppers[i].state = ON; // reset state of motor
 
-            uart_send(cmd_builder_buildFin(endstop->parentStepper->index, (uint8_t *)"2")); // send feedback
+            uart_send(cmd_builder_buildFin(steppers[i].index, (uint8_t *)"2")); // send feedback
         }
     }
 }
