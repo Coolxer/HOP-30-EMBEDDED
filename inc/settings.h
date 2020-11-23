@@ -5,7 +5,7 @@
 
 /************************************* GENERAL SECTION ****************************************/
 
-#define CLOCK_SPEED 18000000 // main clock speed frequency
+#define CLOCK_FREQUENCY 64000000 // main clock speed frequency
 
 /********************************** END OF GENERAL SECTION ************************************/
 
@@ -13,11 +13,11 @@
 /*********************************** COMMUNICATION SECTION ***********************************/
 
 #define UART_PORT "COM3" // signature of serial port
-#define UART_BAUDRATE 115200 // default baudrate of UART communication
+#define UART_BAUDRATE 2000000 // default baudrate of UART communication
 
 #define UART_NAME USART2
-#define USART2_TX GPIO_PIN_2 // define uart tx pin as 2 (send)
-#define USART2_RX GPIO_PIN_3 // define uart rx pins as 3 (receive)
+#define USART2_TX GPIO_PIN_2 // define uart tx pin (send)
+#define USART2_RX GPIO_PIN_3 // define uart rx pins (receive)
 
 /******************************* END OF COMMUNICATION SECTION *********************************/
 

@@ -9,13 +9,12 @@
 
 void application_setup()
 {
-    //SystemCoreClock = 8000000; // sets default system core main clock frequency
     HAL_Init(); // inits HAL library
 
     clocks_init(); // enables clocks
 
-    cmd_builder_init(); // creates opts & keys structures
-    uart_init(); // inits uart module
+    cmd_builder_init();    // creates opts & keys structures
+    uart_init();           // inits uart module
     device_manager_init(); // inits device manager kit
 }
 
@@ -36,11 +35,12 @@ void application_close()
 void application_exec()
 {
     application_setup(); // calls all setups
-    application_run(); // calls main program loop
+    application_run();   // calls main program loop
     application_close(); // calls all deinit's functions
 }
 
-void SysTick_Handler() { 
+void SysTick_Handler()
+{
     HAL_IncTick(); // inits main board clock
 }
 
