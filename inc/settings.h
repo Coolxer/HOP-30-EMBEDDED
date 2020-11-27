@@ -5,15 +5,14 @@
 
 /************************************* GENERAL SECTION ****************************************/
 
-#define CLOCK_FREQUENCY 64000000 // main clock speed frequency
+#define CLOCK_FREQUENCY 48000000 // main clock speed frequency
 
 /********************************** END OF GENERAL SECTION ************************************/
 
-
 /*********************************** COMMUNICATION SECTION ***********************************/
 
-#define UART_PORT "COM3" // signature of serial port
-#define UART_BAUDRATE 2000000 // default baudrate of UART communication
+#define UART_PORT "COM3"     // signature of serial port
+#define UART_BAUDRATE 115200 // default baudrate of UART communication
 
 #define UART_NAME USART2
 #define USART2_TX GPIO_PIN_2 // define uart tx pin (send)
@@ -25,7 +24,7 @@
 
 /**************** X STEPPER  ******************/
 
-#define X_NAME (uint8_t*)"x"
+#define X_NAME (uint8_t *)"x"
 #define X_PORT GPIOC
 
 #define X_MASTER_TIMER TIM3
@@ -48,7 +47,7 @@
 
 /**************** Y STEPPER  ******************/
 
-#define Y_NAME (uint8_t*)"y"
+#define Y_NAME (uint8_t *)"y"
 #define Y_PORT GPIOA
 
 #define Y_MASTER_TIMER TIM13
@@ -73,7 +72,7 @@
 
 /**************** Z STEPPER  ******************/
 
-#define Z_NAME (uint8_t*)"z"
+#define Z_NAME (uint8_t *)"z"
 #define Z_PORT GPIOB
 
 #define Z_MASTER_TIMER TIM10
@@ -96,7 +95,7 @@
 
 /**************** W STEPPER  ******************/
 
-#define W_NAME (uint8_t*)"w"
+#define W_NAME (uint8_t *)"w"
 #define W_PORT GPIOB
 
 #define W_MASTER_TIMER TIM4
@@ -148,7 +147,7 @@
 
 /***** LEFT ENDSTOP *****/
 
-#define XL_NAME (uint8_t*)"XL"
+#define XL_NAME (uint8_t *)"XL"
 #define XL_PORT GPIOC
 #define XL_PIN GPIO_PIN_0
 #define XL_IRQ EXTI0_IRQn
@@ -157,7 +156,7 @@
 
 /**** RIGHT ENDSTOP *****/
 
-#define XR_NAME (uint8_t*)"XR"
+#define XR_NAME (uint8_t *)"XR"
 #define XR_PORT GPIOC
 #define XR_PIN GPIO_PIN_1
 #define XR_IRQ EXTI1_IRQn
@@ -170,7 +169,7 @@
 
 /***** LEFT ENDSTOP *****/
 
-#define YL_NAME (uint8_t*)"YL"
+#define YL_NAME (uint8_t *)"YL"
 #define YL_PORT GPIOC
 #define YL_PIN GPIO_PIN_2
 #define YL_IRQ EXTI2_IRQn
@@ -179,7 +178,7 @@
 
 /**** RIGHT ENDSTOP *****/
 
-#define YR_NAME (uint8_t*)"YR"
+#define YR_NAME (uint8_t *)"YR"
 #define YR_PORT GPIOC
 #define YR_PIN GPIO_PIN_3
 #define YR_IRQ EXTI3_IRQn
@@ -192,7 +191,7 @@
 
 /***** LEFT ENDSTOP *****/
 
-#define ZL_NAME (uint8_t*)"ZL"
+#define ZL_NAME (uint8_t *)"ZL"
 #define ZL_PORT GPIOC
 #define ZL_PIN GPIO_PIN_4
 #define ZL_IRQ EXTI4_IRQn
@@ -201,7 +200,7 @@
 
 /**** RIGHT ENDSTOP *****/
 
-#define ZR_NAME (uint8_t*)"ZR"
+#define ZR_NAME (uint8_t *)"ZR"
 #define ZR_PORT GPIOC
 #define ZR_PIN GPIO_PIN_5
 #define ZR_IRQ EXTI9_5_IRQn
@@ -210,7 +209,6 @@
 
 /******** END OF Z STEPPER ENDSTOPS ***********/
 
-
 /********************************* END OF ENDSTOPS SECTION ***********************************/
 
-#endif // SETTINGS_H 
+#endif // SETTINGS_H

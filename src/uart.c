@@ -58,12 +58,8 @@ uint8_t uart_manage()
 {
 	feedback = (uint8_t *)"";
 
-	if (strcmp((void *)command, "FINISH") == 0) // checks if receive command is "FINISH"
-	{
-		//feedback = str_append(feedback, (uint8_t*)"FINISHED");
-		feedback = (uint8_t *)"FINISHED";
+	if (strcmp((void *)command, "FINISH|||||||||||||||") == 0) // checks if receive command is "FINISH"
 		return 0;
-	}
 	else
 		feedback = connector_manage(connector_parse(command)); // passes transmission data to connector manage function where it will be processed
 

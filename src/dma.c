@@ -27,6 +27,8 @@ void dma_setup(UART_HandleTypeDef *uart)
 	dma.empty = 1; // set the state of dma (if data come this will be set to 0)
 
 	huart = uart; // set pointer to uart (using by DMA1_Stream6 -> for TX transfer with DMA)
+
+	tcReady = 1;
 }
 
 void dma_setupInterface()
@@ -262,14 +264,14 @@ void USART2_IRQHandler(void)
 	/* UART in mode Transmitter ------------------------------------------------*/
 	if (((isrflags & USART_SR_TXE) != RESET) && ((cr1its & USART_CR1_TXEIE) != RESET))
 	{
-		UART_Transmit_IT(&dma.uart);
+		UART_Transmit_IT(dma.uart);
 		return;
 	}
 
 	/* UART in mode Transmitter end --------------------------------------------*/
 	if (((isrflags & USART_SR_TC) != RESET) && ((cr1its & USART_CR1_TCIE) != RESET))
 	{
-		UART_EndTransmit_IT(&dma.uart);
+		UART_EndTransmit_IT(dma.uart);
 		return;
 	}
 }

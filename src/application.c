@@ -18,18 +18,20 @@ void application_setup()
     device_manager_init(); // inits device manager kit
 }
 
-void application_run()
-{
-    uart_listen(); // turns on listening on UART communication port
-
-    //uart_send(data); // sends "FINISHED" through UART after get "FINISH" command
-}
-
 void application_close()
 {
-    HAL_DeInit(); // deinits HAL library
+    device_manager_deinit(); // deinits steppers and endstops
+    clocks_deinit();         // disables clocks
+    HAL_DeInit();            // deinits HAL library
+}
 
-    clocks_deinit(); // disables clocks
+void application_run()
+{
+    uart_listen();                    // turns on listening on UART communication port
+    uart_send((uint8_t *)"FINISHED"); // sends "FINISHED" through UART after get "FINISH" command
+
+    HAL_Delay(5);        // wait a litte bit to finish sending response
+    application_close(); // close the application
 }
 
 void application_exec()

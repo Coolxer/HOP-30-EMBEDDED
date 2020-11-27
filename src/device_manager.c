@@ -12,10 +12,10 @@
 #include "uart.h"
 #include "data_assistant.h"
 
-#define STEPPERS_COUNT 4                                                        
-#define ENDSTOPS_COUNT 6                                                        
+#define STEPPERS_COUNT 4
+#define ENDSTOPS_COUNT 6
 
-Stepper steppers[STEPPERS_COUNT];                 
+Stepper steppers[STEPPERS_COUNT];
 Endstop endstops[ENDSTOPS_COUNT];
 
 void device_manager_init()
@@ -41,10 +41,10 @@ void device_manager_deinit()
 {
     uint8_t i;
 
-    for(i = 0; i < STEPPERS_COUNT; i++)
+    for (i = 0; i < STEPPERS_COUNT; i++)
         stepper_deinit(&steppers[i]);
 
-    for(i = 0; i < ENDSTOPS_COUNT; i++)
+    for (i = 0; i < ENDSTOPS_COUNT; i++)
         endstop_deinit(&endstops[i]);
 }
 
@@ -52,9 +52,9 @@ Stepper *device_manager_getStepper(uint8_t *name)
 {
     uint8_t i;
 
-    for(i = 0; i < STEPPERS_COUNT; i++)
+    for (i = 0; i < STEPPERS_COUNT; i++)
     {
-        if(strcmp((void *)steppers[i].name, (void *)name) == 0)
+        if (strcmp((void *)steppers[i].name, (void *)name) == 0)
             return &steppers[i];
     }
 
@@ -65,9 +65,9 @@ Endstop *device_manager_getEndstop(uint8_t *name)
 {
     uint8_t i;
 
-    for(i = 0; i < ENDSTOPS_COUNT; i++)
+    for (i = 0; i < ENDSTOPS_COUNT; i++)
     {
-        if(strcmp((void *)endstops[i].name, (void *)name) == 0)
+        if (strcmp((void *)endstops[i].name, (void *)name) == 0)
             return &endstops[i];
     }
 
@@ -76,48 +76,48 @@ Endstop *device_manager_getEndstop(uint8_t *name)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    uint8_t i = 0; // for loop variable
+    uint8_t i = 0;                                     // for loop variable
     uint8_t state = HAL_GPIO_ReadPin(GPIOC, GPIO_Pin); // read state of pin that fired interrupt
 
-    if(PROCESS_FORWARD) // if process forward moving is in progress
+    if (PROCESS_FORWARD) // if process forward moving is in progress
     {
-        if(GPIO_Pin == XR_PIN && state) // check if the endstop that was clicked was the XR and the state of interrupt is high 
-        {                               // i gonna change direction of motors and reset PROCESS_FORWARD flag
+        if (GPIO_Pin == XR_PIN && state) // check if the endstop that was clicked was the XR and the state of interrupt is high
+        {                                // it gonna change direction of motors and reset PROCESS_FORWARD flag
 
-            stepper_changeDirection(device_manager_getStepper((uint8_t*)"x"));
-            stepper_changeDirection(device_manager_getStepper((uint8_t*)"w"));
+            stepper_changeDirection(device_manager_getStepper((uint8_t *)"x"));
+            stepper_changeDirection(device_manager_getStepper((uint8_t *)"w"));
 
-            device_manager_getEndstop((uint8_t*)"XR")->clicked = 1; // set 1 as a endstop state
+            device_manager_getEndstop((uint8_t *)"XR")->clicked = 1; // set 1 as a endstop state
 
             PROCESS_FORWARD = 0; // reset forward flag
             return;
         }
     }
 
-    for(i = 0; i < ENDSTOPS_COUNT; i++) // go through all endstops to check which fire the callback
+    for (i = 0; i < ENDSTOPS_COUNT; i++) // go through all endstops to check which fire the callback
     {
-        if(GPIO_Pin == endstops[i].pin) // check if concret endstop fired interrupt
+        if (GPIO_Pin == endstops[i].pin) // check if concret endstop fired interrupt
         {
             Endstop *endstop = &endstops[i]; // catch the current endstop
 
-            if(endstop->clicked == state) // check if the endstop has actually current interrupt state, just break it (security of multi calling)
+            if (endstop->clicked == state) // check if the endstop has actually current interrupt state, just break it (security of multi calling)
                 break;
 
             endstop->clicked = state; // update endstop->clicked state
 
-            if(!endstop->clicked || (endstop->parentStepper->state != HOMING && endstop->parentStepper->state != MOVING)) // check if endstop->clicked is false or the current operation of
-                break;                                                                                                    // parent stepper is not HOMING or MOVING just break (prevent from random clicked) 
-                                                                                                                          // for example if endstop was clicked by hand
-            HAL_TIM_PWM_Stop(&endstop->parentStepper->masterTimer, endstop->parentStepper->channel); // stop PWM (moving) on assigned stepper
-           
-           /*
+            if (!endstop->clicked || (endstop->parentStepper->state != HOMING && endstop->parentStepper->state != MOVING)) // check if endstop->clicked is false or the current operation of
+                break;                                                                                                     // parent stepper is not HOMING or MOVING just break (prevent from random clicked)
+                                                                                                                           // for example if endstop was clicked by hand
+            HAL_TIM_PWM_Stop(&endstop->parentStepper->masterTimer, endstop->parentStepper->channel);                       // stop PWM (moving) on assigned stepper
+
+            /*
             if(endstop->parentStepper->state == MOVING)
             {
                 cnt = endstop->parentStepper->slaveTimer.Instance->CNT;
                 HAL_TIM_Base_Stop_IT(&endstop->parentStepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying antything
             }
             */
-              
+
             //uint8_t* feedback = str_append(endstop->name, (uint8_t*)"_ENDSTOP_HIT\n"); // send feedback with endstop name that fired the interrupt
 
             /*
@@ -132,25 +132,25 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
             }
             */
 
-           if(endstop->parentStepper->state == MOVING) // if the current parent stepper operation is MOVING stop the master timer too
+            if (endstop->parentStepper->state == MOVING)                   // if the current parent stepper operation is MOVING stop the master timer too
                 HAL_TIM_Base_Stop_IT(&endstop->parentStepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying antything
 
             stepper_reset(endstop->parentStepper); // reset stepper motor after finished his work
 
             endstop->parentStepper->state = ON; // reset state of parent motor
-            
+
             uart_send(cmd_builder_buildFin(endstop->parentStepper->index, (uint8_t *)"2")); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
         }
-    }   
+    }
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	uint8_t i;
+    uint8_t i;
 
-    for(i = 0; i < STEPPERS_COUNT; i++) // go through all steppers to check which fired the callback
+    for (i = 0; i < STEPPERS_COUNT; i++) // go through all steppers to check which fired the callback
     {
-        if(htim->Instance == steppers[i].slaveTimer.Instance) // check which timer send callback
+        if (htim->Instance == steppers[i].slaveTimer.Instance) // check which timer send callback
         {
             stepper_stopTimers(&steppers[i]); // stop timers of correct stepper
 

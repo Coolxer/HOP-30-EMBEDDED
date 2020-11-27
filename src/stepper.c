@@ -36,7 +36,7 @@ void stepper_setupMasterTimer(Stepper *stepper)
 
 	stepper->masterTimer.Init.CounterMode = TIM_COUNTERMODE_UP;
 	stepper->masterTimer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	stepper->masterTimer.Init.Prescaler = 140 - 1;
+	stepper->masterTimer.Init.Prescaler = 105 - 1;
 	stepper->masterTimer.Init.Period = 0;
 	stepper->masterTimer.Instance->CNT = 0;
 	HAL_TIM_Base_Init(&stepper->masterTimer);

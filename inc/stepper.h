@@ -3,7 +3,7 @@
 
 #include "stm32f4xx_hal.h"
 
-#define MIN_SPEED 99
+#define MIN_SPEED 9
 #define MAX_SPEED 999
 
 enum State
