@@ -183,11 +183,13 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 	if (nSpeed < 1 || nSpeed > 100) // checks if speed is in range
 		return 0;
 
+	// this is kind of reverse
+	// if you wanna the highest speed the rSpeed must be the lowest
 	nSpeed = 101 - nSpeed;										   // reverse value
 	rSpeed = (nSpeed * (MAX_SPEED - MIN_SPEED) / 100) + MIN_SPEED; // calculte real speed
 
-	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed);						   // set speed
-	__HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, round(rSpeed / 2)); // set pulse width
+	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed); // set speed
+	//__HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, round(rSpeed / 2)); // set pulse width
 
 	return 1;
 }
