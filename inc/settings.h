@@ -22,6 +22,8 @@
 
 /************************************* DEVICES SECTION ****************************************/
 
+#define MICROSTEPPING 8
+
 /**************** X STEPPER  ******************/
 
 #define X_NAME (uint8_t *)"x"
@@ -39,12 +41,8 @@
 #define X_DIR GPIO_PIN_7
 #define X_ENABLE GPIO_PIN_8
 
-#define X_M1 GPIO_PIN_9
-#define X_M2 GPIO_PIN_10
-#define X_M3 GPIO_PIN_11
-
 #define X_MIN_SPEED 9
-#define X_MAX_SPEED 999
+#define X_MAX_SPEED 849
 
 /************* END OF X STEPPER  **************/
 
@@ -65,14 +63,8 @@
 #define Y_DIR GPIO_PIN_7
 #define Y_ENABLE GPIO_PIN_8
 
-//#define W_M1 GPIO_PIN_13 // cannot be
-#define Y_M1 GPIO_PIN_1
-//#define W_M2 GPIO_PIN_14 // cannot be
-#define Y_M2 GPIO_PIN_4
-#define Y_M3 GPIO_PIN_12
-
 #define Y_MIN_SPEED 9
-#define Y_MAX_SPEED 999
+#define Y_MAX_SPEED 849
 
 /************* END OF Y STEPPER  **************/
 
@@ -93,12 +85,8 @@
 #define Z_DIR GPIO_PIN_14
 #define Z_ENABLE GPIO_PIN_15
 
-#define Z_M1 GPIO_PIN_9
-#define Z_M2 GPIO_PIN_10
-#define Z_M3 GPIO_PIN_12
-
 #define Z_MIN_SPEED 9
-#define Z_MAX_SPEED 999
+#define Z_MAX_SPEED 849
 
 /************* END OF Z STEPPER  **************/
 
@@ -119,13 +107,8 @@
 #define W_DIR GPIO_PIN_5
 #define W_ENABLE GPIO_PIN_7
 
-// not sure about this 3 pins
-#define W_M1 GPIO_PIN_0
-#define W_M2 GPIO_PIN_1
-#define W_M3 GPIO_PIN_13
-
 #define W_MIN_SPEED 9
-#define W_MAX_SPEED 999
+#define W_MAX_SPEED 849
 
 /************* END OF W STEPPER  **************/
 
@@ -145,9 +128,6 @@
 #define K_DIR GPIO_PIN_10
 #define K_ENABLE GPIO_PIN_11
 
-#define K_M1 GPIO_PIN_1
-#define K_M2 GPIO_PIN_4
-#define K_M3 GPIO_PIN_12
 */
 /************* END OF K STEPPER  **************/
 

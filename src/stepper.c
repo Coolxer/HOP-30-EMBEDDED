@@ -87,7 +87,7 @@ void stepper_setupTimers(Stepper *stepper)
 	stepper_setupSlaveTimer(stepper);
 }
 
-void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3, uint16_t minSpeed, uint16_t maxSpeed)
+void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint8_t microstepping, uint16_t minSpeed, uint16_t maxSpeed)
 {
 	strcpy((void *)stepper->name, (void *)name);
 
@@ -105,9 +105,7 @@ void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *m
 	stepper->dir = dir;
 	stepper->enable = enable;
 
-	stepper->m[0] = m1;
-	stepper->m[1] = m2;
-	stepper->m[2] = m3;
+	stepper->microstepping = microstepping;
 
 	stepper->lastState = stepper->state = OFF; // reset stepper state
 
@@ -125,30 +123,6 @@ void stepper_deinit(Stepper *stepper)
 	HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel);
 	HAL_TIM_Base_Stop_IT(&stepper->slaveTimer);
 	HAL_NVIC_DisableIRQ(stepper->irq);
-}
-
-uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states)
-{
-	uint8_t i;
-
-	if (strlen((void *)states) != 3) // check if length is not equal to 3
-		return 0;
-
-	for (i = 0; i < 3; i++) // there i am checking if all characters of combination are fine (without setting same time)
-	{
-		if (states[i] != '0' && states[i] != '1')
-			return 0;
-	}
-
-	uint8_t state = 0;
-
-	for (i = 0; i < 3; i++) // here i am sure that everything is fine so i can just set properly pins
-	{
-		state = states[i] == '0' ? 0 : 1;
-		HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->m[i], state); // sets required state of concret microstep pin
-	}
-
-	return 1;
 }
 
 uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
@@ -192,7 +166,7 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 	rSpeed = (nSpeed * (stepper->maxSpeed - stepper->minSpeed) / 100) + stepper->minSpeed; // calculte real speed
 
 	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed);						   // set speed
-	__HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, round(rSpeed / 4)); // set pulse width
+	__HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, round(rSpeed / 2)); // set pulse width
 
 	return 1;
 }
@@ -204,7 +178,8 @@ uint8_t stepper_switch(Stepper *stepper, uint8_t state)
 
 	uint8_t s = state == 0 ? 1 : 0;
 
-	HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->enable, s); // switches the stepper (OFF or ON)
+	if (HAL_GPIO_ReadPin((GPIO_TypeDef *)stepper->port, stepper->enable) != s) // check if state not currently exists
+		HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->enable, s);  // switches the stepper (OFF or ON)
 
 	stepper->state = state; // update stepper state
 

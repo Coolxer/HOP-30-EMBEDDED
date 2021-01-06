@@ -30,16 +30,19 @@ typedef struct
     uint16_t dir;    // direction(dir) pin
     uint16_t enable; // enable pin
 
-    uint16_t m[3]; // microstepping pins
-
     uint16_t cnt;    // current slaveTimer counter value
     uint16_t target; // slaveTimer period
+
+    uint8_t microstepping; // microstepping setting
+
+    uint16_t minSpeed; // minimum speed of stepper (individually for each axis)
+    uint16_t maxSpeed; // maximimum speed of stepper (individually for each axis)
 
     enum State lastState; // lastState (especially useful in resume function)
     enum State state;     // 0 - off, 1 - on, 2 - home, 3 - move, 4 - paused
 } Stepper;
 
-void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3, uint32_t minSpeed, uint32_t maxSpeed);
+void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint8_t microstepping, uint16_t minSpeed, uint16_t maxSpeed);
 void stepper_deinit(Stepper *stepper); // stops PWM & disable IRQs
 
 /* PRIVATE */ //void stepper_setupGpio(Stepper* stepper);           /* setups all pins that are in common with stepper */
@@ -47,8 +50,7 @@ void stepper_deinit(Stepper *stepper); // stops PWM & disable IRQs
 /* PRIVATE */ //void stepper_setupSlaveTimer(Stepper* stepper);     /* setups slave timer (that controls number of steps taken) */
 /* PRIVATE */ //void stepper_setupTimers(Stepper* stepper);         /* calls setups timers procedures */
 
-uint8_t stepper_setMicrostepping(Stepper *stepper, uint8_t *states); // sets microstepping of stepper
-uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed);          // sets speed of stepper
+uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed); // sets speed of stepper
 
 uint8_t stepper_switch(Stepper *stepper, uint8_t state); // switch stepper motor depend on state value (0 -> OFF, 1 -> ON)
 uint8_t stepper_emergency_shutdown(Stepper *stepper);    // function that allow easily to only TURN OFF all steppers, without condition
