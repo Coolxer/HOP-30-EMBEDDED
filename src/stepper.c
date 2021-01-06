@@ -87,7 +87,7 @@ void stepper_setupTimers(Stepper *stepper)
 	stepper_setupSlaveTimer(stepper);
 }
 
-void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3)
+void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3, uint16_t minSpeed, uint16_t maxSpeed)
 {
 	strcpy((void *)stepper->name, (void *)name);
 
@@ -110,6 +110,9 @@ void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *m
 	stepper->m[2] = m3;
 
 	stepper->lastState = stepper->state = OFF; // reset stepper state
+
+	stepper->minSpeed = minSpeed;
+	stepper->maxSpeed = maxSpeed;
 
 	stepper_setupGpio(stepper);
 	stepper_setupTimers(stepper);
@@ -156,7 +159,7 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 	// in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
 	// you need to use Prescaler
 
-	// normally greater speed means faster, but there is otherwise, beacuse "speed" meaning is period of time
+	// normally greater speed means faster, but there is otherwise, beacuse "speed" meaning period of time
 	// so we need to cast this, but not this moment, because it's need to set up clocks frequency
 	// and see in real time, what speed we need
 
@@ -185,11 +188,11 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 
 	// this is kind of reverse
 	// if you wanna the highest speed the rSpeed must be the lowest
-	nSpeed = 101 - nSpeed;										   // reverse value
-	rSpeed = (nSpeed * (MAX_SPEED - MIN_SPEED) / 100) + MIN_SPEED; // calculte real speed
+	nSpeed = 101 - nSpeed;																   // reverse value
+	rSpeed = (nSpeed * (stepper->maxSpeed - stepper->minSpeed) / 100) + stepper->minSpeed; // calculte real speed
 
-	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed); // set speed
-	//__HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, round(rSpeed / 2)); // set pulse width
+	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed);						   // set speed
+	__HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, round(rSpeed / 4)); // set pulse width
 
 	return 1;
 }

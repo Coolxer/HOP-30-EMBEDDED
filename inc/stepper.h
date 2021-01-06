@@ -3,9 +3,6 @@
 
 #include "stm32f4xx_hal.h"
 
-#define MIN_SPEED 9
-#define MAX_SPEED 999
-
 enum State
 {
     OFF = 0,
@@ -42,7 +39,7 @@ typedef struct
     enum State state;     // 0 - off, 1 - on, 2 - home, 3 - move, 4 - paused
 } Stepper;
 
-void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3);
+void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t m1, uint16_t m2, uint16_t m3, uint32_t minSpeed, uint32_t maxSpeed);
 void stepper_deinit(Stepper *stepper); // stops PWM & disable IRQs
 
 /* PRIVATE */ //void stepper_setupGpio(Stepper* stepper);           /* setups all pins that are in common with stepper */
@@ -60,8 +57,7 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps);  // moves stepper motor 
 
 void stepper_setDirection(Stepper *stepper, uint8_t dir); // setups stepper motor direction
 void stepper_changeDirection(Stepper *stepper);           // changes stepper motor
-
-void stepper_run(Stepper *stepper); // runs stepper motor to move immediately (no given steps)
+void stepper_run(Stepper *stepper);                       // runs stepper motor to move immediately (no given steps)
 
 uint8_t stepper_pause(Stepper *stepper);  // pauses stepper and saves timer parameters to easy resume
 uint8_t stepper_resume(Stepper *stepper); // resumes stepper motor, after it was paused

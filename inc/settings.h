@@ -43,6 +43,9 @@
 #define X_M2 GPIO_PIN_10
 #define X_M3 GPIO_PIN_11
 
+#define X_MIN_SPEED 9
+#define X_MAX_SPEED 999
+
 /************* END OF X STEPPER  **************/
 
 /**************** Y STEPPER  ******************/
@@ -68,6 +71,9 @@
 #define Y_M2 GPIO_PIN_4
 #define Y_M3 GPIO_PIN_12
 
+#define Y_MIN_SPEED 9
+#define Y_MAX_SPEED 999
+
 /************* END OF Y STEPPER  **************/
 
 /**************** Z STEPPER  ******************/
@@ -90,6 +96,9 @@
 #define Z_M1 GPIO_PIN_9
 #define Z_M2 GPIO_PIN_10
 #define Z_M3 GPIO_PIN_12
+
+#define Z_MIN_SPEED 9
+#define Z_MAX_SPEED 999
 
 /************* END OF Z STEPPER  **************/
 
@@ -114,6 +123,9 @@
 #define W_M1 GPIO_PIN_0
 #define W_M2 GPIO_PIN_1
 #define W_M3 GPIO_PIN_13
+
+#define W_MIN_SPEED 9
+#define W_MAX_SPEED 999
 
 /************* END OF W STEPPER  **************/
 
