@@ -2,6 +2,7 @@
 #define STEPPER_H
 
 #include "stm32f4xx_hal.h"
+#include "endstop.h"
 
 enum State
 {
@@ -33,17 +34,19 @@ typedef struct
     uint16_t cnt;    // current slaveTimer counter value
     uint16_t target; // slaveTimer period
 
-    uint8_t microstepping; // microstepping setting
-
     uint16_t minSpeed; // minimum speed of stepper (individually for each axis)
     uint16_t maxSpeed; // maximimum speed of stepper (individually for each axis)
 
     enum State lastState; // lastState (especially useful in resume function)
     enum State state;     // 0 - off, 1 - on, 2 - home, 3 - move, 4 - paused
+
+    Endstop *minEndstop;
+    Endstop *maxEndstop;
 } Stepper;
 
-void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint8_t microstepping, uint16_t minSpeed, uint16_t maxSpeed);
-void stepper_deinit(Stepper *stepper); // stops PWM & disable IRQs
+void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t minSpeed, uint16_t maxSpeed);
+void stepper_assignEndstops(Stepper *stepper, Endstop *min, Endstop *max); // setups endstops to the axis
+void stepper_deinit(Stepper *stepper);                                     // stops PWM & disable IRQs
 
 /* PRIVATE */ //void stepper_setupGpio(Stepper* stepper);           /* setups all pins that are in common with stepper */
 /* PRIVATE */ //void stepper_setupMasterTimer(Stepper* stepper);    /* setups master timer (with PWM) */

@@ -22,8 +22,6 @@
 
 /************************************* DEVICES SECTION ****************************************/
 
-#define MICROSTEPPING 8
-
 /**************** X STEPPER  ******************/
 
 #define X_NAME (uint8_t *)"x"
@@ -40,6 +38,7 @@
 #define X_STEP GPIO_PIN_6
 #define X_DIR GPIO_PIN_7
 #define X_ENABLE GPIO_PIN_8
+#define X_SLEEP GPIO_PIN_9
 
 #define X_MIN_SPEED 9
 #define X_MAX_SPEED 849
@@ -62,6 +61,7 @@
 #define Y_STEP GPIO_PIN_6
 #define Y_DIR GPIO_PIN_7
 #define Y_ENABLE GPIO_PIN_8
+#define Y_SLEEP GPIO_PIN_1
 
 #define Y_MIN_SPEED 9
 #define Y_MAX_SPEED 849
@@ -84,6 +84,7 @@
 #define Z_STEP GPIO_PIN_8
 #define Z_DIR GPIO_PIN_14
 #define Z_ENABLE GPIO_PIN_15
+#define Z_SLEEP GPIO_PIN_9
 
 #define Z_MIN_SPEED 9
 #define Z_MAX_SPEED 849
@@ -106,6 +107,7 @@
 #define W_STEP GPIO_PIN_6
 #define W_DIR GPIO_PIN_5
 #define W_ENABLE GPIO_PIN_7
+#define W_SLEEP GPIO_PIN_0
 
 #define W_MIN_SPEED 9
 #define W_MAX_SPEED 849

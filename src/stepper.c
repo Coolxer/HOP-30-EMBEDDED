@@ -12,12 +12,13 @@ void stepper_setupGpio(Stepper *stepper)
 
 	/* setups gpio for all stepper pins except step_pin */
 
-	gpio.Pin = stepper->dir | stepper->enable | stepper->m[0] | stepper->m[1] | stepper->m[2];
+	gpio.Pin = stepper->dir | stepper->enable;
 	gpio.Mode = GPIO_MODE_OUTPUT_PP;
 	gpio.Pull = GPIO_NOPULL;
 	gpio.Speed = GPIO_SPEED_FREQ_LOW;
 
 	HAL_GPIO_Init((GPIO_TypeDef *)stepper->port, &gpio);
+	HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->enable, GPIO_PIN_SET);
 
 	/* setups gpio for step_pin */
 	gpio.Pin = stepper->step;
@@ -49,7 +50,7 @@ void stepper_setupMasterTimer(Stepper *stepper)
 	HAL_TIMEx_MasterConfigSynchronization(&stepper->masterTimer, &masterConfig);
 
 	configOC.OCMode = TIM_OCMODE_PWM1;
-	configOC.Pulse = 10;
+	configOC.Pulse = 10; // minimum pulse width should be given by driver, and will be like 1,5us or 2,0us
 	configOC.OCPolarity = TIM_OCPOLARITY_HIGH;
 	configOC.OCFastMode = TIM_OCFAST_DISABLE;
 	HAL_TIM_PWM_ConfigChannel(&stepper->masterTimer, &configOC, stepper->channel);
@@ -87,7 +88,7 @@ void stepper_setupTimers(Stepper *stepper)
 	stepper_setupSlaveTimer(stepper);
 }
 
-void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint8_t microstepping, uint16_t minSpeed, uint16_t maxSpeed)
+void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable, uint16_t minSpeed, uint16_t maxSpeed)
 {
 	strcpy((void *)stepper->name, (void *)name);
 
@@ -105,17 +106,23 @@ void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *m
 	stepper->dir = dir;
 	stepper->enable = enable;
 
-	stepper->microstepping = microstepping;
-
 	stepper->lastState = stepper->state = OFF; // reset stepper state
 
 	stepper->minSpeed = minSpeed;
 	stepper->maxSpeed = maxSpeed;
 
+	stepper->minEndstop = stepper->maxEndstop = NULL;
+
 	stepper_setupGpio(stepper);
 	stepper_setupTimers(stepper);
 
-	stepper_switch(stepper, 0); // turn of stepper motor
+	stepper->state = OFF;
+}
+
+void stepper_assignEndstops(Stepper *stepper, Endstop *min, Endstop *max)
+{
+	stepper->minEndstop = min;
+	stepper->maxEndstop = max;
 }
 
 void stepper_deinit(Stepper *stepper)
@@ -176,12 +183,11 @@ uint8_t stepper_switch(Stepper *stepper, uint8_t state)
 	if (stepper->state == HOMING || stepper->state == MOVING) // cannot switch motor if stepper is homing or moving
 		return 0;
 
-	uint8_t s = state == 0 ? 1 : 0;
-
-	if (HAL_GPIO_ReadPin((GPIO_TypeDef *)stepper->port, stepper->enable) != s) // check if state not currently exists
-		HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->enable, s);  // switches the stepper (OFF or ON)
-
-	stepper->state = state; // update stepper state
+	if (stepper->state != state) // check if state is not currently exists
+	{
+		HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->enable, state == 0 ? 1 : 0); // switches the stepper (OFF or ON)
+		stepper->state = state;																   // update stepper state
+	}
 
 	return 1;
 }
@@ -200,10 +206,13 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
 	if (stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot home if motor is homing or moving right now or also paused
 		return 0;
 
-	stepper_setDirection(stepper, direction); // set left direction
-	stepper_run(stepper);					  // start motor moving
+	if (!endstop_isClicked(stepper->minEndstop))
+	{
+		stepper_setDirection(stepper, direction); // set left direction
+		stepper_run(stepper);					  // start motor moving
 
-	stepper->state = HOMING; // update stepper state
+		stepper->state = HOMING; // update stepper state
+	}
 
 	return 1;
 }
