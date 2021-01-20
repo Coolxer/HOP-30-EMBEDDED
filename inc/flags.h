@@ -3,6 +3,7 @@
 
 #include "stm32f4xx_hal.h"
 
-uint8_t FLAG;
+uint8_t ENDSTOP_CLICKED;
+uint8_t STEPPER_FINISHED;
 
 #endif // FLAGS_H

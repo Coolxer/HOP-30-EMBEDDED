@@ -2,8 +2,6 @@
 #define SETTINGS_H
 
 #include "stm32f4xx_hal.h"
-#include "stepper.h"
-Stepper *STEPPER;
 /************************************* GENERAL SECTION ****************************************/
 
 #define CLOCK_FREQUENCY 48000000 // main clock speed frequency
@@ -41,7 +39,7 @@ Stepper *STEPPER;
 #define X_ENABLE GPIO_PIN_8
 #define X_SLEEP GPIO_PIN_9
 
-#define X_MIN_SPEED 9
+#define X_MIN_SPEED 1
 #define X_MAX_SPEED 849
 
 /************* END OF X STEPPER  **************/
@@ -64,7 +62,7 @@ Stepper *STEPPER;
 #define Y_ENABLE GPIO_PIN_8
 #define Y_SLEEP GPIO_PIN_1
 
-#define Y_MIN_SPEED 9
+#define Y_MIN_SPEED 1
 #define Y_MAX_SPEED 849
 
 /************* END OF Y STEPPER  **************/
@@ -87,7 +85,7 @@ Stepper *STEPPER;
 #define Z_ENABLE GPIO_PIN_15
 #define Z_SLEEP GPIO_PIN_9
 
-#define Z_MIN_SPEED 9
+#define Z_MIN_SPEED 1
 #define Z_MAX_SPEED 849
 
 /************* END OF Z STEPPER  **************/
@@ -110,7 +108,7 @@ Stepper *STEPPER;
 #define W_ENABLE GPIO_PIN_7
 #define W_SLEEP GPIO_PIN_0
 
-#define W_MIN_SPEED 9
+#define W_MIN_SPEED 1
 #define W_MAX_SPEED 849
 
 /************* END OF W STEPPER  **************/

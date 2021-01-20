@@ -45,12 +45,11 @@ void application_loop()
             uart_send(feedback); // send feedback through UART port
         }
 
-        if (FLAG == 1)
-        {
-            HAL_Delay(100);
-            stepper_home(STEPPER, 0, 1);
-            FLAG = 0;
-        }
+        if (ENDSTOP_CLICKED)
+            device_manager_endstopClickedCallback();
+
+        if (STEPPER_FINISHED)
+            device_manager_stepperFinishedCallback();
     }
 }
 

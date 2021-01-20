@@ -108,6 +108,7 @@ void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *m
 
 	stepper->lastState = stepper->state = OFF; // reset stepper state
 	stepper->homeStep = FAST;
+	stepper->lastHomeStep = PRECISE; // init value antything, just different than homeStep
 
 	stepper->minSpeed = minSpeed;
 	stepper->maxSpeed = maxSpeed;
@@ -202,40 +203,40 @@ uint8_t stepper_emergency_shutdown(Stepper *stepper)
 	return 1;
 }
 
-uint8_t stepper_home(Stepper *stepper, uint8_t direction, uint8_t level)
+uint8_t stepper_home(Stepper *stepper, uint8_t direction)
 {
-	if ((stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) && level == 0) // cannot home if motor is homing or moving right now or also paused
+	if (((stepper->state == HOMING || stepper->state == MOVING) && stepper->homeStep == stepper->lastHomeStep) || stepper->state == PAUSED) // cannot home if motor is homing or moving right now or also paused
 		return 0;
 
-	if (level == 0)
+	if (stepper->homeStep == FAST)
 	{
 		if (!endstop_isClicked(stepper->minEndstop))
 		{
-			stepper_setSpeed(stepper, (uint8_t *)"10"); // home with 10% speed
+			stepper_setSpeed(stepper, (uint8_t *)"30"); // home with 10% speed
 			stepper_setDirection(stepper, direction);	// set left direction
 			stepper_run(stepper);						// start motor moving
 
 			stepper->state = HOMING; // update stepper state
+			stepper->lastHomeStep = FAST;
 		}
 	}
-	else if (level == 1)
+	else if (stepper->homeStep == BACKWARD)
 	{
-		//stepper_reset(stepper);
-		//stepper->state = ON;
-		stepper_stop(stepper);
-		stepper->homeStep = BACKWARD;
+		HAL_Delay(150);
+		stepper->state = ON;
+		stepper_move(stepper, (uint8_t *)"400");
 
-		//stepper_setSpeed(stepper, (uint8_t *)"30");
-		stepper_move(stepper, (uint8_t *)"200");
+		stepper->lastHomeStep = BACKWARD;
 	}
 	else
 	{
-		stepper->state = HOMING;
-		stepper->homeStep = PRECISE;
-
-		stepper_setSpeed(stepper, (uint8_t *)"20");
+		HAL_Delay(150);
+		stepper_setSpeed(stepper, (uint8_t *)"1");
 		stepper_changeDirection(stepper);
 		stepper_run(stepper);
+
+		stepper->state = HOMING;
+		stepper->lastHomeStep = PRECISE;
 	}
 
 	return 1;
@@ -377,6 +378,8 @@ void stepper_stopTimers(Stepper *stepper)
 
 void stepper_reset(Stepper *stepper)
 {
+	stepper->state = ON; // reset state of motor
+
 	__HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 0);	 // reset slaveTimer counter
 	__HAL_TIM_SET_COUNTER(&stepper->masterTimer, 0); // reset masterTimer counter
 
