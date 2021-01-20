@@ -115,7 +115,7 @@ uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
 
 					sscanf((void *)args[1][1], "%d", &direction); // str to int
 
-					if (!stepper_home(stepper, direction))					   // try to home stepper
+					if (!stepper_home(stepper, direction, 0))				   // try to home stepper
 						feedback = cmd_builder_buildErr(idx, (uint8_t *)"18"); // "operation not allowed"
 					else													   // success home
 					{

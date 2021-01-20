@@ -6,6 +6,7 @@
 
 #include "cmd_builder.h"
 #include "settings.h"
+#include "flags.h"
 #include "stepper.h"
 #include "endstop.h"
 
@@ -105,22 +106,36 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         if (GPIO_Pin == endstops[i].pin) // check if concret endstop fired interrupt
         {
             Endstop *endstop = &endstops[i]; // catch the current endstop
-
             Stepper *stepper = device_manager_findParentStepper(endstop);
 
             if (stepper->state != HOMING && stepper->state != MOVING) // if parent stepper is not HOMING or MOVING just break (prevent from random clicked)
-                break;                                                // for example if endstop was clicked by hand
+                break;
 
             HAL_TIM_PWM_Stop(&stepper->masterTimer, stepper->channel); // stop PWM (moving) on assigned stepper
 
             if (stepper->state == MOVING)                   // if the current parent stepper operation is MOVING stop the slave timer too
-                HAL_TIM_Base_Stop_IT(&stepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying anything
+                HAL_TIM_Base_Stop_IT(&stepper->slaveTimer); // this isnt necessary when home operation, but probably not destroying anything                          // for example if endstop was clicked by hand
 
-            stepper_reset(stepper); // reset stepper motor after finished his work
+            if (stepper->state == HOMING)
+            {
+                if (stepper->homeStep == FAST)
+                {
+                    STEPPER = stepper;
+                    FLAG = 1;
+                }
+                //stepper_home(stepper, 0, 1);
+                else if (stepper->homeStep == PRECISE)
+                {
+                    stepper_reset(stepper);
+                    stepper->state = ON;
+                }
+            }
 
-            stepper->state = ON; // reset state of parent motor
+            //stepper_reset(stepper); // reset stepper motor after finished his work
 
-            uart_send(cmd_builder_buildFin(stepper->index, (uint8_t *)"2")); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
+            // stepper->state = ON; // reset state of parent motor
+
+            //uart_send(cmd_builder_buildFin(stepper->index, (uint8_t *)"2")); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
         }
     }
 }
@@ -133,11 +148,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
         if (htim->Instance == steppers[i].slaveTimer.Instance) // check which timer send callback
         {
-            stepper_stopTimers(&steppers[i]); // stop timers of correct stepper
+            Stepper *stepper = &steppers[i];
 
-            steppers[i].lastState = steppers[i].state = ON; // reset state of motor
+            stepper_stopTimers(stepper); // stop timers of correct stepper
 
-            uart_send(cmd_builder_buildFin(steppers[i].index, (uint8_t *)"2")); // send feedback
+            if (stepper->state == MOVING && stepper->homeStep == BACKWARD)
+                stepper_home(stepper, 0, 2);
+
+            //steppers[i].lastState = steppers[i].state = ON; // reset state of motor
+
+            //uart_send(cmd_builder_buildFin(steppers[i].index, (uint8_t *)"2")); // send feedback
         }
     }
 }

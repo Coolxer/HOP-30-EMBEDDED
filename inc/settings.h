@@ -2,7 +2,8 @@
 #define SETTINGS_H
 
 #include "stm32f4xx_hal.h"
-
+#include "stepper.h"
+Stepper *STEPPER;
 /************************************* GENERAL SECTION ****************************************/
 
 #define CLOCK_FREQUENCY 48000000 // main clock speed frequency

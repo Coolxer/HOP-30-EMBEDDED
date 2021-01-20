@@ -1,10 +1,16 @@
 //#ifdef STSTM32
 #include "application.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "settings.h"
+#include "flags.h"
 #include "cmd_builder.h"
 #include "clock_manager.h"
+#include "connector.h"
 #include "uart.h"
+
 #include "device_manager.h"
 
 void application_setup()
@@ -25,9 +31,33 @@ void application_close()
     HAL_DeInit();            // deinits HAL library
 }
 
+void application_loop()
+{
+    while (1)
+    {
+        if (uart_listen()) // turns on listening on UART communication port
+        {
+            if (strcmp((void *)command, "FINISH|||||||||||||||") == 0) // checks if receive command is "FINISH"
+                break;
+            else
+                feedback = connector_manage(connector_parse(command)); // passes transmission data to connector manage function where it will be processed
+
+            uart_send(feedback); // send feedback through UART port
+        }
+
+        if (FLAG == 1)
+        {
+            HAL_Delay(100);
+            stepper_home(STEPPER, 0, 1);
+            FLAG = 0;
+        }
+    }
+}
+
 void application_run()
 {
-    uart_listen();                    // turns on listening on UART communication port
+    application_loop();
+
     uart_send((uint8_t *)"FINISHED"); // sends "FINISHED" through UART after get "FINISH" command
 
     HAL_Delay(5);        // wait a litte bit to finish sending response

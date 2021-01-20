@@ -3,11 +3,12 @@
 
 #include "stm32f4xx_hal.h"
 
-void uart_init();                 // calls all UART setups
+uint8_t *command;
+uint8_t *feedback;
 
-void uart_listen();               // enables listening to connected COM port
+void uart_init(); // calls all UART setups
+
+uint8_t uart_listen();            // enables listening to connected COM port, returns 1 if there is properly command length, otherwise 0
 void uart_send(uint8_t *message); // sends message through uart interface
-
-uint8_t uart_manage();            // manages received data; returns FALSE if there is FINISH message, otherwise returns TRUE
 
 #endif // UART_H

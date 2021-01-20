@@ -13,6 +13,13 @@ enum State
     PAUSED = 4
 };
 
+enum HomeStep
+{
+    FAST = 0,
+    BACKWARD = 1,
+    PRECISE = 2
+};
+
 typedef struct
 {
     uint8_t name[2]; // 2-characters name
@@ -37,8 +44,9 @@ typedef struct
     uint16_t minSpeed; // minimum speed of stepper (individually for each axis)
     uint16_t maxSpeed; // maximimum speed of stepper (individually for each axis)
 
-    enum State lastState; // lastState (especially useful in resume function)
-    enum State state;     // 0 - off, 1 - on, 2 - home, 3 - move, 4 - paused
+    enum State lastState;   // lastState (especially useful in resume function)
+    enum State state;       // 0 - off, 1 - on, 2 - home, 3 - move, 4 - paused
+    enum HomeStep homeStep; // 0 - fast, 1 - backward, 2 - precise
 
     Endstop *minEndstop;
     Endstop *maxEndstop;
@@ -55,10 +63,10 @@ void stepper_deinit(Stepper *stepper);                                     // st
 
 uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed); // sets speed of stepper
 
-uint8_t stepper_switch(Stepper *stepper, uint8_t state); // switch stepper motor depend on state value (0 -> OFF, 1 -> ON)
-uint8_t stepper_emergency_shutdown(Stepper *stepper);    // function that allow easily to only TURN OFF all steppers, without condition
-uint8_t stepper_home(Stepper *stepper, uint8_t state);   // starts moving stepper motor (can be break by endstop clicked or pause / stop)
-uint8_t stepper_move(Stepper *stepper, uint8_t *steps);  // moves stepper motor by given number of steps (can be break by endstop clicked or pause / stop)
+uint8_t stepper_switch(Stepper *stepper, uint8_t state);                  // switch stepper motor depend on state value (0 -> OFF, 1 -> ON)
+uint8_t stepper_emergency_shutdown(Stepper *stepper);                     // function that allow easily to only TURN OFF all steppers, without condition
+uint8_t stepper_home(Stepper *stepper, uint8_t direction, uint8_t level); // starts moving stepper motor (can be break by endstop clicked or pause / stop) with given direction, level is current step of 3-level homing function
+uint8_t stepper_move(Stepper *stepper, uint8_t *steps);                   // moves stepper motor by given number of steps (can be break by endstop clicked or pause / stop)
 
 void stepper_setDirection(Stepper *stepper, uint8_t dir); // setups stepper motor direction
 void stepper_changeDirection(Stepper *stepper);           // changes stepper motor

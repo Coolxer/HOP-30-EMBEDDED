@@ -107,6 +107,7 @@ void stepper_init(Stepper *stepper, uint8_t *name, uint32_t port, TIM_TypeDef *m
 	stepper->enable = enable;
 
 	stepper->lastState = stepper->state = OFF; // reset stepper state
+	stepper->homeStep = FAST;
 
 	stepper->minSpeed = minSpeed;
 	stepper->maxSpeed = maxSpeed;
@@ -201,17 +202,40 @@ uint8_t stepper_emergency_shutdown(Stepper *stepper)
 	return 1;
 }
 
-uint8_t stepper_home(Stepper *stepper, uint8_t direction)
+uint8_t stepper_home(Stepper *stepper, uint8_t direction, uint8_t level)
 {
-	if (stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot home if motor is homing or moving right now or also paused
+	if ((stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) && level == 0) // cannot home if motor is homing or moving right now or also paused
 		return 0;
 
-	if (!endstop_isClicked(stepper->minEndstop))
+	if (level == 0)
 	{
-		stepper_setDirection(stepper, direction); // set left direction
-		stepper_run(stepper);					  // start motor moving
+		if (!endstop_isClicked(stepper->minEndstop))
+		{
+			stepper_setSpeed(stepper, (uint8_t *)"10"); // home with 10% speed
+			stepper_setDirection(stepper, direction);	// set left direction
+			stepper_run(stepper);						// start motor moving
 
-		stepper->state = HOMING; // update stepper state
+			stepper->state = HOMING; // update stepper state
+		}
+	}
+	else if (level == 1)
+	{
+		//stepper_reset(stepper);
+		//stepper->state = ON;
+		stepper_stop(stepper);
+		stepper->homeStep = BACKWARD;
+
+		//stepper_setSpeed(stepper, (uint8_t *)"30");
+		stepper_move(stepper, (uint8_t *)"200");
+	}
+	else
+	{
+		stepper->state = HOMING;
+		stepper->homeStep = PRECISE;
+
+		stepper_setSpeed(stepper, (uint8_t *)"20");
+		stepper_changeDirection(stepper);
+		stepper_run(stepper);
 	}
 
 	return 1;
@@ -220,13 +244,12 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
 uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 {
 	int32_t nSteps = 0;
-
 	uint8_t len = strlen((void *)steps);
 
 	if (stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot move if motor is homing or moving or is paused right now
 		return 9;
 
-	if (len == 0) // check if lenght of string is 0
+	if (len == 0) // check if length of string is 0
 		return 0;
 	else if (len > 1 && steps[0] == '0') // check if length is more than 1 (OK), but not ok if it's starting with 0
 		return 0;
