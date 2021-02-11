@@ -2,7 +2,7 @@
 
 #include "uart_min.h"
 
-#include "settings.h"
+#include "settings/communication.h"
 
 void uart_setupGpio()
 {

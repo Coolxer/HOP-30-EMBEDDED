@@ -1,7 +1,7 @@
 #include "clock_manager.h"
 
 #include "stm32f4xx_hal.h"
-#include "settings.h"
+#include "counter.h"
 
 void clocks_config()
 {
@@ -55,10 +55,15 @@ void clocks_init()
     __HAL_RCC_TIM10_CLK_ENABLE();
     __HAL_RCC_TIM12_CLK_ENABLE();
     __HAL_RCC_TIM13_CLK_ENABLE();
+    __HAL_RCC_TIM14_CLK_ENABLE();
+
+    counter_init();
 }
 
 void clocks_deinit()
 {
+    counter_deinit();
+
     __HAL_RCC_GPIOA_CLK_DISABLE();
     __HAL_RCC_GPIOB_CLK_DISABLE();
     __HAL_RCC_GPIOC_CLK_DISABLE();
@@ -74,4 +79,5 @@ void clocks_deinit()
     __HAL_RCC_TIM10_CLK_DISABLE();
     __HAL_RCC_TIM12_CLK_DISABLE();
     __HAL_RCC_TIM13_CLK_DISABLE();
+    __HAL_RCC_TIM14_CLK_DISABLE();
 }

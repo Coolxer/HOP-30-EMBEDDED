@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#include "flags.h"
 #include "cmd_builder.h"
 
 uint8_t *prepare_settings(uint8_t *idx, uint8_t ***args)

@@ -22,3 +22,10 @@
     decided to use TIM2 and TIM5 in main operation and other(16-bit timers) to each another stepper
     for z axis and y axis beacuse they do not need perfect precision
 */
+
+/* there need beed a minimum pulse width, and a little delay after set of direction before first step */
+/*
+    for example for DM556M
+    minimum pulse width is 2.5us
+    dir must be ahead step by 5us
+*/

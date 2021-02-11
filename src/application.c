@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "settings.h"
 #include "flags.h"
 #include "cmd_builder.h"
 #include "clock_manager.h"
@@ -19,6 +18,7 @@ void application_setup()
 
     clocks_init(); // enables clocks
 
+    flags_init();          // sets up default flags values
     cmd_builder_init();    // creates opts & keys structures
     uart_init();           // inits uart module
     device_manager_init(); // inits device manager kit

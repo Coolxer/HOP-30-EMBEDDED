@@ -4,14 +4,18 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "cmd_builder.h"
-#include "settings.h"
 #include "flags.h"
-#include "stepper.h"
-#include "endstop.h"
+#include "data_assistant.h"
+#include "cmd_builder.h"
 
 #include "uart.h"
-#include "data_assistant.h"
+
+#include "stepper.h"
+#include "settings/stepper_connections.h"
+#include "settings/stepper_movement_settings.h"
+
+#include "endstop.h"
+#include "settings/endstop_connections.h"
 
 #define STEPPERS_COUNT 4
 #define ENDSTOPS_COUNT 6
@@ -40,8 +44,6 @@ void device_manager_init()
     stepper_assignEndstops(&steppers[0], &endstops[0], &endstops[1]);
     stepper_assignEndstops(&steppers[1], &endstops[2], &endstops[3]);
     stepper_assignEndstops(&steppers[2], &endstops[4], &endstops[5]);
-
-    PROCESS_FORWARD = 0; // set PROCESS_FORWARD (which mean the process forward moving is not in progress, so it's backward or process is not currently run)
 }
 
 void device_manager_deinit()
@@ -92,6 +94,17 @@ Stepper *device_manager_findParentStepper(Endstop *endstop)
 
 void device_manager_endstopClickedCallback()
 {
+    if (PROCESS_FORWARD && !int_stepper)
+    {
+        stepper_changeDirection(device_manager_getStepper((uint8_t *)"x"));
+        stepper_changeDirection(device_manager_getStepper((uint8_t *)"w"));
+
+        PROCESS_FORWARD = 0;
+        ENDSTOP_CLICKED = 0;
+
+        return;
+    }
+
     HAL_TIM_PWM_Stop(&int_stepper->masterTimer, int_stepper->channel); // stop PWM (moving) on assigned stepper
 
     if (int_stepper->state == MOVING)                   // if the current parent stepper operation is MOVING stop the slave timer too
@@ -141,10 +154,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
     if (PROCESS_FORWARD && GPIO_Pin == XR_PIN) // if process forward moving is in progress, and hitted endstop is max of X axis
     {
-        stepper_changeDirection(device_manager_getStepper((uint8_t *)"x"));
-        stepper_changeDirection(device_manager_getStepper((uint8_t *)"w"));
-
-        PROCESS_FORWARD = 0; // reset forward flag
+        int_stepper = NULL;
+        ENDSTOP_CLICKED = 1;
         return;
     }
 

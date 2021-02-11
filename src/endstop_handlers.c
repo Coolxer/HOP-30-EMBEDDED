@@ -1,6 +1,6 @@
 #include "endstop_handlers.h"
 
-#include "settings.h"
+#include "settings/endstop_connections.h"
 
 void EXTI0_IRQHandler(void)
 {
@@ -23,7 +23,7 @@ void EXTI3_IRQHandler(void)
 }
 
 void EXTI4_IRQHandler(void)
-{ 
+{
   HAL_GPIO_EXTI_IRQHandler(ZL_PIN);
 }
 

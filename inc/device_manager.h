@@ -4,8 +4,6 @@
 #include "Stepper.h"
 #include "Endstop.h"
 
-uint8_t PROCESS_FORWARD;
-
 void device_manager_init();   // sets devices
 void device_manager_deinit(); // resets devices
 

@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+#include "counter.h"
+
 void stepper_setupGpio(Stepper *stepper)
 {
 	GPIO_InitTypeDef gpio;
@@ -37,7 +39,7 @@ void stepper_setupMasterTimer(Stepper *stepper)
 
 	stepper->masterTimer.Init.CounterMode = TIM_COUNTERMODE_UP;
 	stepper->masterTimer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	stepper->masterTimer.Init.Prescaler = 105 - 1;
+	stepper->masterTimer.Init.Prescaler = 104;
 	stepper->masterTimer.Init.Period = 0;
 	stepper->masterTimer.Instance->CNT = 0;
 	HAL_TIM_Base_Init(&stepper->masterTimer);
@@ -52,7 +54,7 @@ void stepper_setupMasterTimer(Stepper *stepper)
 	configOC.OCMode = TIM_OCMODE_PWM1;
 	configOC.Pulse = 10; // minimum pulse width should be given by driver, and will be like 1,5us or 2,0us
 	configOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-	configOC.OCFastMode = TIM_OCFAST_DISABLE;
+	configOC.OCFastMode = TIM_OCFAST_ENABLE; // TIM_OCFAST_DISABLE
 	HAL_TIM_PWM_ConfigChannel(&stepper->masterTimer, &configOC, stepper->channel);
 }
 
@@ -80,6 +82,15 @@ void stepper_setupSlaveTimer(Stepper *stepper)
 
 	HAL_NVIC_SetPriority(stepper->irq, 0, 0); // set priority of stepper slaveTimer interrupt
 	HAL_NVIC_EnableIRQ(stepper->irq);		  // enable stepper slaveTimer interrupt
+}
+
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+{
+	if (htim->Instance == TIM3)
+	{
+		//TIM3->ARR = v;
+		//TIM3->CCR1 = v / 2;
+	}
 }
 
 void stepper_setupTimers(Stepper *stepper)
@@ -171,11 +182,11 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 
 	// this is kind of reverse
 	// if you wanna the highest speed the rSpeed must be the lowest
-	nSpeed = 101 - nSpeed;																   // reverse value
-	rSpeed = (nSpeed * (stepper->maxSpeed - stepper->minSpeed) / 100) + stepper->minSpeed; // calculte real speed
+	nSpeed = 101 - nSpeed;																		 // reverse value
+	rSpeed = ceil((nSpeed * (stepper->maxSpeed - stepper->minSpeed) / 100) + stepper->minSpeed); // calculte real speed
 
-	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed);						   // set speed
-	__HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, round(rSpeed / 2)); // set pulse width
+	__HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, rSpeed);						  // set speed
+	__HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, ceil(rSpeed / 2)); // set pulse width
 
 	return 1;
 }
@@ -196,7 +207,7 @@ uint8_t stepper_switch(Stepper *stepper, uint8_t state)
 
 uint8_t stepper_emergency_shutdown(Stepper *stepper)
 {
-	HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->enable, GPIO_PIN_RESET); // switches the stepper (OFF or ON)
+	HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->enable, GPIO_PIN_RESET); // switches the stepper OFF
 
 	stepper->state = OFF; // update stepper state
 
@@ -212,7 +223,7 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
 	{
 		if (!endstop_isClicked(stepper->minEndstop))
 		{
-			stepper_setSpeed(stepper, (uint8_t *)"30"); // home with 10% speed
+			stepper_setSpeed(stepper, (uint8_t *)"30"); // home with 30% speed
 			stepper_setDirection(stepper, direction);	// set left direction
 			stepper_run(stepper);						// start motor moving
 
@@ -222,7 +233,7 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
 	}
 	else if (stepper->homeStep == BACKWARD)
 	{
-		HAL_Delay(150);
+		counter_count(65000);
 		stepper->state = ON;
 		stepper_move(stepper, (uint8_t *)"400");
 
@@ -230,7 +241,7 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
 	}
 	else
 	{
-		HAL_Delay(150);
+		//HAL_Delay(150);
 		stepper_setSpeed(stepper, (uint8_t *)"1");
 		stepper_changeDirection(stepper);
 		stepper_run(stepper);
@@ -299,11 +310,13 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 void stepper_setDirection(Stepper *stepper, uint8_t dir)
 {
 	HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->dir, dir);
+	counter_count(5);
 }
 
 void stepper_changeDirection(Stepper *stepper)
 {
 	HAL_GPIO_TogglePin((GPIO_TypeDef *)stepper->port, stepper->dir);
+	counter_count(5);
 }
 
 void stepper_run(Stepper *stepper)

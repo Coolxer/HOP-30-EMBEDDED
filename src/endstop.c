@@ -24,7 +24,7 @@ void endstop_setupGpio(Endstop *endstop)
 
     gpio.Pin = endstop->pin;
     gpio.Mode = GPIO_MODE_IT_RISING;
-    gpio.Pull = GPIO_NOPULL;
+    gpio.Pull = GPIO_PULLUP;
 
     HAL_GPIO_Init((GPIO_TypeDef *)endstop->port, &gpio);
 
