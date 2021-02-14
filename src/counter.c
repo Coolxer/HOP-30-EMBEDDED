@@ -1,6 +1,6 @@
 #include "counter.h"
 
-#include "settings/communication.h"
+#include "config/clock.h"
 
 TIM_HandleTypeDef counterTimer;
 
@@ -24,7 +24,11 @@ void counter_deinit()
 
 void counter_count(uint16_t micros)
 {
+#ifndef UNIT_TEST
+
     __HAL_TIM_SET_COUNTER(&counterTimer, 0); // reset counter
     while (__HAL_TIM_GET_COUNTER(&counterTimer) < micros)
         ;
+
+#endif
 }

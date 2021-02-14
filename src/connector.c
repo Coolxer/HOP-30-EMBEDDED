@@ -4,9 +4,10 @@
 #include <string.h> // includes defintion and use of strtok function
 #include <stddef.h> // includes NULL value
 
-#include "cmd_builder.h"
-#include "prepare_functions.h"
-#include "stepper.h"
+#include "command/cmd_builder.h"
+#include "prepare_function.h"
+
+#include "stepper/partial/stepper_intervention.h"
 
 uint8_t *dialog_delimiter = (uint8_t *)"|"; // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=x|
 uint8_t *param_delimiter = (uint8_t *)"=";	// the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
@@ -50,7 +51,7 @@ uint8_t *connector_manage(uint8_t ***args)
 	else if (records > 4) // check if there is more than 34 records
 		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"3");
 
-	if (args != NULL && strcmp((void *)args[0][0], (void *)KEYS.INDEX) != 0) // check if there is no "idx" key
+	if (args != NULL && strcmp((void *)args[0][0], (void *)KEY.INDEX) != 0) // check if there is no "idx" key
 		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"4");
 
 	for (i = 0; i < strlen((void *)str); i++)
@@ -62,7 +63,7 @@ uint8_t *connector_manage(uint8_t ***args)
 	if (i != strlen((void *)args[0][1])) // if the i is not eqaul to length, there was any char different than digit
 		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"5");
 
-	if (args != NULL && strcmp((void *)args[1][0], (void *)KEYS.OPERATION) != 0) // check if there is no "opt" key
+	if (args != NULL && strcmp((void *)args[1][0], (void *)KEY.OPERATION) != 0) // check if there is no "opt" key
 		return cmd_builder_buildErr(args[0][1], (uint8_t *)"6");
 
 	idx = args[0][1]; // get index value
@@ -74,23 +75,21 @@ uint8_t *connector_manage(uint8_t ***args)
 
 	/* checks operation (opt) mode and calls appropriate prepare_function */
 
-	if (strcmp((void *)opt, (void *)OPTS.SETUP_SPEED) == 0)
+	if (strcmp((void *)opt, (void *)OPT.SETUP_SPEED) == 0)
 		return prepare_settings(idx, args);
-	else if (strcmp((void *)opt, (void *)OPTS.GET_STATE) == 0)
-		return prepare_getEndstopState(idx, args);
-	else if (strcmp((void *)opt, (void *)OPTS.SWITCH) == 0)
+	else if (strcmp((void *)opt, (void *)OPT.SWITCH) == 0)
 		return prepare_switch(idx, args);
-	else if (strcmp((void *)opt, (void *)OPTS.HOME) == 0)
+	else if (strcmp((void *)opt, (void *)OPT.HOME) == 0)
 		return prepare_home(idx, args);
-	else if (strcmp((void *)opt, (void *)OPTS.MOVE) == 0)
+	else if (strcmp((void *)opt, (void *)OPT.MOVE) == 0)
 		return prepare_move(idx, args);
-	else if (strcmp((void *)opt, (void *)OPTS.PROCESS) == 0)
+	else if (strcmp((void *)opt, (void *)OPT.PROCESS) == 0)
 		return prepare_process(idx, args);
-	else if (strcmp((void *)opt, (void *)OPTS.PAUSE) == 0)
+	else if (strcmp((void *)opt, (void *)OPT.PAUSE) == 0)
 		return prepare_intervention(idx, args, stepper_pause);
-	else if (strcmp((void *)opt, (void *)OPTS.RESUME) == 0)
+	else if (strcmp((void *)opt, (void *)OPT.RESUME) == 0)
 		return prepare_intervention(idx, args, stepper_resume);
-	else if (strcmp((void *)opt, (void *)OPTS.STOP) == 0)
+	else if (strcmp((void *)opt, (void *)OPT.STOP) == 0)
 		return prepare_intervention(idx, args, stepper_stop);
 	else
 		return cmd_builder_buildErr(idx, (uint8_t *)"7"); // "invalid operation value"

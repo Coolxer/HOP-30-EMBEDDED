@@ -1,7 +1,7 @@
 #ifdef UNIT_TEST
 
 #include <unity.h> // includes unit testing
-#include "cmd_builder.h"
+#include "command/cmd_builder.h"
 #include "connector.h"
 #include "device_manager.h"
 

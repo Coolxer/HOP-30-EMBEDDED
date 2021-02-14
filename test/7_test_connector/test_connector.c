@@ -2,8 +2,7 @@
 
 #include <unity.h> // includes unit testing library
 #include "stm32f4xx_hal.h"
-#include "cmd_builder.h"
-#include "cmd_builder.h"
+#include "command/cmd_builder.h"
 #include "connector.h"
 
 void setUp()
@@ -108,8 +107,8 @@ void test_connector_manage_should_give_7()
 
 int main()
 {
-    HAL_Init();         // initialize the HAL library
-    HAL_Delay(2000);    // service delay
+    HAL_Init();      // initialize the HAL library
+    HAL_Delay(2000); // service delay
 
     UNITY_BEGIN();
 
@@ -127,7 +126,7 @@ int main()
     RUN_TEST(test_connector_manage_should_give_5);
     RUN_TEST(test_connector_manage_should_give_6);
     RUN_TEST(test_connector_manage_should_give_7);
- 
+
     UNITY_END();
 }
 

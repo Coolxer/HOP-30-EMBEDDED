@@ -1,8 +1,8 @@
 #ifndef DEVICE_MANAGER_H
 #define DEVICE_MANAGER_H
 
-#include "Stepper.h"
-#include "Endstop.h"
+#include "stepper/stepper.h"
+#include "endstop/endstop.h"
 
 void device_manager_init();   // sets devices
 void device_manager_deinit(); // resets devices
