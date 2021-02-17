@@ -134,11 +134,11 @@ uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 			feedback = cmd_builder_buildErr(idx, (uint8_t *)"9"); // "invalid stepper name"
 		else													  // success getStepper
 		{
-			if (strcmp((void *)args[1][0], (void *)KEY.STEPS) == 0) // check if there is steps key
+			if (strcmp((void *)args[1][0], (void *)KEY.WAY) == 0) // check if there is way key
 			{
 				uint8_t result = stepper_move(stepper, args[1][1]);		   // move stepper & get feedback
 				if (!result)											   // if result is <= 0
-					feedback = cmd_builder_buildErr(idx, (uint8_t *)"20"); // "invalid steps value (0)"
+					feedback = cmd_builder_buildErr(idx, (uint8_t *)"20"); // "invalid way value (0)"
 				else													   // if result > 0
 				{
 					if (result == 1) // success
@@ -150,8 +150,8 @@ uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 						feedback = cmd_builder_buildErr(idx, (uint8_t *)"18"); // "operation not allowed"
 				}
 			}
-			else													   // not steps key
-				feedback = cmd_builder_buildErr(idx, (uint8_t *)"19"); // "no steps key"
+			else
+				feedback = cmd_builder_buildErr(idx, (uint8_t *)"19"); // "no way key"
 		}
 	} // no stepper key
 	else

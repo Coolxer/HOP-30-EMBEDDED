@@ -5,6 +5,7 @@
 #include <inttypes.h>
 
 #include "counter.h"
+#include "stepper/config/stepper_calculation.h"
 #include "stepper/partial/stepper_configuration.h"
 #include "stepper/partial/stepper_validator.h"
 #include "endstop/partial/endstop_operation.h"
@@ -42,7 +43,7 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
     }
     else if (stepper->homeStep == BACKWARD)
     {
-        counter_count(65000);
+        counter_count(65000); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE !!!!!!!!!!!!!!!!!!!!!
         stepper->state = ON;
         stepper_move(stepper, (uint8_t *)"400");
 
@@ -62,37 +63,41 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
     return 1;
 }
 
-uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
+uint8_t stepper_move(Stepper *stepper, uint8_t *way)
 {
-    int32_t nSteps = 0;
+    float _way = 0;
+    uint16_t steps = 0;
 
-    uint8_t valid = move_validator(stepper, steps);
+    uint8_t valid = move_validator(stepper, way);
 
     if (valid == 0 || valid == 9)
         return valid;
 
-    sscanf((void *)steps, "%" SCNd32, &nSteps); // translate string to number
+    sscanf((void *)way, (uint8_t *)"%lf", &_way); // translate string to flaot
 
-    if (nSteps == 0) // if steps is equals to 0, error
+    if (_way == 0) // if way is equals to 0, error, because there is no move
         return 0;
-    else if (nSteps < 0) // check if steos are negative, set LEFT direction
+    else if (_way < 0) // check if ways are negative, set LEFT direction
         stepper_setDirection(stepper, 0);
     else // set RIGHT direction
         stepper_setDirection(stepper, 1);
 
-    nSteps = abs(nSteps); // calc absolute value
+    // calc real steps need to make to move by given mm or deg.
+    steps = abs(_way * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)); // calc absolute value
 
-    if (nSteps == 1) // this is weird situation if we want to move by 1 step, i need to set counter to 1
+    if (steps == 1) // this is weird situation if we want to move by 1 step, i need to set counter to 1
         __HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 1);
     else
     {
         if (stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5) // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease steps for them
-            nSteps -= 1;
+            steps -= 1;
     }
 
-    __HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, nSteps); // set target value
+    __HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, steps); // set target value
 
-    stepper_switch(stepper, 1);                                 // turn ON stepper motor
+    if (stepper->state == OFF)
+        stepper_switch(stepper, 1);
+
     HAL_TIM_Base_Start_IT(&stepper->slaveTimer);                // starts counting of PWM cycles
     HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 
@@ -103,7 +108,9 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *steps)
 
 void stepper_run(Stepper *stepper)
 {
-    stepper_switch(stepper, 1);                                 // turn ON stepper
+    if (stepper->state == OFF)
+        stepper_switch(stepper, 1);
+
     HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 }
 

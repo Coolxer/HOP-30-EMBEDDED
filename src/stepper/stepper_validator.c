@@ -40,26 +40,26 @@ uint8_t home_validator(Stepper *stepper)
     return 1;
 }
 
-uint8_t move_validator(Stepper *stepper, uint8_t *steps)
+uint8_t move_validator(Stepper *stepper, uint8_t *way)
 {
-    uint8_t len = strlen((void *)steps);
+    uint8_t len = strlen((void *)way);
 
     if (stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot move if motor is homing or moving or is paused right now
         return 9;
 
     if (len == 0) // check if length of string is 0
         return 0;
-    else if (len >= 1 && steps[0] == '0') // check if length is more than 1 (OK), but not ok if it's starting with 0
+    else if (len >= 1 && way[0] == '0') // check if length is more than 1 (OK), but not ok if it's starting with 0
         return 0;
 
-    if ((steps[0] < 48 || steps[0] > 58) && steps[0] != '-') // check if it's not number and not "-" (minus) sign
+    if ((way[0] < 48 || way[0] > 58) && way[0] != '-') // check if it's not number and not "-" (minus) sign
         return 0;
 
     uint8_t i;
 
     for (i = 1; i < len; i++)
     {
-        if (steps[i] < 48 || steps[i] > 57) // check if string contains only numbers
+        if (way[i] < 48 || way[i] > 57) // check if string contains only numbers
             return 0;
     }
 

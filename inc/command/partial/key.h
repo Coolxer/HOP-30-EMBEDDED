@@ -9,7 +9,7 @@ struct key
         INDEX[4],
         STEPPER[4],
         SPEED[4],
-        STEPS[4],
+        WAY[4],
         STEPPER_STATE[4],
         DIRECTION[4],
 

@@ -9,6 +9,7 @@
 #include "communication/uart.h"
 #include "command/cmd_builder.h"
 #include "connector.h"
+#include "counter.h"
 
 #include "device_manager.h"
 
@@ -58,7 +59,7 @@ void application_run()
 
     uart_send((uint8_t *)"FINISHED"); // sends "FINISHED" through UART after get "FINISH" command
 
-    HAL_Delay(5);        // wait a litte bit to finish sending response
+    counter_count(1000); // wait a litte bit to finish sending response
     application_close(); // close the application
 }
 

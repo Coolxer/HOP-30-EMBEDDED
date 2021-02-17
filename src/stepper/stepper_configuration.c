@@ -1,5 +1,7 @@
 #include "stepper/partial/stepper_configuration.h"
 
+#include <stdlib.h>
+
 #include "counter.h"
 #include "stepper/partial/stepper_validator.h"
 #include "stepper/partial/stepper_calculator.h"
@@ -19,7 +21,7 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
     if (!set_speed_validator(stepper, speed))
         return 0;
 
-    sscanf((void *)speed, "%lf", &newSpeed);
+    sscanf((void *)speed, (uint8_t *)"%lf", &newSpeed);
 
     if (newSpeed < stepper->minSpeed || newSpeed > stepper->maxSpeed) // checks if speed is in range
         return 0;
@@ -36,13 +38,13 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 void stepper_setDirection(Stepper *stepper, uint8_t dir)
 {
     HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->dir, dir);
-    counter_count(5);
+    counter_count(5); // need wait minimum 5us after set direction before go
 }
 
 void stepper_changeDirection(Stepper *stepper)
 {
     HAL_GPIO_TogglePin((GPIO_TypeDef *)stepper->port, stepper->dir);
-    counter_count(5);
+    counter_count(5); // need wait minimum 5us after change direction before go
 }
 
 void stepper_stopTimers(Stepper *stepper)
