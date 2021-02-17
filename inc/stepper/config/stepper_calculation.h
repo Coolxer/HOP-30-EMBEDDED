@@ -56,6 +56,9 @@
 // how many steps need to rotate by 1 deg. on BIG GEAR ? [REAL]
 #define STEPS_PER_DEGREE 33.777777777777777777777777777778 // SG_SPD * GEARS_PROPORTION
 
+// how many steps need to rotate by 360 deg. on BIG GEAR ? [REAL]
+#define STEPS_PER_REVOLUTION BIG_GEAR_STEPS_PER_REVOLUTION
+
 /************************** END OF CIRCULAR COMMON AXIS ******************************/
 
 #endif // STEPPER_CALCULATION

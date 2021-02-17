@@ -6,8 +6,10 @@
 
 void uart_setupGpio()
 {
-	__HAL_RCC_GPIOA_CLK_ENABLE();  // only for unit tests
-	__HAL_RCC_USART2_CLK_ENABLE(); // only for unit tests
+#ifdef UNIT_TEST
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_USART2_CLK_ENABLE();
+#endif
 
 	GPIO_InitTypeDef gpio;
 
@@ -53,8 +55,10 @@ void uart_flush()
 
 void uart_min_end()
 {
-	__HAL_RCC_USART2_CLK_DISABLE(); // only for unit tests
-	__HAL_RCC_GPIOA_CLK_DISABLE();	// only for unit tests
+#ifdef UNIT_TEST
+	__HAL_RCC_USART2_CLK_DISABLE();
+	__HAL_RCC_GPIOA_CLK_DISABLE();
+#endif
 }
 
 //#endif // STSTM32

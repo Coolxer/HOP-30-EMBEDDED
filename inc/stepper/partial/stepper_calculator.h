@@ -5,6 +5,15 @@
 
 #include "stepper/stepper.h"
 
-void calculate_speed(Stepper *stepper, uint16_t speed);
+// structure of speed setting registers
+typedef struct
+{
+    uint16_t psc; // prescaler
+    uint16_t arr; // autoreload
+    uint16_t pul; // pulse
+
+} Speed;
+
+Speed calculate_speed(Stepper *stepper, float speed);
 
 #endif // STEPPER_CALCULATOR_H

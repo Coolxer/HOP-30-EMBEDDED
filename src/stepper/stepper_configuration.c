@@ -6,7 +6,8 @@
 
 uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 {
-    uint32_t newSpeed = 0;
+    float newSpeed = 0;
+    Speed regs;
 
     // in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
     // you need to use change Prescaler too
@@ -18,12 +19,16 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
     if (!set_speed_validator(stepper, speed))
         return 0;
 
-    sscanf((void *)speed, "%d", &newSpeed);
+    sscanf((void *)speed, "%lf", &newSpeed);
 
     if (newSpeed < stepper->minSpeed || newSpeed > stepper->maxSpeed) // checks if speed is in range
         return 0;
 
-    calculate_speed(stepper, newSpeed);
+    regs = calculate_speed(stepper, newSpeed);
+
+    __HAL_TIM_SET_PRESCALER(&stepper->masterTimer, regs.psc);
+    __HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, regs.arr);
+    __HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, regs.pul); // set pulse width
 
     return 1;
 }

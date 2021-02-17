@@ -16,8 +16,7 @@ void application_setup()
 {
     HAL_Init(); // inits HAL library
 
-    clocks_init(); // enables clocks
-
+    clock_manager_init();
     flag_init();           // sets up default flags values
     cmd_builder_init();    // creates opts & keys structures
     uart_init();           // inits uart module
@@ -27,7 +26,7 @@ void application_setup()
 void application_close()
 {
     device_manager_deinit(); // deinits steppers and endstops
-    clocks_deinit();         // disables clocks
+    clock_manager_deinit();  // disables clocks
     HAL_DeInit();            // deinits HAL library
 }
 

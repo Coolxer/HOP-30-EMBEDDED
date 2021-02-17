@@ -3,7 +3,7 @@
 #include "stm32f4xx_hal.h"
 #include "counter.h"
 
-void clocks_config()
+void clock_manager_config()
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
@@ -36,9 +36,9 @@ void clocks_config()
     HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1);
 }
 
-void clocks_init()
+void clock_manager_init()
 {
-    clocks_config();
+    clock_manager_config();
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -60,7 +60,7 @@ void clocks_init()
     counter_init();
 }
 
-void clocks_deinit()
+void clock_manager_deinit()
 {
     counter_deinit();
 

@@ -3,7 +3,7 @@
 
 /* ATTENTION!
     # MIN and MAX speed for LINEAR axis are given in mm/s [millimeters per second]
-    # MIN and MAX speed for CIRCULAR axis are given in rps [rotates per second]
+    # MIN and MAX speed for CIRCULAR axis are given in rpm [rotates per minute]
 */
 
 /**************** X STEPPER  ******************/
@@ -29,7 +29,7 @@
 
 /**************** W STEPPER  ******************/
 
-#define W_MIN_SPEED 0.1
+#define W_MIN_SPEED 1
 #define W_MAX_SPEED 100
 
 /************* END OF W STEPPER  **************/

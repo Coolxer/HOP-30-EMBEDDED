@@ -5,14 +5,17 @@
 #include "config/clock.h"
 #include "stepper/config/stepper_calculation.h"
 
-void calculate_speed(Stepper *stepper, uint16_t speed)
+Speed calculate_speed(Stepper *stepper, float speed)
 {
-    uint16_t psc = 0;   // prescaler
-    uint16_t arr = 0;   // autoreload
-    uint16_t pulse = 0; // pulse width
+    Speed regs;
+    float arr = 0; // autoreload
+    float stepsPerSecond;
 
-    // convert (mm/s or rps) to steps/s
-    uint32_t stepsPerSecond = speed * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE);
+    // convert mm/s to steps/s
+    if (stepper->axisType == LINEAR)
+        stepsPerSecond = speed * STEPS_PER_MM;
+    else // conver obr/min to steps/s
+        stepsPerSecond = (speed * STEPS_PER_REVOLUTION) / 60.0;
 
     /* MATHEMATICAL FORMULA
 
@@ -50,20 +53,21 @@ void calculate_speed(Stepper *stepper, uint16_t speed)
     // that means that i need use prescaler, beacause arr is not enough
     if (arr > MAX_16BIT_VALUE)
     {
-        psc = round(arr / MAX_16BIT_VALUE);
-        arr = MAX_16BIT_VALUE;
+        regs.psc = round(arr / MAX_16BIT_VALUE);
+        regs.arr = MAX_16BIT_VALUE;
     }
     else // if divider is less or equals MAX_16BIT_VALUE
-        arr = round(psc);
+    {
+        regs.psc = 0;
+        regs.arr = round(arr);
+    }
 
     // PWM pulse width [DUTY] (0%, 25%, 50%, 75%, 100%)
     // don't know what it should be, 2 different guys give 50% of ARR register
     // there should be min. 2.5us as stepper driver gives
 
     // so i decided to have 50% duty cycle, beacuse there is 50% time LOW nad 50% high signal
-    pulse = round(arr / 2);
+    regs.pul = round(regs.arr / 2);
 
-    __HAL_TIM_SET_PRESCALER(&stepper->masterTimer, psc);
-    __HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, arr);
-    __HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, pulse); // set pulse width
+    return regs;
 }
