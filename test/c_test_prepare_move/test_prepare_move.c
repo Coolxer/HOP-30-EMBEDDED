@@ -33,7 +33,7 @@ void test_prepare_move_should_give_19()
 
 void test_prepare_move_should_give_20()
 {
-    uint8_t data[] = "idx=1|opt=mov|spp=x|stp=0|\n";
+    uint8_t data[] = "idx=1|opt=mov|spp=x|way=0|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=20|\n", connector_manage(connector_parse(data)));
 }
 
@@ -42,13 +42,13 @@ void test_prepare_move_should_give_18()
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
     stepper->state = HOMING;
 
-    uint8_t data[] = "idx=1|opt=mov|spp=x|stp=89|\n";
+    uint8_t data[] = "idx=1|opt=mov|spp=x|way=89|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_passed()
 {
-    uint8_t data[] = "idx=1|opt=mov|spp=x|stp=89|\n";
+    uint8_t data[] = "idx=1|opt=mov|spp=x|way=89|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=pas|\n", connector_manage(connector_parse(data)));
 }
 

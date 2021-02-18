@@ -1,7 +1,6 @@
 //#ifdef STSTM32
 #include "application.h"
 
-#include <stdlib.h>
 #include <string.h>
 
 #include "flag.h"

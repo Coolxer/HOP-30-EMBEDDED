@@ -1,7 +1,6 @@
 #include "command/partial/data_assistant.h"
 
 #include <string.h>
-#include <stdlib.h>
 
 uint8_t *char_append(uint8_t *src, uint8_t ch)
 {

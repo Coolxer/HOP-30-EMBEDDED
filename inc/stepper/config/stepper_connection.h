@@ -86,7 +86,7 @@
 /**************** K STEPPER  ******************/
 /*
 #define K_NAME (uint8_t*)"K"
-#define K_PORT GPIOA
+#define K_PORT (GPIO_TypeDef *)GPIOA
 
 #define K_MASTER_TIMER TIM1
 #define K_SLAVE_TIMER TIM8

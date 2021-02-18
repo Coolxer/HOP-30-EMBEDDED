@@ -1,5 +1,7 @@
 #include "communication/dma/partial/dma_handler.h"
 
+#include <stddef.h> // includes NULL value
+
 #include "communication/dma/dma.h"
 
 void dma_uartHandler()
@@ -10,6 +12,8 @@ void dma_uartHandler()
         tmp = dma.uart->Instance->SR;                   // Read status register
         tmp = dma.uart->Instance->DR;                   // Read data register
         dma.uart->hdmarx->Instance->CR &= ~DMA_SxCR_EN; // Disable DMA -> force Transfer Complete interrupt
+
+        tmp = tmp; // For unused warning
     }
 }
 

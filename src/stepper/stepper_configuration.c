@@ -1,15 +1,15 @@
 #include "stepper/partial/stepper_configuration.h"
 
-#include <stdio.h>
+#include <stdlib.h>
 
 #include "counter.h"
 #include "stepper/partial/stepper_validator.h"
 #include "stepper/partial/stepper_calculator.h"
 
-uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
+uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speedStr)
 {
     Speed regs = {0};
-    float newSpeed = 0;
+    float speed = 0;
 
     // in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
     // you need to use change Prescaler too
@@ -18,15 +18,16 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
     // so we need to cast this, but not this moment, because it's need to set up clocks frequency
     // and see in real time, what speed we need
 
-    if (!set_speed_validator(stepper, speed))
+    if (!set_speed_validator(stepper, speedStr))
         return 0;
 
-    sscanf((void *)speed, (uint8_t *)"%f", &newSpeed);
+    //sscanf((void *)speedStr, "%f", &speed);
+    speed = strtof(speedStr, NULL);
 
-    if (newSpeed < stepper->minSpeed || newSpeed > stepper->maxSpeed) // checks if speed is in range
+    if (speed < stepper->minSpeed || speed > stepper->maxSpeed) // checks if speed is in range
         return 0;
 
-    regs = calculate_speed(stepper, newSpeed);
+    regs = calculate_speed(stepper, speed);
 
     __HAL_TIM_SET_PRESCALER(&stepper->masterTimer, regs.psc);
     __HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, regs.arr);

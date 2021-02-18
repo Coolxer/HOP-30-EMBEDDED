@@ -1,8 +1,10 @@
 //#ifdef STSTM32
 #include "prepare_function.h"
 
-#include <stdlib.h>
+#include <stddef.h> // includes NULL value
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "flag.h"
 #include "command/partial/data_assistant.h"
@@ -61,7 +63,7 @@ uint8_t *prepare_switch(uint8_t *idx, uint8_t ***args)
 				{
 					uint8_t state = 0; // init any value
 
-					sscanf((void *)args[1][1], "%d", &state); // str to int
+					sscanf((void *)args[1][1], "%hhu", &state); // str to int
 
 					if (!stepper_switch(stepper, state))					   // try to switch stepper state
 						feedback = cmd_builder_buildErr(idx, (uint8_t *)"18"); // "operation not allowed"
@@ -100,7 +102,7 @@ uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
 				{
 					uint8_t direction = 0; // init any value
 
-					sscanf((void *)args[1][1], "%d", &direction); // str to int
+					sscanf((void *)args[1][1], "%hhu", &direction); // str to int
 
 					if (!stepper_home(stepper, direction))					   // try to home stepper
 						feedback = cmd_builder_buildErr(idx, (uint8_t *)"18"); // "operation not allowed"
@@ -179,7 +181,7 @@ uint8_t *prepare_process(uint8_t *idx, uint8_t ***args) // opt=pro|spp=x|spd=40|
 		{
 			uint8_t dir = 0; // init any value
 
-			sscanf((void *)args[0][1], "%d", &dir); // str to int
+			sscanf((void *)args[0][1], "%hhu", &dir); // str to int
 
 			stepper_setDirection(w, dir); // set direction of rotator
 

@@ -1,13 +1,12 @@
 //#ifdef STSTM32
 #include "communication/uart.h"
 
-#include <stdlib.h>
 #include <string.h>
 
-#include "connector.h"
 #include "communication/uart_min.h"
 #include "communication/dma/partial/dma_setup.h"
 #include "communication/dma/partial/dma_operation.h"
+#include "connector.h"
 
 void uart_init()
 {

@@ -7,9 +7,9 @@ typedef struct
 {
     uint8_t name[2]; // 2-characters name
 
-    uint32_t port; // gpio port, where the pin is connected
-    uint16_t pin;  // endstop pin
-    uint8_t irq;   // external interrupt name pointer
+    GPIO_TypeDef *port; // gpio port
+    uint16_t pin;       // endstop pin
+    uint8_t irq;        // external interrupt name pointer
 } Endstop;
 
 Endstop *endstop; // endstop pointer, using to make operations on actual selected endstop

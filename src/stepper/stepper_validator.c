@@ -12,7 +12,7 @@ uint8_t set_speed_validator(Stepper *stepper, uint8_t *speed)
     else if (speed[0] == '0') // check if string starts with 0
         return 0;
 
-    for (i; i < len; i++)
+    for (i = 0; i < len; i++)
     {
         if (speed[i] < 48 || speed[i] > 57) // check if string contains only numbers
             return 0;
@@ -56,7 +56,7 @@ uint8_t move_validator(Stepper *stepper, uint8_t *way)
             return 0;
     }
 
-    for (i; i < len; i++)
+    for (i = 1; i < len; i++)
     {
         if (way[i] < 48 || way[i] > 57) // check if string contains only numbers
             return 0;

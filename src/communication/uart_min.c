@@ -1,8 +1,7 @@
 //#ifdef STSTM32
 
-#include "communication/uart_min.h"
-
 #include "communication/config/communication.h"
+#include "communication/uart_min.h"
 
 void uart_setupGpio()
 {

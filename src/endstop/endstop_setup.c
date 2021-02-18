@@ -16,7 +16,7 @@ void endstop_setupGpio(Endstop *endstop)
     HAL_NVIC_EnableIRQ(endstop->irq);         // enables external interrupt on endstop pin
 }
 
-void endstop_init(Endstop *endstop, uint8_t *name, uint32_t port, uint16_t pin, uint8_t irq)
+void endstop_init(Endstop *endstop, uint8_t *name, GPIO_TypeDef *port, uint16_t pin, uint8_t irq)
 {
     strcpy((void *)endstop->name, (void *)name);
 

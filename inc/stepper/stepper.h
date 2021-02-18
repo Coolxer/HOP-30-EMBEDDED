@@ -14,7 +14,7 @@ typedef struct
     enum AxisType axisType; // axis type [LINEAR or CIRCULAR]
     uint8_t name[2];        // 2-characters name
     uint8_t *index;         // command index
-    uint32_t port;          // stepper gpio port group
+    GPIO_TypeDef *port;     // stepper gpio port group
 
     TIM_HandleTypeDef masterTimer; // master timer (structure)
     TIM_HandleTypeDef slaveTimer;  // slave timer (structure)

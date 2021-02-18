@@ -1,8 +1,8 @@
 #include "stepper/partial/stepper_operation.h"
 
-#include <stdio.h>
-
+#include <stdlib.h>
 #include "counter.h"
+
 #include "stepper/config/stepper_calculation.h"
 #include "stepper/partial/stepper_configuration.h"
 #include "stepper/partial/stepper_validator.h"
@@ -61,27 +61,32 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
     return 1;
 }
 
-uint8_t stepper_move(Stepper *stepper, uint8_t *way)
+uint8_t stepper_move(Stepper *stepper, uint8_t *wayStr)
 {
     uint16_t steps = 0;
-    float _way = 0;
+    float way = 0;
 
-    uint8_t valid = move_validator(stepper, way);
+    uint8_t valid = move_validator(stepper, wayStr);
 
     if (valid == 0 || valid == 9)
         return valid;
 
-    sscanf((void *)way, (uint8_t *)"%f", &_way); // translate string to flaot
+    //sscanf((void *)wayStr, "%f", &way); // translate string to flaot
+    way = strtof(wayStr, NULL);
 
-    if (_way == 0) // if way is equals to 0, error, because there is no move
+    if (way == 0) // if way is equals to 0, error, because there is no move
         return 0;
-    else if (_way < 0) // check if ways are negative, set LEFT direction
+    else if (way < 0) // check if ways are negative, set LEFT direction
         stepper_setDirection(stepper, 0);
     else // set RIGHT direction
         stepper_setDirection(stepper, 1);
 
     // calc real steps need to make to move by given mm or deg.
-    steps = abs(_way * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)); // calc absolute value
+    steps = way * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE);
+
+    // if value is negative, multiply it by -1, to get absolute value
+    if (steps < 0)
+        steps *= -1;
 
     if (steps == 1) // this is weird situation if we want to move by 1 step, i need to set counter to 1
         __HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 1);

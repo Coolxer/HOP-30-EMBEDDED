@@ -1,8 +1,8 @@
 #include "connector.h"
 
-#include <stdlib.h> // needed to use malloc, calloc, realloc
-#include <string.h> // includes defintion and use of strtok function
 #include <stddef.h> // includes NULL value
+#include <string.h> // includes defintion and use of strtok function
+#include <stdlib.h> // needed to use malloc, calloc, realloc
 
 #include "command/cmd_builder.h"
 #include "prepare_function.h"
@@ -54,7 +54,7 @@ uint8_t *connector_manage(uint8_t ***args)
 	if (args != NULL && strcmp((void *)args[0][0], (void *)KEY.INDEX) != 0) // check if there is no "idx" key
 		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"4");
 
-	for (i; i < strlen((void *)str); i++)
+	for (i = 0; i < strlen((void *)str); i++)
 	{
 		if (str[i] < 48 || str[i] > 57) // check if string contains only numbers
 			break;

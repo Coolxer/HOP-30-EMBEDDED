@@ -1,8 +1,8 @@
 //#ifdef STSTM32
 #include "device_manager.h"
 
+#include <stddef.h> // includes NULL value
 #include <string.h>
-#include <stdlib.h>
 
 #include "flag.h"
 #include "command/partial/data_assistant.h"
@@ -53,7 +53,7 @@ void device_manager_deinit()
 {
     uint8_t i = 0;
 
-    for (i; i < STEPPERS_COUNT; i++)
+    for (i = 0; i < STEPPERS_COUNT; i++)
         stepper_deinit(&steppers[i]);
 
     for (i = 0; i < ENDSTOPS_COUNT; i++)
@@ -64,7 +64,7 @@ Stepper *device_manager_getStepper(uint8_t *name)
 {
     uint8_t i = 0;
 
-    for (i; i < STEPPERS_COUNT; i++)
+    for (i = 0; i < STEPPERS_COUNT; i++)
     {
         if (strcmp((void *)steppers[i].name, (void *)name) == 0)
             return &steppers[i];
@@ -77,7 +77,7 @@ Endstop *device_manager_getEndstop(uint8_t *name)
 {
     uint8_t i = 0;
 
-    for (i; i < ENDSTOPS_COUNT; i++)
+    for (i = 0; i < ENDSTOPS_COUNT; i++)
     {
         if (strcmp((void *)endstops[i].name, (void *)name) == 0)
             return &endstops[i];
@@ -90,7 +90,7 @@ Stepper *device_manager_findParentStepper(Endstop *endstop)
 {
     uint8_t i = 0;
 
-    for (i; i < STEPPERS_COUNT; i++)
+    for (i = 0; i < STEPPERS_COUNT; i++)
         if (steppers[i].minEndstop == endstop || steppers[i].maxEndstop == endstop)
             return &steppers[i];
 
@@ -164,7 +164,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         return;
     }
 
-    for (i; i < ENDSTOPS_COUNT; i++) // go through all endstops to check which fire the callback
+    for (i = 0; i < ENDSTOPS_COUNT; i++) // go through all endstops to check which fire the callback
     {
         if (GPIO_Pin == endstops[i].pin) // check if concret endstop fired interrupt
         {
@@ -185,7 +185,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     uint8_t i = 0;
 
-    for (i; i < STEPPERS_COUNT; i++) // go through all steppers to check which fired the callback
+    for (i = 0; i < STEPPERS_COUNT; i++) // go through all steppers to check which fired the callback
     {
         if (htim->Instance == steppers[i].slaveTimer.Instance) // check which timer send callback
         {
