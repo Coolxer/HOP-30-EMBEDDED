@@ -1,6 +1,6 @@
 #include "stepper/partial/stepper_configuration.h"
 
-#include <stdlib.h>
+#include <stdio.h>
 
 #include "counter.h"
 #include "stepper/partial/stepper_validator.h"
@@ -8,8 +8,8 @@
 
 uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 {
+    Speed regs = {0};
     float newSpeed = 0;
-    Speed regs;
 
     // in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
     // you need to use change Prescaler too
@@ -21,7 +21,7 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
     if (!set_speed_validator(stepper, speed))
         return 0;
 
-    sscanf((void *)speed, (uint8_t *)"%lf", &newSpeed);
+    sscanf((void *)speed, (uint8_t *)"%f", &newSpeed);
 
     if (newSpeed < stepper->minSpeed || newSpeed > stepper->maxSpeed) // checks if speed is in range
         return 0;

@@ -5,17 +5,14 @@
 uint8_t set_speed_validator(Stepper *stepper, uint8_t *speed)
 {
     uint8_t len = strlen((void *)speed);
-    uint8_t i;
+    uint8_t i = 0;
 
     if (len == 0 || len > 3) // check if string is empty or too long
         return 0;
-    else
-    {
-        if (speed[0] == '0') // check if string starts with 0
-            return 0;
-    }
+    else if (speed[0] == '0') // check if string starts with 0
+        return 0;
 
-    for (i = 0; i < len; i++)
+    for (i; i < len; i++)
     {
         if (speed[i] < 48 || speed[i] > 57) // check if string contains only numbers
             return 0;
@@ -43,21 +40,23 @@ uint8_t home_validator(Stepper *stepper)
 uint8_t move_validator(Stepper *stepper, uint8_t *way)
 {
     uint8_t len = strlen((void *)way);
+    uint8_t i = 1;
 
     if (stepper->state == HOMING || stepper->state == MOVING || stepper->state == PAUSED) // cannot move if motor is homing or moving or is paused right now
         return 9;
 
     if (len == 0) // check if length of string is 0
         return 0;
-    else if (len >= 1 && way[0] == '0') // check if length is more than 1 (OK), but not ok if it's starting with 0
-        return 0;
+    else
+    {
+        if (way[0] == '0')
+            return 0;
 
-    if ((way[0] < 48 || way[0] > 58) && way[0] != '-') // check if it's not number and not "-" (minus) sign
-        return 0;
+        if ((way[0] < 48 || way[0] > 58) && way[0] != '-')
+            return 0;
+    }
 
-    uint8_t i;
-
-    for (i = 1; i < len; i++)
+    for (i; i < len; i++)
     {
         if (way[i] < 48 || way[i] > 57) // check if string contains only numbers
             return 0;

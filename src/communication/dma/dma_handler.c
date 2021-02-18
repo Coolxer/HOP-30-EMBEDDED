@@ -16,7 +16,7 @@ void dma_uartHandler()
 void dma_dmaHandler()
 {
     uint8_t i, response_length = 0;
-    uint16_t temp;
+    uint16_t temp = 0;
     DMA_HandleTypeDef *hdma = dma.uart->hdmarx;
 
     typedef struct
@@ -71,7 +71,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 
 static HAL_StatusTypeDef UART_Transmit_IT(UART_HandleTypeDef *huart)
 {
-    uint16_t *tmp;
+    uint16_t *tmp = NULL;
 
     /* Check that a Tx process is ongoing */
     if (huart->gState == HAL_UART_STATE_BUSY_TX)

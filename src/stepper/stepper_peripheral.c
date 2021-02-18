@@ -2,7 +2,7 @@
 
 void stepper_setupGpio(Stepper *stepper)
 {
-    GPIO_InitTypeDef gpio;
+    GPIO_InitTypeDef gpio = {0};
 
     /* setups gpio for all stepper pins except step_pin */
     gpio.Pin = stepper->dir | stepper->enable;

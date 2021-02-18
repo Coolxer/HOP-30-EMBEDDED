@@ -1,8 +1,6 @@
 #include "stepper/partial/stepper_operation.h"
 
-#include <string.h>
-#include <stdlib.h>
-#include <inttypes.h>
+#include <stdio.h>
 
 #include "counter.h"
 #include "stepper/config/stepper_calculation.h"
@@ -33,7 +31,7 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
     {
         if (!endstop_isClicked(stepper->minEndstop))
         {
-            stepper_setSpeed(stepper, (uint8_t *)"30"); // home with 30% speed
+            stepper_setSpeed(stepper, (uint8_t *)"10"); // home with low speed
             stepper_setDirection(stepper, direction);   // set left direction
             stepper_run(stepper);                       // start motor moving
 
@@ -43,9 +41,9 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
     }
     else if (stepper->homeStep == BACKWARD)
     {
-        counter_count(65000); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE !!!!!!!!!!!!!!!!!!!!!
+        //counter_count(65000); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE !!!!!!!!!!!!!!!!!!!!!
         stepper->state = ON;
-        stepper_move(stepper, (uint8_t *)"400");
+        stepper_move(stepper, (uint8_t *)"10");
 
         stepper->lastHomeStep = BACKWARD;
     }
@@ -65,15 +63,15 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
 
 uint8_t stepper_move(Stepper *stepper, uint8_t *way)
 {
-    float _way = 0;
     uint16_t steps = 0;
+    float _way = 0;
 
     uint8_t valid = move_validator(stepper, way);
 
     if (valid == 0 || valid == 9)
         return valid;
 
-    sscanf((void *)way, (uint8_t *)"%lf", &_way); // translate string to flaot
+    sscanf((void *)way, (uint8_t *)"%f", &_way); // translate string to flaot
 
     if (_way == 0) // if way is equals to 0, error, because there is no move
         return 0;

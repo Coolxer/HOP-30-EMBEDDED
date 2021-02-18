@@ -42,7 +42,7 @@ uint8_t ***connector_parse(uint8_t *dialog)
 uint8_t *connector_manage(uint8_t ***args)
 {
 	uint8_t *idx = (uint8_t *)"", *opt = (uint8_t *)"", *str = args[0][1];
-	uint8_t i;
+	uint8_t i = 0;
 
 	if (records == 0) // check if no records detected
 		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"1");
@@ -54,7 +54,7 @@ uint8_t *connector_manage(uint8_t ***args)
 	if (args != NULL && strcmp((void *)args[0][0], (void *)KEY.INDEX) != 0) // check if there is no "idx" key
 		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"4");
 
-	for (i = 0; i < strlen((void *)str); i++)
+	for (i; i < strlen((void *)str); i++)
 	{
 		if (str[i] < 48 || str[i] > 57) // check if string contains only numbers
 			break;

@@ -7,9 +7,9 @@
 
 Speed calculate_speed(Stepper *stepper, float speed)
 {
-    Speed regs;
+    Speed regs = {0};
     float arr = 0; // autoreload
-    float stepsPerSecond;
+    float stepsPerSecond = 0;
 
     // convert mm/s to steps/s
     if (stepper->axisType == LINEAR)

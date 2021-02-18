@@ -31,7 +31,7 @@ uint8_t dma_getChar()
 
 uint8_t *dma_getCommand()
 {
-    uint8_t ch;
+    uint8_t ch = '\0';
     uint8_t *cmd = (uint8_t *)"";
 
     while ((ch = dma_getChar()))

@@ -11,7 +11,7 @@ void uart_setupGpio()
 	__HAL_RCC_USART2_CLK_ENABLE();
 #endif
 
-	GPIO_InitTypeDef gpio;
+	GPIO_InitTypeDef gpio = {0};
 
 	gpio.Pin = USART2_TX | USART2_RX;
 	gpio.Mode = GPIO_MODE_AF_PP;

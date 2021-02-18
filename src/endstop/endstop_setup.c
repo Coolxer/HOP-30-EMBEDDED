@@ -4,7 +4,7 @@
 
 void endstop_setupGpio(Endstop *endstop)
 {
-    GPIO_InitTypeDef gpio;
+    GPIO_InitTypeDef gpio = {0};
 
     gpio.Pin = endstop->pin;
     gpio.Mode = GPIO_MODE_IT_RISING;
