@@ -72,7 +72,7 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *wayStr)
         return valid;
 
     //sscanf((void *)wayStr, "%f", &way); // translate string to flaot
-    way = strtof(wayStr, NULL);
+    way = strtof((void *)wayStr, NULL);
 
     if (way == 0) // if way is equals to 0, error, because there is no move
         return 0;

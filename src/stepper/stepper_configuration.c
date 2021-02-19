@@ -22,7 +22,7 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speedStr)
         return 0;
 
     //sscanf((void *)speedStr, "%f", &speed);
-    speed = strtof(speedStr, NULL);
+    speed = strtof((void *)speedStr, NULL);
 
     if (speed < stepper->minSpeed || speed > stepper->maxSpeed) // checks if speed is in range
         return 0;
