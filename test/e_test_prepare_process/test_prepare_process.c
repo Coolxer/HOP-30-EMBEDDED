@@ -13,16 +13,16 @@ void setUp() // default setup function
 
 void tearDown(); // default release function
 
-void test_prepare_process_should_give_21()
+void test_prepare_process_should_give_17()
 {
     uint8_t data[] = "idx=1|opt=pro|spp=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=21|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=17|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_process_should_give_22()
+void test_prepare_process_should_give_18()
 {
     uint8_t data[] = "idx=1|opt=pro|dir=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_process_should_give_passed()
@@ -38,8 +38,8 @@ int main()
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_prepare_process_should_give_21);
-    RUN_TEST(test_prepare_process_should_give_22);
+    RUN_TEST(test_prepare_process_should_give_17);
+    RUN_TEST(test_prepare_process_should_give_18);
     RUN_TEST(test_prepare_process_should_give_passed);
 
     UNITY_END();

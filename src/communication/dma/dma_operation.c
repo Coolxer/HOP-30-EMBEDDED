@@ -15,15 +15,15 @@ void dma_clear()
 uint8_t dma_isReady()
 {
     if (dma.commands_count) // check if commands_count is greater than 0
-        return 1;
+        return TRUE;
 
-    return 0;
+    return FALSE;
 }
 
 uint8_t dma_getChar()
 {
     if (dma.head == dma.tail)
-        return 0;
+        return FALSE;
 
     dma.tail = (dma.tail + 1) % UART_BUFFER_SIZE; // set tail index
     return dma.uart_buffer[dma.tail];             // return character from buffer

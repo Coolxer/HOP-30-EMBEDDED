@@ -14,8 +14,7 @@ struct key
         DIRECTION[4],
 
         RESPONSE[4],
-        CODE[4],
-        VALUE[4];
+        CODE[4];
 } KEY;
 
 void key_init();

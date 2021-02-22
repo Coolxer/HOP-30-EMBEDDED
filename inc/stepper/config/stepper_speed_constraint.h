@@ -8,21 +8,21 @@
 
 /**************** X STEPPER  ******************/
 
-#define X_MIN_SPEED 0.1
+#define X_MIN_SPEED 0.1f
 #define X_MAX_SPEED 100
 
 /************* END OF X STEPPER  **************/
 
 /**************** Y STEPPER  ******************/
 
-#define Y_MIN_SPEED 0.1
+#define Y_MIN_SPEED 0.1f
 #define Y_MAX_SPEED 100
 
 /************* END OF Y STEPPER  **************/
 
 /**************** Z STEPPER  ******************/
 
-#define Z_MIN_SPEED 0.1
+#define Z_MIN_SPEED 0.1f
 #define Z_MAX_SPEED 100
 
 /************* END OF Z STEPPER  **************/

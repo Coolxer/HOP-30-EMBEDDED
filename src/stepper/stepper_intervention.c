@@ -1,12 +1,15 @@
 #include "stepper/partial/stepper_intervention.h"
 
+#include "command/partial/err.h"
 #include "stepper/partial/stepper_validator.h"
 #include "stepper/partial/stepper_configuration.h"
 
 uint8_t stepper_pause(Stepper *stepper)
 {
-    if (!pause_validator(stepper))
-        return 0;
+    uint8_t invalid = pause_validator(stepper);
+
+    if (invalid)
+        return invalid;
 
     if (stepper->state == MOVING) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
     {
@@ -22,13 +25,15 @@ uint8_t stepper_pause(Stepper *stepper)
     stepper->lastState = stepper->state; // remember last state
     stepper->state = PAUSED;             // update state
 
-    return 1;
+    return ERR.NO_ERROR;
 }
 
 uint8_t stepper_resume(Stepper *stepper)
 {
-    if (!resume_validator(stepper))
-        return 0;
+    uint8_t invalid = resume_validator(stepper);
+
+    if (invalid)
+        return invalid;
 
     if (stepper->lastState == MOVING) // if stepper was in MOVING state before pause, we need to set target and counter to previous values
     {
@@ -42,19 +47,21 @@ uint8_t stepper_resume(Stepper *stepper)
 
     stepper->state = stepper->lastState; // recover state
 
-    return 1;
+    return ERR.NO_ERROR;
 }
 
 uint8_t stepper_stop(Stepper *stepper)
 {
-    if (!stop_validator(stepper))
-        return 0;
+    uint8_t invalid = stop_validator(stepper);
+
+    if (invalid)
+        return invalid;
 
     stepper_stopTimers(stepper); // stop timers
 
     stepper->lastState = stepper->state = ON; // reset stepper state
 
-    return 1;
+    return ERR.NO_ERROR;
 }
 
 uint8_t stepper_emergency_shutdown(Stepper *stepper)
@@ -63,5 +70,5 @@ uint8_t stepper_emergency_shutdown(Stepper *stepper)
 
     stepper->state = OFF; // update stepper state
 
-    return 1;
+    return ERR.NO_ERROR;
 }

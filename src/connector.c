@@ -45,26 +45,23 @@ uint8_t *connector_manage(uint8_t ***args)
 	uint8_t i = 0;
 
 	if (records == 0) // check if no records detected
-		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"1");
+		return cmd_builder_buildErr((uint8_t *)"0", ERR.NO_PARAMS);
 	else if (records == 1) // check if there is only one record
-		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"2");
-	else if (records > 4) // check if there is more than 34 records
-		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"3");
+		return cmd_builder_buildErr((uint8_t *)"0", ERR.ONE_PARAM_ONLY);
+	else if (records > 5) // check if there is more than 5 records
+		return cmd_builder_buildErr((uint8_t *)"0", ERR.TO_MANY_PARAMS);
 
 	if (args != NULL && strcmp((void *)args[0][0], (void *)KEY.INDEX) != 0) // check if there is no "idx" key
-		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"4");
+		return cmd_builder_buildErr((uint8_t *)"0", ERR.NO_INDEX_KEY);
 
 	for (i = 0; i < strlen((void *)str); i++)
 	{
 		if (str[i] < 48 || str[i] > 57) // check if string contains only numbers
-			break;
+			return cmd_builder_buildErr((uint8_t *)"0", ERR.INVALID_INDEX_VALUE);
 	}
 
-	if (i != strlen((void *)args[0][1])) // if the i is not eqaul to length, there was any char different than digit
-		return cmd_builder_buildErr((uint8_t *)"0", (uint8_t *)"5");
-
 	if (args != NULL && strcmp((void *)args[1][0], (void *)KEY.OPERATION) != 0) // check if there is no "opt" key
-		return cmd_builder_buildErr(args[0][1], (uint8_t *)"6");
+		return cmd_builder_buildErr(args[0][1], ERR.NO_OPERATION_KEY);
 
 	idx = args[0][1]; // get index value
 	opt = args[1][1]; // get operation type
@@ -75,8 +72,8 @@ uint8_t *connector_manage(uint8_t ***args)
 
 	/* checks operation (opt) mode and calls appropriate prepare_function */
 
-	if (strcmp((void *)opt, (void *)OPT.SETUP_SPEED) == 0)
-		return prepare_settings(idx, args);
+	if (strcmp((void *)opt, (void *)OPT.SET_SPEED) == 0)
+		return prepare_configuration(idx, args);
 	else if (strcmp((void *)opt, (void *)OPT.SWITCH) == 0)
 		return prepare_switch(idx, args);
 	else if (strcmp((void *)opt, (void *)OPT.HOME) == 0)
@@ -92,5 +89,5 @@ uint8_t *connector_manage(uint8_t ***args)
 	else if (strcmp((void *)opt, (void *)OPT.STOP) == 0)
 		return prepare_intervention(idx, args, stepper_stop);
 	else
-		return cmd_builder_buildErr(idx, (uint8_t *)"7"); // "invalid operation value"
+		return cmd_builder_buildErr(idx, ERR.INVALID_OPERATION_VALUE);
 }

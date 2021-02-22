@@ -5,7 +5,7 @@
 
 struct opt
 {
-    uint8_t SETUP_SPEED[4],
+    uint8_t SET_SPEED[4],
         SWITCH[4],
         MOVE[4],
         HOME[4],

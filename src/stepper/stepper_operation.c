@@ -1,31 +1,45 @@
 #include "stepper/partial/stepper_operation.h"
 
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
 #include "counter.h"
+#include "command/partial/err.h"
 
 #include "stepper/config/stepper_calculation.h"
+
+#include "stepper/partial/stepper_calculator.h"
 #include "stepper/partial/stepper_configuration.h"
 #include "stepper/partial/stepper_validator.h"
 #include "endstop/partial/endstop_operation.h"
 
-uint8_t stepper_switch(Stepper *stepper, uint8_t state)
+uint8_t stepper_switch(Stepper *stepper, uint8_t *state)
 {
-    if (!switch_validator(stepper))
-        return 0;
+    uint8_t invalid = switch_validator(stepper, state);
 
-    if (stepper->state != state) // check if state is not currently exists
+    if (invalid)
+        return invalid;
+
+    uint8_t _state = 0;
+
+    sscanf((void *)state, "%hhu", &_state); // str to uint
+
+    if (stepper->state != _state) // check if state is not currently exists
     {
-        HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->enable, state == 0 ? 1 : 0); // switches the stepper (OFF or ON)
-        stepper->state = state;                                                                // update stepper state
+        HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->enable, _state == 0 ? 0 : 1); // switches the stepper (OFF or ON)
+        stepper->state = _state;                                                                // update stepper state
     }
 
-    return 1;
+    return ERR.NO_ERROR;
 }
 
-uint8_t stepper_home(Stepper *stepper, uint8_t direction)
+uint8_t stepper_home(Stepper *stepper, uint8_t *direction)
 {
-    if (!home_validator(stepper))
-        return 0;
+    uint8_t invalid = home_validator(stepper, direction);
+
+    if (invalid)
+        return invalid;
 
     if (stepper->homeStep == FAST)
     {
@@ -43,7 +57,7 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
     {
         //counter_count(65000); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE !!!!!!!!!!!!!!!!!!!!!
         stepper->state = ON;
-        stepper_move(stepper, (uint8_t *)"10");
+        stepper_move(stepper, (uint8_t *)"10", (uint8_t *)"0");
 
         stepper->lastHomeStep = BACKWARD;
     }
@@ -58,35 +72,27 @@ uint8_t stepper_home(Stepper *stepper, uint8_t direction)
         stepper->lastHomeStep = PRECISE;
     }
 
-    return 1;
+    return ERR.NO_ERROR;
 }
 
-uint8_t stepper_move(Stepper *stepper, uint8_t *wayStr)
+uint8_t stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
 {
+    uint8_t invalid = move_validator(stepper, way, direction);
+
+    if (invalid)
+        return invalid;
+
     uint16_t steps = 0;
-    float way = 0;
+    float _way = 0;
 
-    uint8_t valid = move_validator(stepper, wayStr);
+    _way = strtof((void *)way, NULL);
 
-    if (valid == 0 || valid == 9)
-        return valid;
+    if (_way == 0) // if way is equals to 0, ERR, because there is no move
+        return ERR.INVALID_WAY_VALUE;
 
-    //sscanf((void *)wayStr, "%f", &way); // translate string to flaot
-    way = strtof((void *)wayStr, NULL);
+    stepper_setDirection(stepper, direction);
 
-    if (way == 0) // if way is equals to 0, error, because there is no move
-        return 0;
-    else if (way < 0) // check if ways are negative, set LEFT direction
-        stepper_setDirection(stepper, 0);
-    else // set RIGHT direction
-        stepper_setDirection(stepper, 1);
-
-    // calc real steps need to make to move by given mm or deg.
-    steps = way * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE);
-
-    // if value is negative, multiply it by -1, to get absolute value
-    if (steps < 0)
-        steps *= -1;
+    steps = calculate_steps(stepper, _way);
 
     if (steps == 1) // this is weird situation if we want to move by 1 step, i need to set counter to 1
         __HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 1);
@@ -99,20 +105,20 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *wayStr)
     __HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, steps); // set target value
 
     if (stepper->state == OFF)
-        stepper_switch(stepper, 1);
+        stepper_switch(stepper, (uint8_t *)"1");
 
     HAL_TIM_Base_Start_IT(&stepper->slaveTimer);                // starts counting of PWM cycles
     HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 
     stepper->state = MOVING; // update stepper state
 
-    return 1;
+    return ERR.NO_ERROR;
 }
 
 void stepper_run(Stepper *stepper)
 {
     if (stepper->state == OFF)
-        stepper_switch(stepper, 1);
+        stepper_switch(stepper, (uint8_t *)"1");
 
     HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 }

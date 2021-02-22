@@ -8,14 +8,14 @@
 Speed calculate_speed(Stepper *stepper, float speed)
 {
     Speed regs = {0};
-    float arr = 0; // autoreload
-    float stepsPerSecond = 0;
+    float arr = 0.0f; // autoreload
+    float stepsPerSecond = 0.0f;
 
     // convert mm/s to steps/s
     if (stepper->axisType == LINEAR)
         stepsPerSecond = speed * STEPS_PER_MM;
     else // conver obr/min to steps/s
-        stepsPerSecond = (speed * STEPS_PER_REVOLUTION) / 60.0;
+        stepsPerSecond = (speed * STEPS_PER_REVOLUTION) / 60.0f;
 
     /* MATHEMATICAL FORMULA
 
@@ -47,7 +47,7 @@ Speed calculate_speed(Stepper *stepper, float speed)
     */
 
     // calc how big divider is needed and asign it as arr
-    arr = (CLOCK_FREQUENCY / stepsPerSecond) - 1;
+    arr = (CLOCK_FREQUENCY / stepsPerSecond) - 1.0f;
 
     // if divider overflow max 16-bit value [0 - 65535]
     // that means that i need use prescaler, beacause arr is not enough
@@ -67,7 +67,15 @@ Speed calculate_speed(Stepper *stepper, float speed)
     // there should be min. 2.5us as stepper driver gives
 
     // so i decided to have 50% duty cycle, beacuse there is 50% time LOW nad 50% high signal
-    regs.pul = round(regs.arr / 2);
+    regs.pul = round(regs.arr / 2.0f);
 
     return regs;
+}
+
+uint16_t calculate_steps(Stepper *stepper, float way)
+{
+    // calc real steps need to make to move by given mm or deg.
+    uint16_t steps = way * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE);
+
+    return round(steps);
 }

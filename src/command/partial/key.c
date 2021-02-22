@@ -14,5 +14,4 @@ void key_init()
 
     strcpy((void *)KEY.RESPONSE, "res\0");
     strcpy((void *)KEY.CODE, "cod\0");
-    strcpy((void *)KEY.VALUE, "val\0");
 }

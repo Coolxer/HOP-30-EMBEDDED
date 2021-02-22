@@ -6,7 +6,7 @@
 struct res
 {
     uint8_t PASSED[4],
-        ERROR[4],
+        ERR[4],
         FINISHED[4];
 } RES;
 

@@ -71,6 +71,7 @@ void dma_dmaHandler()
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
     tcReady = 1;
+    huart = huart;
 }
 
 static HAL_StatusTypeDef UART_Transmit_IT(UART_HandleTypeDef *huart)

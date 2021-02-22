@@ -1,6 +1,9 @@
 #ifndef DATA_ASSISTANT
 #define DATA_ASSISTANT
 
+#define TRUE 1
+#define FALSE 0
+
 #include <stdint.h> // includes uint8_t data type
 
 uint8_t *char_append(uint8_t *src, uint8_t ch);  // appends char to given string

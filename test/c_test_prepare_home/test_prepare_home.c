@@ -13,38 +13,38 @@ void setUp() // default setup function
 
 void tearDown(); // default release function
 
-void test_prepare_home_should_give_8()
-{
-    uint8_t data[] = "idx=1|opt=hom|abc=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=8|\n", connector_manage(connector_parse(data)));
-}
-
 void test_prepare_home_should_give_9()
 {
-    uint8_t data[] = "idx=1|opt=hom|spp=a|\n";
+    uint8_t data[] = "idx=1|opt=hom|abc=x|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_home_should_give_21()
+void test_prepare_home_should_give_10()
 {
-    uint8_t data[] = "idx=1|opt=hom|spp=x|abc=4|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=21|\n", connector_manage(connector_parse(data)));
+    uint8_t data[] = "idx=1|opt=hom|spp=a|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=10|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_home_should_give_22()
+void test_prepare_home_should_give_17()
 {
-    uint8_t data[] = "idx=1|opt=hom|spp=x|dir=4|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data)));
+    uint8_t data[] = "idx=1|opt=hom|spp=x|abc=4|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=17|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_home_should_give_18()
+{
+    uint8_t data[] = "idx=1|opt=hom|spp=x|dir=4|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
+}
+
+void test_prepare_home_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
     stepper->state = HOMING;
     stepper->homeStep = stepper->lastHomeStep = FAST;
 
     uint8_t data[] = "idx=1|opt=hom|spp=x|dir=0|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_home_should_give_passed()
@@ -64,11 +64,11 @@ int main()
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_prepare_home_should_give_8);
     RUN_TEST(test_prepare_home_should_give_9);
-    RUN_TEST(test_prepare_home_should_give_21);
-    RUN_TEST(test_prepare_home_should_give_22);
+    RUN_TEST(test_prepare_home_should_give_10);
+    RUN_TEST(test_prepare_home_should_give_17);
     RUN_TEST(test_prepare_home_should_give_18);
+    RUN_TEST(test_prepare_home_should_give_19);
     RUN_TEST(test_prepare_home_should_give_passed);
 
     UNITY_END();

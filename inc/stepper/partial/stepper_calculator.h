@@ -15,5 +15,6 @@ typedef struct
 } Speed;
 
 Speed calculate_speed(Stepper *stepper, float speed);
+uint16_t calculate_steps(Stepper *stepper, float way);
 
 #endif // STEPPER_CALCULATOR_H

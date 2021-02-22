@@ -13,37 +13,37 @@ void setUp() // default setup function
 
 void tearDown(); // default release function
 
-void test_prepare_switch_should_give_8()
-{
-    uint8_t data[] = "idx=1|opt=sth|abc=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=8|\n", connector_manage(connector_parse(data)));
-}
-
 void test_prepare_switch_should_give_9()
 {
-    uint8_t data[] = "idx=1|opt=sth|spp=a|\n";
+    uint8_t data[] = "idx=1|opt=sth|abc=x|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_switch_should_give_16()
+void test_prepare_switch_should_give_10()
+{
+    uint8_t data[] = "idx=1|opt=sth|spp=a|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=10|\n", connector_manage(connector_parse(data)));
+}
+
+void test_prepare_switch_should_give_13()
 {
     uint8_t data[] = "idx=1|opt=sth|spp=x|abc=4|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=16|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=13|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_switch_should_give_17()
+void test_prepare_switch_should_give_14()
 {
     uint8_t data[] = "idx=1|opt=sth|spp=x|stt=4|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=17|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=14|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_switch_should_give_18()
+void test_prepare_switch_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
     stepper->state = HOMING;
 
     uint8_t data[] = "idx=1|opt=sth|spp=x|stt=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_switch_should_give_finished()
@@ -62,11 +62,11 @@ int main()
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_prepare_switch_should_give_8);
     RUN_TEST(test_prepare_switch_should_give_9);
-    RUN_TEST(test_prepare_switch_should_give_16);
-    RUN_TEST(test_prepare_switch_should_give_17);
-    RUN_TEST(test_prepare_switch_should_give_18);
+    RUN_TEST(test_prepare_switch_should_give_10);
+    RUN_TEST(test_prepare_switch_should_give_13);
+    RUN_TEST(test_prepare_switch_should_give_14);
+    RUN_TEST(test_prepare_switch_should_give_19);
     RUN_TEST(test_prepare_switch_should_give_finished);
 
     UNITY_END();

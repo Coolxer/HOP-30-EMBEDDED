@@ -6,8 +6,14 @@
 DMA_HandleTypeDef hdma_usart2_rx; // dma uart rx channel
 DMA_HandleTypeDef hdma_usart2_tx; // dma uart tx channel
 
-#define DMA_BUFFER_SIZE 64	 // dma buffer size
-#define UART_BUFFER_SIZE 256 // uart buffer size
+//#define DMA_BUFFER_SIZE 64	 // dma buffer size
+//#define UART_BUFFER_SIZE 256 // uart buffer size
+
+enum
+{
+	DMA_BUFFER_SIZE = 64,
+	UART_BUFFER_SIZE = 256
+};
 
 typedef struct
 {

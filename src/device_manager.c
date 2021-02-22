@@ -130,7 +130,7 @@ void device_manager_endstopClickedCallback()
 
     stepper_reset(int_stepper); // reset stepper motor after finish his work
 
-    uart_send(cmd_builder_buildFin(int_stepper->index, (uint8_t *)"2")); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
+    uart_send(cmd_builder_buildFin(int_stepper->index)); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
 
     ENDSTOP_CLICKED = 0;
 }
@@ -146,8 +146,8 @@ void device_manager_stepperFinishedCallback()
     }
     else
     {
-        int_stepper->lastState = int_stepper->state = ON;                    // reset state of motor
-        uart_send(cmd_builder_buildFin(int_stepper->index, (uint8_t *)"2")); // send feedback
+        int_stepper->lastState = int_stepper->state = ON;    // reset state of motor
+        uart_send(cmd_builder_buildFin(int_stepper->index)); // send feedback
     }
 
     STEPPER_FINISHED = 0;

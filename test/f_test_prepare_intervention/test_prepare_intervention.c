@@ -16,10 +16,10 @@ void tearDown(); // default release function
 /*********************** prepare_intervention pause ***************************************/
 
 // common
-void test_prepare_intervention_pause_should_give_8()
+void test_prepare_intervention_pause_should_give_9()
 {
     uint8_t data[] = "idx=1|opt=pau|abc=x|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=8|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
 }
 
 // pause pro
@@ -37,19 +37,19 @@ void test_prepare_intervention_pause_all_should_give_finished()
 }
 
 // pause individual
-void test_prepare_intervention_pause_should_give_9()
+void test_prepare_intervention_pause_should_give_10()
 {
     uint8_t data[] = "idx=1|opt=pau|spp=a|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=10|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_intervention_pause_should_give_18()
+void test_prepare_intervention_pause_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
     stepper->state = PAUSED;
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_intervention_pause_should_give_finished()
@@ -64,10 +64,10 @@ void test_prepare_intervention_pause_should_give_finished()
 /*********************** prepare_intervention resume ***************************************/
 
 // common
-void test_prepare_intervention_resume_should_give_8()
+void test_prepare_intervention_resume_should_give_9()
 {
     uint8_t data[] = "idx=1|opt=res|abc=x|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=8|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
 }
 
 // resume pro
@@ -85,19 +85,19 @@ void test_prepare_intervention_resume_all_should_give_finished()
 }
 
 // resume individual
-void test_prepare_intervention_resume_should_give_9()
+void test_prepare_intervention_resume_should_give_10()
 {
     uint8_t data[] = "idx=1|opt=res|spp=a|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=10|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_intervention_resume_should_give_18()
+void test_prepare_intervention_resume_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
     stepper->state = OFF;
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_intervention_resume_should_give_finished()
@@ -112,10 +112,10 @@ void test_prepare_intervention_resume_should_give_finished()
 /*********************** prepare_intervention stop ***************************************/
 
 // common
-void test_prepare_intervention_stop_should_give_8()
+void test_prepare_intervention_stop_should_give_9()
 {
     uint8_t data[] = "idx=1|opt=sto|abc=x|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=8|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
 }
 
 // stop pro
@@ -134,19 +134,19 @@ void test_prepare_intervention_stop_all_should_give_finished()
 
 // stop individual
 
-void test_prepare_intervention_stop_should_give_9()
+void test_prepare_intervention_stop_should_give_10()
 {
     uint8_t data[] = "idx=1|opt=sto|spp=a|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=10|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_intervention_stop_should_give_18()
+void test_prepare_intervention_stop_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
     stepper->state = OFF;
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_intervention_stop_should_give_finished()
@@ -167,7 +167,7 @@ int main()
 
     /***************** prepare intervention pause ********************/
 
-    RUN_TEST(test_prepare_intervention_pause_should_give_8);
+    RUN_TEST(test_prepare_intervention_pause_should_give_9);
 
     // pause pro
     RUN_TEST(test_prepare_intervention_pause_pro_should_give_finished);
@@ -176,13 +176,13 @@ int main()
     RUN_TEST(test_prepare_intervention_pause_all_should_give_finished);
 
     // pause individual
-    RUN_TEST(test_prepare_intervention_pause_should_give_9);
-    RUN_TEST(test_prepare_intervention_pause_should_give_18);
+    RUN_TEST(test_prepare_intervention_pause_should_give_10);
+    RUN_TEST(test_prepare_intervention_pause_should_give_19);
     RUN_TEST(test_prepare_intervention_pause_should_give_finished);
 
     /***************** prepare intervention resume *******************/
 
-    RUN_TEST(test_prepare_intervention_resume_should_give_8);
+    RUN_TEST(test_prepare_intervention_resume_should_give_9);
 
     // resume pro
     RUN_TEST(test_prepare_intervention_resume_pro_should_give_finished);
@@ -191,13 +191,13 @@ int main()
     RUN_TEST(test_prepare_intervention_resume_all_should_give_finished);
 
     // resume individual
-    RUN_TEST(test_prepare_intervention_resume_should_give_9);
-    RUN_TEST(test_prepare_intervention_resume_should_give_18);
+    RUN_TEST(test_prepare_intervention_resume_should_give_10);
+    RUN_TEST(test_prepare_intervention_resume_should_give_19);
     RUN_TEST(test_prepare_intervention_resume_should_give_finished);
 
     /****************** prepare intervention stop ********************/
 
-    RUN_TEST(test_prepare_intervention_stop_should_give_8);
+    RUN_TEST(test_prepare_intervention_stop_should_give_9);
 
     // stop pro
     RUN_TEST(test_prepare_intervention_stop_pro_should_give_finished);
@@ -206,8 +206,8 @@ int main()
     RUN_TEST(test_prepare_intervention_stop_all_should_give_finished);
 
     // stop individual
-    RUN_TEST(test_prepare_intervention_stop_should_give_9);
-    RUN_TEST(test_prepare_intervention_stop_should_give_18);
+    RUN_TEST(test_prepare_intervention_stop_should_give_10);
+    RUN_TEST(test_prepare_intervention_stop_should_give_19);
     RUN_TEST(test_prepare_intervention_stop_should_give_finished);
 
     UNITY_END();

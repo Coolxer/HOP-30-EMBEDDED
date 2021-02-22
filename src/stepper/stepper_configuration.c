@@ -1,15 +1,18 @@
 #include "stepper/partial/stepper_configuration.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "counter.h"
+#include "command/partial/err.h"
+
 #include "stepper/partial/stepper_validator.h"
 #include "stepper/partial/stepper_calculator.h"
 
-uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speedStr)
+uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 {
     Speed regs = {0};
-    float speed = 0;
+    float _speed = 0;
 
     // in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
     // you need to use change Prescaler too
@@ -18,27 +21,28 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speedStr)
     // so we need to cast this, but not this moment, because it's need to set up clocks frequency
     // and see in real time, what speed we need
 
-    if (!set_speed_validator(stepper, speedStr))
-        return 0;
+    uint8_t invalid = setSpeed_validator(speed);
 
-    //sscanf((void *)speedStr, "%f", &speed);
-    speed = strtof((void *)speedStr, NULL);
+    if (invalid)
+        return invalid;
 
-    if (speed < stepper->minSpeed || speed > stepper->maxSpeed) // checks if speed is in range
-        return 0;
+    _speed = strtof((void *)speed, NULL);
 
-    regs = calculate_speed(stepper, speed);
+    if (_speed < stepper->minSpeed || _speed > stepper->maxSpeed) // checks if speed is in range
+        return ERR.INVALID_SPEED_VALUE;
+
+    regs = calculate_speed(stepper, _speed);
 
     __HAL_TIM_SET_PRESCALER(&stepper->masterTimer, regs.psc);
     __HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, regs.arr);
     __HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, regs.pul); // set pulse width
 
-    return 1;
+    return ERR.NO_ERROR;
 }
 
-void stepper_setDirection(Stepper *stepper, uint8_t dir)
+void stepper_setDirection(Stepper *stepper, uint8_t *direction)
 {
-    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->dir, dir);
+    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->port, stepper->dir, strcmp((void *)direction, "0") == 0 ? 0 : 1);
     counter_count(5); // need wait minimum 5us after set direction before go
 }
 

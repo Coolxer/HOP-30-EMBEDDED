@@ -4,7 +4,7 @@
 
 #include "device_manager.h"
 
-uint8_t *prepare_settings(uint8_t *idx, uint8_t ***args); // set speed
+uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args); // set speed
 
 uint8_t *prepare_switch(uint8_t *idx, uint8_t ***args);
 uint8_t *prepare_home(uint8_t *idx, uint8_t ***args);

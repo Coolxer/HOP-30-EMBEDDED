@@ -3,6 +3,7 @@
 
 #include <string.h>
 
+#include "command/partial/data_assistant.h"
 #include "communication/uart_min.h"
 #include "communication/dma/partial/dma_setup.h"
 #include "communication/dma/partial/dma_operation.h"
@@ -27,15 +28,15 @@ uint8_t uart_listen()
 		{
 			command = dma_getCommand();
 			feedback = (uint8_t *)"";
-			return 1;
+			return TRUE;
 		}
 		else
-			uart_send((uint8_t *)"_ERROR_invalid_command_length");
+			uart_send((uint8_t *)"_ERR_invalid_command_length");
 
 		dma_clear();
 	}
 
-	return 0;
+	return FALSE;
 }
 
 void uart_send(uint8_t *message)
@@ -46,12 +47,6 @@ void uart_send(uint8_t *message)
 		tcReady = 0;
 		HAL_UART_Transmit_DMA(&uart, (uint8_t *)message, strlen((void *)message));
 	}
-}
-
-uint8_t uart_manage()
-{
-	//free(feedback);
-	return 1;
 }
 
 //#endif // STSTM32
