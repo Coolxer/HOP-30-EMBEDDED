@@ -87,7 +87,7 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
 
     _way = strtof((void *)way, NULL);
 
-    if (_way == 0) // if way is equals to 0, ERR, because there is no move
+    if (_way < 0.01f) // if way is equals to 0, ERR, because there is no move
         return ERR.INVALID_WAY_VALUE;
 
     stepper_setDirection(stepper, direction);
@@ -99,7 +99,7 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
     else
     {
         if (stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5) // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease steps for them
-            steps -= 1;
+            steps = (uint16_t)(steps - 1);
     }
 
     __HAL_TIM_SET_AUTORELOAD(&stepper->slaveTimer, steps); // set target value

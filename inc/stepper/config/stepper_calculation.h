@@ -1,63 +1,38 @@
 #ifndef STEPPER_CALCULATION
 #define STEPPER_CALCULATION
 
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-// float values presented below are given with max 7 digits after comma
-// they are just given to show order of magnitude concrete variable
-// they are not used in calculations, because of precision
-// last-level value is high precision, because it's calculated of no-rounded subvalues
-// only last-level value is rounded to minimalize calculation ERRs
+#include <stdint.h>
 
 /************************************* GENERAL ****************************************/
 
-#define STEPPER_STEPS_PER_REVOLUTION 200 // given by manufacturer
-#define MICROSTEPPING 16                 // set up on stepper driver DIP switch
+extern const uint8_t STEPPER_STEPS_PER_REVOLUTION;
+extern const uint8_t MICROSTEPPING;
 
-#define BIG_GEAR_DIAMETER 95
-#define SMALL_GEAR_DIAMETER 25
-#define GEARS_PROPORTION 3.8f // BIG_GEAR_DIAMETER / SMALL_GEAR_DIAMETER
+extern const uint8_t BIG_GEAR_DIAMETER;
+extern const uint8_t SMALL_GEAR_DIAMETER;
+extern const float GEARS_PROPORTION;
 
-// steps that have to been done by stepper(small gear) to full rotate (360 deg.) itself (around)
-#define SMALL_GEAR_STEPS_PER_REVOLUTION 3200 // STEPPER_STEPS_PER_REVOLUTION * MICROSTEPPING
+extern const uint16_t SMALL_GEAR_STEPS_PER_REVOLUTION;
 
-// steps that have to been done by stepper(small gear) to full rotate (360 deg.) BIG GEAR
-#define BIG_GEAR_STEPS_PER_REVOLUTION 12160 // SMALL_GEAR_STEPS_PER_REVOLUTION * GEARS_PROPORTION
+extern const uint16_t STEPS_PER_REVOLUTION;
 
 /********************************** END OF GENERAL ***********************************/
 
 /******************************** LINEAR COMMON AXIS *********************************/
 
-#define SMALL_GEAR_CIRCUMFERENCE 78.5398163f // 2 * PI * R = PI * SMALL_GEAR_DIAMETER
+extern const float SMALL_GEAR_CIRCUMFERENCE;
 
-/*
-    [how many steps need]           [to move by given mm]
-    SMALL_GEAR_STEPS_PER_REVOLUTION <-> SMALL_GEAR_CIRCUMFERENCE
-    [full rotate (360 deg. = 3200) makes almost 79mm movement just on SMALL_GEAR]
-*/
+extern const float SG_SPM;
 
-// how many steps need to move by 1 mm just on SMALL GEAR ?
-#define SG_SPM 40.7436654f // SMALL_GEAR_STEPS_PER_REVOLUTION / SMALL_GEAR_CIRCUMFERENCE
-
-// how many steps need to move by 1 mm on BIG GEAR ? [REAL]
-#define STEPS_PER_MM 154.82592863979578263597012500878f // SG_SPM * GEARS_PROPORTION
+extern const float STEPS_PER_MM;
 
 /*************************** END OF LINEAR COMMON AXIS *******************************/
 
 /***************************** CIRCULAR COMMON AXIS  *********************************/
 
-/*
-    [how many steps need]           [to move by given degrees]
-    SMALL_GEAR_STEPS_PER_REVOLUTION <-> 360 deg.
-*/
+extern const float SG_SPD;
 
-// how many steps need to rotate by 1 deg. just on SMALL GEAR ?
-#define SG_SPD 8.8888888f // SMALL_GEAR_STEPS_PER_REVOLUTION / 360
-
-// how many steps need to rotate by 1 deg. on BIG GEAR ? [REAL]
-#define STEPS_PER_DEGREE 33.777777777777777777777777777778f // SG_SPD * GEARS_PROPORTION
-
-// how many steps need to rotate by 360 deg. on BIG GEAR ? [REAL]
-#define STEPS_PER_REVOLUTION BIG_GEAR_STEPS_PER_REVOLUTION
+extern const float STEPS_PER_DEGREE;
 
 /************************** END OF CIRCULAR COMMON AXIS ******************************/
 

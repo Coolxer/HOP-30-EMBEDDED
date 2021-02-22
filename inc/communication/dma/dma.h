@@ -3,12 +3,6 @@
 
 #include "stm32f4xx_hal.h"
 
-DMA_HandleTypeDef hdma_usart2_rx; // dma uart rx channel
-DMA_HandleTypeDef hdma_usart2_tx; // dma uart tx channel
-
-//#define DMA_BUFFER_SIZE 64	 // dma buffer size
-//#define UART_BUFFER_SIZE 256 // uart buffer size
-
 enum
 {
 	DMA_BUFFER_SIZE = 64,
@@ -28,9 +22,13 @@ typedef struct
 	uint8_t empty; // informs if data come
 } DMA;
 
-/* PRIVATE */ uint8_t tcReady; // flag that informs if transfer is complete TC
+extern DMA_HandleTypeDef hdma_usart2_rx; // dma uart rx channel
+extern DMA_HandleTypeDef hdma_usart2_tx; // dma uart tx channel
 
-DMA dma;
-UART_HandleTypeDef *huart;
+/* PRIVATE */ //uint8_t tcReady; // flag that informs if transfer is complete TC
+extern uint8_t tcReady;
+
+extern UART_HandleTypeDef *huart;
+extern DMA dma;
 
 #endif // DMA_H

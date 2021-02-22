@@ -25,8 +25,8 @@ uint8_t dma_getChar()
     if (dma.head == dma.tail)
         return FALSE;
 
-    dma.tail = (dma.tail + 1) % UART_BUFFER_SIZE; // set tail index
-    return dma.uart_buffer[dma.tail];             // return character from buffer
+    dma.tail = (uint16_t)((dma.tail + 1) % UART_BUFFER_SIZE); // set tail index
+    return dma.uart_buffer[dma.tail];                         // return character from buffer
 }
 
 uint8_t *dma_getCommand()

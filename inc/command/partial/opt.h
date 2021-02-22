@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct opt
+typedef struct
 {
     uint8_t SET_SPEED[4],
         SWITCH[4],
@@ -14,7 +14,9 @@ struct opt
         PAUSE[4],
         RESUME[4],
         STOP[4];
-} OPT;
+} opt;
+
+extern opt OPT;
 
 void opt_init();
 

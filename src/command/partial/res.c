@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+res RES;
+
 void res_init()
 {
     strcpy((void *)RES.PASSED, "pas\0");

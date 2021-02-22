@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct err
+typedef struct
 {
     uint8_t NO_ERROR,
         ERROR,
@@ -33,7 +33,9 @@ struct err
         INVALID_DIRECTION_VALUE,
 
         OPERATION_NOT_ALLOWED;
-} ERR;
+} err;
+
+extern err ERR;
 
 void err_init();
 

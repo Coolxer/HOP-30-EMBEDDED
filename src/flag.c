@@ -1,5 +1,9 @@
 #include "flag.h"
 
+volatile uint8_t ENDSTOP_CLICKED = 0;
+volatile uint8_t STEPPER_FINISHED = 0;
+volatile uint8_t PROCESS_FORWARD = 0;
+
 void flag_init()
 {
     ENDSTOP_CLICKED = 0;

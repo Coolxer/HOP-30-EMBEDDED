@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct key
+typedef struct
 {
     uint8_t OPERATION[4],
         INDEX[4],
@@ -15,7 +15,9 @@ struct key
 
         RESPONSE[4],
         CODE[4];
-} KEY;
+} key;
+
+extern key KEY;
 
 void key_init();
 

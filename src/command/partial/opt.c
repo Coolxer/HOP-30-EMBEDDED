@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+opt OPT;
+
 void opt_init()
 {
     strcpy((void *)OPT.SET_SPEED, "ses\0");

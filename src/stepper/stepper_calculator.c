@@ -5,6 +5,8 @@
 #include "config/clock.h"
 #include "stepper/config/stepper_calculation.h"
 
+const uint16_t MAX_16BIT_VALUE = 65535;
+
 Speed calculate_speed(Stepper *stepper, float speed)
 {
     Speed regs = {0};
@@ -13,9 +15,9 @@ Speed calculate_speed(Stepper *stepper, float speed)
 
     // convert mm/s to steps/s
     if (stepper->axisType == LINEAR)
-        stepsPerSecond = speed * STEPS_PER_MM;
+        stepsPerSecond = (float)(speed * STEPS_PER_MM);
     else // conver obr/min to steps/s
-        stepsPerSecond = (speed * STEPS_PER_REVOLUTION) / 60.0f;
+        stepsPerSecond = (float)((speed * STEPS_PER_REVOLUTION) / 60.0f);
 
     /* MATHEMATICAL FORMULA
 
@@ -47,19 +49,19 @@ Speed calculate_speed(Stepper *stepper, float speed)
     */
 
     // calc how big divider is needed and asign it as arr
-    arr = (CLOCK_FREQUENCY / stepsPerSecond) - 1.0f;
+    arr = (float)((CLOCK_FREQUENCY / stepsPerSecond) - 1.0f);
 
     // if divider overflow max 16-bit value [0 - 65535]
     // that means that i need use prescaler, beacause arr is not enough
     if (arr > MAX_16BIT_VALUE)
     {
-        regs.psc = round(arr / MAX_16BIT_VALUE);
+        regs.psc = (uint16_t)round((float)(arr / MAX_16BIT_VALUE));
         regs.arr = MAX_16BIT_VALUE;
     }
     else // if divider is less or equals MAX_16BIT_VALUE
     {
         regs.psc = 0;
-        regs.arr = round(arr);
+        regs.arr = (uint16_t)round(arr);
     }
 
     // PWM pulse width [DUTY] (0%, 25%, 50%, 75%, 100%)
@@ -67,7 +69,7 @@ Speed calculate_speed(Stepper *stepper, float speed)
     // there should be min. 2.5us as stepper driver gives
 
     // so i decided to have 50% duty cycle, beacuse there is 50% time LOW nad 50% high signal
-    regs.pul = round(regs.arr / 2.0f);
+    regs.pul = (uint16_t)(round(regs.arr / 2.0f));
 
     return regs;
 }
@@ -75,7 +77,7 @@ Speed calculate_speed(Stepper *stepper, float speed)
 uint16_t calculate_steps(Stepper *stepper, float way)
 {
     // calc real steps need to make to move by given mm or deg.
-    uint16_t steps = way * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE);
+    float steps = (float)(way * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE));
 
-    return round(steps);
+    return (uint16_t)round(steps);
 }

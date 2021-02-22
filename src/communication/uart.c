@@ -9,6 +9,9 @@
 #include "communication/dma/partial/dma_operation.h"
 #include "connector.h"
 
+uint8_t *command = (uint8_t *)"";
+uint8_t *feedback = (uint8_t *)"";
+
 void uart_init()
 {
 	uart_min_init();
@@ -45,7 +48,7 @@ void uart_send(uint8_t *message)
 	{
 		// useTC();
 		tcReady = 0;
-		HAL_UART_Transmit_DMA(&uart, (uint8_t *)message, strlen((void *)message));
+		HAL_UART_Transmit_DMA(&uart, (uint8_t *)message, (uint16_t)strlen((void *)message));
 	}
 }
 

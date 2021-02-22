@@ -3,6 +3,8 @@
 #include "communication/config/communication.h"
 #include "communication/uart_min.h"
 
+UART_HandleTypeDef uart = {0}; // uart interface
+
 void uart_setupGpio()
 {
 #ifdef UNIT_TEST

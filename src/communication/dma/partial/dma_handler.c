@@ -37,7 +37,7 @@ void dma_dmaHandler()
         // there was a difference DMA_FLAG_TCIF1_5
         regs->IFCR = DMA_FLAG_TCIF0_4 << hdma->StreamIndex; // Clear Transfer Complete flag
 
-        response_length = DMA_BUFFER_SIZE - hdma->Instance->NDTR; // read incoming data length
+        response_length = (uint8_t)(DMA_BUFFER_SIZE - hdma->Instance->NDTR); // read incoming data length
 
         dma.empty = 0; // set empty flag to 0 means that dma is not empty
 
@@ -45,7 +45,7 @@ void dma_dmaHandler()
         {
             for (i = 0; i < response_length; i++)
             {
-                temp = (dma.head + 1) % UART_BUFFER_SIZE;
+                temp = (uint16_t)((dma.head + 1) % UART_BUFFER_SIZE);
 
                 if (temp == dma.tail)
                     dma.head = dma.tail;

@@ -20,8 +20,11 @@
 #include "endstop/partial/endstop_setup.h"
 #include "endstop/config/endstop_connection.h"
 
-#define STEPPERS_COUNT 4
-#define ENDSTOPS_COUNT 6
+enum
+{
+    STEPPERS_COUNT = 4,
+    ENDSTOPS_COUNT = 6
+};
 
 Stepper steppers[STEPPERS_COUNT];
 Endstop endstops[ENDSTOPS_COUNT];

@@ -1,5 +1,7 @@
 #include "command/partial/err.h"
 
+err ERR;
+
 void err_init()
 {
     ERR.NO_ERROR = 0;

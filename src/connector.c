@@ -66,7 +66,7 @@ uint8_t *connector_manage(uint8_t ***args)
 	idx = args[0][1]; // get index value
 	opt = args[1][1]; // get operation type
 
-	records -= 2; // decrease number of rows by 2 (remove index and operation)
+	records = (uint8_t)(records - 2); // decrease number of rows by 2 (remove index and operation)
 
 	memmove(args, args + 2, records * sizeof(uint8_t *)); // moves the array 2 place forward (removes 2 first rows with idx and opt)
 

@@ -1,8 +1,11 @@
 #ifndef DATA_ASSISTANT
 #define DATA_ASSISTANT
 
-#define TRUE 1
-#define FALSE 0
+enum
+{
+    TRUE = 1,
+    FALSE = 0
+};
 
 #include <stdint.h> // includes uint8_t data type
 

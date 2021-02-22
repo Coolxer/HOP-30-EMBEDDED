@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+key KEY;
+
 void key_init()
 {
     strcpy((void *)KEY.OPERATION, "opt\0");

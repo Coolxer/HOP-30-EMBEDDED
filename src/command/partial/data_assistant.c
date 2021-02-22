@@ -4,7 +4,7 @@
 
 uint8_t *char_append(uint8_t *src, uint8_t ch)
 {
-	uint8_t s = strlen((void *)src); // read length of src string
+	uint8_t s = (uint8_t)strlen((void *)src); // read length of src string
 
 	uint8_t tmp[s + 1]; // declare table with additional place for char
 	tmp[0] = 0;			// clear table
@@ -18,7 +18,7 @@ uint8_t *char_append(uint8_t *src, uint8_t ch)
 
 uint8_t *str_append(uint8_t *src, uint8_t *str)
 {
-	uint8_t s = strlen((void *)src) + strlen((void *)str) + 1; // read length of src and str
+	uint8_t s = (uint8_t)(strlen((void *)src) + strlen((void *)str) + 1); // read length of src and str
 
 	uint8_t tmp[s]; // declare table for keep 2 strings
 	tmp[0] = 0;		// clear table

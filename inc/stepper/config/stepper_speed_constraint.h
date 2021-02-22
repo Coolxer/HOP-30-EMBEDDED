@@ -7,30 +7,29 @@
 */
 
 /**************** X STEPPER  ******************/
-
-#define X_MIN_SPEED 0.1f
-#define X_MAX_SPEED 100
+const float X_MIN_SPEED = 0.1f;
+const float X_MAX_SPEED = 100.0f;
 
 /************* END OF X STEPPER  **************/
 
 /**************** Y STEPPER  ******************/
 
-#define Y_MIN_SPEED 0.1f
-#define Y_MAX_SPEED 100
+const float Y_MIN_SPEED = 0.1f;
+const float Y_MAX_SPEED = 100.0f;
 
 /************* END OF Y STEPPER  **************/
 
 /**************** Z STEPPER  ******************/
 
-#define Z_MIN_SPEED 0.1f
-#define Z_MAX_SPEED 100
+const float Z_MIN_SPEED = 0.1f;
+const float Z_MAX_SPEED = 100.0f;
 
 /************* END OF Z STEPPER  **************/
 
 /**************** W STEPPER  ******************/
 
-#define W_MIN_SPEED 1
-#define W_MAX_SPEED 100
+const float W_MIN_SPEED = 1.0f;
+const float W_MAX_SPEED = 100.0f;
 
 /************* END OF W STEPPER  **************/
 

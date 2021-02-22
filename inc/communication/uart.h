@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-uint8_t *command;
-uint8_t *feedback;
+extern uint8_t *command;
+extern uint8_t *feedback;
 
 void uart_init(); // calls all UART setups
 

@@ -31,8 +31,8 @@ typedef struct
     uint16_t cnt;    // current slaveTimer counter value
     uint16_t target; // slaveTimer period
 
-    uint16_t minSpeed; // minimum speed of stepper (individually for each axis)
-    uint16_t maxSpeed; // maximimum speed of stepper (individually for each axis)
+    float minSpeed; // minimum speed of stepper (individually for each axis)
+    float maxSpeed; // maximimum speed of stepper (individually for each axis)
 
     enum State state;     // 0 - off, 1 - on, 2 - home, 3 - move, 4 - paused
     enum State lastState; // lastState (especially useful in resume function)

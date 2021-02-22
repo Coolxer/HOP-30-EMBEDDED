@@ -12,6 +12,4 @@ typedef struct
     uint8_t irq;        // external interrupt name pointer
 } Endstop;
 
-Endstop *endstop; // endstop pointer, using to make operations on actual selected endstop
-
 #endif // ENDSTOP_H

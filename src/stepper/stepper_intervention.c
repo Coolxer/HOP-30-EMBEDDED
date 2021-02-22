@@ -13,8 +13,8 @@ uint8_t stepper_pause(Stepper *stepper)
 
     if (stepper->state == MOVING) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
     {
-        stepper->target = stepper->slaveTimer.Instance->ARR;
-        stepper->cnt = stepper->slaveTimer.Instance->CNT;
+        stepper->target = (uint16_t)stepper->slaveTimer.Instance->ARR;
+        stepper->cnt = (uint16_t)stepper->slaveTimer.Instance->CNT;
 
         if (stepper->slaveTimer.Instance == TIM2 || stepper->slaveTimer.Instance == TIM5) // if TIM2 and TIM5 i need to decrease target
             stepper->target--;

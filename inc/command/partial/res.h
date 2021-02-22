@@ -3,12 +3,14 @@
 
 #include <stdint.h>
 
-struct res
+typedef struct
 {
     uint8_t PASSED[4],
         ERR[4],
         FINISHED[4];
-} RES;
+} res;
+
+extern res RES;
 
 void res_init();
 
