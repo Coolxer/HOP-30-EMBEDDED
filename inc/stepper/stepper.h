@@ -31,6 +31,9 @@ typedef struct
     uint16_t cnt;    // current slaveTimer counter value
     uint16_t target; // slaveTimer period
 
+    uint8_t loops;           // how many time need count full counter period. if overflows
+    uint16_t loopDifference; // how many need to count, but not full counter period. Created by overflow
+
     float minSpeed; // minimum speed of stepper (individually for each axis)
     float maxSpeed; // maximimum speed of stepper (individually for each axis)
 

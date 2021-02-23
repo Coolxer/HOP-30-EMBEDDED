@@ -11,9 +11,6 @@
 
 uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
 {
-    Speed regs = {0};
-    float _speed = 0;
-
     // in 16-bit timer max Period value can reach 65535 if there is need to be LONGER period between steps
     // you need to use change Prescaler too
 
@@ -21,23 +18,27 @@ uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed)
     // so we need to cast this, but not this moment, because it's need to set up clocks frequency
     // and see in real time, what speed we need
 
-    uint8_t invalid = setSpeed_validator(speed);
+    uint8_t invalid = validate_setSpeed(stepper, speed);
 
     if (invalid)
         return invalid;
 
-    _speed = strtof((void *)speed, NULL);
+    float _speed = strtof((void *)speed, NULL);
 
-    if (_speed < stepper->minSpeed || _speed > stepper->maxSpeed) // checks if speed is in range
-        return ERR.INVALID_SPEED_VALUE;
+    stepper_setSpeedEssential(stepper, _speed);
 
-    regs = calculate_speed(stepper, _speed);
+    return ERR.NO_ERROR;
+}
+
+void stepper_setSpeedEssential(Stepper *stepper, float speed)
+{
+    Speed regs = {0};
+
+    regs = calculate_speed(stepper, speed);
 
     __HAL_TIM_SET_PRESCALER(&stepper->masterTimer, regs.psc);
     __HAL_TIM_SET_AUTORELOAD(&stepper->masterTimer, regs.arr);
     __HAL_TIM_SET_COMPARE(&stepper->masterTimer, stepper->channel, regs.pul); // set pulse width
-
-    return ERR.NO_ERROR;
 }
 
 void stepper_setDirection(Stepper *stepper, uint8_t *direction)

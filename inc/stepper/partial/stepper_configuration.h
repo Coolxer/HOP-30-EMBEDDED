@@ -3,7 +3,8 @@
 
 #include "stepper/stepper.h"
 
-uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed); // sets speed of stepper [speed in mm/s or obr/min.]
+uint8_t stepper_setSpeed(Stepper *stepper, uint8_t *speed);    // sets speed of stepper [speed in mm/s or obr/min.]
+void stepper_setSpeedEssential(Stepper *stepper, float speed); // sets speed of stepper [speed in mm/s or obr/min.], no validation here
 
 void stepper_setDirection(Stepper *stepper, uint8_t *directon); // setups stepper motor direction
 void stepper_changeDirection(Stepper *stepper);                 // changes stepper motor

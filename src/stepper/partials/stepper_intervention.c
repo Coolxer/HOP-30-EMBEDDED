@@ -6,7 +6,7 @@
 
 uint8_t stepper_pause(Stepper *stepper)
 {
-    uint8_t invalid = pause_validator(stepper);
+    uint8_t invalid = validate_pause(stepper);
 
     if (invalid)
         return invalid;
@@ -30,7 +30,7 @@ uint8_t stepper_pause(Stepper *stepper)
 
 uint8_t stepper_resume(Stepper *stepper)
 {
-    uint8_t invalid = resume_validator(stepper);
+    uint8_t invalid = validate_resume(stepper);
 
     if (invalid)
         return invalid;
@@ -52,7 +52,7 @@ uint8_t stepper_resume(Stepper *stepper)
 
 uint8_t stepper_stop(Stepper *stepper)
 {
-    uint8_t invalid = stop_validator(stepper);
+    uint8_t invalid = validate_stop(stepper);
 
     if (invalid)
         return invalid;

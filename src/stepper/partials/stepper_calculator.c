@@ -79,5 +79,20 @@ uint16_t calculate_steps(Stepper *stepper, float way)
     // calc real steps need to make to move by given mm or deg.
     float steps = (float)(way * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE));
 
+    if (steps > MAX_16BIT_VALUE)
+    {
+        // how many times its overflowed the 16 bit value
+        // probably values : 1, mby 2 times
+        stepper->loops = (uint8_t)(steps / MAX_16BIT_VALUE);
+
+        // convert float value to 32 bit unsigned integer
+        uint32_t stp = (uint32_t)round(steps);
+
+        // calculate how much last
+        stepper->loopDifference = stp % MAX_16BIT_VALUE;
+
+        return MAX_16BIT_VALUE;
+    }
+
     return (uint16_t)round(steps);
 }

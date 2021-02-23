@@ -16,7 +16,7 @@
 
 uint8_t stepper_switch(Stepper *stepper, uint8_t *state)
 {
-    uint8_t invalid = switch_validator(stepper, state);
+    uint8_t invalid = validate_switch(stepper, state);
 
     if (invalid)
         return invalid;
@@ -36,7 +36,7 @@ uint8_t stepper_switch(Stepper *stepper, uint8_t *state)
 
 uint8_t stepper_home(Stepper *stepper, uint8_t *direction)
 {
-    uint8_t invalid = home_validator(stepper, direction);
+    uint8_t invalid = validate_home(stepper, direction);
 
     if (invalid)
         return invalid;
@@ -45,9 +45,9 @@ uint8_t stepper_home(Stepper *stepper, uint8_t *direction)
     {
         if (!endstop_isClicked(stepper->minEndstop))
         {
-            stepper_setSpeed(stepper, (uint8_t *)"10"); // home with low speed
-            stepper_setDirection(stepper, direction);   // set left direction
-            stepper_run(stepper);                       // start motor moving
+            stepper_setSpeedEssential(stepper, 10.0f); // home with low speed
+            stepper_setDirection(stepper, direction);  // set left direction
+            stepper_run(stepper);                      // start motor moving
 
             stepper->state = HOMING; // update stepper state
             stepper->lastHomeStep = FAST;
@@ -57,14 +57,14 @@ uint8_t stepper_home(Stepper *stepper, uint8_t *direction)
     {
         //counter_count(65000); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE !!!!!!!!!!!!!!!!!!!!!
         stepper->state = ON;
-        stepper_move(stepper, (uint8_t *)"10", (uint8_t *)"0");
+        stepper_moveEssential(stepper, 10.0f, (uint8_t *)"0");
 
         stepper->lastHomeStep = BACKWARD;
     }
     else
     {
         //HAL_Delay(150);
-        stepper_setSpeed(stepper, (uint8_t *)"1");
+        stepper_setSpeedEssential(stepper, 1.0f);
         stepper_changeDirection(stepper);
         stepper_run(stepper);
 
@@ -77,22 +77,27 @@ uint8_t stepper_home(Stepper *stepper, uint8_t *direction)
 
 uint8_t stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
 {
-    uint8_t invalid = move_validator(stepper, way, direction);
+    uint8_t invalid = validate_move(stepper, way, direction);
 
     if (invalid)
         return invalid;
 
-    uint16_t steps = 0;
     float _way = 0;
 
     _way = strtof((void *)way, NULL);
 
-    if (_way < 0.01f) // if way is equals to 0, ERR, because there is no move
-        return ERR.INVALID_WAY_VALUE;
+    stepper_moveEssential(stepper, _way, direction);
+
+    return ERR.NO_ERROR;
+}
+
+void stepper_moveEssential(Stepper *stepper, float way, uint8_t *direction)
+{
+    uint16_t steps = 0;
 
     stepper_setDirection(stepper, direction);
 
-    steps = calculate_steps(stepper, _way);
+    steps = calculate_steps(stepper, way);
 
     if (steps == 1) // this is weird situation if we want to move by 1 step, i need to set counter to 1
         __HAL_TIM_SET_COUNTER(&stepper->slaveTimer, 1);
@@ -111,8 +116,6 @@ uint8_t stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
     HAL_TIM_PWM_Start(&stepper->masterTimer, stepper->channel); // starts moving
 
     stepper->state = MOVING; // update stepper state
-
-    return ERR.NO_ERROR;
 }
 
 void stepper_run(Stepper *stepper)
