@@ -7,14 +7,14 @@
 
 const uint16_t MAX_16BIT_VALUE = 65535;
 
-Speed calculate_speed(Stepper *stepper, float speed)
+Speed calculate_speed(enum AxisType axisType, float speed)
 {
     Speed regs = {0};
     float arr = 0.0f; // autoreload
     float stepsPerSecond = 0.0f;
 
     // convert mm/s to steps/s
-    if (stepper->axisType == LINEAR)
+    if (axisType == LINEAR)
         stepsPerSecond = (float)(speed * STEPS_PER_MM);
     else // conver obr/min to steps/s
         stepsPerSecond = (float)((speed * STEPS_PER_REVOLUTION) / 60.0f);
@@ -74,25 +74,28 @@ Speed calculate_speed(Stepper *stepper, float speed)
     return regs;
 }
 
-uint16_t calculate_steps(Stepper *stepper, float way)
+Way calculate_way(enum AxisType axisType, float way)
 {
+    Way params = {0};
+
     // calc real steps need to make to move by given mm or deg.
-    float steps = (float)(way * (stepper->axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE));
+    uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
 
     if (steps > MAX_16BIT_VALUE)
     {
         // how many times its overflowed the 16 bit value
         // probably values : 1, mby 2 times
-        stepper->loops = (uint8_t)(steps / MAX_16BIT_VALUE);
+        params.laps = (uint8_t)(steps / MAX_16BIT_VALUE);
 
-        // convert float value to 32 bit unsigned integer
-        uint32_t stp = (uint32_t)round(steps);
-
-        // calculate how much last
-        stepper->loopDifference = stp % MAX_16BIT_VALUE;
-
-        return MAX_16BIT_VALUE;
+        // calculate rest
+        params.arr = (uint16_t)steps % MAX_16BIT_VALUE;
+    }
+    else
+    {
+        // there is no full laps needed (if the target value is full, there is no laps too)
+        params.laps = 0;
+        params.arr = (uint16_t)steps;
     }
 
-    return (uint16_t)round(steps);
+    return params;
 }

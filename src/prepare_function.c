@@ -135,13 +135,16 @@ uint8_t *prepare_process(uint8_t *idx, uint8_t ***args)
 			feedback = cmd_builder_buildErr(idx, ERR.INVALID_DIRECTION_VALUE);
 		else
 		{
+			// TO DO
+			device_manager_process();
+
 			stepper_setDirection(w, args[0][1]); // set direction of rotator
 
 			stepper_run(x); // run x stepper
 			stepper_run(w); // run w stepper
 
 			PROCESS_FORWARD = 1; // actual process status means it is moving forward
-			x->index = idx;		 // save index to x stepper (it is enough -> why x no w ? beacuse the response will be generate on endstop hitted by x stepper)
+			x->info.index = idx; // save index to x stepper (it is enough -> why x no w ? beacuse the response will be generate on endstop hitted by x stepper)
 
 			feedback = cmd_builder_buildPas(idx); // SUCCESS
 		}

@@ -40,8 +40,8 @@ void test_prepare_home_should_give_18()
 void test_prepare_home_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = HOMING;
-    stepper->homeStep = stepper->lastHomeStep = FAST;
+    stepper->instance.state = HOMING;
+    stepper->instance.homeStep = stepper->instance.lastHomeStep = FAST;
 
     uint8_t data[] = "idx=1|opt=hom|spp=x|dir=0|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
@@ -50,8 +50,8 @@ void test_prepare_home_should_give_19()
 void test_prepare_home_should_give_passed()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = ON;
-    stepper->homeStep = stepper->lastHomeStep = PRECISE;
+    stepper->instance.state = ON;
+    stepper->instance.homeStep = stepper->instance.lastHomeStep = PRECISE;
 
     uint8_t data[] = "idx=1|opt=hom|spp=x|dir=0|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=pas|\n", connector_manage(connector_parse(data)));

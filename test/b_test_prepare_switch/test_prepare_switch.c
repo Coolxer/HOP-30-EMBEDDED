@@ -40,7 +40,7 @@ void test_prepare_switch_should_give_14()
 void test_prepare_switch_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = HOMING;
+    stepper->instance.state = HOMING;
 
     uint8_t data[] = "idx=1|opt=sth|spp=x|stt=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
@@ -49,7 +49,7 @@ void test_prepare_switch_should_give_19()
 void test_prepare_switch_should_give_finished()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = ON;
+    stepper->instance.state = ON;
 
     uint8_t data[] = "idx=1|opt=sth|spp=x|stt=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=fin|\n", connector_manage(connector_parse(data)));

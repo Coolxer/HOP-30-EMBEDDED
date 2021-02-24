@@ -42,7 +42,7 @@ uint8_t *cmd_builder_buildPasFinErr(uint8_t *id, uint8_t pas, uint8_t code, Step
 		if (pas == 1)
 		{
 			cmd_builder_buildPas(id);
-			stepper->index = id;
+			stepper->info.index = id;
 		}
 		else
 			cmd_builder_buildFin(id);

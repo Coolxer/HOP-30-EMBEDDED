@@ -54,7 +54,7 @@ void test_prepare_move_should_give_18()
 void test_prepare_move_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = HOMING;
+    stepper->instance.state = HOMING;
 
     uint8_t data[] = "idx=1|opt=mov|spp=x|way=89|dir=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));

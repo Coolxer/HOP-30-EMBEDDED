@@ -46,7 +46,7 @@ void test_prepare_intervention_pause_should_give_10()
 void test_prepare_intervention_pause_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = PAUSED;
+    stepper->instance.state = PAUSED;
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
@@ -55,7 +55,7 @@ void test_prepare_intervention_pause_should_give_19()
 void test_prepare_intervention_pause_should_give_finished()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = HOMING;
+    stepper->instance.state = HOMING;
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=fin|\n", connector_manage(connector_parse(data)));
@@ -94,7 +94,7 @@ void test_prepare_intervention_resume_should_give_10()
 void test_prepare_intervention_resume_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = OFF;
+    stepper->instance.state = OFF;
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
@@ -103,7 +103,7 @@ void test_prepare_intervention_resume_should_give_19()
 void test_prepare_intervention_resume_should_give_finished()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = PAUSED;
+    stepper->instance.state = PAUSED;
 
     uint8_t data[] = "idx=1|opt=res|spp=x|mod=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=fin|\n", connector_manage(connector_parse(data)));
@@ -143,7 +143,7 @@ void test_prepare_intervention_stop_should_give_10()
 void test_prepare_intervention_stop_should_give_19()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = OFF;
+    stepper->instance.state = OFF;
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
@@ -152,7 +152,7 @@ void test_prepare_intervention_stop_should_give_19()
 void test_prepare_intervention_stop_should_give_finished()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper->state = HOMING;
+    stepper->instance.state = HOMING;
 
     uint8_t data[] = "idx=1|opt=sto|spp=x|mod=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=fin|\n", connector_manage(connector_parse(data)));
