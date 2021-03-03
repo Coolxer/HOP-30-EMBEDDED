@@ -18,15 +18,10 @@ typedef struct
 
 	uint16_t head, tail;	// head, tail indexes
 	uint8_t commands_count; // number of commands
-
-	uint8_t empty; // informs if data come
 } DMA;
 
 extern DMA_HandleTypeDef hdma_usart2_rx; // dma uart rx channel
 extern DMA_HandleTypeDef hdma_usart2_tx; // dma uart tx channel
-
-/* PRIVATE */ //uint8_t tcReady; // flag that informs if transfer is complete TC
-extern uint8_t tcReady;
 
 extern UART_HandleTypeDef *huart;
 extern DMA dma;

@@ -42,7 +42,7 @@ void cmd_builder_buildErr_2()
 
 void cmd_builder_buildErr_3()
 {
-    TEST_ASSERT_EQUAL_STRING("idx=5|res=err|cod=2|\n", cmd_builder_buildErr((uint8_t *)"5", ERR.NO_PARAMS));
+    TEST_ASSERT_EQUAL_STRING("idx=5|res=err|cod=3|\n", cmd_builder_buildErr((uint8_t *)"5", ERR.NO_PARAMS));
 }
 
 // cmd_builder fin

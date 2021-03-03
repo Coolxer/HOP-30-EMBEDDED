@@ -14,9 +14,9 @@ extern "C"
     /* PRIVATE */ //void uart_setupInterface();    // prepares uart interface (name, baudrate, parity, oversampling settings, etc...)
 
     void uart_min_init();    // enables -> calls the setup gpio and interface to working as unit test transport
-    void uart_write(char c); // sends one char to uart port (used only in unit tests)
-    void uart_flush();       // flushes uart interface (unit tests only)
-    void uart_min_end();     // (unit tests only)
+    void uart_write(char c); // sends one char to uart port [used only in unit tests]
+    void uart_flush();       // flushes uart interface [unit tests only]
+    void uart_min_end();     // [unit tests only]
 
 #ifdef __cplusplus
 }

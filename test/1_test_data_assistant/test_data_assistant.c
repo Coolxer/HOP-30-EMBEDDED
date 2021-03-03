@@ -11,15 +11,15 @@ void tearDown(); // default release function
 
 void test_char_append_should_be_white_space()
 {
-    uint8_t *feedback = (uint8_t *)"";
-    feedback = char_append(feedback, ' ');
+    uint8_t *feedback = (uint8_t *)"\0";
+    feedback = charAppend(feedback, ' ');
     TEST_ASSERT_EQUAL_STRING(" ", feedback);
 }
 
 void test_char_append_should_be_a()
 {
-    uint8_t *feedback = (uint8_t *)"";
-    feedback = char_append(feedback, 'a');
+    uint8_t *feedback = (uint8_t *)"\0";
+    feedback = charAppend(feedback, 'a');
     TEST_ASSERT_EQUAL_STRING("a", feedback);
 }
 
@@ -27,15 +27,15 @@ void test_char_append_should_be_abc_after_append_to_ab()
 {
     uint8_t *feedback = (uint8_t *)"ab";
 
-    feedback = char_append(feedback, 'c');
+    feedback = charAppend(feedback, 'c');
     TEST_ASSERT_EQUAL_STRING("abc", feedback);
 }
 
 void test_char_append_should_be_fine_if_double_append()
 {
-    uint8_t *feedback = (uint8_t *)"";
-    feedback = char_append(feedback, 'a');
-    feedback = char_append(feedback, 'b');
+    uint8_t *feedback = (uint8_t *)"\0";
+    feedback = charAppend(feedback, 'a');
+    feedback = charAppend(feedback, 'b');
 
     TEST_ASSERT_EQUAL_STRING("ab", feedback);
 }
@@ -44,15 +44,15 @@ void test_char_append_should_be_fine_if_double_append()
 
 void test_str_append_should_be_empty_if_double_quotes()
 {
-    uint8_t *feedback = (uint8_t *)"";
-    feedback = str_append(feedback, (uint8_t *)"");
+    uint8_t *feedback = (uint8_t *)"\0";
+    feedback = strAppend(feedback, (uint8_t *)"\0");
     TEST_ASSERT_EQUAL_STRING("", feedback);
 }
 
 void test_str_append_should_be_a()
 {
-    uint8_t *feedback = (uint8_t *)"";
-    feedback = str_append(feedback, (uint8_t *)"a");
+    uint8_t *feedback = (uint8_t *)"\0";
+    feedback = strAppend(feedback, (uint8_t *)"a");
     TEST_ASSERT_EQUAL_STRING("a", feedback);
 }
 
@@ -60,7 +60,7 @@ void test_str_append_should_be_abc_after_append_to_a()
 {
     uint8_t *feedback = (uint8_t *)"a";
 
-    feedback = str_append(feedback, (uint8_t *)"bc");
+    feedback = strAppend(feedback, (uint8_t *)"bc");
     TEST_ASSERT_EQUAL_STRING("abc", feedback);
 }
 
@@ -68,8 +68,8 @@ void test_str_append_should_be_fine_if_double_append()
 {
     uint8_t *feedback = (uint8_t *)"ab";
 
-    feedback = str_append(feedback, (uint8_t *)"cd");
-    feedback = str_append(feedback, (uint8_t *)"ef");
+    feedback = strAppend(feedback, (uint8_t *)"cd");
+    feedback = strAppend(feedback, (uint8_t *)"ef");
 
     TEST_ASSERT_EQUAL_STRING("abcdef", feedback);
 }

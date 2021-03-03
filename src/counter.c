@@ -13,7 +13,6 @@ void counter_init()
     counterTimer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     HAL_TIM_Base_Init(&counterTimer);
 
-    //__HAL_TIM_SET_AUTORELOAD(&counterTimer, 0);
     HAL_TIM_Base_Start(&counterTimer);
 }
 
@@ -22,7 +21,7 @@ void counter_deinit()
     HAL_TIM_Base_Stop(&counterTimer);
 }
 
-void counter_count(uint16_t micros)
+void wait(uint16_t micros)
 {
 #ifndef UNIT_TEST
     __HAL_TIM_SET_COUNTER(&counterTimer, 0); // reset counter

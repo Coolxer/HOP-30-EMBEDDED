@@ -7,6 +7,7 @@ typedef struct
 {
     uint8_t NO_ERROR,
         ERROR,
+        INVALID_COMMAND_LENGTH,
         NO_PARAMS,
         ONE_PARAM_ONLY,
         TO_MANY_PARAMS,

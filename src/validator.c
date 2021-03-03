@@ -1,11 +1,11 @@
 #include "validator.h"
 
-#include <string.h>
+#include "command/partial/data_assistant.h"
 #include "command/partial/err.h"
 
 uint8_t validate_boolean(uint8_t *value)
 {
-    if (strcmp((void *)value, "0") == 0 || strcmp((void *)value, "1") == 0)
+    if (stringEqual(value, (uint8_t *)"0") || stringEqual(value, (uint8_t *)"1"))
         return ERR.NO_ERROR;
 
     return ERR.ERROR;
@@ -14,22 +14,22 @@ uint8_t validate_boolean(uint8_t *value)
 uint8_t validate_float(uint8_t *value)
 {
     uint8_t i = 0;
-    uint8_t len = (uint8_t)strlen((void *)value);
+    uint8_t length = stringLength(value);
 
     // mask [000.00]
 
     // empty (0) or too long (> 6)
-    if (len == 0 || len > 6)
+    if (length == 0 || length > 6)
         return ERR.ERROR;
 
-    else if (len == 1)
+    else if (length == 1)
     {
         // ![1-9]
         if (!(value[0] >= 49 && value[0] <= 57))
             return ERR.ERROR;
     }
 
-    else if (len == 2)
+    else if (length == 2)
     {
         // ! ([1-9] and [0-9])
         if (!((value[0] >= 49 && value[0] <= 57) && (value[1] >= 48 && value[1] <= 57)))
@@ -46,13 +46,13 @@ uint8_t validate_float(uint8_t *value)
                 return ERR.ERROR;
 
             // 0 . and only two places after dot for digits (to fit 0.01 precision)
-            // if len > 4 that means there is two much places after dot
-            if (len > 4)
+            // if length > 4 that means there is two much places after dot
+            if (length > 4)
                 return ERR.ERROR;
 
             uint8_t zeros = 0;
 
-            for (i = 2; i < len; i++)
+            for (i = 2; i < length; i++)
             {
                 // ![0-9]
                 if (!(value[i] >= 48 && value[i] <= 57))
@@ -63,7 +63,7 @@ uint8_t validate_float(uint8_t *value)
             }
 
             // 0. and only zeros after dot, means nothing
-            if ((len == 3 && zeros == 1) || zeros == 2)
+            if ((length == 3 && zeros == 1) || zeros == 2)
                 return ERR.ERROR;
         }
         else // !0 ...
@@ -71,7 +71,7 @@ uint8_t validate_float(uint8_t *value)
             uint8_t dot = 0;
             uint8_t digitsAfterDot = 0;
 
-            for (i = 0; i < len; i++)
+            for (i = 0; i < length; i++)
             {
                 if (!((value[i] >= 48 && value[i] <= 57) || value[i] == '.'))
                     return ERR.ERROR;
@@ -80,7 +80,7 @@ uint8_t validate_float(uint8_t *value)
                 if (value[i] == '.')
                 {
                     // dot. cannot be first and last character
-                    if (i == 0 || i == len - 1)
+                    if (i == 0 || i == length - 1)
                         return ERR.ERROR;
 
                     // if there is first dot its ok
@@ -107,4 +107,9 @@ uint8_t validate_float(uint8_t *value)
     }
 
     return ERR.NO_ERROR;
+}
+
+uint8_t validate_key(uint8_t *expected, uint8_t *current)
+{
+    return !stringEqual(expected, current);
 }

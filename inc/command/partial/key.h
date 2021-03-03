@@ -10,7 +10,7 @@ typedef struct
         STEPPER[4],
         SPEED[4],
         WAY[4],
-        STEPPER_STATE[4],
+        STATE[4],
         DIRECTION[4],
 
         RESPONSE[4],

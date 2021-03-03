@@ -2,7 +2,7 @@
 
 #include <unity.h> // includes unit testing library
 #include "enum/axis_type.h"
-#include "device_manager.h"
+#include "device/device_manager.h"
 
 void setUp() // default setup function
 {

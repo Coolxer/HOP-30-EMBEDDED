@@ -1,183 +1,209 @@
-//#ifdef STSTM32
 #include "prepare_function.h"
 
-#include <stddef.h> // includes NULL value
-#include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 
-#include "flag.h"
-#include "validator.h"
-#include "command/partial/data_assistant.h"
+#include "enum/type.h"
 #include "command/cmd_builder.h"
+#include "validator.h"
 
-#include "stepper/partial/stepper_configuration.h"
-#include "stepper/partial/stepper_operation.h"
-#include "stepper/partial/stepper_intervention.h"
+#include "process.h"
+#include "device/device_operation.h"
 
+#include "device/stepper/partial/stepper_validator.h"
+#include "device/stepper/partial/stepper_configuration.h"
+#include "device/stepper/partial/stepper_operation.h"
+#include "device/stepper/partial/stepper_intervention.h"
+
+// e.g [spp=x|spd=14.16]
 uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"";
+	uint8_t *feedback = (uint8_t *)"\0";
 
-	if (strcmp((void *)args[0][0], (void *)KEY.STEPPER) == 0)
+	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
+		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
+	else
 	{
 		if (!(stepper = device_manager_getStepper(args[0][1])))
 			feedback = cmd_builder_buildErr(idx, ERR.INVALID_STEPPER_VALUE);
 		else
 		{
-			if (strcmp((void *)args[1][0], (void *)KEY.SPEED) == 0)
-				feedback = cmd_builder_buildPasFinErr(idx, 0, (uint8_t)stepper_setSpeed(stepper, args[1][1]), NULL);
-			else
+			if (validate_key(KEY.SPEED, args[1][0]) == ERR.ERROR)
 				feedback = cmd_builder_buildErr(idx, ERR.NO_SPEED_KEY);
+			else
+			{
+				uint8_t code = validate_setSpeed(stepper, args[1][1]);
+
+				if (code == ERR.NO_ERROR)
+				{
+					stepper_setSpeed(stepper, convertStrToFloat(args[1][1]));
+					feedback = cmd_builder_buildFin(idx);
+				}
+				else
+					feedback = cmd_builder_buildErr(idx, code);
+			}
 		}
 	}
-	else
-		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
 
 	free(args);
 
 	return feedback;
 }
 
+// e.g [spp=x|stt=1]
 uint8_t *prepare_switch(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"";
+	uint8_t *feedback = (uint8_t *)"\0";
 
-	if (strcmp((void *)args[0][0], (void *)KEY.STEPPER) == 0)
+	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
+		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
+	else
 	{
 		if (!(stepper = device_manager_getStepper(args[0][1])))
 			feedback = cmd_builder_buildErr(idx, ERR.INVALID_STEPPER_VALUE);
 		else
 		{
-			if (strcmp((void *)args[1][0], (void *)KEY.STEPPER_STATE) == 0)
-				feedback = cmd_builder_buildPasFinErr(idx, 0, (uint8_t)stepper_switch(stepper, args[1][1]), NULL);
-			else
+			if (validate_key(KEY.STATE, args[1][0]) == ERR.ERROR)
 				feedback = cmd_builder_buildErr(idx, ERR.NO_STATE_KEY);
+			else
+			{
+				uint8_t code = validate_switch(stepper, args[1][1]);
+
+				if (code == ERR.NO_ERROR)
+				{
+					stepper_switch(stepper, convertStrToNumber(args[1][1]));
+					feedback = cmd_builder_buildFin(idx);
+				}
+				else
+					feedback = cmd_builder_buildErr(idx, code);
+			}
 		}
 	}
-	else
-		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
 
 	free(args);
 
 	return feedback;
 }
 
+// e.g [spp=x|dir=0]
 uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"";
+	uint8_t *feedback = (uint8_t *)"\0";
 
-	if (strcmp((void *)args[0][0], (void *)KEY.STEPPER) == 0)
+	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
+		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
+	else
 	{
 		if (!(stepper = device_manager_getStepper(args[0][1])))
 			feedback = cmd_builder_buildErr(idx, ERR.INVALID_STEPPER_VALUE);
 		else
 		{
-			if (strcmp((void *)args[1][0], (void *)KEY.DIRECTION) == 0)
-				feedback = cmd_builder_buildPasFinErr(idx, 1, (uint8_t)stepper_home(stepper, args[1][1]), stepper);
+			uint8_t code = validate_home(stepper);
+
+			if (code == ERR.NO_ERROR)
+			{
+				stepper_home(stepper);
+				feedback = cmd_builder_buildPas(idx);
+				stepper->info.index = idx;
+			}
 			else
-				feedback = cmd_builder_buildErr(idx, ERR.NO_DIRECTION_KEY);
+				feedback = cmd_builder_buildErr(idx, code);
 		}
 	}
-	else
-		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
 
 	free(args);
 
 	return feedback;
 }
 
+// e.g [spp=x|way=30|dir=0]
 uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"";
+	uint8_t *feedback = (uint8_t *)"\0";
 
-	if (strcmp((void *)args[0][0], (void *)KEY.STEPPER) == 0)
+	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
+		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
+	else
 	{
 		if (!(stepper = device_manager_getStepper(args[0][1])))
 			feedback = cmd_builder_buildErr(idx, ERR.INVALID_STEPPER_VALUE);
 		else
 		{
-			if (strcmp((void *)args[1][0], (void *)KEY.WAY) == 0)
-			{
-				if (strcmp((void *)args[2][0], (void *)KEY.DIRECTION) == 0)
-					feedback = cmd_builder_buildPasFinErr(idx, 1, (uint8_t)stepper_move(stepper, args[1][1], args[2][1]), stepper);
-				else
-					feedback = cmd_builder_buildErr(idx, ERR.NO_DIRECTION_KEY);
-			}
-			else
+			if (validate_key(KEY.WAY, args[1][0]) == ERR.ERROR)
 				feedback = cmd_builder_buildErr(idx, ERR.NO_WAY_KEY);
+			else
+			{
+				if (validate_key(KEY.DIRECTION, args[2][0]) == ERR.ERROR)
+					feedback = cmd_builder_buildErr(idx, ERR.NO_DIRECTION_KEY);
+				else
+				{
+					uint8_t code = validate_move(stepper, args[1][1], args[2][1]);
+
+					if (code == ERR.NO_ERROR)
+					{
+						stepper_move(stepper, convertStrToFloat(args[1][1]), convertStrToNumber(args[2][1]));
+						feedback = cmd_builder_buildPas(idx);
+						stepper->info.index = idx;
+					}
+					else
+						feedback = cmd_builder_buildErr(idx, code);
+				}
+			}
 		}
 	}
-	else
-		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
 
 	free(args);
 
 	return feedback;
 }
 
+// e.g [dir=1]
 uint8_t *prepare_process(uint8_t *idx, uint8_t ***args)
 {
-	uint8_t *feedback = (uint8_t *)"";
+	uint8_t *feedback = (uint8_t *)"\0";
 
-	if (strcmp((void *)args[0][0], (void *)KEY.DIRECTION) == 0)
-	{
-		Stepper *x = NULL, *w = NULL;
-
-		x = device_manager_getStepper((uint8_t *)"x");
-		w = device_manager_getStepper((uint8_t *)"w");
-
-		if (validate_boolean(args[0][1]))
-			feedback = cmd_builder_buildErr(idx, ERR.INVALID_DIRECTION_VALUE);
-		else
-		{
-			// TO DO
-			device_manager_process();
-
-			stepper_setDirection(w, args[0][1]); // set direction of rotator
-
-			stepper_run(x); // run x stepper
-			stepper_run(w); // run w stepper
-
-			PROCESS_FORWARD = 1; // actual process status means it is moving forward
-			x->info.index = idx; // save index to x stepper (it is enough -> why x no w ? beacuse the response will be generate on endstop hitted by x stepper)
-
-			feedback = cmd_builder_buildPas(idx); // SUCCESS
-		}
-	}
-	else
+	if (validate_key(KEY.DIRECTION, args[0][0]) == ERR.ERROR)
 		feedback = cmd_builder_buildErr(idx, ERR.NO_DIRECTION_KEY);
+	else
+	{
+		uint8_t code = process_validate(args[0][1]);
+
+		if (code == ERR.NO_ERROR)
+		{
+			process_init(idx, convertStrToNumber(args[0][1]));
+			feedback = cmd_builder_buildPas(idx);
+		}
+		else
+			feedback = cmd_builder_buildErr(idx, code);
+	}
 
 	free(args);
 
 	return feedback;
 }
 
-uint8_t *prepare_intervention(uint8_t *idx, uint8_t ***args, uint8_t (*fun)(Stepper *))
+// prepare pause, resume or stop
+// e.g [spp=x]
+uint8_t *prepare_intervention(uint8_t *idx, uint8_t ***args, void (*intervene)(Stepper *), uint8_t (*validate)(Stepper *))
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"";
+	uint8_t *feedback = (uint8_t *)"\0";
 
-	if (strcmp((void *)args[0][0], (void *)KEY.STEPPER) == 0)
+	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
+		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
+	else
 	{
-		if (strcmp((void *)args[0][1], "pro") == 0) // group of steppers that consists of process (x & w)
+		if (stringEqual(args[0][1], VAL.PROCESS)) // group of steppers that consists of process (x & w)
 		{
-			fun(device_manager_getStepper((uint8_t *)"x")); // pause / resume / stop
-			fun(device_manager_getStepper((uint8_t *)"w")); // pause / resume / stop
-
+			intervene_process(intervene);
 			feedback = cmd_builder_buildFin(idx);
 		}
-		else if (strcmp((void *)args[0][1], "all") == 0) // all steppers (x, y, z, w, k)
+		else if (stringEqual(args[0][1], VAL.ALL)) // all steppers (x, y, z, w, k)
 		{
-			fun(device_manager_getStepper((uint8_t *)"x")); // pause / resume / stop
-			fun(device_manager_getStepper((uint8_t *)"y")); // pause / resume / stop
-			fun(device_manager_getStepper((uint8_t *)"z")); // pause / resume / stop
-			fun(device_manager_getStepper((uint8_t *)"w")); // pause / resume / stop
-
+			intervene_all(intervene);
 			feedback = cmd_builder_buildFin(idx);
 		}
 		else // if individual stepper
@@ -185,15 +211,21 @@ uint8_t *prepare_intervention(uint8_t *idx, uint8_t ***args, uint8_t (*fun)(Step
 			if (!(stepper = device_manager_getStepper(args[0][1])))
 				feedback = cmd_builder_buildErr(idx, ERR.INVALID_STEPPER_VALUE);
 			else
-				feedback = cmd_builder_buildPasFinErr(idx, 0, (uint8_t)fun(stepper), NULL);
+			{
+				uint8_t code = validate(stepper);
+
+				if (code == ERR.NO_ERROR)
+				{
+					intervene(stepper);
+					feedback = cmd_builder_buildFin(idx); // SUCCESS
+				}
+				else
+					feedback = cmd_builder_buildErr(idx, code);
+			}
 		}
 	}
-	else
-		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
 
 	free(args);
 
 	return feedback;
 }
-
-//#endif // STSTM32

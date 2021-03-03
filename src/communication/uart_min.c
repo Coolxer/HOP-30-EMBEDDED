@@ -1,5 +1,3 @@
-//#ifdef STSTM32
-
 #include "communication/config/communication.h"
 #include "communication/uart_min.h"
 
@@ -35,7 +33,6 @@ void uart_setupInterface()
 	uart.Init.Mode = UART_MODE_TX_RX;
 
 	HAL_UART_Init(&uart);
-
 	//uart.Instance->BRR = 2;
 }
 
@@ -61,5 +58,3 @@ void uart_min_end()
 	__HAL_RCC_GPIOA_CLK_DISABLE();
 #endif
 }
-
-//#endif // STSTM32

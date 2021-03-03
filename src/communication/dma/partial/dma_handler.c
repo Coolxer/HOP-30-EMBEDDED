@@ -1,6 +1,7 @@
 #include "communication/dma/partial/dma_handler.h"
 
-#include <stddef.h> // includes NULL value
+#include "enum/type.h"
+#include "flag.h"
 
 #include "communication/dma/dma.h"
 
@@ -39,7 +40,7 @@ void dma_dmaHandler()
 
         response_length = (uint8_t)(DMA_BUFFER_SIZE - hdma->Instance->NDTR); // read incoming data length
 
-        dma.empty = 0; // set empty flag to 0 means that dma is not empty
+        BUFFER_EMPTY = 0; // set empty flag to 0 means that dma is not empty
 
         if (response_length >= 21) // min length of command is 21 (calculated, first validation)
         {
@@ -59,6 +60,9 @@ void dma_dmaHandler()
                     dma.head = temp;
                 }
             }
+
+            if (!dma.commands_count) // situation then command is valid length but there is no \n on the end
+                dma.commands_count = 1;
         }
 
         regs->IFCR = 0x3FU << hdma->StreamIndex;         // clear all interrupts that are in common with transport
@@ -70,7 +74,7 @@ void dma_dmaHandler()
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-    tcReady = 1;
+    TRANSFER_COMPLETE = 1;
     huart = huart;
 }
 

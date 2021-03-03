@@ -1,0 +1,22 @@
+#ifndef STEPPER_H
+#define STEPPER_H
+
+#include "stm32f4xx_hal.h"
+
+#include "device/stepper/structure/stepper_hardware.h"
+#include "device/stepper/structure/stepper_info.h"
+#include "device/stepper/structure/stepper_instance.h"
+
+#include "device/endstop/endstop.h"
+
+typedef struct
+{
+    Hardware hardware;
+    Info info;
+    Instance instance;
+
+    Endstop *minEndstop;
+    Endstop *maxEndstop;
+} Stepper;
+
+#endif // STEPPER_H

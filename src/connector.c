@@ -1,18 +1,20 @@
 #include "connector.h"
 
-#include <stddef.h> // includes NULL value
 #include <string.h> // includes defintion and use of strtok function
 #include <stdlib.h> // needed to use malloc, calloc, realloc
 
+#include "enum/type.h"
 #include "command/cmd_builder.h"
+#include "validator.h"
 #include "prepare_function.h"
 
-#include "stepper/partial/stepper_intervention.h"
+#include "device/stepper/partial/stepper_intervention.h"
+#include "device/stepper/partial/stepper_validator.h"
 
 uint8_t *dialog_delimiter = (uint8_t *)"|"; // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=x|
 uint8_t *param_delimiter = (uint8_t *)"=";	// the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
 
-uint8_t records; // number of rows (key:value) of parsered dialog
+uint8_t records = 0; // number of rows (key:value) of parsered dialog
 
 uint8_t ***connector_parse(uint8_t *dialog)
 {
@@ -32,17 +34,40 @@ uint8_t ***connector_parse(uint8_t *dialog)
 		args[records - 1][0] = (uint8_t *)malloc((sizeof(key) * 8) * sizeof(uint8_t));	 // reserves memory for key column
 		args[records - 1][1] = (uint8_t *)malloc((sizeof(value) * 8) * sizeof(uint8_t)); // reserves memory for value column
 
-		strcpy((void *)args[records - 1][0], (void *)key);	 // copie  key string to the array
+		strcpy((void *)args[records - 1][0], (void *)key);	 // copy  key string to the array
 		strcpy((void *)args[records - 1][1], (void *)value); // copies value string to the array
 	}
 
 	return args; // returns 2d array of array of uint8_t
 }
 
+uint8_t *proceed_operation(uint8_t *idx, uint8_t *opt, uint8_t ***args)
+{
+	// checks operation (opt) mode and calls appropriate prepare_function
+	if (validate_key(OPT.SET_SPEED, opt) == ERR.NO_ERROR)
+		return prepare_configuration(idx, args);
+	else if (validate_key(OPT.SWITCH, opt) == ERR.NO_ERROR)
+		return prepare_switch(idx, args);
+	else if (validate_key(OPT.HOME, opt) == ERR.NO_ERROR)
+		return prepare_home(idx, args);
+	else if (validate_key(OPT.MOVE, opt) == ERR.NO_ERROR)
+		return prepare_move(idx, args);
+	else if (validate_key(OPT.PROCESS, opt) == ERR.NO_ERROR)
+		return prepare_process(idx, args);
+	else if (validate_key(OPT.PAUSE, opt) == ERR.NO_ERROR)
+		return prepare_intervention(idx, args, stepper_pause, validate_pause);
+	else if (validate_key(OPT.RESUME, opt) == ERR.NO_ERROR)
+		return prepare_intervention(idx, args, stepper_resume, validate_resume);
+	else if (validate_key(OPT.STOP, opt) == ERR.NO_ERROR)
+		return prepare_intervention(idx, args, stepper_stop, validate_stop);
+	else
+		return cmd_builder_buildErr(idx, ERR.INVALID_OPERATION_VALUE);
+}
+
 uint8_t *connector_manage(uint8_t ***args)
 {
-	uint8_t *idx = (uint8_t *)"", *opt = (uint8_t *)"", *str = args[0][1];
-	uint8_t i = 0;
+	uint8_t *index = (uint8_t *)"\0";
+	uint8_t *option = (uint8_t *)"\0";
 
 	if (records == 0) // check if no records detected
 		return cmd_builder_buildErr((uint8_t *)"0", ERR.NO_PARAMS);
@@ -51,43 +76,24 @@ uint8_t *connector_manage(uint8_t ***args)
 	else if (records > 5) // check if there is more than 5 records
 		return cmd_builder_buildErr((uint8_t *)"0", ERR.TO_MANY_PARAMS);
 
-	if (args != NULL && strcmp((void *)args[0][0], (void *)KEY.INDEX) != 0) // check if there is no "idx" key
+	if (args != NULL && validate_key(KEY.INDEX, args[0][0]) == ERR.ERROR) // check if there is no "idx" key
 		return cmd_builder_buildErr((uint8_t *)"0", ERR.NO_INDEX_KEY);
 
-	for (i = 0; i < strlen((void *)str); i++)
-	{
-		if (str[i] < 48 || str[i] > 57) // check if string contains only numbers
-			return cmd_builder_buildErr((uint8_t *)"0", ERR.INVALID_INDEX_VALUE);
-	}
+	index = args[0][1];
 
-	if (args != NULL && strcmp((void *)args[1][0], (void *)KEY.OPERATION) != 0) // check if there is no "opt" key
-		return cmd_builder_buildErr(args[0][1], ERR.NO_OPERATION_KEY);
+	if (!containsOnlyDigits(index))
+		return cmd_builder_buildErr((uint8_t *)"0", ERR.INVALID_INDEX_VALUE);
 
-	idx = args[0][1]; // get index value
-	opt = args[1][1]; // get operation type
+	if (args != NULL && validate_key(KEY.OPERATION, args[1][0]) == ERR.ERROR) // check if there is no "opt" key
+		return cmd_builder_buildErr(index, ERR.NO_OPERATION_KEY);
 
-	records = (uint8_t)(records - 2); // decrease number of rows by 2 (remove index and operation)
+	option = args[1][1];
 
-	memmove(args, args + 2, records * sizeof(uint8_t *)); // moves the array 2 place forward (removes 2 first rows with idx and opt)
+	// decrease number of rows by 2 (remove index and operation)
+	records = (uint8_t)(records - 2);
 
-	/* checks operation (opt) mode and calls appropriate prepare_function */
+	// moves the array 2 place forward (removes 2 first rows with idx and opt)
+	memmove(args, args + 2, records * sizeof(uint8_t *));
 
-	if (strcmp((void *)opt, (void *)OPT.SET_SPEED) == 0)
-		return prepare_configuration(idx, args);
-	else if (strcmp((void *)opt, (void *)OPT.SWITCH) == 0)
-		return prepare_switch(idx, args);
-	else if (strcmp((void *)opt, (void *)OPT.HOME) == 0)
-		return prepare_home(idx, args);
-	else if (strcmp((void *)opt, (void *)OPT.MOVE) == 0)
-		return prepare_move(idx, args);
-	else if (strcmp((void *)opt, (void *)OPT.PROCESS) == 0)
-		return prepare_process(idx, args);
-	else if (strcmp((void *)opt, (void *)OPT.PAUSE) == 0)
-		return prepare_intervention(idx, args, stepper_pause);
-	else if (strcmp((void *)opt, (void *)OPT.RESUME) == 0)
-		return prepare_intervention(idx, args, stepper_resume);
-	else if (strcmp((void *)opt, (void *)OPT.STOP) == 0)
-		return prepare_intervention(idx, args, stepper_stop);
-	else
-		return cmd_builder_buildErr(idx, ERR.INVALID_OPERATION_VALUE);
+	return proceed_operation(index, option, args);
 }

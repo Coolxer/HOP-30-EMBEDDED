@@ -1,23 +1,11 @@
 #include "communication/dma/partial/dma_operation.h"
 
+#include "enum/type.h"
 #include "command/partial/data_assistant.h"
-
-uint8_t dma_isEmpty()
-{
-    return dma.empty;
-}
-
-void dma_clear()
-{
-    dma.empty = 1;
-}
 
 uint8_t dma_isReady()
 {
-    if (dma.commands_count) // check if commands_count is greater than 0
-        return TRUE;
-
-    return FALSE;
+    return dma.commands_count;
 }
 
 uint8_t dma_getChar()
@@ -32,23 +20,18 @@ uint8_t dma_getChar()
 uint8_t *dma_getCommand()
 {
     uint8_t ch = '\0';
-    uint8_t *cmd = (uint8_t *)"";
+    uint8_t *cmd = (uint8_t *)"\0";
 
     while ((ch = dma_getChar()))
     {
         if (ch == '\n') // check if there is end of line (LF), which means command end?
             break;
 
-        cmd = char_append(cmd, ch); // append char to command
+        cmd = charAppend(cmd, ch); // append char to command
     }
 
     if (dma.commands_count)
         dma.commands_count--; // decrease number of commands, which exists in buffer
 
     return cmd;
-}
-
-void useTC()
-{
-    tcReady = 0;
 }

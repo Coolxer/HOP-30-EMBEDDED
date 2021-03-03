@@ -14,11 +14,7 @@ void dma_setup(UART_HandleTypeDef *uart)
     dma.head = dma.tail = 0; // reset head and tail (means the positions in buffer)
     dma.commands_count = 0;  // reset number of commands ready to process
 
-    dma.empty = 1; // set the state of dma (if data come this will be set to 0)
-
     huart = uart; // set pointer to uart (using by DMA1_Stream6 -> for TX transfer with DMA)
-
-    tcReady = 1;
 }
 
 void dma_setupInterface()
@@ -53,14 +49,15 @@ void dma_setupInterface()
 void dma_setupInterrupts()
 {
     /* USART2 interrupt Init */
-    HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(USART2_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(USART2_IRQn);
 
     /* DMA1_Stream5_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
 
-    HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
+    /* DMA1_Stream6_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
 }
 

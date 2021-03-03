@@ -3,7 +3,7 @@
 #include <unity.h> // includes unit testing
 #include "command/cmd_builder.h"
 #include "connector.h"
-#include "device_manager.h"
+#include "device/device_manager.h"
 
 void setUp() // default setup function
 {
@@ -13,28 +13,28 @@ void setUp() // default setup function
 
 void tearDown(); // default release function
 
-void test_prepare_configuration_speed_should_give_9()
+void test_prepare_configuration_speed_should_give_no_stepper_key_error()
 {
     uint8_t data[] = "idx=1|opt=ses|abc=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
-}
-
-void test_prepare_configuration_speed_should_give_10()
-{
-    uint8_t data[] = "idx=1|opt=ses|spp=a|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=10|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_configuration_speed_should_give_11()
+void test_prepare_configuration_speed_should_give_invalid_stepper_value_eror()
 {
-    uint8_t data[] = "idx=1|opt=ses|spp=x|abc=4|\n";
+    uint8_t data[] = "idx=1|opt=ses|spp=a|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=11|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_configuration_speed_should_give_12()
+void test_prepare_configuration_speed_should_give_no_speed_key_error()
+{
+    uint8_t data[] = "idx=1|opt=ses|spp=x|abc=4|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=12|\n", connector_manage(connector_parse(data)));
+}
+
+void test_prepare_configuration_speed_should_give_invalid_stepper_value_error()
 {
     uint8_t data[] = "idx=1|opt=ses|spp=x|spd=a|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=12|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=13|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_configuration_speed_should_give_finished()
@@ -51,10 +51,10 @@ int main()
     UNITY_BEGIN();
 
     // prepare settings spd
-    RUN_TEST(test_prepare_configuration_speed_should_give_9);
-    RUN_TEST(test_prepare_configuration_speed_should_give_10);
-    RUN_TEST(test_prepare_configuration_speed_should_give_11);
-    RUN_TEST(test_prepare_configuration_speed_should_give_12);
+    RUN_TEST(test_prepare_configuration_speed_should_give_no_stepper_key_error);
+    RUN_TEST(test_prepare_configuration_speed_should_give_invalid_stepper_value_eror);
+    RUN_TEST(test_prepare_configuration_speed_should_give_no_speed_key_error);
+    RUN_TEST(test_prepare_configuration_speed_should_give_invalid_stepper_value_error);
     RUN_TEST(test_prepare_configuration_speed_should_give_finished);
 
     UNITY_END();

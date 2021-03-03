@@ -63,46 +63,46 @@ void test_connector_parse_should_give_three_records()
 
 /*********************** connector manage  ********************/
 
-void test_connector_manage_should_give_2()
+void test_connector_manage_should_give_no_params_error()
 {
     uint8_t data[] = "aaaaaaaaaaaaaaa|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=2|\n", connector_manage(connector_parse(data)));
-}
-
-void test_connector_manage_should_give_3()
-{
-    uint8_t data[] = "opt=aaaaaaaaaa|\n";
     TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=3|\n", connector_manage(connector_parse(data)));
 }
 
-void test_connector_manage_should_give_4()
+void test_connector_manage_should_give_one_param_only_error()
 {
-    uint8_t data[] = "abc=123|spp=12|spd=1|alf=56|afk=3|dfg=3\n";
+    uint8_t data[] = "opt=aaaaaaaaaa|\n";
     TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=4|\n", connector_manage(connector_parse(data)));
 }
 
-void test_connector_manage_should_give_5()
+void test_connector_manage_should_give_too_many_params_error()
 {
-    uint8_t data[] = "abc=123|spp=12|spd=1|\n";
+    uint8_t data[] = "abc=123|spp=12|spd=1|alf=56|afk=3|dfg=3\n";
     TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=5|\n", connector_manage(connector_parse(data)));
 }
 
-void test_connector_manage_should_give_6()
+void test_connector_manage_should_give_no_index_key_error()
 {
-    uint8_t data[] = "idx=ab|spp=12|spd=1|\n";
+    uint8_t data[] = "abc=123|spp=12|spd=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=6|\n", connector_manage(connector_parse(data)));
 }
 
-void test_connector_manage_should_give_7()
+void test_connector_manage_should_give_invalid_index_value_error()
 {
-    uint8_t data[] = "idx=1|abc=123|spp=12|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=7|\n", connector_manage(connector_parse(data)));
+    uint8_t data[] = "idx=ab|spp=12|spd=1|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=0|res=err|cod=7|\n", connector_manage(connector_parse(data)));
 }
 
-void test_connector_manage_should_give_8()
+void test_connector_manage_should_give_no_operation_key_error()
+{
+    uint8_t data[] = "idx=1|abc=123|spp=12|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=8|\n", connector_manage(connector_parse(data)));
+}
+
+void test_connector_manage_should_give_invalid_operation_value_error()
 {
     uint8_t data[] = "idx=1|opt=123|spp=12|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=8|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=9|\n", connector_manage(connector_parse(data)));
 }
 
 int main()
@@ -119,13 +119,13 @@ int main()
     RUN_TEST(test_connector_parse_should_give_one_record);
     RUN_TEST(test_connector_parse_should_give_three_records);
 
-    RUN_TEST(test_connector_manage_should_give_2);
-    RUN_TEST(test_connector_manage_should_give_3);
-    RUN_TEST(test_connector_manage_should_give_4);
-    RUN_TEST(test_connector_manage_should_give_5);
-    RUN_TEST(test_connector_manage_should_give_6);
-    RUN_TEST(test_connector_manage_should_give_7);
-    RUN_TEST(test_connector_manage_should_give_8);
+    RUN_TEST(test_connector_manage_should_give_no_params_error);
+    RUN_TEST(test_connector_manage_should_give_one_param_only_error);
+    RUN_TEST(test_connector_manage_should_give_too_many_params_error);
+    RUN_TEST(test_connector_manage_should_give_no_index_key_error);
+    RUN_TEST(test_connector_manage_should_give_invalid_index_value_error);
+    RUN_TEST(test_connector_manage_should_give_no_operation_key_error);
+    RUN_TEST(test_connector_manage_should_give_invalid_operation_value_error);
 
     UNITY_END();
 }

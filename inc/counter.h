@@ -9,6 +9,6 @@
 void counter_init();   // inits counter
 void counter_deinit(); // deinits counter
 
-void counter_count(uint16_t micros); // starts counting given time
+void wait(uint16_t micros); // starts counting given time
 
 #endif // COUNTER_H

@@ -3,7 +3,7 @@
 #include <unity.h> // includes unit testing library
 #include "command/cmd_builder.h"
 #include "connector.h"
-#include "device_manager.h"
+#include "device/device_manager.h"
 
 void setUp() // default setup function
 {
@@ -13,16 +13,16 @@ void setUp() // default setup function
 
 void tearDown(); // default release function
 
-void test_prepare_process_should_give_17()
+void test_prepare_process_should_give_no_direction_key_error()
 {
     uint8_t data[] = "idx=1|opt=pro|spp=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=17|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
 }
 
-void test_prepare_process_should_give_18()
+void test_prepare_process_should_give_invalid_direction_value_error()
 {
     uint8_t data[] = "idx=1|opt=pro|dir=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_process_should_give_passed()
@@ -38,8 +38,8 @@ int main()
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_prepare_process_should_give_17);
-    RUN_TEST(test_prepare_process_should_give_18);
+    RUN_TEST(test_prepare_process_should_give_no_direction_key_error);
+    RUN_TEST(test_prepare_process_should_give_invalid_direction_value_error);
     RUN_TEST(test_prepare_process_should_give_passed);
 
     UNITY_END();

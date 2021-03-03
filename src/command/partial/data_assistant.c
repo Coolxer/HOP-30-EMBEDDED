@@ -1,10 +1,19 @@
 #include "command/partial/data_assistant.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-uint8_t *char_append(uint8_t *src, uint8_t ch)
+#include "enum/type.h"
+
+uint8_t stringLength(uint8_t *str)
 {
-	uint8_t s = (uint8_t)strlen((void *)src); // read length of src string
+	return (uint8_t)strlen((void *)str);
+}
+
+uint8_t *charAppend(uint8_t *src, uint8_t ch)
+{
+	uint8_t s = stringLength(src); // read length of src string
 
 	uint8_t tmp[s + 1]; // declare table with additional place for char
 	tmp[0] = 0;			// clear table
@@ -16,9 +25,9 @@ uint8_t *char_append(uint8_t *src, uint8_t ch)
 	return (uint8_t *)strdup((void *)tmp); // return new string
 }
 
-uint8_t *str_append(uint8_t *src, uint8_t *str)
+uint8_t *strAppend(uint8_t *src, uint8_t *str)
 {
-	uint8_t s = (uint8_t)(strlen((void *)src) + strlen((void *)str) + 1); // read length of src and str
+	uint8_t s = (uint8_t)(stringLength(src) + stringLength(str) + 1); // read length of src and str
 
 	uint8_t tmp[s]; // declare table for keep 2 strings
 	tmp[0] = 0;		// clear table
@@ -28,4 +37,44 @@ uint8_t *str_append(uint8_t *src, uint8_t *str)
 	tmp[s + 1] = '\0';				  // set end of string
 
 	return (uint8_t *)strdup((void *)tmp); // return new string
+}
+
+uint8_t stringEmpty(uint8_t *str)
+{
+	return stringLength(str) == 0;
+}
+
+uint8_t stringEqual(uint8_t *str1, uint8_t *str2)
+{
+	if (strcmp((void *)str1, (void *)str2) == 0)
+		return TRUE;
+
+	return FALSE;
+}
+
+uint8_t convertStrToNumber(uint8_t *str)
+{
+	uint8_t value = 0;
+
+	sscanf((void *)str, "%hhu", &value); // str to uint
+
+	return value;
+}
+
+float convertStrToFloat(uint8_t *str)
+{
+	return strtof((void *)str, NULL);
+}
+
+uint8_t containsOnlyDigits(uint8_t *str)
+{
+	uint8_t i = 0;
+
+	for (i = 0; i < stringLength(str); i++)
+	{
+		if (str[i] < 48 || str[i] > 57) // check if string contains only numbers
+			return FALSE;
+	}
+
+	return TRUE;
 }

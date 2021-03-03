@@ -16,7 +16,7 @@ void tearDown(); // default release function
 
 void test_validate_boolean_should_give_error()
 {
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)""));
+    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)"\0"));
     TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)" "));
     TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)"."));
     TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)"a"));
@@ -32,7 +32,7 @@ void test_validate_boolean_should_give_success()
 
 void test_validate_float_should_give_error()
 {
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)""));
+    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"\0"));
     TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)" "));
     TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"."));
     TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"a"));

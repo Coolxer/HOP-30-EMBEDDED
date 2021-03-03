@@ -1,7 +1,4 @@
-//#ifdef STSTM32
 #include "application.h"
-
-#include <string.h>
 
 #include "flag.h"
 #include "clock_manager.h"
@@ -10,13 +7,14 @@
 #include "connector.h"
 #include "counter.h"
 
-#include "device_manager.h"
+#include "device/device_manager.h"
+#include "device/device_callback.h"
 
 void application_setup()
 {
     HAL_Init(); // inits HAL library
 
-    clock_manager_init();
+    clock_manager_init();  // inits clocks
     flag_init();           // sets up default flags values
     cmd_builder_init();    // creates opts & keys structures
     uart_init();           // inits uart module
@@ -32,23 +30,23 @@ void application_close()
 
 void application_loop()
 {
-    while (1)
+    while (1) // while there is not "FINISH" command on uart
     {
-        if (uart_listen()) // turns on listening on UART communication port
-        {
-            if (strcmp((void *)command, "FINISH|||||||||||||||") == 0) // checks if receive command is "FINISH"
-                break;
-            else
-                feedback = connector_manage(connector_parse(command)); // passes transmission data to connector manage function where it will be processed
+        uint8_t *command = uart_listen();
 
-            uart_send(feedback); // send feedback through UART port
+        if (!stringEmpty(command))
+        {
+            if (stringEqual(command, (uint8_t *)"FINISH|||||||||||||||\n")) // checks if receive command is "FINISH"
+                break;
+
+            uart_send(connector_manage(connector_parse(command))); // send feedback through UART port
         }
 
         if (ENDSTOP_CLICKED)
-            device_manager_endstopClickedCallback();
+            endstopClickedCallback();
 
         if (STEPPER_FINISHED)
-            device_manager_stepperFinishedCallback();
+            stepperFinishedCallback();
     }
 }
 
@@ -56,9 +54,9 @@ void application_run()
 {
     application_loop();
 
-    uart_send((uint8_t *)"FINISHED"); // sends "FINISHED" through UART after get "FINISH" command
+    uart_send((uint8_t *)"FINISHED\n"); // sends "FINISHED" through UART after get "FINISH" command
 
-    counter_count(1000); // wait a litte bit to finish sending response
+    wait(1000);          // wait a litte bit to finish sending response
     application_close(); // close the application
 }
 
@@ -73,5 +71,3 @@ void SysTick_Handler()
 {
     HAL_IncTick(); // inits main board clock
 }
-
-//#endif // STSTM32
