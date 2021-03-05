@@ -32,7 +32,7 @@ uint8_t validate_switch(Stepper *stepper, uint8_t *state)
 
 uint8_t validate_home(Stepper *stepper)
 {
-    if (((stepper_isState(stepper, HOMING) || stepper_isState(stepper, MOVING)) && stepper_getLastHomeStep(stepper) == stepper_getHomeStep(stepper)) || stepper_isState(stepper, PAUSED)) // cannot home if motor is homing or moving right now or also paused
+    if (stepper_isState(stepper, HOMING) || stepper_isState(stepper, MOVING) || stepper_isState(stepper, PAUSED)) // cannot home if motor is homing or moving right now or also paused
         return ERR.OPERATION_NOT_ALLOWED;
 
     return ERR.NO_ERROR;

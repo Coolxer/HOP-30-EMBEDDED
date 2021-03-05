@@ -14,7 +14,7 @@ void dma_uartHandler()
         tmp = dma.uart->Instance->DR;                   // Read data register
         dma.uart->hdmarx->Instance->CR &= ~DMA_SxCR_EN; // Disable DMA -> force Transfer Complete interrupt
 
-        tmp = tmp; // For unused warning
+        UNUSED(tmp); // For unused warning
     }
 }
 
@@ -75,7 +75,7 @@ void dma_dmaHandler()
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
     TRANSFER_COMPLETE = 1;
-    huart = huart;
+    UNUSED(huart);
 }
 
 static HAL_StatusTypeDef UART_Transmit_IT(UART_HandleTypeDef *huart)

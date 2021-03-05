@@ -5,4 +5,6 @@
 
 uint8_t endstop_isClicked(Endstop *endstop); // returns the current endstop state
 
+void endstop_debounce(Endstop *endstop);
+
 #endif // ENDSTOP_OPERATION_H

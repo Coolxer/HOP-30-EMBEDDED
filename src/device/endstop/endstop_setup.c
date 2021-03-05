@@ -24,6 +24,8 @@ void endstop_init(Endstop *endstop, uint8_t *name, GPIO_TypeDef *port, uint16_t 
     endstop->pin = pin;
     endstop->irq = irq;
 
+    endstop->state = endstop->lastState = 0;
+
     endstop_setupGpio(endstop); // setups endstop gpio
 }
 

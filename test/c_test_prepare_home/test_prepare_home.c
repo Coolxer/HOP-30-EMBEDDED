@@ -32,9 +32,6 @@ void test_prepare_home_should_give_operation_not_allowed_error()
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
     stepper_setState(stepper, HOMING);
 
-    stepper_setHomeStep(stepper, FAST);
-    stepper_updateLastHomeStep(stepper);
-
     uint8_t data[] = "idx=1|opt=hom|spp=x|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=20|\n", connector_manage(connector_parse(data)));
 }

@@ -14,8 +14,8 @@ enum
     LEFT = 0,
     RIGHT = 1,
 
-    HOME_FINISHED = 0,
-    HOME_CONTINUE = 1,
+    HOME_FINISHED = 1,
+    HOME_CONTINUE = 0,
 
     NOT_RELOADED = 0,
     RELOADED = 1

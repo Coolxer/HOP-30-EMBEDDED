@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "enum/type.h"
+#include "enum/home_step.h"
 #include "command/cmd_builder.h"
 #include "validator.h"
 
@@ -104,7 +105,7 @@ uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
 
 			if (code == ERR.NO_ERROR)
 			{
-				stepper_home(stepper);
+				stepper_home(stepper, FAST);
 				feedback = cmd_builder_buildPas(idx);
 				stepper->info.index = idx;
 			}

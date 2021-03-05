@@ -109,7 +109,7 @@ uint8_t stepper_manageSlaveTimer(Stepper *stepper)
 {
     if (stepper->instance.movement.way.laps > 0)
     {
-        __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.slaveTimer, 5 - 1);
+        __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.slaveTimer, MAX_16BIT_VALUE - 1);
 
         stepper->instance.movement.way.laps--;
 

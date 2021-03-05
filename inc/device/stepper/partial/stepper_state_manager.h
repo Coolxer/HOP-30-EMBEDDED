@@ -11,9 +11,6 @@ void stepper_updateStates(Stepper *stepper, uint8_t state); // updates state and
 void stepper_updateLastState(Stepper *stepper);             // updates last state
 
 uint8_t stepper_getHomeStep(Stepper *stepper);              // returns current stepper home step
-uint8_t stepper_getLastHomeStep(Stepper *stepper);          // returns stepper last home step
 uint8_t stepper_isHomeStep(Stepper *stepper, uint8_t step); // checks if stepper is in given home step, returns tru if it is
-void stepper_setHomeStep(Stepper *stepper, uint8_t step);   // updates stepper home step
-void stepper_updateLastHomeStep(Stepper *stepper);          // updates last home step
 
 #endif // STEPPER_STATE_MANAGER_H

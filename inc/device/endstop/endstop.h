@@ -10,6 +10,9 @@ typedef struct
     GPIO_TypeDef *port; // gpio port
     uint16_t pin;       // endstop pin
     uint8_t irq;        // external interrupt name pointer
+
+    uint8_t state;
+    uint8_t lastState;
 } Endstop;
 
 #endif // ENDSTOP_H

@@ -39,22 +39,7 @@ uint8_t stepper_getHomeStep(Stepper *stepper)
     return stepper->instance.homeStep;
 }
 
-uint8_t stepper_getLastHomeStep(Stepper *stepper)
-{
-    return stepper->instance.lastHomeStep;
-}
-
 uint8_t stepper_isHomeStep(Stepper *stepper, uint8_t step)
 {
     return stepper->instance.homeStep == step;
-}
-
-void stepper_setHomeStep(Stepper *stepper, uint8_t step)
-{
-    stepper->instance.homeStep = step;
-}
-
-void stepper_updateLastHomeStep(Stepper *stepper)
-{
-    stepper->instance.lastHomeStep = stepper_getHomeStep(stepper);
 }

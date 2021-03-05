@@ -1,8 +1,8 @@
 #include "device/stepper/partial/stepper_operation.h"
 
 #include "enum/type.h"
-
 #include "counter.h"
+#include "enum/home_step.h"
 
 #include "device/stepper/partial/stepper_state_manager.h"
 #include "device/stepper/partial/stepper_peripheral.h"
@@ -19,14 +19,12 @@ void stepper_switch(Stepper *stepper, uint8_t state)
     }
 }
 
-void stepper_home(Stepper *stepper)
+void stepper_home(Stepper *stepper, uint8_t step)
 {
-    if (stepper_isHomeStep(stepper, FAST))
+    if (step == FAST)
     {
         if (!endstop_isClicked(stepper->minEndstop))
         {
-            stepper_updateLastHomeStep(stepper);
-
             stepper_switch(stepper, UP);
 
             stepper_setSpeed(stepper, 10.0f);    // home with low speed
@@ -36,18 +34,13 @@ void stepper_home(Stepper *stepper)
             stepper_setState(stepper, HOMING);
         }
     }
-    else if (stepper_isHomeStep(stepper, BACKWARD))
+    else if (step == BACKWARD)
     {
-        stepper_updateLastHomeStep(stepper);
-
-        wait(65000); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE !!!!!!!!!!!!!!!!!!!!!
-        stepper_updateStates(stepper, ON);
-        stepper_move(stepper, 10.0f, LEFT);
+        // wait(65000); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE !!!!!!!!!!!!!!!!!!!!!
+        stepper_move(stepper, 10.0f, RIGHT);
     }
     else
     {
-        stepper_updateLastHomeStep(stepper);
-
         //HAL_Delay(150);
         stepper_setSpeed(stepper, 1.0f);
         stepper_changeDirection(stepper);

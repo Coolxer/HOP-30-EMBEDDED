@@ -47,7 +47,6 @@ void stepperFinishedCallback()
 {
     if (stepper_isState(int_stepper, HOMING) && stepper_isHomeStep(int_stepper, BACKWARD))
         stepper_homeProcedureOnStepperFinished(int_stepper);
-
     else if (stepper_manageSlaveTimer(int_stepper) == NOT_RELOADED)
     {
         stepper_finishMoving(int_stepper);
