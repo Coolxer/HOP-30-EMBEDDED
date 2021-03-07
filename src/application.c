@@ -8,7 +8,6 @@
 #include "counter.h"
 
 #include "device/device_manager.h"
-#include "device/device_callback.h"
 
 void application_setup()
 {
@@ -42,11 +41,7 @@ void application_loop()
             uart_send(connector_manage(connector_parse(command))); // send feedback through UART port
         }
 
-        if (ENDSTOP_CLICKED)
-            endstopClickedCallback();
-
-        if (STEPPER_FINISHED)
-            stepperFinishedCallback();
+        manageDevices(); // services endstop and stepper events
     }
 }
 

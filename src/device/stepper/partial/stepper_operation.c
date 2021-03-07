@@ -76,12 +76,6 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction)
     stepper_startMoving(stepper);
 }
 
-void stepper_finishMoving(Stepper *stepper)
-{
-    stepper_stopTimers(stepper);
-    stepper_updateStates(stepper, ON);
-}
-
 void stepper_run(Stepper *stepper)
 {
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving

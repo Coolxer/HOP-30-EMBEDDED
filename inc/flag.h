@@ -3,10 +3,7 @@
 
 #include <stdint.h>
 
-extern volatile uint8_t ENDSTOP_CLICKED;
-extern volatile uint8_t STEPPER_FINISHED;
 extern volatile uint8_t PROCESS_FORWARD;
-
 extern volatile uint8_t BUFFER_EMPTY;
 extern volatile uint8_t TRANSFER_COMPLETE;
 

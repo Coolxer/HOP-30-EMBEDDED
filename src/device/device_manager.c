@@ -6,10 +6,12 @@
 #include "device/stepper/config/stepper_connection.h"
 #include "device/stepper/config/stepper_speed_constraint.h"
 #include "device/stepper/partial/stepper_setup.h"
+#include "device/stepper/partial/stepper_callback.h"
 
 #include "device/endstop/endstop.h"
 #include "device/endstop/config/endstop_connection.h"
 #include "device/endstop/partial/endstop_setup.h"
+#include "device/endstop/partial/endstop_callback.h"
 
 Stepper steppers[STEPPERS_COUNT] = {0};
 Endstop endstops[ENDSTOPS_COUNT] = {0};
@@ -93,4 +95,38 @@ Stepper *device_manager_findParentStepper(Endstop *endstop)
             return &steppers[i];
 
     return NULL;
+}
+
+void manageSteppers()
+{
+    uint8_t i = 0;
+
+    for (i = 0; i < STEPPERS_COUNT; i++)
+    {
+        if (steppers[i].instance.FINISHED_FLAG)
+        {
+            steppers[i].instance.FINISHED_FLAG = RESET;
+            stepperFinishedCallback(&steppers[i]);
+        }
+    }
+}
+
+void manageEndstops()
+{
+    uint8_t i = 0;
+
+    for (i = 0; i < ENDSTOPS_COUNT; i++)
+    {
+        if (endstops[i].CLICKED_FLAG)
+        {
+            endstops[i].CLICKED_FLAG = RESET;
+            endstopClickedCallback(&endstops[i]);
+        }
+    }
+}
+
+void manageDevices()
+{
+    manageEndstops();
+    manageSteppers();
 }

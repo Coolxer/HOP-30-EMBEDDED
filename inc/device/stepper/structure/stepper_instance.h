@@ -16,6 +16,8 @@ typedef struct
     enum State lastState; // lastState (especially useful in resume function)
 
     enum HomeStep homeStep; // 0 - fast, 1 - backward, 2 - precise
+
+    volatile uint8_t FINISHED_FLAG; // stepper finish movement flag
 } Instance;
 
 Instance stepper_instance_init();

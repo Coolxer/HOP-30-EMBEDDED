@@ -3,7 +3,6 @@
 
 #include "device/stepper/stepper.h"
 
-uint8_t stepper_homeProcedureOnEndstopClicked();
-void stepper_homeProcedureOnStepperFinished();
+void stepperFinishedCallback(Stepper *stepper); // stepper finished movemebnt callback
 
 #endif // STEPPER_CALLBACK

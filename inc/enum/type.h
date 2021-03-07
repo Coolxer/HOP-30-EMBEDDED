@@ -18,7 +18,10 @@ enum
     HOME_CONTINUE = 0,
 
     NOT_RELOADED = 0,
-    RELOADED = 1
+    RELOADED = 1,
+
+    RESET = 0,
+    SET = 1
 };
 
 #endif // TYPE_H
