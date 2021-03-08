@@ -2,10 +2,9 @@
 
 #include <stdlib.h>
 
-#include "enum/type.h"
-#include "enum/home_step.h"
-#include "command/cmd_builder.h"
+#include "null.h"
 #include "validator.h"
+#include "command/cmd_builder.h"
 
 #include "process.h"
 #include "device/device_operation.h"
@@ -19,7 +18,7 @@
 uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"\0";
+	uint8_t *feedback = EMPTY;
 
 	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
 		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
@@ -55,7 +54,7 @@ uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args)
 uint8_t *prepare_switch(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"\0";
+	uint8_t *feedback = EMPTY;
 
 	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
 		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
@@ -91,7 +90,7 @@ uint8_t *prepare_switch(uint8_t *idx, uint8_t ***args)
 uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"\0";
+	uint8_t *feedback = EMPTY;
 
 	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
 		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
@@ -123,7 +122,7 @@ uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
 uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"\0";
+	uint8_t *feedback = EMPTY;
 
 	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
 		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
@@ -164,7 +163,7 @@ uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 // e.g [dir=1]
 uint8_t *prepare_process(uint8_t *idx, uint8_t ***args)
 {
-	uint8_t *feedback = (uint8_t *)"\0";
+	uint8_t *feedback = EMPTY;
 
 	if (validate_key(KEY.DIRECTION, args[0][0]) == ERR.ERROR)
 		feedback = cmd_builder_buildErr(idx, ERR.NO_DIRECTION_KEY);
@@ -191,7 +190,7 @@ uint8_t *prepare_process(uint8_t *idx, uint8_t ***args)
 uint8_t *prepare_intervention(uint8_t *idx, uint8_t ***args, void (*intervene)(Stepper *), uint8_t (*validate)(Stepper *))
 {
 	Stepper *stepper = NULL;
-	uint8_t *feedback = (uint8_t *)"\0";
+	uint8_t *feedback = EMPTY;
 
 	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
 		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);

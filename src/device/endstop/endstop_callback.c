@@ -1,20 +1,25 @@
 #include "device/endstop/partial/endstop_callback.h"
 
-#include "enum/type.h"
-#include "flag.h"
-
 #include "command/partial/data_assistant.h"
 
 #include "device/stepper/stepper.h"
 #include "device/stepper/partial/stepper_state_manager.h"
 #include "device/stepper/partial/stepper_callback.h"
+#include "device/stepper/partial/stepper_peripheral.h"
+#include "device/stepper/partial/stepper_operation.h"
 
 #include "command/cmd_builder.h"
 #include "communication/uart.h"
 
 #include "process.h"
 
-uint8_t stepper_homeOnEndstopClickedCallback(Stepper *stepper)
+enum
+{
+    HOME_FINISHED = 1,
+    HOME_CONTINUE = 0,
+};
+
+uint8_t endstop_homeCallback(Stepper *stepper)
 {
     if (stepper_isHomeStep(stepper, FAST)) // first step of home
     {
@@ -31,7 +36,7 @@ void endstopClickedCallback(Endstop *endstop)
     Stepper *stepper = device_manager_findParentStepper(endstop);
 
     // process is currenty running && forward moving && clicked MAX X endstop
-    if (PROCESS_FORWARD && stringEqual(endstop->name, "XR")) // cannot compares strings like here
+    if (PROCESS_FORWARD && stringEqual(endstop->name, (uint8_t *)"XR")) // cannot compares strings like here
         process_reverse();
 
     // check if parent stepper is currently running to avoid random signal or press by hand
@@ -41,7 +46,7 @@ void endstopClickedCallback(Endstop *endstop)
 
         if (stepper_isState(stepper, HOMING))
         {
-            if (stepper_homeOnEndstopClickedCallback(stepper) == HOME_CONTINUE)
+            if (endstop_homeCallback(stepper) == HOME_CONTINUE)
                 return;
         }
 

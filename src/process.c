@@ -1,14 +1,12 @@
 #include "process.h"
 
-#include "enum/type.h"
-#include "flag.h"
 #include "validator.h"
-
-#include "command/partial/data_assistant.h"
 #include "command/partial/err.h"
 
 #include "device/stepper/partial/stepper_configuration.h"
 #include "device/stepper/partial/stepper_operation.h"
+
+volatile uint8_t PROCESS_FORWARD = RESET;
 
 void process_init(uint8_t *idx, uint8_t direction)
 {
@@ -21,7 +19,7 @@ void process_init(uint8_t *idx, uint8_t direction)
     stepper_run(X_STEPPER);
     stepper_run(W_STEPPER);
 
-    PROCESS_FORWARD = 1;
+    PROCESS_FORWARD = SET;
     X_STEPPER->info.index = idx;
 }
 
@@ -30,7 +28,7 @@ void process_reverse()
     stepper_changeDirectionImmediately(X_STEPPER);
     stepper_changeDirectionImmediately(W_STEPPER);
 
-    PROCESS_FORWARD = 0;
+    PROCESS_FORWARD = RESET;
 }
 
 uint8_t process_validate(uint8_t *direction)

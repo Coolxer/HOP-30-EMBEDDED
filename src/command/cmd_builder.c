@@ -2,6 +2,10 @@
 
 #include <stdio.h>
 
+uint8_t *ZER0_INDEX = (uint8_t *)"0";
+uint8_t *SHUTDOWN_REQUEST = (uint8_t *)"SHUTDOWN|||||||||||||||\n";
+uint8_t *SHUTDOWN_RESPONSE = (uint8_t *)"SHUTDOWNED||||||||||||\n";
+
 uint8_t cmd[255]; // too much size but dont worry, will be transmitted only filled characters
 
 void cmd_builder_init()

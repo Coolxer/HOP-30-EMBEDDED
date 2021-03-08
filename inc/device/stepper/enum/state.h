@@ -1,5 +1,5 @@
-#ifndef STEPPER_STATE_H
-#define STEPPER_STATE_H
+#ifndef STATE_H
+#define STATE_H
 
 /* State of stepper
     * 0 - OFF - stepper is turned off, no holding torque
@@ -17,4 +17,4 @@ enum State
     PAUSED = 4
 };
 
-#endif // STEPPER_STATE_H
+#endif // STATE_H

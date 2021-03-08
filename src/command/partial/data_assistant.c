@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "enum/type.h"
+#include "null.h"
 
 uint8_t stringLength(uint8_t *str)
 {
@@ -47,9 +47,9 @@ uint8_t stringEmpty(uint8_t *str)
 uint8_t stringEqual(uint8_t *str1, uint8_t *str2)
 {
 	if (strcmp((void *)str1, (void *)str2) == 0)
-		return TRUE;
+		return 1;
 
-	return FALSE;
+	return 0;
 }
 
 uint8_t convertStrToNumber(uint8_t *str)
@@ -73,8 +73,8 @@ uint8_t containsOnlyDigits(uint8_t *str)
 	for (i = 0; i < stringLength(str); i++)
 	{
 		if (str[i] < 48 || str[i] > 57) // check if string contains only numbers
-			return FALSE;
+			return 0;
 	}
 
-	return TRUE;
+	return 1;
 }

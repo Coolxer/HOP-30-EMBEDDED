@@ -1,7 +1,6 @@
 #ifndef STEPPER_VALIDATOR_H
 #define STEPPER_VALIDATOR_H
 
-#include "command/partial/err.h"
 #include "device/stepper/stepper.h"
 
 uint8_t validate_setSpeed(Stepper *stepper, uint8_t *speed);

@@ -1,8 +1,8 @@
 #include "device/stepper/partial/stepper_validator.h"
 
 #include "validator.h"
-#include "command/partial/data_assistant.h"
 #include "command/partial/err.h"
+#include "command/partial/data_assistant.h"
 
 #include "device/stepper/partial/stepper_state_manager.h"
 

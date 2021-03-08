@@ -9,7 +9,9 @@
 
 #include "command/partial/data_assistant.h"
 
-#include "device/stepper/stepper.h"
+extern uint8_t *ZER0_INDEX;
+extern uint8_t *SHUTDOWN_REQUEST;
+extern uint8_t *SHUTDOWN_RESPONSE;
 
 void cmd_builder_init();
 

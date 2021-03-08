@@ -10,9 +10,11 @@ enum
     ENDSTOPS_COUNT = 6
 };
 
+// main devices arrays
 extern Stepper steppers[STEPPERS_COUNT];
 extern Endstop endstops[ENDSTOPS_COUNT];
 
+// additional pointers to easy grab
 extern Stepper *X_STEPPER;
 extern Stepper *Y_STEPPER;
 extern Stepper *Z_STEPPER;

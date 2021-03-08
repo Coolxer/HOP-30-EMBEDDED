@@ -1,6 +1,5 @@
 #include "application.h"
 
-#include "flag.h"
 #include "clock_manager.h"
 #include "communication/uart.h"
 #include "command/cmd_builder.h"
@@ -14,7 +13,6 @@ void application_setup()
     HAL_Init(); // inits HAL library
 
     clock_manager_init();  // inits clocks
-    flag_init();           // sets up default flags values
     cmd_builder_init();    // creates opts & keys structures
     uart_init();           // inits uart module
     device_manager_init(); // inits device manager kit
@@ -35,7 +33,7 @@ void application_loop()
 
         if (!stringEmpty(command))
         {
-            if (stringEqual(command, (uint8_t *)"FINISH|||||||||||||||\n")) // checks if receive command is "FINISH"
+            if (stringEqual(command, SHUTDOWN_REQUEST)) // checks if receive command is "FINISH"
                 break;
 
             uart_send(connector_manage(connector_parse(command))); // send feedback through UART port
@@ -49,7 +47,7 @@ void application_run()
 {
     application_loop();
 
-    uart_send((uint8_t *)"FINISHED\n"); // sends "FINISHED" through UART after get "FINISH" command
+    uart_send(SHUTDOWN_RESPONSE); // sends "FINISHED" through UART after get "FINISH" command
 
     wait(1000);          // wait a litte bit to finish sending response
     application_close(); // close the application

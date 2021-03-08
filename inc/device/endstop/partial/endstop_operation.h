@@ -5,6 +5,8 @@
 
 uint8_t endstop_isClicked(Endstop *endstop); // returns the current endstop state
 
-void endstop_debounce(Endstop *endstop);
+/* PRIVATE */ //void endstop_debounce_init(Endstop *endstop); // starts debounce time
+
+void endstop_debounce(Endstop *endstop); // services endstop debounce
 
 #endif // ENDSTOP_OPERATION_H

@@ -3,6 +3,12 @@
 
 #include "device/stepper/stepper.h"
 
+enum
+{
+    NOT_RELOADED = 0,
+    RELOADED = 1
+};
+
 /* PRIVATE */                                  //void stepper_setupGpio(Stepper *stepper);        /* setups all pins that are in common with stepper */
 /* PRIVATE */                                  //void stepper_setupMasterTimer(Stepper *stepper); /* setups master timer (with PWM) */
 /* PRIVATE */                                  //void stepper_setupSlaveTimer(Stepper *stepper);  /* setups slave timer (that controls number of steps taken) */

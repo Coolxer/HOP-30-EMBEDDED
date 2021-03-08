@@ -1,9 +1,28 @@
 #include "communication/dma/partial/dma_handler.h"
 
-#include "enum/type.h"
-#include "flag.h"
-
 #include "communication/dma/dma.h"
+#include "communication/dma/partial/dma_interrupt.h"
+#include "communication/dma/partial/dma_operation.h"
+
+volatile uint8_t BUFFER_EMPTY = SET;
+
+typedef struct
+{
+    __IO uint32_t ISR; // DMA interrupt status register
+    __IO uint32_t Reserved0;
+    __IO uint32_t IFCR; // DMA interrupt flag clear register
+} Dma_registers;
+
+uint8_t BUFFER_IS_EMPTY()
+{
+    if (BUFFER_EMPTY)
+    {
+        BUFFER_EMPTY = RESET;
+        return 1;
+    }
+
+    return 0;
+}
 
 void dma_uartHandler()
 {
@@ -20,109 +39,21 @@ void dma_uartHandler()
 
 void dma_dmaHandler()
 {
-    uint8_t i, response_length = 0;
-    uint16_t temp = 0;
     DMA_HandleTypeDef *hdma = dma.uart->hdmarx;
-
-    typedef struct
-    {
-        __IO uint32_t ISR; // DMA interrupt status register
-        __IO uint32_t Reserved0;
-        __IO uint32_t IFCR; // DMA interrupt flag clear register
-    } Dma_registers;
-
     Dma_registers *regs = (Dma_registers *)hdma->StreamBaseAddress; // get base address of registers
 
     if (__HAL_DMA_GET_IT_SOURCE(hdma, DMA_IT_TC) != RESET)
     {
-        // there was a difference DMA_FLAG_TCIF1_5
         regs->IFCR = DMA_FLAG_TCIF0_4 << hdma->StreamIndex; // Clear Transfer Complete flag
+        BUFFER_EMPTY = RESET;                               // set empty flag to 0 means that dma is not empty
 
-        response_length = (uint8_t)(DMA_BUFFER_SIZE - hdma->Instance->NDTR); // read incoming data length
-
-        BUFFER_EMPTY = 0; // set empty flag to 0 means that dma is not empty
-
-        if (response_length >= 21) // min length of command is 21 (calculated, first validation)
-        {
-            for (i = 0; i < response_length; i++)
-            {
-                temp = (uint16_t)((dma.head + 1) % UART_BUFFER_SIZE);
-
-                if (temp == dma.tail)
-                    dma.head = dma.tail;
-                else
-                {
-                    dma.uart_buffer[temp] = dma.dma_buffer[i];
-
-                    if (dma.uart_buffer[temp] == '\n') // if there is end of line sign, that means this is end of command
-                        dma.commands_count++;          // so increase number of commands
-
-                    dma.head = temp;
-                }
-            }
-
-            if (!dma.commands_count) // situation then command is valid length but there is no \n on the end
-                dma.commands_count = 1;
-        }
+        dma_processData((uint8_t)(DMA_BUFFER_SIZE - hdma->Instance->NDTR));
 
         regs->IFCR = 0x3FU << hdma->StreamIndex;         // clear all interrupts that are in common with transport
         hdma->Instance->M0AR = (uint32_t)dma.dma_buffer; // set address for dma buffer again
         hdma->Instance->NDTR = DMA_BUFFER_SIZE;          // set length of response
         hdma->Instance->CR |= DMA_SxCR_EN;               // start DMA transfer
     }
-}
-
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-    TRANSFER_COMPLETE = 1;
-    UNUSED(huart);
-}
-
-static HAL_StatusTypeDef UART_Transmit_IT(UART_HandleTypeDef *huart)
-{
-    uint16_t *tmp = NULL;
-
-    /* Check that a Tx process is ongoing */
-    if (huart->gState == HAL_UART_STATE_BUSY_TX)
-    {
-        if (huart->Init.WordLength == UART_WORDLENGTH_9B)
-        {
-            tmp = (uint16_t *)huart->pTxBuffPtr;
-            huart->Instance->DR = (uint16_t)(*tmp & (uint16_t)0x01FF);
-
-            if (huart->Init.Parity == UART_PARITY_NONE)
-                huart->pTxBuffPtr += 2U;
-            else
-                huart->pTxBuffPtr += 1U;
-        }
-        else
-            huart->Instance->DR = (uint8_t)(*huart->pTxBuffPtr++ & (uint8_t)0x00FF);
-
-        if (--huart->TxXferCount == 0U)
-        {
-            /* Disable the UART Transmit Complete Interrupt */
-            __HAL_UART_DISABLE_IT(huart, UART_IT_TXE);
-
-            /* Enable the UART Transmit Complete Interrupt */
-            __HAL_UART_ENABLE_IT(huart, UART_IT_TC);
-        }
-        return HAL_OK;
-    }
-    else
-        return HAL_BUSY;
-}
-
-static HAL_StatusTypeDef UART_EndTransmit_IT(UART_HandleTypeDef *huart)
-{
-    /* Disable the UART Transmit Complete Interrupt */
-    __HAL_UART_DISABLE_IT(huart, UART_IT_TC);
-
-    /* Tx process is ended, restore huart->gState to Ready */
-    huart->gState = HAL_UART_STATE_READY;
-
-    HAL_UART_TxCpltCallback(huart);
-
-    return HAL_OK;
 }
 
 void USART2_IRQHandler(void)
@@ -135,14 +66,14 @@ void USART2_IRQHandler(void)
     /* UART in mode Transmitter ------------------------------------------------*/
     if (((isrflags & USART_SR_TXE) != RESET) && ((cr1its & USART_CR1_TXEIE) != RESET))
     {
-        UART_Transmit_IT(dma.uart);
+        dma_transmit_interrupt(dma.uart);
         return;
     }
 
     /* UART in mode Transmitter end --------------------------------------------*/
     if (((isrflags & USART_SR_TC) != RESET) && ((cr1its & USART_CR1_TCIE) != RESET))
     {
-        UART_EndTransmit_IT(dma.uart);
+        dma_end_transmit_interrupt(dma.uart);
         return;
     }
 }

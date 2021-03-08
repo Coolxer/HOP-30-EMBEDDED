@@ -1,6 +1,6 @@
 #include "device/stepper/partial/stepper_callback.h"
 
-#include "enum/type.h"
+#include "device/stepper/enum/state.h"
 
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_state_manager.h"
@@ -12,6 +12,7 @@
 //  [CALLED FROM MAIN LOOP]
 void stepperFinishedCallback(Stepper *stepper)
 {
+    stepper->instance.FINISHED_FLAG = RESET;
     stepper_stopTimers(stepper);
 
     if (stepper_isState(stepper, HOMING) && stepper_isHomeStep(stepper, BACKWARD))

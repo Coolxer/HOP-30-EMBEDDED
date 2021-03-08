@@ -2,6 +2,7 @@
 
 #include <unity.h> // includes unit testing library
 #include "stm32f4xx_hal.h"
+#include "null.h"
 #include "command/partial/data_assistant.h"
 
 void setUp();    // default setup function
@@ -11,14 +12,14 @@ void tearDown(); // default release function
 
 void test_char_append_should_be_white_space()
 {
-    uint8_t *feedback = (uint8_t *)"\0";
+    uint8_t *feedback = EMPTY;
     feedback = charAppend(feedback, ' ');
     TEST_ASSERT_EQUAL_STRING(" ", feedback);
 }
 
 void test_char_append_should_be_a()
 {
-    uint8_t *feedback = (uint8_t *)"\0";
+    uint8_t *feedback = EMPTY;
     feedback = charAppend(feedback, 'a');
     TEST_ASSERT_EQUAL_STRING("a", feedback);
 }
@@ -33,7 +34,7 @@ void test_char_append_should_be_abc_after_append_to_ab()
 
 void test_char_append_should_be_fine_if_double_append()
 {
-    uint8_t *feedback = (uint8_t *)"\0";
+    uint8_t *feedback = EMPTY;
     feedback = charAppend(feedback, 'a');
     feedback = charAppend(feedback, 'b');
 
@@ -44,14 +45,14 @@ void test_char_append_should_be_fine_if_double_append()
 
 void test_str_append_should_be_empty_if_double_quotes()
 {
-    uint8_t *feedback = (uint8_t *)"\0";
-    feedback = strAppend(feedback, (uint8_t *)"\0");
+    uint8_t *feedback = EMPTY;
+    feedback = strAppend(feedback, EMPTY);
     TEST_ASSERT_EQUAL_STRING("", feedback);
 }
 
 void test_str_append_should_be_a()
 {
-    uint8_t *feedback = (uint8_t *)"\0";
+    uint8_t *feedback = EMPTY;
     feedback = strAppend(feedback, (uint8_t *)"a");
     TEST_ASSERT_EQUAL_STRING("a", feedback);
 }

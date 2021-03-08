@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-#include "enum/type.h"
-
 void endstop_setupGpio(Endstop *endstop)
 {
     GPIO_InitTypeDef gpio = {0};
@@ -27,9 +25,10 @@ void endstop_init(Endstop *endstop, uint8_t *name, GPIO_TypeDef *port, uint16_t 
     endstop->irq = irq;
 
     endstop->state = RESET;
-    endstop->time = HAL_GetTick();
+    endstop->time = 0;
 
-    endstop->CLICKED = RESET;
+    endstop->CLICKED_FLAG = RESET;
+    endstop->DEBOUNCING = RESET;
 
     endstop_setupGpio(endstop); // setups endstop gpio
 }

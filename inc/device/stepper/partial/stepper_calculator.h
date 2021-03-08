@@ -3,7 +3,7 @@
 
 #include "stm32f4xx_hal.h"
 
-#include "enum/axis_type.h"
+#include "device/stepper/enum/axis_type.h"
 
 extern const uint16_t MAX_16BIT_VALUE;
 

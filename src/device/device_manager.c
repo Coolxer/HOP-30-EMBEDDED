@@ -1,6 +1,6 @@
 #include "device/device_manager.h"
 
-#include "enum/type.h"
+#include "null.h"
 #include "command/partial/data_assistant.h"
 
 #include "device/stepper/config/stepper_connection.h"
@@ -11,7 +11,7 @@
 #include "device/endstop/endstop.h"
 #include "device/endstop/config/endstop_connection.h"
 #include "device/endstop/partial/endstop_setup.h"
-#include "device/endstop/partial/endstop_callback.h"
+#include "device/endstop/partial/endstop_operation.h"
 
 Stepper steppers[STEPPERS_COUNT] = {0};
 Endstop endstops[ENDSTOPS_COUNT] = {0};
@@ -103,11 +103,10 @@ void manageSteppers()
 
     for (i = 0; i < STEPPERS_COUNT; i++)
     {
-        if (steppers[i].instance.FINISHED_FLAG)
-        {
-            steppers[i].instance.FINISHED_FLAG = RESET;
-            stepperFinishedCallback(&steppers[i]);
-        }
+        Stepper *stepper = &steppers[i];
+
+        if (stepper->instance.FINISHED_FLAG)
+            stepperFinishedCallback(stepper);
     }
 }
 
@@ -117,11 +116,10 @@ void manageEndstops()
 
     for (i = 0; i < ENDSTOPS_COUNT; i++)
     {
-        if (endstops[i].CLICKED_FLAG)
-        {
-            endstops[i].CLICKED_FLAG = RESET;
-            endstopClickedCallback(&endstops[i]);
-        }
+        Endstop *endstop = &endstops[i];
+
+        if (endstop->CLICKED_FLAG)
+            endstop_debounce(&endstops[i]);
     }
 }
 

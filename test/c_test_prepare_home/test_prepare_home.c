@@ -41,9 +41,6 @@ void test_prepare_home_should_give_passed()
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
     stepper_setState(stepper, ON);
 
-    stepper_setHomeStep(stepper, PRECISE);
-    stepper_updateLastHomeStep(stepper);
-
     uint8_t data[] = "idx=1|opt=hom|spp=x|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=pas|\n", connector_manage(connector_parse(data)));
 }

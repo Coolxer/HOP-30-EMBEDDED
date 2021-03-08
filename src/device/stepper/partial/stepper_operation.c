@@ -1,9 +1,5 @@
 #include "device/stepper/partial/stepper_operation.h"
 
-#include "enum/type.h"
-#include "counter.h"
-#include "enum/home_step.h"
-
 #include "device/stepper/partial/stepper_state_manager.h"
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_configuration.h"
@@ -35,13 +31,9 @@ void stepper_home(Stepper *stepper, uint8_t step)
         }
     }
     else if (step == BACKWARD)
-    {
-        // wait(65000); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE !!!!!!!!!!!!!!!!!!!!!
         stepper_move(stepper, 10.0f, RIGHT);
-    }
     else
     {
-        //HAL_Delay(150);
         stepper_setSpeed(stepper, 1.0f);
         stepper_changeDirection(stepper);
         stepper_run(stepper);

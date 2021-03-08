@@ -15,6 +15,7 @@ typedef struct
     uint32_t time; // current time (for DEBOUNCE)
 
     volatile uint8_t CLICKED_FLAG; // endstop clicked flag
+    volatile uint8_t DEBOUNCING;   // endstop currently in debounce mode
 } Endstop;
 
 #endif // ENDSTOP_H

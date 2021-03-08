@@ -1,6 +1,6 @@
 #include "device/stepper/partial/stepper_peripheral.h"
 
-#include "enum/type.h"
+#include "null.h"
 #include "device/stepper/partial/stepper_state_manager.h"
 
 void stepper_setupGpio(Stepper *stepper)

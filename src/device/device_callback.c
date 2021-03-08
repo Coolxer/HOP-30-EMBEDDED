@@ -1,14 +1,7 @@
 #include "device/device_callback.h"
 
-#include "flag.h"
-#include "enum/type.h"
-
 #include "device/device_manager.h"
-#include "device/stepper/partial/stepper_state_manager.h"
 #include "device/stepper/partial/stepper_peripheral.h"
-
-#include "device/endstop/config/endstop_connection.h"
-#include "process.h"
 
 // callback fires up, when endstop is clicked [INTERRUPT SERVICE]
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)

@@ -3,9 +3,9 @@
 #include <string.h> // includes defintion and use of strtok function
 #include <stdlib.h> // needed to use malloc, calloc, realloc
 
-#include "enum/type.h"
-#include "command/cmd_builder.h"
+#include "null.h"
 #include "validator.h"
+#include "command/cmd_builder.h"
 #include "prepare_function.h"
 
 #include "device/stepper/partial/stepper_intervention.h"
@@ -66,23 +66,23 @@ uint8_t *proceed_operation(uint8_t *idx, uint8_t *opt, uint8_t ***args)
 
 uint8_t *connector_manage(uint8_t ***args)
 {
-	uint8_t *index = (uint8_t *)"\0";
-	uint8_t *option = (uint8_t *)"\0";
+	uint8_t *index = EMPTY;
+	uint8_t *option = EMPTY;
 
 	if (records == 0) // check if no records detected
-		return cmd_builder_buildErr((uint8_t *)"0", ERR.NO_PARAMS);
+		return cmd_builder_buildErr(ZER0_INDEX, ERR.NO_PARAMS);
 	else if (records == 1) // check if there is only one record
-		return cmd_builder_buildErr((uint8_t *)"0", ERR.ONE_PARAM_ONLY);
+		return cmd_builder_buildErr(ZER0_INDEX, ERR.ONE_PARAM_ONLY);
 	else if (records > 5) // check if there is more than 5 records
-		return cmd_builder_buildErr((uint8_t *)"0", ERR.TO_MANY_PARAMS);
+		return cmd_builder_buildErr(ZER0_INDEX, ERR.TO_MANY_PARAMS);
 
 	if (args != NULL && validate_key(KEY.INDEX, args[0][0]) == ERR.ERROR) // check if there is no "idx" key
-		return cmd_builder_buildErr((uint8_t *)"0", ERR.NO_INDEX_KEY);
+		return cmd_builder_buildErr(ZER0_INDEX, ERR.NO_INDEX_KEY);
 
 	index = args[0][1];
 
 	if (!containsOnlyDigits(index))
-		return cmd_builder_buildErr((uint8_t *)"0", ERR.INVALID_INDEX_VALUE);
+		return cmd_builder_buildErr(ZER0_INDEX, ERR.INVALID_INDEX_VALUE);
 
 	if (args != NULL && validate_key(KEY.OPERATION, args[1][0]) == ERR.ERROR) // check if there is no "opt" key
 		return cmd_builder_buildErr(index, ERR.NO_OPERATION_KEY);

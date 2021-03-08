@@ -2,11 +2,6 @@
 
 /* State */
 
-uint8_t stepper_getState(Stepper *stepper)
-{
-    return stepper->instance.state;
-}
-
 uint8_t stepper_getLastState(Stepper *stepper)
 {
     return stepper->instance.lastState;
@@ -29,15 +24,10 @@ void stepper_updateStates(Stepper *stepper, uint8_t state)
 
 void stepper_updateLastState(Stepper *stepper)
 {
-    stepper->instance.lastState = stepper_getState(stepper);
+    stepper->instance.lastState = stepper->instance.state;
 }
 
 /* Home step */
-
-uint8_t stepper_getHomeStep(Stepper *stepper)
-{
-    return stepper->instance.homeStep;
-}
 
 uint8_t stepper_isHomeStep(Stepper *stepper, uint8_t step)
 {

@@ -39,7 +39,7 @@ const float SMALL_GEAR_CIRCUMFERENCE = 78.5398163f; // 2 * PI * R = PI * SMALL_G
 const float SG_SPM = 40.7436654f; // SMALL_GEAR_STEPS_PER_REVOLUTION / SMALL_GEAR_CIRCUMFERENCE
 
 // how many steps need to move by 1 mm on BIG GEAR ? [REAL]
-const float STEPS_PER_MM = 154.82592863979578263597012500878f; // SG_SPM * GEARS_PROPORTION
+const float STEPS_PER_MM = 154.8259286f; // SG_SPM * GEARS_PROPORTION
 
 /*************************** END OF LINEAR COMMON AXIS *******************************/
 
@@ -54,6 +54,6 @@ const float STEPS_PER_MM = 154.82592863979578263597012500878f; // SG_SPM * GEARS
 const float SG_SPD = 8.8888888f; // SMALL_GEAR_STEPS_PER_REVOLUTION / 360
 
 // how many steps need to rotate by 1 deg. on BIG GEAR ? [REAL]
-const float STEPS_PER_DEGREE = 33.777777777777777777777777777778f; // SG_SPD * GEARS_PROPORTION
+const float STEPS_PER_DEGREE = 33.7777778f; // SG_SPD * GEARS_PROPORTION
 
 /************************** END OF CIRCULAR COMMON AXIS ******************************/

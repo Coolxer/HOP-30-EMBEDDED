@@ -1,9 +1,6 @@
 #include "device/stepper/partial/stepper_intervention.h"
 
-#include "command/partial/err.h"
-
 #include "device/stepper/partial/stepper_state_manager.h"
-#include "device/stepper/partial/stepper_validator.h"
 #include "device/stepper/partial/stepper_peripheral.h"
 
 void stepper_pause(Stepper *stepper)

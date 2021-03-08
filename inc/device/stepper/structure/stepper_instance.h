@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "enum/stepper_state.h"
-#include "enum/home_step.h"
+#include "device/stepper/enum/state.h"
+#include "device/stepper/enum/home_step.h"
 
 #include "device/stepper/structure/stepper_movement.h"
 

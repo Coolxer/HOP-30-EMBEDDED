@@ -2,7 +2,7 @@
 #define STEPPER_INFO_H
 
 #include <stdint.h>
-#include "enum/axis_type.h"
+#include "device/stepper/enum/axis_type.h"
 
 typedef struct
 {

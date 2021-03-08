@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "config/clock.h"
+#include "device/stepper/enum/axis_type.h"
 #include "device/stepper/config/stepper_calculation.h"
 
 const uint16_t MAX_16BIT_VALUE = 65535;
