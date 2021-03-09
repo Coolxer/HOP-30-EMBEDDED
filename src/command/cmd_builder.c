@@ -1,6 +1,9 @@
 #include "command/cmd_builder.h"
 
 #include <stdio.h>
+#include <string.h>
+
+#include "null.h"
 
 uint8_t *ZER0_INDEX = (uint8_t *)"0";
 uint8_t *SHUTDOWN_REQUEST = (uint8_t *)"SHUTDOWN|||||||||||||||\n";

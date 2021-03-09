@@ -36,8 +36,8 @@ void device_manager_init()
     endstop_init(&endstops[2], YL_NAME, YL_PORT, YL_PIN, YL_IRQ);
     endstop_init(&endstops[3], YR_NAME, YR_PORT, YR_PIN, YR_IRQ);
 
-    endstop_init(&endstops[3], ZL_NAME, ZL_PORT, ZL_PIN, ZL_IRQ);
-    endstop_init(&endstops[4], ZR_NAME, ZR_PORT, ZR_PIN, ZR_IRQ);
+    endstop_init(&endstops[4], ZL_NAME, ZL_PORT, ZL_PIN, ZL_IRQ);
+    endstop_init(&endstops[5], ZR_NAME, ZR_PORT, ZR_PIN, ZR_IRQ);
 
     stepper_assignEndstops(&steppers[0], &endstops[0], &endstops[1]);
     stepper_assignEndstops(&steppers[1], &endstops[2], &endstops[3]);
@@ -66,8 +66,10 @@ Stepper *device_manager_getStepper(uint8_t *name)
 
     for (i = 0; i < STEPPERS_COUNT; i++)
     {
-        if (stringEqual(steppers[i].info.name, name))
-            return &steppers[i];
+        Stepper *stepper = &steppers[i];
+
+        if (stringEqual(stepper->info.name, name))
+            return stepper;
     }
 
     return NULL;
@@ -79,8 +81,10 @@ Endstop *device_manager_getEndstop(uint8_t *name)
 
     for (i = 0; i < ENDSTOPS_COUNT; i++)
     {
-        if (stringEqual(endstops[i].name, name))
-            return &endstops[i];
+        Endstop *endstop = &endstops[i];
+
+        if (stringEqual(endstop->name, name))
+            return endstop;
     }
 
     return NULL;
@@ -91,10 +95,27 @@ Stepper *device_manager_findParentStepper(Endstop *endstop)
     uint8_t i = 0;
 
     for (i = 0; i < STEPPERS_COUNT; i++)
-        if (steppers[i].minEndstop == endstop || steppers[i].maxEndstop == endstop)
-            return &steppers[i];
+    {
+        Stepper *stepper = &steppers[i];
+
+        if (stepper->minEndstop == endstop || steppers->maxEndstop == endstop)
+            return stepper;
+    }
 
     return NULL;
+}
+
+void manageEndstops()
+{
+    uint8_t i = 0;
+
+    for (i = 0; i < ENDSTOPS_COUNT; i++)
+    {
+        Endstop *endstop = &endstops[i];
+
+        if (endstop->CLICKED_FLAG)
+            endstop_debounce(endstop);
+    }
 }
 
 void manageSteppers()
@@ -107,19 +128,6 @@ void manageSteppers()
 
         if (stepper->instance.FINISHED_FLAG)
             stepperFinishedCallback(stepper);
-    }
-}
-
-void manageEndstops()
-{
-    uint8_t i = 0;
-
-    for (i = 0; i < ENDSTOPS_COUNT; i++)
-    {
-        Endstop *endstop = &endstops[i];
-
-        if (endstop->CLICKED_FLAG)
-            endstop_debounce(&endstops[i]);
     }
 }
 

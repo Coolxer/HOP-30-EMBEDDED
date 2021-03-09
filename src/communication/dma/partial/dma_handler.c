@@ -13,11 +13,11 @@ typedef struct
     __IO uint32_t IFCR; // DMA interrupt flag clear register
 } Dma_registers;
 
-uint8_t BUFFER_IS_EMPTY()
+uint8_t BUFFER_IS_NOT_EMPTY()
 {
-    if (BUFFER_EMPTY)
+    if (!BUFFER_EMPTY)
     {
-        BUFFER_EMPTY = RESET;
+        BUFFER_EMPTY = SET;
         return 1;
     }
 

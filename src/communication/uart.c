@@ -23,7 +23,7 @@ void uart_init()
 
 uint8_t *uart_listen()
 {
-	if (!BUFFER_IS_EMPTY())
+	if (BUFFER_IS_NOT_EMPTY())
 	{
 		if (dma_isReady()) // if there are command with min 21 length characters
 			return dma_getCommand();

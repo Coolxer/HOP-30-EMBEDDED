@@ -9,7 +9,7 @@ Instance stepper_instance_init()
 
     instance.movement = stepper_movement_init();
     instance.state = instance.lastState = OFF;
-    instance.homeStep = FAST;
+    instance.homeStep = FAST_BACKWARD;
     instance.FINISHED_FLAG = RESET;
 
     return instance;

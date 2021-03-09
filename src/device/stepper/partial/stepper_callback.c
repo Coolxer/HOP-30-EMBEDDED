@@ -12,11 +12,11 @@
 //  [CALLED FROM MAIN LOOP]
 void stepperFinishedCallback(Stepper *stepper)
 {
-    stepper->instance.FINISHED_FLAG = RESET;
     stepper_stopTimers(stepper);
+    stepper->instance.FINISHED_FLAG = RESET;
 
-    if (stepper_isState(stepper, HOMING) && stepper_isHomeStep(stepper, BACKWARD))
-        stepper_home(stepper, PRECISE);
+    if (stepper_isHomeStep(stepper, SLOW_FORWARD))
+        stepper_home(stepper, PRECISE_BACKWARD);
     else if (stepper_manageSlaveTimer(stepper) == NOT_RELOADED)
     {
         stepper_updateStates(stepper, ON);

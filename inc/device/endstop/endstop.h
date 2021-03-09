@@ -11,11 +11,10 @@ typedef struct
     uint16_t pin;       // endstop pin
     uint8_t irq;        // external interrupt name pointer
 
-    uint8_t state; // last readed state
     uint32_t time; // current time (for DEBOUNCE)
 
-    volatile uint8_t CLICKED_FLAG; // endstop clicked flag
-    volatile uint8_t DEBOUNCING;   // endstop currently in debounce mode
+    volatile uint8_t CLICKED_FLAG;    // endstop clicked flag
+    volatile uint8_t DEBOUNCING_FLAG; // endstop currently in debounce mode flag
 } Endstop;
 
 #endif // ENDSTOP_H

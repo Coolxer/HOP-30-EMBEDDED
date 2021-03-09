@@ -3,7 +3,7 @@
 #include "null.h"
 #include "communication/dma/dma.h"
 
-volatile uint8_t TRANSFER_COMPLETE = RESET;
+volatile uint8_t TRANSFER_COMPLETE = SET;
 
 uint8_t TRANSFER_IS_COMPLETE()
 {

@@ -29,6 +29,11 @@ void stepper_updateLastState(Stepper *stepper)
 
 /* Home step */
 
+void stepper_setHomeStep(Stepper *stepper, uint8_t step)
+{
+    stepper->instance.homeStep = step;
+}
+
 uint8_t stepper_isHomeStep(Stepper *stepper, uint8_t step)
 {
     return stepper->instance.homeStep == step;

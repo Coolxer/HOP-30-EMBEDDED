@@ -13,6 +13,7 @@
 #include "device/stepper/partial/stepper_configuration.h"
 #include "device/stepper/partial/stepper_operation.h"
 #include "device/stepper/partial/stepper_intervention.h"
+#include "device/stepper/partial/stepper_state_manager.h"
 
 // e.g [spp=x|spd=14.16]
 uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args)
@@ -104,9 +105,15 @@ uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
 
 			if (code == ERR.NO_ERROR)
 			{
-				stepper_home(stepper, FAST);
-				feedback = cmd_builder_buildPas(idx);
-				stepper->info.index = idx;
+				stepper_home(stepper, FAST_BACKWARD);
+
+				if (stepper_isState(stepper, HOMING)) // check if HOMING really started (mby it is already homed)
+				{
+					feedback = cmd_builder_buildPas(idx);
+					stepper->info.index = idx;
+				}
+				else // if it is already homed
+					feedback = cmd_builder_buildFin(idx);
 			}
 			else
 				feedback = cmd_builder_buildErr(idx, code);
@@ -145,6 +152,7 @@ uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 					if (code == ERR.NO_ERROR)
 					{
 						stepper_move(stepper, convertStrToFloat(args[1][1]), convertStrToNumber(args[2][1]));
+
 						feedback = cmd_builder_buildPas(idx);
 						stepper->info.index = idx;
 					}

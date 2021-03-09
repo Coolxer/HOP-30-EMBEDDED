@@ -24,11 +24,10 @@ void endstop_init(Endstop *endstop, uint8_t *name, GPIO_TypeDef *port, uint16_t 
     endstop->pin = pin;
     endstop->irq = irq;
 
-    endstop->state = RESET;
     endstop->time = 0;
 
     endstop->CLICKED_FLAG = RESET;
-    endstop->DEBOUNCING = RESET;
+    endstop->DEBOUNCING_FLAG = RESET;
 
     endstop_setupGpio(endstop); // setups endstop gpio
 }

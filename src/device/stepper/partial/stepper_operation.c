@@ -17,7 +17,7 @@ void stepper_switch(Stepper *stepper, uint8_t state)
 
 void stepper_home(Stepper *stepper, uint8_t step)
 {
-    if (step == FAST)
+    if (step == FAST_BACKWARD)
     {
         if (!endstop_isClicked(stepper->minEndstop))
         {
@@ -28,17 +28,23 @@ void stepper_home(Stepper *stepper, uint8_t step)
             stepper_run(stepper);                // start motor moving
 
             stepper_setState(stepper, HOMING);
+            stepper_setHomeStep(stepper, FAST_BACKWARD);
         }
     }
-    else if (step == BACKWARD)
+    else if (step == SLOW_FORWARD)
+    {
+        stepper_setSpeed(stepper, 5.0f);
         stepper_move(stepper, 10.0f, RIGHT);
-    else
+        stepper_setHomeStep(stepper, SLOW_FORWARD);
+    }
+    else // if step == PRECISE_BACKWARD
     {
         stepper_setSpeed(stepper, 1.0f);
         stepper_changeDirection(stepper);
         stepper_run(stepper);
 
         stepper_setState(stepper, HOMING);
+        stepper_setHomeStep(stepper, PRECISE_BACKWARD);
     }
 }
 

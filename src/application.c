@@ -49,7 +49,7 @@ void application_run()
 
     uart_send(SHUTDOWN_RESPONSE); // sends "FINISHED" through UART after get "FINISH" command
 
-    wait(1000);          // wait a litte bit to finish sending response
+    //wait(1000);          // wait a litte bit to finish sending response
     application_close(); // close the application
 }
 

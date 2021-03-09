@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-uint8_t BUFFER_IS_EMPTY(); // returns TRUE if buffer is empty (depend on FLAG)
+uint8_t BUFFER_IS_NOT_EMPTY(); // returns TRUE if buffer is empty (depend on FLAG)
 
 /* PRIVATE */ //void dma_uartHandler(); 			  // own implementation of uart interrupt handler
 /* PRIVATE */ //void dma_dmaHandler(); 			      // own implementation of dma interrupt handler

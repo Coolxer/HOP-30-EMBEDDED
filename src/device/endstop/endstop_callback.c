@@ -21,9 +21,9 @@ enum
 
 uint8_t endstop_homeCallback(Stepper *stepper)
 {
-    if (stepper_isHomeStep(stepper, FAST)) // first step of home
+    if (stepper_isHomeStep(stepper, FAST_BACKWARD)) // first step of home
     {
-        stepper_home(stepper, BACKWARD);
+        stepper_home(stepper, SLOW_FORWARD);
         return HOME_CONTINUE;
     }
 
@@ -42,14 +42,14 @@ void endstopClickedCallback(Endstop *endstop)
     // check if parent stepper is currently running to avoid random signal or press by hand
     else if (stepper_isState(stepper, HOMING) || stepper_isState(stepper, MOVING))
     {
-        stepper_stopTimers(stepper);
+        if (!stepper_isHomeStep(stepper, SLOW_FORWARD)) // be sure the endstop will not stop stepper if it homing and outgoing
+            stepper_stopTimers(stepper);
 
         if (stepper_isState(stepper, HOMING))
         {
             if (endstop_homeCallback(stepper) == HOME_CONTINUE)
                 return;
         }
-
         stepper_setState(stepper, ON);
 
         uart_send(cmd_builder_buildFin(stepper->info.index)); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
