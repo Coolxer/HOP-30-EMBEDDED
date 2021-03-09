@@ -4,7 +4,6 @@
 #include "communication/uart.h"
 #include "command/cmd_builder.h"
 #include "connector.h"
-#include "counter.h"
 
 #include "device/device_manager.h"
 
@@ -48,9 +47,7 @@ void application_run()
     application_loop();
 
     uart_send(SHUTDOWN_RESPONSE); // sends "FINISHED" through UART after get "FINISH" command
-
-    //wait(1000);          // wait a litte bit to finish sending response
-    application_close(); // close the application
+    application_close();          // close the application
 }
 
 void application_exec()
