@@ -5,7 +5,7 @@
 
 void stepper_setSpeed(Stepper *stepper, float speed)
 {
-    Speed regs = calculate_speed(stepper->info.axisType, speed);
+    Speed_params regs = calculate_speed(stepper->info.axisType, speed);
 
     __HAL_TIM_SET_PRESCALER(&stepper->hardware.masterTimer, regs.psc);
     __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.masterTimer, regs.arr);

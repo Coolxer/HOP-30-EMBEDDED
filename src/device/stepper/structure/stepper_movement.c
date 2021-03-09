@@ -7,7 +7,7 @@ Movement stepper_movement_init()
     movement.cnt = 0;
     movement.rest = 0;
 
-    Way way = {0};
+    Way_params way = {0};
     way.laps = 0;
     way.arr = 0;
 

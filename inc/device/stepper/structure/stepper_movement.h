@@ -4,14 +4,13 @@
 #include <stdint.h>
 
 #include "device/stepper/partial/stepper_calculator.h"
-#include "device/stepper/partial/stepper_calculator.h"
 
 typedef struct
 {
     uint16_t cnt;  // current slaveTimer counter value [saving during pause]
     uint16_t rest; // how many steps need to make after resume stepper movement [need to resume]
 
-    Way way; // params of way value [movement params: laps and arr]
+    Way_params way; // params of way value [movement params: laps and arr]
 } Movement;
 
 Movement stepper_movement_init();

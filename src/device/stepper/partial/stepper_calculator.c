@@ -8,9 +8,9 @@
 
 const uint16_t MAX_16BIT_VALUE = 65535;
 
-Speed calculate_speed(enum AxisType axisType, float speed)
+Speed_params calculate_speed(enum AxisType axisType, float speed)
 {
-    Speed regs = {0};
+    Speed_params regs = {0};
     float arr = 0.0f; // autoreload
     float stepsPerSecond = 0.0f;
 
@@ -75,9 +75,9 @@ Speed calculate_speed(enum AxisType axisType, float speed)
     return regs;
 }
 
-Way calculate_way(enum AxisType axisType, float way)
+Way_params calculate_way(enum AxisType axisType, float way)
 {
-    Way params = {0};
+    Way_params params = {0};
 
     // calc real steps need to make to move by given mm or deg.
     uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
