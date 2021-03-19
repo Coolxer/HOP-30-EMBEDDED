@@ -3,8 +3,7 @@
 #include "null.h"
 #include "command/partial/data_assistant.h"
 
-#include "device/stepper/config/stepper_connection.h"
-//#include "device/stepper/config/stepper_speed_constraint.h"
+#include "device/stepper/config/stepper_config.h"
 #include "device/stepper/partial/stepper_setup.h"
 #include "device/stepper/partial/stepper_configuration.h"
 #include "device/stepper/partial/stepper_callback.h"
@@ -22,23 +21,15 @@ Stepper *Y_STEPPER = NULL;
 Stepper *Z_STEPPER = NULL;
 Stepper *W_STEPPER = NULL;
 
-Stepper *int_stepper = NULL; // stepper received in interrupt
-
 void device_manager_init()
 {
-    /*
-    stepper_init(&steppers[0], LINEAR, X_NAME, X_PORT, X_MASTER_TIMER, X_SLAVE_TIMER, X_ALTERNATE_FUNCTION, X_CHANNEL, X_ITR, X_IRQ, X_STEP, X_DIR, X_ENABLE,
-                 X_MIN_SPEED, X_MAX_SPEED, X_HOME_FAST_BACKWARD_SPEED, X_HOME_SLOW_FORWARD_SPEED, X_HOME_PRECISE_BACKWARD_SPEED, X_MIN_ACCELERATION, X_MAX_ACCELERATION);
+    stepper_config(); // prepares config data
 
-    stepper_init(&steppers[1], LINEAR, Y_NAME, Y_PORT, Y_MASTER_TIMER, Y_SLAVE_TIMER, Y_ALTERNATE_FUNCTION, Y_CHANNEL, Y_ITR, Y_IRQ, Y_STEP, Y_DIR, Y_ENABLE,
-                 Y_MIN_SPEED, Y_MAX_SPEED, Y_HOME_FAST_BACKWARD_SPEED, Y_HOME_SLOW_FORWARD_SPEED, Y_HOME_PRECISE_BACKWARD_SPEED, Y_MIN_ACCELERATION, Y_MAX_ACCELERATION);
+    stepper_init(&steppers[0], LINEAR, X_NAME, X_HARDWARE, X_SPEED, X_ACCELERATION);
+    stepper_init(&steppers[1], LINEAR, Y_NAME, Y_HARDWARE, Y_SPEED, Y_ACCELERATION);
+    stepper_init(&steppers[2], LINEAR, Z_NAME, Z_HARDWARE, Z_SPEED, Z_ACCELERATION);
+    stepper_init(&steppers[3], CIRCULAR, W_NAME, W_HARDWARE, W_SPEED, W_ACCELERATION);
 
-    stepper_init(&steppers[2], LINEAR, Z_NAME, Z_PORT, Z_MASTER_TIMER, Z_SLAVE_TIMER, Z_ALTERNATE_FUNCTION, Z_CHANNEL, Z_ITR, Z_IRQ, Z_STEP, Z_DIR, Z_ENABLE,
-                 Z_MIN_SPEED, Z_MAX_SPEED, Z_HOME_FAST_BACKWARD_SPEED, Z_HOME_SLOW_FORWARD_SPEED, Z_HOME_PRECISE_BACKWARD_SPEED, Z_MIN_ACCELERATION, Z_MAX_ACCELERATION);
-
-    stepper_init(&steppers[3], CIRCULAR, W_NAME, W_PORT, W_MASTER_TIMER, W_SLAVE_TIMER, W_ALTERNATE_FUNCTION, W_CHANNEL, W_ITR, W_IRQ, W_STEP, W_DIR, W_ENABLE,
-                 W_MIN_SPEED, W_MAX_SPEED, 0, 0, 0, W_MIN_ACCELERATION, W_MAX_ACCELERATION);
-*/
     endstop_init(&endstops[0], XL_NAME, XL_PORT, XL_PIN, XL_IRQ);
     endstop_init(&endstops[1], XR_NAME, XR_PORT, XR_PIN, XR_IRQ);
 
@@ -138,7 +129,7 @@ void manageSteppers()
         if (stepper->instance.FINISHED_FLAG)
             stepperFinishedCallback(stepper);
 
-        if (stepper->speedAcceleration.acceleration.current > 0)
+        if (stepper->acceleration.current > 0)
             stepper_accelerate(stepper);
     }
 }

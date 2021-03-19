@@ -23,9 +23,9 @@ void stepper_home(Stepper *stepper, uint8_t step)
         {
             stepper_switch(stepper, UP);
 
-            stepper_setSpeed(stepper, stepper->speedAcceleration.speed.homeFastBackward); // home with low speed
-            stepper_setDirection(stepper, LEFT);                                          // set left direction
-            stepper_run(stepper);                                                         // start motor moving
+            stepper_setSpeed(stepper, stepper->speed.homeFastBackward); // home with low speed
+            stepper_setDirection(stepper, LEFT);                        // set left direction
+            stepper_run(stepper);                                       // start motor moving
 
             stepper_setState(stepper, HOMING);
             stepper_setHomeStep(stepper, FAST_BACKWARD);
@@ -33,13 +33,13 @@ void stepper_home(Stepper *stepper, uint8_t step)
     }
     else if (step == SLOW_FORWARD)
     {
-        stepper_setSpeed(stepper, stepper->speedAcceleration.speed.homeSlowForward);
+        stepper_setSpeed(stepper, stepper->speed.homeSlowForward);
         stepper_move(stepper, 10.0f, RIGHT);
         stepper_setHomeStep(stepper, SLOW_FORWARD);
     }
     else // if step == PRECISE_BACKWARD
     {
-        stepper_setSpeed(stepper, stepper->speedAcceleration.speed.homePreciseBackward);
+        stepper_setSpeed(stepper, stepper->speed.homePreciseBackward);
         stepper_changeDirection(stepper);
         stepper_run(stepper);
 

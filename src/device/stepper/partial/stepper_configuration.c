@@ -6,22 +6,22 @@
 
 void stepper_setSpeed(Stepper *stepper, float speed)
 {
-    stepper->speedAcceleration.speed.current = 0.0f;
-    stepper->speedAcceleration.speed.target = speed;
+    stepper->speed.current = 0.0f;
+    stepper->speed.target = speed;
 }
 
 void stepper_setAcceleration(Stepper *stepper, float acceleration)
 {
-    stepper->speedAcceleration.acceleration.current = acceleration / 1000.0f; // save acceleratin in milliseconds instead of seconds
+    stepper->acceleration.current = acceleration / 1000.0f; // save acceleratin in milliseconds instead of seconds
 }
 
 void stepper_updateSpeed(Stepper *stepper, float speed)
 {
-    stepper->speedAcceleration.speed.lastTimeUpdate = HAL_GetTick();
+    stepper->speed.lastTimeUpdate = HAL_GetTick();
 
     Speed_params regs = calculate_speed(stepper->info.axisType, speed); // HERE
 
-    stepper->speedAcceleration.speed.current = speed;
+    stepper->speed.current = speed;
 
     __HAL_TIM_SET_PRESCALER(&stepper->hardware.masterTimer, regs.psc);
     __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.masterTimer, regs.arr);
@@ -34,10 +34,10 @@ void stepper_accelerate(Stepper *stepper)
 {
     if (stepper_isState(stepper, HOMING) || stepper_isState(stepper, MOVING))
     {
-        if (stepper->speedAcceleration.speed.current < stepper->speedAcceleration.speed.target)
+        if (stepper->speed.current < stepper->speed.target)
         {
-            float elapsedTime = (HAL_GetTick() - stepper->speedAcceleration.speed.lastTimeUpdate);
-            float newSpeed = stepper->speedAcceleration.speed.current + (elapsedTime * stepper->speedAcceleration.acceleration.current);
+            uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
+            float newSpeed = stepper->speed.current + (elapsedTime * stepper->acceleration.current);
 
             stepper_updateSpeed(stepper, newSpeed);
         }

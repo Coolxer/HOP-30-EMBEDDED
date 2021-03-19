@@ -1,5 +1,5 @@
-#ifndef STEPPER_CALCULATION
-#define STEPPER_CALCULATION
+#ifndef STEPPER_CALCULATION_H
+#define STEPPER_CALCULATION_H
 
 #include <stdint.h>
 
@@ -36,4 +36,4 @@ extern const float STEPS_PER_DEGREE;
 
 /************************** END OF CIRCULAR COMMON AXIS ******************************/
 
-#endif // STEPPER_CALCULATION
+#endif // STEPPER_CALCULATION_H

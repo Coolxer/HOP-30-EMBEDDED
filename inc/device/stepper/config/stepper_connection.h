@@ -5,7 +5,6 @@
 
 /**************** X STEPPER  ******************/
 
-#define X_NAME (uint8_t *)"x"
 #define X_PORT GPIOC
 
 #define X_MASTER_TIMER TIM3
@@ -25,7 +24,6 @@
 
 /**************** Y STEPPER  ******************/
 
-#define Y_NAME (uint8_t *)"y"
 #define Y_PORT GPIOA
 
 #define Y_MASTER_TIMER TIM13
@@ -45,7 +43,6 @@
 
 /**************** Z STEPPER  ******************/
 
-#define Z_NAME (uint8_t *)"z"
 #define Z_PORT GPIOB
 
 #define Z_MASTER_TIMER TIM10
@@ -65,7 +62,6 @@
 
 /**************** W STEPPER  ******************/
 
-#define W_NAME (uint8_t *)"w"
 #define W_PORT GPIOB
 
 #define W_MASTER_TIMER TIM4
@@ -85,7 +81,6 @@
 
 /**************** K STEPPER  ******************/
 /*
-#define K_NAME (uint8_t*)"K"
 #define K_PORT (GPIO_TypeDef *)GPIOA
 
 #define K_MASTER_TIMER TIM1
