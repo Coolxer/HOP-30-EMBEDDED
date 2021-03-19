@@ -3,8 +3,7 @@
 
 #include "device/stepper/stepper.h"
 
-void stepper_setSpeed(Stepper *stepper, float speed);               // sets speed of stepper [speed in mm/s or obr/min.]
-void stepper_setAcceleration(Stepper *stepper, float acceleration); // sets acceleration of stepper [accel in mm/s^2 or obr/s^2.]
+void stepper_configure(Stepper *stepper, float speed, float acceleration); // sets speed [in mm/s or obr/min.] and acceleration [in mm/s^2 or obr/s^2.]
 
 void stepper_updateSpeed(Stepper *stepper, float speed); // sets speed of stepper [speed in mm/s or obr/min.]
 void stepper_accelerate(Stepper *stepper);               // accelerates stepper

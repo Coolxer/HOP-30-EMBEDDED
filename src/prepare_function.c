@@ -42,8 +42,7 @@ uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args)
 
 					if (speedCode == ERR.NO_ERROR && accelCode == ERR.NO_ERROR)
 					{
-						stepper_setSpeed(stepper, convertStrToFloat(args[1][1]));
-						stepper_setAcceleration(stepper, convertStrToFloat(args[2][1]));
+						stepper_configure(stepper, convertStrToFloat(args[1][1]), convertStrToFloat(args[2][1]));
 						feedback = cmd_builder_buildFin(idx);
 					}
 					else

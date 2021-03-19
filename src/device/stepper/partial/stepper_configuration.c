@@ -4,20 +4,25 @@
 #include "device/stepper/partial/stepper_calculator.h"
 #include "device/stepper/partial/stepper_state_manager.h"
 
-void stepper_setSpeed(Stepper *stepper, float speed)
+void stepper_configure(Stepper *stepper, float speed, float acceleration)
 {
-    stepper->speed.current = 0.0f;
-    stepper->speed.target = speed;
-}
+    stepper->acceleration.current = acceleration;
 
-void stepper_setAcceleration(Stepper *stepper, float acceleration)
-{
-    stepper->acceleration.current = acceleration / 1000.0f; // save acceleratin in milliseconds instead of seconds
+    if (acceleration == 0.0f)
+        stepper_updateSpeed(stepper, speed);
+    else
+    {
+        stepper->speed.current = 0.0f;
+        stepper->speed.target = speed;
+
+        stepper->acceleration.current /= 1000.0f; // save acceleration in milliseconds instead of seconds
+    }
 }
 
 void stepper_updateSpeed(Stepper *stepper, float speed)
 {
-    stepper->speed.lastTimeUpdate = HAL_GetTick();
+    if (stepper->acceleration.current != 0.0f)
+        stepper->speed.lastTimeUpdate = HAL_GetTick();
 
     Speed_params regs = calculate_speed(stepper->info.axisType, speed); // HERE
 
@@ -26,8 +31,6 @@ void stepper_updateSpeed(Stepper *stepper, float speed)
     __HAL_TIM_SET_PRESCALER(&stepper->hardware.masterTimer, regs.psc);
     __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.masterTimer, regs.arr);
     __HAL_TIM_SET_COMPARE(&stepper->hardware.masterTimer, stepper->hardware.channel, regs.pul); // set pulse width
-
-    //stepper->speedAcceleration.speed.lastTimeUpdate = HAL_GetTick(); // or HERE
 }
 
 void stepper_accelerate(Stepper *stepper)
