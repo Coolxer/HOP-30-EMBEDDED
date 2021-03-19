@@ -13,8 +13,21 @@ uint8_t validate_setSpeed(Stepper *stepper, uint8_t *speed)
 
     float _speed = convertStrToFloat(speed);
 
-    if (_speed < stepper->speed.min || _speed > stepper->speed.max) // checks if speed is in range
+    if (_speed < stepper->speedAcceleration.speed.min || _speed > stepper->speedAcceleration.speed.max) // checks if speed is in range
         return ERR.INVALID_SPEED_VALUE;
+
+    return ERR.NO_ERROR;
+}
+
+uint8_t validate_setAcceleration(Stepper *stepper, uint8_t *acceleration)
+{
+    if (validate_float(acceleration) == ERR.ERROR)
+        return ERR.INVALID_ACCELERATION_VALUE;
+
+    float _acceleration = convertStrToFloat(acceleration);
+
+    if (_acceleration < stepper->speedAcceleration.acceleration.min || _acceleration > stepper->speedAcceleration.acceleration.max) // checks if acceleration is in range
+        return ERR.INVALID_ACCELERATION_VALUE;
 
     return ERR.NO_ERROR;
 }

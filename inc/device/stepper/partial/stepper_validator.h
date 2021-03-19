@@ -4,6 +4,7 @@
 #include "device/stepper/stepper.h"
 
 uint8_t validate_setSpeed(Stepper *stepper, uint8_t *speed);
+uint8_t validate_setAcceleration(Stepper *stepper, uint8_t *acceleration);
 
 uint8_t validate_switch(Stepper *stepper, uint8_t *state);
 uint8_t validate_home(Stepper *stepper);

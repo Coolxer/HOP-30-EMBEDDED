@@ -16,13 +16,13 @@ void tearDown(); // default release function
 void test_prepare_process_should_give_no_direction_key_error()
 {
     uint8_t data[] = "idx=1|opt=pro|spp=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=20|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_process_should_give_invalid_direction_value_error()
 {
     uint8_t data[] = "idx=1|opt=pro|dir=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=21|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_process_should_give_passed()

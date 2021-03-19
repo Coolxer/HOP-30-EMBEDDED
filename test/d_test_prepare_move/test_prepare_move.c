@@ -30,27 +30,27 @@ void test_prepare_move_should_give_invalid_stepper_value_error()
 void test_prepare_move_should_give_no_way_key_error()
 {
     uint8_t data[] = "idx=1|opt=mov|spp=x|abc=4|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=16|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_no_direction_key_error()
 {
     uint8_t data[] = "idx=1|opt=mov|spp=x|way=45|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=18|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=20|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_invalid_way_value_error()
 {
     uint8_t data[] = "idx=1|opt=mov|spp=x|way=0|dir=1|\n";
 
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=17|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_invalid_direction_value_error()
 {
     uint8_t data[] = "idx=1|opt=mov|spp=x|way=35|dir=a|\n";
 
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=19|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=21|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_operation_not_allowed_error()
@@ -59,7 +59,7 @@ void test_prepare_move_should_give_operation_not_allowed_error()
     stepper_setState(stepper, HOMING);
 
     uint8_t data[] = "idx=1|opt=mov|spp=x|way=89|dir=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=20|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_move_should_give_passed()

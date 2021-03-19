@@ -24,6 +24,9 @@ typedef struct
         NO_SPEED_KEY,
         INVALID_SPEED_VALUE,
 
+        NO_ACCELERATION_KEY,
+        INVALID_ACCELERATION_VALUE,
+
         NO_STATE_KEY,
         INVALID_STATE_VALUE,
 

@@ -15,7 +15,7 @@
 #include "device/stepper/partial/stepper_intervention.h"
 #include "device/stepper/partial/stepper_state_manager.h"
 
-// e.g [spp=x|spd=14.16]
+// e.g [spp=x|spd=14.16|acc=1.0]
 uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
@@ -33,15 +33,27 @@ uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args)
 				feedback = cmd_builder_buildErr(idx, ERR.NO_SPEED_KEY);
 			else
 			{
-				uint8_t code = validate_setSpeed(stepper, args[1][1]);
-
-				if (code == ERR.NO_ERROR)
-				{
-					stepper_setSpeed(stepper, convertStrToFloat(args[1][1]));
-					feedback = cmd_builder_buildFin(idx);
-				}
+				if (validate_key(KEY.ACCELERATION, args[2][0]) == ERR.ERROR)
+					feedback = cmd_builder_buildErr(idx, ERR.NO_ACCELERATION_KEY);
 				else
-					feedback = cmd_builder_buildErr(idx, code);
+				{
+					uint8_t speedCode = validate_setSpeed(stepper, args[1][1]);
+					uint8_t accelCode = validate_setAcceleration(stepper, args[2][1]);
+
+					if (speedCode == ERR.NO_ERROR && accelCode == ERR.NO_ERROR)
+					{
+						stepper_setSpeed(stepper, convertStrToFloat(args[1][1]));
+						stepper_setAcceleration(stepper, convertStrToFloat(args[2][1]));
+						feedback = cmd_builder_buildFin(idx);
+					}
+					else
+					{
+						if (speedCode != ERR.NO_ERROR)
+							feedback = cmd_builder_buildErr(idx, speedCode);
+						else
+							feedback = cmd_builder_buildErr(idx, accelCode);
+					}
+				}
 			}
 		}
 	}

@@ -3,7 +3,12 @@
 
 #include "device/stepper/stepper.h"
 
-void stepper_setSpeed(Stepper *stepper, float speed);          // sets speed of stepper [speed in mm/s or obr/min.]
+void stepper_setSpeed(Stepper *stepper, float speed);               // sets speed of stepper [speed in mm/s or obr/min.]
+void stepper_setAcceleration(Stepper *stepper, float acceleration); // sets acceleration of stepper [accel in mm/s^2 or obr/s^2.]
+
+void stepper_updateSpeed(Stepper *stepper, float speed); // sets speed of stepper [speed in mm/s or obr/min.]
+void stepper_accelerate(Stepper *stepper);               // accelerates stepper
+
 void stepper_setDirection(Stepper *stepper, uint8_t directon); // setups stepper motor direction
 
 void stepper_changeDirectionImmediately(Stepper *stepper); //changes direction with not required delay (helpful in process to synchronize)

@@ -33,7 +33,7 @@ void test_prepare_home_should_give_operation_not_allowed_error()
     stepper_setState(stepper, HOMING);
 
     uint8_t data[] = "idx=1|opt=hom|spp=x|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=20|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_home_should_give_passed()

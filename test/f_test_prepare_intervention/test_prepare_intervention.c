@@ -51,7 +51,7 @@ void test_prepare_intervention_pause_should_give_operation_not_allowed_error()
     stepper_setState(stepper, PAUSED);
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=20|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_intervention_pause_should_give_finished()
@@ -99,7 +99,7 @@ void test_prepare_intervention_resume_should_give_operation_not_allowed_error()
     stepper_setState(stepper, OFF);
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=20|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_intervention_resume_should_give_finished()
@@ -148,7 +148,7 @@ void test_prepare_intervention_stop_should_give_operation_not_allowed_error()
     stepper_setState(stepper, OFF);
 
     uint8_t data[] = "idx=1|opt=pau|spp=x|mod=1|\n";
-    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=20|\n", connector_manage(connector_parse(data)));
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data)));
 }
 
 void test_prepare_intervention_stop_should_give_finished()

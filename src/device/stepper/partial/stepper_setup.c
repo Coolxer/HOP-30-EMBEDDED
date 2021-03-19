@@ -4,12 +4,13 @@
 #include "device/stepper/partial/stepper_configuration.h"
 
 void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, GPIO_TypeDef *port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable,
-                  float minSpeed, float maxSpeed, float homeFastBackwardSpeed, float homeSlowForwardSpeed, float homePreciseBackwardSpeed)
+                  float minSpeed, float minAcceleration, float maxSpeed, float maxAcceleration,
+                  float homeFastBackwardSpeed, float homeFastBackwardAcceleration, float homeSlowForwardSpeed, float homeSlowForwardAcceleration, float homePreciseBackwardSpeed, float homePreciseBackwardAcceleration)
 {
     stepper->hardware = stepper_hardware_init(port, masterTimer, slaveTimer, alternateFunction, channel, itr, irq, step, dir, enable);
     stepper->info = stepper_info_init(axisType, name);
     stepper->instance = stepper_instance_init();
-    stepper->speed = stepper_speed_init(minSpeed, maxSpeed, homeFastBackwardSpeed, homeSlowForwardSpeed, homePreciseBackwardSpeed);
+    stepper->speedAcceleration = stepper_speedAcceleration_init(minSpeed, minAcceleration, maxSpeed, maxAcceleration, homeFastBackwardSpeed, homeFastBackwardAcceleration, homeSlowForwardSpeed, homeSlowForwardAcceleration, homePreciseBackwardSpeed, homePreciseBackwardAcceleration);
 
     stepper_setPeripherals(stepper);
 }

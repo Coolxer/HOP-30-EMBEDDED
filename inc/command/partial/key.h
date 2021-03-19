@@ -9,6 +9,7 @@ typedef struct
         INDEX[4],
         STEPPER[4],
         SPEED[4],
+        ACCELERATION[4],
         WAY[4],
         STATE[4],
         DIRECTION[4],

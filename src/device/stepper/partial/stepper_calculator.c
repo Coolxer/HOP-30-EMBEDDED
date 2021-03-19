@@ -14,6 +14,9 @@ Speed_params calculate_speed(enum AxisType axisType, float speed)
     float arr = 0.0f; // autoreload
     float stepsPerSecond = 0.0f;
 
+    if (speed < 0.000061f) // cannot handle speed less than this value (reqister limit)
+        return regs;
+
     // convert mm/s to steps/s
     if (axisType == LINEAR)
         stepsPerSecond = (float)(speed * STEPS_PER_MM);
@@ -69,7 +72,7 @@ Speed_params calculate_speed(enum AxisType axisType, float speed)
     // don't know what it should be, 2 different guys give 50% of ARR register
     // there should be min. 2.5us as stepper driver gives
 
-    // so i decided to have 50% duty cycle, beacuse there is 50% time LOW nad 50% high signal
+    // so i decided to have 50% duty cycle, because there is 50% time LOW nad 50% high signal
     regs.pul = (uint16_t)(round(regs.arr / 2.0f));
 
     return regs;

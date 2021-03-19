@@ -23,9 +23,9 @@ void stepper_home(Stepper *stepper, uint8_t step)
         {
             stepper_switch(stepper, UP);
 
-            stepper_setSpeed(stepper, stepper->speed.homeFastBackward); // home with low speed
-            stepper_setDirection(stepper, LEFT);                        // set left direction
-            stepper_run(stepper);                                       // start motor moving
+            stepper_setSpeed(stepper, stepper->speedAcceleration.speed.homeFastBackward); // home with low speed
+            stepper_setDirection(stepper, LEFT);                                          // set left direction
+            stepper_run(stepper);                                                         // start motor moving
 
             stepper_setState(stepper, HOMING);
             stepper_setHomeStep(stepper, FAST_BACKWARD);
@@ -33,13 +33,13 @@ void stepper_home(Stepper *stepper, uint8_t step)
     }
     else if (step == SLOW_FORWARD)
     {
-        stepper_setSpeed(stepper, stepper->speed.homeSlowForward);
+        stepper_setSpeed(stepper, stepper->speedAcceleration.speed.homeSlowForward);
         stepper_move(stepper, 10.0f, RIGHT);
         stepper_setHomeStep(stepper, SLOW_FORWARD);
     }
     else // if step == PRECISE_BACKWARD
     {
-        stepper_setSpeed(stepper, stepper->speed.homePreciseBackward);
+        stepper_setSpeed(stepper, stepper->speedAcceleration.speed.homePreciseBackward);
         stepper_changeDirection(stepper);
         stepper_run(stepper);
 
@@ -51,6 +51,8 @@ void stepper_home(Stepper *stepper, uint8_t step)
 void stepper_startMoving(Stepper *stepper)
 {
     stepper_switch(stepper, UP);
+
+    stepper_updateSpeed(stepper, 0.0f);
 
     HAL_TIM_Base_Start_IT(&stepper->hardware.slaveTimer);                         // starts counting of PWM cycles
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
@@ -78,14 +80,3 @@ void stepper_run(Stepper *stepper)
 {
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
 }
-
-/*
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
-{
-	if (htim->Instance == TIM3)
-	{
-		//TIM3->ARR = v;
-		//TIM3->CCR1 = v / 2;
-	}
-}
-*/
