@@ -6,6 +6,7 @@
 #include "device/stepper/config/stepper_config.h"
 #include "device/stepper/partial/stepper_setup.h"
 #include "device/stepper/partial/stepper_configuration.h"
+#include "device/stepper/partial/stepper_state_manager.h"
 #include "device/stepper/partial/stepper_callback.h"
 
 #include "device/endstop/endstop.h"
@@ -129,8 +130,11 @@ void manageSteppers()
         if (stepper->instance.FINISHED_FLAG)
             stepperFinishedCallback(stepper);
 
-        if (stepper->acceleration.current > 0)
-            stepper_accelerate(stepper);
+        if (stepper_isState(stepper, HOMING) || stepper_isState(stepper, MOVING))
+        {
+            if (stepper->acceleration.current > 0)
+                stepper_accelerate(stepper);
+        }
     }
 }
 

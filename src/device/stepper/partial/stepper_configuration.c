@@ -24,7 +24,7 @@ void stepper_updateSpeed(Stepper *stepper, float speed)
     if (stepper->acceleration.current != 0.0f)
         stepper->speed.lastTimeUpdate = HAL_GetTick();
 
-    Speed_params regs = calculate_speed(stepper->info.axisType, speed); // HERE
+    Speed_params regs = calculate_speed(stepper->info.axisType, speed);
 
     stepper->speed.current = speed;
 
@@ -33,18 +33,19 @@ void stepper_updateSpeed(Stepper *stepper, float speed)
     __HAL_TIM_SET_COMPARE(&stepper->hardware.masterTimer, stepper->hardware.channel, regs.pul); // set pulse width
 }
 
-void stepper_accelerate(Stepper *stepper)
+void stepper_accelerate(Stepper *stepper) //
 {
-    if (stepper_isState(stepper, HOMING) || stepper_isState(stepper, MOVING))
+    if (stepper->speed.current < stepper->speed.target)
     {
-        if (stepper->speed.current < stepper->speed.target)
-        {
-            uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
-            float newSpeed = stepper->speed.current + (elapsedTime * stepper->acceleration.current);
+        uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
+        float newSpeed = stepper->speed.current + (elapsedTime * stepper->acceleration.current);
 
-            stepper_updateSpeed(stepper, newSpeed);
-        }
+        stepper_updateSpeed(stepper, newSpeed);
     }
+    else if (stepper->speed.current > stepper->speed.target) // checks if overspeed during acceleration
+        stepper_updateSpeed(stepper, stepper->speed.target); // then align to target speed
+    else                                                     // if the speed is currently target then reset acceleration
+        stepper->acceleration.current = 0.0f;
 }
 
 void stepper_setDirection(Stepper *stepper, uint8_t direction)

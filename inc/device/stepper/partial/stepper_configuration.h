@@ -6,7 +6,7 @@
 void stepper_configure(Stepper *stepper, float speed, float acceleration); // sets speed [in mm/s or obr/min.] and acceleration [in mm/s^2 or obr/s^2.]
 
 void stepper_updateSpeed(Stepper *stepper, float speed); // sets speed of stepper [speed in mm/s or obr/min.]
-void stepper_accelerate(Stepper *stepper);               // accelerates stepper
+void stepper_accelerate(Stepper *stepper);               // accelerates stepper, if acceleration is positive -> accelerate, if negative -> decelerate
 
 void stepper_setDirection(Stepper *stepper, uint8_t directon); // setups stepper motor direction
 
