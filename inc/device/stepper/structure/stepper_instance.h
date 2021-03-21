@@ -6,12 +6,8 @@
 #include "device/stepper/enum/state.h"
 #include "device/stepper/enum/home_step.h"
 
-#include "device/stepper/structure/stepper_movement.h"
-
 typedef struct
 {
-    Movement movement;
-
     enum State state;     // 0 - off, 1 - on, 2 - home, 3 - move, 4 - paused
     enum State lastState; // lastState (especially useful in resume function)
 

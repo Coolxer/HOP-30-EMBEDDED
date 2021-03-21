@@ -13,7 +13,7 @@ void stepper_pause(Stepper *stepper)
         if (rest > 0 && (stepper->hardware.slaveTimer.Instance == TIM2 || stepper->hardware.slaveTimer.Instance == TIM5))
             rest--;
 
-        stepper->instance.movement.rest = rest;
+        stepper->movement.rest = rest;
     }
 
     stepper_stopTimers(stepper); // stop timers
@@ -28,7 +28,7 @@ void stepper_resume(Stepper *stepper)
     if (stepper_getLastState(stepper) == MOVING)
     {
         __HAL_TIM_SET_COUNTER(&stepper->hardware.slaveTimer, 0);
-        __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.slaveTimer, stepper->instance.movement.rest);
+        __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.slaveTimer, stepper->movement.rest);
         HAL_TIM_Base_Start_IT(&stepper->hardware.slaveTimer); // enable slaveTimer
     }
 

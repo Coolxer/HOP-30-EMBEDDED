@@ -6,8 +6,10 @@
 #include "device/stepper/structure/stepper_hardware.h"
 #include "device/stepper/structure/stepper_info.h"
 #include "device/stepper/structure/stepper_instance.h"
+
 #include "device/stepper/structure/stepper_speed.h"
 #include "device/stepper/structure/stepper_acceleration.h"
+#include "device/stepper/structure/stepper_movement.h"
 
 #include "device/endstop/endstop.h"
 
@@ -29,6 +31,7 @@ typedef struct
 
     Speed speed;
     Acceleration acceleration;
+    Movement movement;
 
     Endstop *minEndstop;
     Endstop *maxEndstop;

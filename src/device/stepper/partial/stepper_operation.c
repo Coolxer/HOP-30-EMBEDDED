@@ -70,7 +70,7 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction)
     if (stepper->hardware.slaveTimer.Instance == TIM2 || stepper->hardware.slaveTimer.Instance == TIM5)
         params.arr--;
 
-    stepper->instance.movement.way = params;
+    stepper->movement.way = params;
 
     stepper_manageSlaveTimer(stepper);
     stepper_startMoving(stepper);

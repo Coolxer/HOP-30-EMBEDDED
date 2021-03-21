@@ -107,19 +107,25 @@ void stepper_resetTimers(Stepper *stepper)
 
 uint8_t stepper_manageSlaveTimer(Stepper *stepper)
 {
-    if (stepper->instance.movement.way.laps > 0)
+    if (stepper->movement.way.laps > 0)
     {
         __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.slaveTimer, MAX_16BIT_VALUE - 1);
 
-        stepper->instance.movement.way.laps--;
+        stepper->movement.way.laps--;
+
+        if (stepper_isState(stepper, MOVING))
+            stepper->acceleration.stepsNeededToFullAccelerate += MAX_16BIT_VALUE - 1;
 
         return RELOADED;
     }
-    else if (stepper->instance.movement.way.arr > 0)
+    else if (stepper->movement.way.arr > 0)
     {
-        __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.slaveTimer, stepper->instance.movement.way.arr); // arr. // -1 only for TiM2, tim5
+        __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.slaveTimer, stepper->movement.way.arr); // arr. // -1 only for TiM2, tim5
 
-        stepper->instance.movement.way.arr = 0;
+        stepper->movement.way.arr = 0;
+
+        if (stepper_isState(stepper, MOVING))
+            stepper->acceleration.stepsNeededToFullAccelerate += MAX_16BIT_VALUE - 1;
 
         return RELOADED;
     }

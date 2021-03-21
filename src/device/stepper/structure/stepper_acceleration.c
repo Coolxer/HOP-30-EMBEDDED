@@ -11,5 +11,9 @@ Acceleration stepper_acceleration_init(float min, float max, float homeFastBackw
     acceleration.homeSlowForward = homeSlowForward;
     acceleration.homePreciseBackward = homePreciseBackward;
 
+    acceleration.current = acceleration.next = 0;
+
+    acceleration.stepsNeededToFullAccelerate = 0;
+
     return acceleration;
 }

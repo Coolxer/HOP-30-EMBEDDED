@@ -11,7 +11,11 @@ typedef struct
 
         homeFastBackward,
         homeSlowForward,
-        homePreciseBackward;
+        homePreciseBackward,
+
+        next;
+
+    uint32_t stepsNeededToFullAccelerate;
 } Acceleration;
 
 Acceleration stepper_acceleration_init(float min, float max, float homeFastBackward, float homeSlowForward, float homePreciseBackward);

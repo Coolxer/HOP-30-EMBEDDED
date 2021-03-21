@@ -11,6 +11,7 @@ void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, Hardw
     stepper->hardware = hardware;
     stepper->speed = speed;
     stepper->acceleration = acceleration;
+    stepper->movement = stepper_movement_init();
 
     stepper_setPeripherals(stepper);
 }

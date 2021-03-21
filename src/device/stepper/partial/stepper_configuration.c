@@ -33,19 +33,27 @@ void stepper_updateSpeed(Stepper *stepper, float speed)
     __HAL_TIM_SET_COMPARE(&stepper->hardware.masterTimer, stepper->hardware.channel, regs.pul); // set pulse width
 }
 
-void stepper_accelerate(Stepper *stepper) //
+void stepper_accelerate(Stepper *stepper)
 {
-    if (stepper->speed.current < stepper->speed.target)
+    if ((stepper->acceleration.current > 0.0f && stepper->speed.current < stepper->speed.target) ||
+        (stepper->acceleration.current < 0.0f && stepper->speed.current > stepper->speed.target))
     {
         uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
         float newSpeed = stepper->speed.current + (elapsedTime * stepper->acceleration.current);
 
-        stepper_updateSpeed(stepper, newSpeed);
+        if (newSpeed > 0) // security in deecelerate to not over-go
+            stepper_updateSpeed(stepper, newSpeed);
     }
-    else if (stepper->speed.current > stepper->speed.target) // checks if overspeed during acceleration
-        stepper_updateSpeed(stepper, stepper->speed.target); // then align to target speed
-    else                                                     // if the speed is currently target then reset acceleration
+    else if (stepper->acceleration.current > 0.0f && stepper->speed.current > stepper->speed.target) // checks if overspeed during acceleration
+        stepper_updateSpeed(stepper, stepper->speed.target);                                         // then align to target speed
+    else                                                                                             // if the speed is currently target then reset acceleration
+    {
+        stepper->acceleration.next = stepper->acceleration.current * (-1.0f);
         stepper->acceleration.current = 0.0f;
+
+        if (stepper_isState(stepper, MOVING))
+            stepper->acceleration.stepsNeededToFullAccelerate += (stepper->hardware.slaveTimer.Instance.ARR - stepper->hardware.slaveTimer.Instance->CNT);
+    }
 }
 
 void stepper_setDirection(Stepper *stepper, uint8_t direction)

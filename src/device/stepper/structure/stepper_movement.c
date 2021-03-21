@@ -3,8 +3,6 @@
 Movement stepper_movement_init()
 {
     Movement movement = {0};
-
-    movement.cnt = 0;
     movement.rest = 0;
 
     Way_params way = {0};
