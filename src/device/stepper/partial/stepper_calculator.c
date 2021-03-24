@@ -78,28 +78,10 @@ Speed_params calculate_speed(enum AxisType axisType, float speed)
     return regs;
 }
 
-Way_params calculate_way(enum AxisType axisType, float way)
+uint32_t calculate_way(enum AxisType axisType, float way)
 {
-    Way_params params = {0};
-
     // calc real steps need to make to move by given mm or deg.
     uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
 
-    if (steps > MAX_16BIT_VALUE)
-    {
-        // how many times its overflowed the 16 bit value
-        // probably values : 1, mby 2 times
-        params.laps = (uint8_t)(steps / MAX_16BIT_VALUE);
-
-        // calculate rest
-        params.arr = (uint16_t)steps % MAX_16BIT_VALUE;
-    }
-    else
-    {
-        // there is no full laps needed (if the target value is full, there is no laps too)
-        params.laps = 0;
-        params.arr = (uint16_t)steps;
-    }
-
-    return params;
+    return steps;
 }

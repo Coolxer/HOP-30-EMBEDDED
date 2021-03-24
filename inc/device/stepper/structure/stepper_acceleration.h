@@ -6,16 +6,17 @@
 typedef struct
 {
     float min,
-        current,
+        current, // current acceleration set (positive float given by user, but becomes negative during deceleration)
         max,
 
         homeFastBackward,
         homeSlowForward,
-        homePreciseBackward,
+        homePreciseBackward;
 
-        next;
+    uint8_t set; // boolean value tells if acceleration is set (float comparison == 0 and != 0 is not well seen)
 
-    uint32_t stepsNeededToFullAccelerate;
+    uint32_t stepsNeededToFullAccelerate; // steps value calculating after stepper finish accelerating
+                                          // value using to know when to start deecelerating (if the target is less or equal this value)
 } Acceleration;
 
 Acceleration stepper_acceleration_init(float min, float max, float homeFastBackward, float homeSlowForward, float homePreciseBackward);

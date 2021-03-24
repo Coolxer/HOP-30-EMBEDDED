@@ -16,5 +16,7 @@ Speed stepper_speed_init(float min, float max, float homeFastBackward, float hom
 
     speed.lastTimeUpdate = 0;
 
+    speed.state = CONSTANT;
+
     return speed;
 }

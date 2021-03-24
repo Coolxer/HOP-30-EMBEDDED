@@ -52,25 +52,27 @@ void stepper_startMoving(Stepper *stepper)
 {
     stepper_switch(stepper, UP);
 
-    stepper_updateSpeed(stepper, 0.0f);
-
     HAL_TIM_Base_Start_IT(&stepper->hardware.slaveTimer);                         // starts counting of PWM cycles
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
+
+    // get time at moving starts
+    if (stepper->acceleration.set)
+        stepper->speed.lastTimeUpdate = HAL_GetTick();
 
     stepper_setState(stepper, MOVING);
 }
 
 void stepper_move(Stepper *stepper, float way, uint8_t direction)
 {
-    Way_params params = calculate_way(stepper->info.axisType, way);
+    uint32_t target = calculate_way(stepper->info.axisType, way);
 
     stepper_setDirection(stepper, direction);
 
     // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
     if (stepper->hardware.slaveTimer.Instance == TIM2 || stepper->hardware.slaveTimer.Instance == TIM5)
-        params.arr--;
+        target--;
 
-    stepper->movement.way = params;
+    stepper->movement.target = target;
 
     stepper_manageSlaveTimer(stepper);
     stepper_startMoving(stepper);

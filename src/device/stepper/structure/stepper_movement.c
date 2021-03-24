@@ -3,13 +3,11 @@
 Movement stepper_movement_init()
 {
     Movement movement = {0};
+
     movement.rest = 0;
+    movement.target = 0;
 
-    Way_params way = {0};
-    way.laps = 0;
-    way.arr = 0;
-
-    movement.way = way;
+    movement.FINISHED_FLAG = 0;
 
     return movement;
 }

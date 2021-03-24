@@ -127,27 +127,18 @@ void manageSteppers()
     {
         Stepper *stepper = &steppers[i];
 
-        if (stepper->instance.FINISHED_FLAG)
+        if (stepper->movement.FINISHED_FLAG)
             stepperFinishedCallback(stepper);
 
         if (stepper_isState(stepper, HOMING) || stepper_isState(stepper, MOVING))
         {
-            if (stepper->acceleration.current != 0.0f)
+            if (stepper->acceleration.set)
                 stepper_accelerate(stepper);
-            else if (stepper->acceleration.next != 0.0f)
+            else if (stepper->acceleration.current < 0.0f)
             {
                 // check if there is less or equal number of steps needed for full accel (same value need to deaccel)
-                // if it is need to set accel.current to the last
-                uint32_t stepsToDo = 0;
-
-                if (stepper->movement.way.laps > 0)
-                    stepsToDo += MAX_16BIT_VALUE;
-
-                if (stepper->movement.way.arr > 0)
-                    stepsToDo += stepper->movement.way.arr;
-
-                if (stepsToDo <= stepper->acceleration.stepsNeededToFullAccelerate)
-                    stepper->acceleration.current = stepper->acceleration.next;
+                if ((stepper->movement.target + stepper->hardware.slaveTimer.Instance->ARR) <= stepper->acceleration.stepsNeededToFullAccelerate)
+                    stepper->acceleration.set = SET;
             }
         }
     }

@@ -16,15 +16,7 @@ typedef struct
 
 } Speed_params;
 
-// structure of steps setting parameters
-typedef struct
-{
-    uint16_t laps; // number of laps (if arr is full, there is no laps too, because laps mean additional MAX_16_BIT_VALUE in arr register)
-    uint16_t arr;  // current target
-
-} Way_params;
-
 Speed_params calculate_speed(enum AxisType axisType, float speed);
-Way_params calculate_way(enum AxisType axisType, float way);
+uint32_t calculate_way(enum AxisType axisType, float way);
 
 #endif // STEPPER_CALCULATOR_H

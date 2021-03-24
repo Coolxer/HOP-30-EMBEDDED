@@ -11,7 +11,11 @@ void application_setup()
 {
     HAL_Init(); // inits HAL library
 
-    clock_manager_init();  // inits clocks
+    clock_manager_init(); // inits clocks
+
+    /// enables FPU service
+    SCB->CPACR |= ((3 << 10 * 2) | (3 << 11 * 2));
+
     cmd_builder_init();    // creates opts & keys structures
     uart_init();           // inits uart module
     device_manager_init(); // inits device manager kit

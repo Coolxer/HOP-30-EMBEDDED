@@ -26,7 +26,7 @@ uint8_t validate_setAcceleration(Stepper *stepper, uint8_t *acceleration)
 
     float _acceleration = convertStrToFloat(acceleration);
 
-    if ((_acceleration < stepper->acceleration.min && _acceleration != 0.0f) || _acceleration > stepper->acceleration.max) // checks if acceleration is in range
+    if ((_acceleration > 0.0f && _acceleration < stepper->acceleration.min) || _acceleration > stepper->acceleration.max) // checks if acceleration is in range
         return ERR.INVALID_ACCELERATION_VALUE;
 
     return ERR.NO_ERROR;
