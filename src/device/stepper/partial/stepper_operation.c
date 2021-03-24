@@ -55,10 +55,7 @@ void stepper_startMoving(Stepper *stepper)
     HAL_TIM_Base_Start_IT(&stepper->hardware.slaveTimer);                         // starts counting of PWM cycles
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
 
-    // get time at moving starts
-    if (stepper->acceleration.set)
-        stepper->speed.lastTimeUpdate = HAL_GetTick();
-
+    stepper_startSpeedProcedure(stepper);
     stepper_setState(stepper, MOVING);
 }
 
@@ -81,4 +78,6 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction)
 void stepper_run(Stepper *stepper)
 {
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
+
+    stepper_startSpeedProcedure(stepper);
 }

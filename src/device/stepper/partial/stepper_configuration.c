@@ -4,30 +4,9 @@
 #include "device/stepper/partial/stepper_calculator.h"
 #include "device/stepper/partial/stepper_state_manager.h"
 
-void stepper_configure(Stepper *stepper, float speed, float acceleration)
-{
-    stepper->speed.target = speed;
-    stepper->acceleration.current = acceleration;
-
-    if (acceleration > 0.0f)
-    {
-        stepper->acceleration.current /= 1000.0f; // save acceleration in milliseconds instead of seconds
-        stepper->acceleration.set = SET;
-        stepper->speed.state = RAISING;
-
-        stepper_updateSpeed(stepper, 0.0f);
-    }
-    else
-    {
-        stepper->acceleration.set = RESET;
-        stepper->speed.state = CONSTANT;
-        stepper_updateSpeed(stepper, speed);
-    }
-}
-
 void stepper_updateSpeed(Stepper *stepper, float speed)
 {
-    if (stepper->acceleration.set)
+    if (stepper->speed.type == DYNAMIC)
         stepper->speed.lastTimeUpdate = HAL_GetTick();
 
     stepper->speed.current = speed;
@@ -39,35 +18,73 @@ void stepper_updateSpeed(Stepper *stepper, float speed)
     __HAL_TIM_SET_COMPARE(&stepper->hardware.masterTimer, stepper->hardware.channel, regs.pul); // set pulse width
 }
 
-void stepper_accelerate(Stepper *stepper) // only if acceleration is set
+// called by user command
+void stepper_configure(Stepper *stepper, float speed, float acceleration)
 {
-    // if stepper is accelerating (acceleration > 0 and speed target not reached) OR
-    // if stepper is decelerating (acceleration < 0 and speed target not reached (0))
-    if ((stepper->acceleration.current > 0.0f && stepper->speed.current < stepper->speed.target) ||
-        (stepper->acceleration.current < 0.0f && stepper->speed.current > stepper->speed.target))
+    stepper->speed.target = speed;
+    stepper->acceleration.current = acceleration;
+
+    if (acceleration > 0.0f)
     {
-        uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
-        float newSpeed = stepper->speed.current + (float)((uint32_t)(elapsedTime)*stepper->acceleration.current);
+        stepper->acceleration.current /= 1000.0f; // save acceleration in milliseconds instead of seconds
 
-        if (newSpeed > 0) // security in deecelerate to not over-go to minus values
-            stepper_updateSpeed(stepper, newSpeed);
-        else
-            stepper->acceleration.set = RESET;
+        stepper_updateSpeed(stepper, 0.0f);
+        stepper->speed.type = DYNAMIC;
+        stepper->speed.state = CONSTANT;
     }
-    // if stepper is over-accelerated (current speed > target speed) => then align current to target
-    else if (stepper->acceleration.current > 0.0f && stepper->speed.current > stepper->speed.target)
-        stepper_updateSpeed(stepper, stepper->speed.target);
-
-    // if finish accelerating or decelerating
     else
     {
+        stepper_updateSpeed(stepper, speed);
+        stepper->speed.type = STATIC;
+        stepper->speed.state = CONSTANT;
+    }
+}
+
+void stepper_startSpeedProcedure(Stepper *stepper)
+{
+    if (stepper->speed.type == STATIC)
+        return;
+
+    stepper->speed.state = RAISING;
+    stepper->speed.lastTimeUpdate = HAL_GetTick();
+}
+
+void stepper_accelerate(Stepper *stepper) // only if acceleration is set
+{
+    uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
+
+    // calculates increares / decrease of speed in time
+    float delta = (float)((uint32_t)(elapsedTime)*stepper->acceleration.current);
+
+    // calculates new speed by delta
+    float newSpeed = stepper->speed.current + delta;
+
+    // checks if new calculated speed fit within
+
+    // in FALLING if speed goes to zero or below
+    // then set 0 speed and CONSTANT (this actially mean 0 speed (move -> falling finished))
+    if (newSpeed <= 0.0f)
+    {
+        newSpeed = 0.0f;
+        stepper->speed.state = CONSTANT;
+    }
+
+    // in RAISING if speed goes to target or over
+    // then need to align it, and set to CONSTANT
+    // there is also invert of acceleration and calculated required steps
+    else if (newSpeed >= stepper->speed.target)
+    {
+        newSpeed = stepper->speed.target;
         stepper->acceleration.current *= -1.0f;
-        stepper->acceleration.set = RESET;
+
+        stepper->speed.state = CONSTANT;
 
         // deceleration have sense only in MOVING mode (not HOMING), => then need to know how many steps acceleration takes
         if (stepper_isState(stepper, MOVING))
             stepper->acceleration.stepsNeededToFullAccelerate += (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
     }
+
+    stepper_updateSpeed(stepper, newSpeed);
 }
 
 void stepper_setDirection(Stepper *stepper, uint8_t direction)
@@ -87,19 +104,12 @@ void stepper_changeDirectionImmediately(Stepper *stepper)
     HAL_GPIO_TogglePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.dir);
 }
 
-void stepper_reset(Stepper *stepper)
+void stepper_resetSpeed(Stepper *stepper)
 {
     stepper->speed.current = 0.0f;
-    stepper->speed.lastTimeUpdate = 0;
 
-    if (stepper->acceleration.current < 0.0f || stepper->acceleration.current > 0.0f)
-    {
-        // restores acceleration settings
-        if (stepper->acceleration.current < 0.0f)
-            stepper->acceleration.current *= -1.0f;
-
-        stepper->acceleration.set = SET;
-    }
+    if (stepper->acceleration.current < 0.0f)
+        stepper->acceleration.current *= -1.0f;
 
     //stepper->acceleration.set
     stepper->acceleration.stepsNeededToFullAccelerate = 0;

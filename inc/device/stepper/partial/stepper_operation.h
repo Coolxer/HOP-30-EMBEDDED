@@ -10,6 +10,6 @@ void stepper_home(Stepper *stepper, uint8_t step);    // starts moving stepper m
 void stepper_move(Stepper *stepper, float way, uint8_t direction); // moves stepper motor by given number of steps (can be break by endstop clicked or pause / stop) [way in mm or deg.]
 /* PRIVATE */                                                      // void stepper_startMoving(Stepper *stepper);                                  // starts stepper moving
 
-void stepper_run(Stepper *stepper); // runs stepper motor to move immediately (no given steps)
+void stepper_run(Stepper *stepper); // runs stepper motor to move immediately to infinitve (no given steps)
 
 #endif // STEPPER_OPERATION_H

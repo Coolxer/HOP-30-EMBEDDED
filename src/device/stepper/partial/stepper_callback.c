@@ -25,7 +25,7 @@ void stepperFinishedCallback(Stepper *stepper)
         stepper_stopTimers(stepper);
         stepper->movement.FINISHED_FLAG = RESET;
 
-        stepper_reset(stepper);
+        stepper_resetSpeed(stepper);
 
         stepper_updateStates(stepper, ON);
         uart_send(cmd_builder_buildFin(stepper->info.index));

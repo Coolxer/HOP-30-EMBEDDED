@@ -2,6 +2,7 @@
 
 #include "device/stepper/partial/stepper_state_manager.h"
 #include "device/stepper/partial/stepper_peripheral.h"
+#include "device/stepper/partial/stepper_configuration.h"
 
 void stepper_pause(Stepper *stepper)
 {
@@ -17,6 +18,10 @@ void stepper_pause(Stepper *stepper)
     }
 
     stepper_stopTimers(stepper); // stop timers
+
+    stepper->speed.lastState = stepper->speed.state;
+    stepper->speed.state = CONSTANT;
+    stepper->speed.current = 0.0f;
 
     stepper_updateLastState(stepper);  // save current state to recover
     stepper_setState(stepper, PAUSED); // update current state
@@ -34,6 +39,8 @@ void stepper_resume(Stepper *stepper)
 
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // enable masterTimer
 
+    stepper->speed.state = stepper->speed.lastState;
+
     stepper_setState(stepper, stepper_getLastState(stepper)); // recover state
 }
 
@@ -41,6 +48,9 @@ void stepper_stop(Stepper *stepper)
 {
     stepper_stopTimers(stepper);
     stepper_resetTimers(stepper);
+
+    stepper_resetSpeed(stepper);
+
     stepper_updateStates(stepper, ON);
 }
 

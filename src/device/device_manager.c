@@ -132,13 +132,18 @@ void manageSteppers()
 
         if (stepper_isState(stepper, HOMING) || stepper_isState(stepper, MOVING))
         {
-            if (stepper->acceleration.set)
-                stepper_accelerate(stepper);
-            else if (stepper->acceleration.current < 0.0f)
+            if (stepper->speed.type == DYNAMIC)
             {
-                // check if there is less or equal number of steps needed for full accel (same value need to deaccel)
-                if ((stepper->movement.target + stepper->hardware.slaveTimer.Instance->ARR) <= stepper->acceleration.stepsNeededToFullAccelerate)
-                    stepper->acceleration.set = SET;
+                if (stepper->speed.state != CONSTANT)
+                    stepper_accelerate(stepper);
+                else
+                {
+                    uint32_t target = stepper->movement.target + stepper->hardware.slaveTimer.Instance->ARR;
+
+                    // check if target is less or equal to number of steps needed for full accel (same value need to deaccel)
+                    if (target <= stepper->acceleration.stepsNeededToFullAccelerate)
+                        stepper->speed.state = FALLING;
+                }
             }
         }
     }

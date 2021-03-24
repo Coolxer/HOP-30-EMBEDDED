@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include "device/stepper/enum/speed_type.h"
 #include "device/stepper/enum/speed_state.h"
 
 typedef struct
@@ -19,7 +20,9 @@ typedef struct
 
     uint32_t lastTimeUpdate; // last time speed was updated (using to smooth accelerate)
 
+    enum SpeedType type;
     enum SpeedState state;
+    enum SpeedState lastState; // needed to service pause-resume
 } Speed;
 
 Speed stepper_speed_init(float min, float max, float homeFastBackward, float homeSlowForward, float homePreciseBackward);

@@ -28,6 +28,15 @@ void process_reverse()
     stepper_changeDirectionImmediately(X_STEPPER);
     stepper_changeDirectionImmediately(W_STEPPER);
 
+    X_STEPPER->speed.current = 0.0f;
+    W_STEPPER->speed.current = 0.0f;
+
+    if (X_STEPPER->speed.type == DYNAMIC)
+    {
+        X_STEPPER->speed.state = RAISING;
+        W_STEPPER->speed.state = RAISING;
+    }
+
     PROCESS_FORWARD = RESET;
 }
 
