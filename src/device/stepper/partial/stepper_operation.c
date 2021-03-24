@@ -63,7 +63,7 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction)
 {
     uint32_t target = calculate_way(stepper->info.axisType, way);
 
-    stepper_setDirection(stepper, direction);
+    //stepper_setDirection(stepper, direction);
 
     // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
     if (stepper->hardware.slaveTimer.Instance == TIM2 || stepper->hardware.slaveTimer.Instance == TIM5)

@@ -111,6 +111,5 @@ void stepper_resetSpeed(Stepper *stepper)
     if (stepper->acceleration.current < 0.0f)
         stepper->acceleration.current *= -1.0f;
 
-    //stepper->acceleration.set
     stepper->acceleration.stepsNeededToFullAccelerate = 0;
 }
