@@ -3,6 +3,8 @@
 #include "null.h"
 #include "device/stepper/partial/stepper_state_manager.h"
 
+#include "device/stepper/partial/stepper_calculator.h"
+
 void stepper_setupGpio(Stepper *stepper)
 {
     GPIO_InitTypeDef gpio = {0};

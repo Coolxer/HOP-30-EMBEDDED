@@ -5,29 +5,17 @@
 #include "device/stepper/structure/stepper_speed.h"
 #include "device/stepper/structure/stepper_acceleration.h"
 
-// X STEPPER
-extern uint8_t *X_NAME;
-extern Hardware X_HARDWARE;
-extern Speed X_SPEED;
-extern Acceleration X_ACCELERATION;
+typedef struct
+{
+    Hardware hardware;
+    Speed speed;
+    Acceleration acceleration;
+} StepperConfig;
 
-// Y STEPPER
-extern uint8_t *Y_NAME;
-extern Hardware Y_HARDWARE;
-extern Speed Y_SPEED;
-extern Acceleration Y_ACCELERATION;
-
-// Z STEPPER
-extern uint8_t *Z_NAME;
-extern Hardware Z_HARDWARE;
-extern Speed Z_SPEED;
-extern Acceleration Z_ACCELERATION;
-
-// W STEPPER
-extern uint8_t *W_NAME;
-extern Hardware W_HARDWARE;
-extern Speed W_SPEED;
-extern Acceleration W_ACCELERATION;
+extern StepperConfig X_STEPPER_CONFIG;
+extern StepperConfig Y_STEPPER_CONFIG;
+extern StepperConfig Z_STEPPER_CONFIG;
+extern StepperConfig W_STEPPER_CONFIG;
 
 /* PRIVATE */ //void stepper_x_config();
 /* PRIVATE */ //void stepper_y_config();

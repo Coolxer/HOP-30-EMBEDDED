@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#include "device/stepper/partial/stepper_calculator.h"
-
 typedef struct
 {
     uint16_t rest;   // number of steps needed to make after resume (saved at PAUSE)

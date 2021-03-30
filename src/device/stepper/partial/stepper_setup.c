@@ -1,7 +1,6 @@
 #include "device/stepper/partial/stepper_setup.h"
 
 #include "device/stepper/partial/stepper_peripheral.h"
-#include "device/stepper/partial/stepper_configuration.h"
 
 void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, Hardware hardware, Speed speed, Acceleration acceleration)
 {
@@ -11,6 +10,7 @@ void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, Hardw
     stepper->hardware = hardware;
     stepper->speed = speed;
     stepper->acceleration = acceleration;
+
     stepper->movement = stepper_movement_init();
 
     stepper_setPeripherals(stepper);

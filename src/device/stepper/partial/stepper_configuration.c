@@ -90,18 +90,18 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
 void stepper_setDirection(Stepper *stepper, uint8_t direction)
 {
     HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.dir, direction);
-    wait(5); // need wait minimum 5us after set direction before go
-}
-
-void stepper_changeDirection(Stepper *stepper)
-{
-    stepper_changeDirectionImmediately(stepper);
-    wait(5); // need wait minimum 5us after change direction before go
+    //wait(5); // need wait minimum 5us after set direction before go
 }
 
 void stepper_changeDirectionImmediately(Stepper *stepper)
 {
     HAL_GPIO_TogglePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.dir);
+}
+
+void stepper_changeDirection(Stepper *stepper)
+{
+    stepper_changeDirectionImmediately(stepper);
+    //wait(5); // need wait minimum 5us after change direction before go
 }
 
 void stepper_resetSpeed(Stepper *stepper)

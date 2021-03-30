@@ -24,12 +24,12 @@ Stepper *W_STEPPER = NULL;
 
 void device_manager_init()
 {
-    stepper_config(); // prepares config data
+    stepper_config(); // creates stepper configs
 
-    stepper_init(&steppers[0], LINEAR, X_NAME, X_HARDWARE, X_SPEED, X_ACCELERATION);
-    stepper_init(&steppers[1], LINEAR, Y_NAME, Y_HARDWARE, Y_SPEED, Y_ACCELERATION);
-    stepper_init(&steppers[2], LINEAR, Z_NAME, Z_HARDWARE, Z_SPEED, Z_ACCELERATION);
-    stepper_init(&steppers[3], CIRCULAR, W_NAME, W_HARDWARE, W_SPEED, W_ACCELERATION);
+    stepper_init(&steppers[0], LINEAR, (uint8_t *)"x", X_STEPPER_CONFIG.hardware, X_STEPPER_CONFIG.speed, X_STEPPER_CONFIG.acceleration);
+    stepper_init(&steppers[1], LINEAR, (uint8_t *)"y", Y_STEPPER_CONFIG.hardware, Y_STEPPER_CONFIG.speed, Y_STEPPER_CONFIG.acceleration);
+    stepper_init(&steppers[2], LINEAR, (uint8_t *)"z", Z_STEPPER_CONFIG.hardware, Z_STEPPER_CONFIG.speed, Z_STEPPER_CONFIG.acceleration);
+    stepper_init(&steppers[3], CIRCULAR, (uint8_t *)"w", W_STEPPER_CONFIG.hardware, W_STEPPER_CONFIG.speed, W_STEPPER_CONFIG.acceleration);
 
     endstop_init(&endstops[0], XL_NAME, XL_PORT, XL_PIN, XL_IRQ);
     endstop_init(&endstops[1], XR_NAME, XR_PORT, XR_PIN, XR_IRQ);
