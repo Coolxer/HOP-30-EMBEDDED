@@ -99,10 +99,7 @@ void stepper_stopTimers(Stepper *stepper)
 
     if (stepper_isState(stepper, MOVING))                    // check if stepper is in MOVING state i need to stop slaveTimer too
         HAL_TIM_Base_Stop_IT(&stepper->hardware.slaveTimer); // stop slaveTimer
-}
 
-void stepper_resetTimers(Stepper *stepper)
-{
     __HAL_TIM_SET_COUNTER(&stepper->hardware.slaveTimer, 0);  // reset slaveTimer counter
     __HAL_TIM_SET_COUNTER(&stepper->hardware.masterTimer, 0); // reset masterTimer counter
 }

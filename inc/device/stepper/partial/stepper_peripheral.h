@@ -15,7 +15,6 @@ enum
 void stepper_setPeripherals(Stepper *stepper); /* calls all setups */
 
 void stepper_stopTimers(Stepper *stepper);          // stop timers
-void stepper_resetTimers(Stepper *stepper);         // reset timersEndstop *min, Endstop *max); // setups endstops to the axis
 uint8_t stepper_manageSlaveTimer(Stepper *stepper); // reloads arr register value of slave timer if needed (overflow), info if RELOADED or NOT_RELOADED
 
 #endif // STEPPER_PERIPHERAL_H

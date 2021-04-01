@@ -47,9 +47,9 @@ void stepper_resume(Stepper *stepper)
 void stepper_stop(Stepper *stepper)
 {
     stepper_stopTimers(stepper);
-    stepper_resetTimers(stepper);
-
     stepper_resetSpeed(stepper);
+
+    stepper->movement.target = 0;
 
     stepper_updateStates(stepper, ON);
 }
@@ -58,5 +58,6 @@ void stepper_emergency_shutdown(Stepper *stepper)
 {
     HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.enable, GPIO_PIN_RESET); // switches the stepper OFF
 
+    stepper_stop(stepper);
     stepper_setState(stepper, OFF);
 }

@@ -5,8 +5,8 @@
 
 #include "device/stepper/config/stepper_config.h"
 #include "device/stepper/partial/stepper_setup.h"
-#include "device/stepper/partial/stepper_configuration.h"
 #include "device/stepper/partial/stepper_state_manager.h"
+#include "device/stepper/partial/stepper_operation.h"
 #include "device/stepper/partial/stepper_callback.h"
 
 #include "device/endstop/endstop.h"
@@ -129,29 +129,8 @@ void manageSteppers()
 
         if (stepper->movement.FINISHED_FLAG)
             stepperFinishedCallback(stepper);
-
-        if (stepper_isState(stepper, HOMING) || stepper_isState(stepper, MOVING))
-        {
-            if (stepper->speed.type == DYNAMIC)
-            {
-                if (stepper->speed.state != CONSTANT)
-                    stepper_accelerate(stepper);
-                else
-                {
-                    uint32_t target = stepper->movement.target + (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
-
-                    // check if target is less or equal to number of steps needed for full accel (same value need to deaccel)
-                    // then start to deceleration
-
-                    // start deeceleration with safety barier beacause adding 1% (it may the stepper speed will not falling to really 0 but its ok)
-                    if (target <= (stepper->acceleration.stepsNeededToFullAccelerate - (0.01f * stepper->acceleration.stepsNeededToFullAccelerate)))
-                    {
-                        stepper->speed.state = FALLING;
-                        stepper->speed.lastTimeUpdate = HAL_GetTick(); // need to update time, beacuse it was updated long ago (at speed raising) -> dont know when it was
-                    }
-                }
-            }
-        }
+        else
+            stepper_process(stepper);
     }
 }
 

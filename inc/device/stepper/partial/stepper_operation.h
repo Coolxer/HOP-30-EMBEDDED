@@ -12,4 +12,6 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction); // moves step
 
 void stepper_run(Stepper *stepper); // runs stepper motor to move immediately to infinitve (no given steps)
 
+void stepper_process(Stepper *stepper); // manages current stepper movement
+
 #endif // STEPPER_OPERATION_H

@@ -5,6 +5,7 @@
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_configuration.h"
 #include "device/stepper/partial/stepper_state_manager.h"
+#include "device/stepper/partial/stepper_intervention.h"
 #include "device/stepper/partial/stepper_operation.h"
 
 #include "command/cmd_builder.h"
@@ -15,19 +16,16 @@ void stepperFinishedCallback(Stepper *stepper)
 {
     if (stepper_isHomeStep(stepper, SLOW_FORWARD))
     {
-        stepper_stopTimers(stepper);
+        stepper_stop(stepper);
         stepper->movement.FINISHED_FLAG = RESET;
 
         stepper_home(stepper, PRECISE_BACKWARD);
     }
     else if (stepper_manageSlaveTimer(stepper) == NOT_RELOADED)
     {
-        stepper_stopTimers(stepper);
+        stepper_stop(stepper);
         stepper->movement.FINISHED_FLAG = RESET;
 
-        stepper_resetSpeed(stepper);
-
-        stepper_updateStates(stepper, ON);
         uart_send(cmd_builder_buildFin(stepper->info.index));
     }
 }

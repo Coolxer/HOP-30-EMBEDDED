@@ -28,7 +28,6 @@ void stepper_home(Stepper *stepper, uint8_t step)
             stepper_setDirection(stepper, LEFT);
             stepper_run(stepper);
 
-            stepper_setState(stepper, HOMING);
             stepper_setHomeStep(stepper, FAST_BACKWARD);
         }
     }
@@ -44,9 +43,10 @@ void stepper_home(Stepper *stepper, uint8_t step)
         stepper_changeDirection(stepper);
         stepper_run(stepper);
 
-        stepper_setState(stepper, HOMING);
         stepper_setHomeStep(stepper, PRECISE_BACKWARD);
     }
+
+    stepper_setState(stepper, HOMING);
 }
 
 void stepper_startMoving(Stepper *stepper)
@@ -55,8 +55,8 @@ void stepper_startMoving(Stepper *stepper)
 
     HAL_TIM_Base_Start_IT(&stepper->hardware.slaveTimer);                         // starts counting of PWM cycles
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
-
     stepper_startSpeedProcedure(stepper);
+
     stepper_setState(stepper, MOVING);
 }
 
@@ -81,4 +81,33 @@ void stepper_run(Stepper *stepper)
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
 
     stepper_startSpeedProcedure(stepper);
+}
+
+void stepper_process(Stepper *stepper)
+{
+    if (!stepper_isState(stepper, HOMING) && !stepper_isState(stepper, MOVING))
+        return;
+
+    if (stepper->speed.type == DYNAMIC)
+    {
+        if (stepper->speed.state != CONSTANT)
+            stepper_accelerate(stepper);
+        else
+        {
+            if (stepper_isState(stepper, HOMING))
+                return;
+
+            uint32_t target = stepper->movement.target + (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
+
+            // check if target is less or equal to number of steps needed for full accel (same value need to deaccel)
+            // then start to deceleration
+
+            // start deeceleration with safety barier beacause adding 1% (it may the stepper speed will not falling to really 0 but its ok)
+            if (target <= (float)(stepper->acceleration.stepsNeededToFullAccelerate - (0.01f * (float)stepper->acceleration.stepsNeededToFullAccelerate)))
+            {
+                stepper->speed.state = FALLING;
+                stepper->speed.lastTimeUpdate = HAL_GetTick(); // need to update time, beacuse it was updated long ago (at speed raising) -> dont know when it was
+            }
+        }
+    }
 }

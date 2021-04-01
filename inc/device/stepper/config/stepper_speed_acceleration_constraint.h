@@ -13,13 +13,13 @@ const float X_MAX_SPEED = 100.0f;
 const float X_MIN_ACCELERATION = 0.1f;
 const float X_MAX_ACCELERATION = 100.0f;
 
-const float X_HOME_FAST_BACKWARD_SPEED = 10.0f;
-const float X_HOME_FAST_BACKWARD_ACCELERATION = 5.0f;
+const float X_HOME_FAST_BACKWARD_SPEED = 30.0f;
+const float X_HOME_FAST_BACKWARD_ACCELERATION = 15.0f;
 
-const float X_HOME_SLOW_FORWARD_SPEED = 5.0f;
+const float X_HOME_SLOW_FORWARD_SPEED = 15.0f;
 const float X_HOME_SLOW_FORWARD_ACCELERATION = 5.0f;
 
-const float X_HOME_PRECISE_BACKWARD_SPEED = 1.0f;
+const float X_HOME_PRECISE_BACKWARD_SPEED = 5.0f;
 const float X_HOME_PRECISE_BACKWARD_ACCELERATION = 1.0f;
 
 /************* END OF X STEPPER  **************/

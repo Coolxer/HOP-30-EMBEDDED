@@ -77,13 +77,14 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
     else if (newSpeed >= stepper->speed.target)
     {
         newSpeed = stepper->speed.target;
-        stepper->acceleration.current *= -1.0f;
-
         stepper->speed.state = CONSTANT;
 
         // deceleration have sense only in MOVING mode (not HOMING), => then need to know how many steps acceleration takes
         if (stepper_isState(stepper, MOVING))
+        {
+            stepper->acceleration.current *= -1.0f;
             stepper->acceleration.stepsNeededToFullAccelerate += stepper->hardware.slaveTimer.Instance->CNT;
+        }
     }
 
     stepper_updateSpeed(stepper, newSpeed);
@@ -114,13 +115,4 @@ void stepper_resetSpeed(Stepper *stepper)
         stepper->acceleration.current *= -1.0f;
 
     stepper->acceleration.stepsNeededToFullAccelerate = 0;
-}
-
-void stepper_reset(Stepper *stepper)
-{
-    stepper_resetTimers();
-    stepper_resetSpeed(stepper);
-
-    stepper->instance.state = ON;
-    stepper->movement.target = 0;
 }
