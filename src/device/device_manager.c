@@ -134,9 +134,9 @@ void manageSteppers()
         {
             if (stepper->speed.type == DYNAMIC)
             {
-                if (stepper->speed.state == RAISING || stepper->speed.state == FALLING) // != CONSTANT
+                if (stepper->speed.state != CONSTANT)
                     stepper_accelerate(stepper);
-                else if (stepper->speed.state == CONSTANT)
+                else
                 {
                     uint32_t target = stepper->movement.target + (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
 
@@ -145,7 +145,6 @@ void manageSteppers()
 
                     // start deeceleration with safety barier beacause adding 1% (it may the stepper speed will not falling to really 0 but its ok)
                     if (target <= (stepper->acceleration.stepsNeededToFullAccelerate - (0.01f * stepper->acceleration.stepsNeededToFullAccelerate)))
-                    //if (target <= stepper->acceleration.stepsNeededToFullAccelerate)
                     {
                         stepper->speed.state = FALLING;
                         stepper->speed.lastTimeUpdate = HAL_GetTick(); // need to update time, beacuse it was updated long ago (at speed raising) -> dont know when it was

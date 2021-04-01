@@ -3,7 +3,9 @@
 #include "counter.h"
 #include "device/stepper/partial/stepper_calculator.h"
 #include "device/stepper/partial/stepper_state_manager.h"
+#include "device/stepper/partial/stepper_peripheral.h"
 
+// calls multiple times with acceleration / deceleration
 void stepper_updateSpeed(Stepper *stepper, float speed)
 {
     if (stepper->speed.type == DYNAMIC)
@@ -18,7 +20,7 @@ void stepper_updateSpeed(Stepper *stepper, float speed)
     __HAL_TIM_SET_COMPARE(&stepper->hardware.masterTimer, stepper->hardware.channel, regs.pul); // set pulse width
 }
 
-// called by user command
+// calls by user command
 void stepper_configure(Stepper *stepper, float speed, float acceleration)
 {
     stepper->speed.target = speed;
@@ -40,6 +42,7 @@ void stepper_configure(Stepper *stepper, float speed, float acceleration)
     }
 }
 
+// calls on start moving
 void stepper_startSpeedProcedure(Stepper *stepper)
 {
     if (stepper->speed.type == STATIC)
@@ -49,6 +52,7 @@ void stepper_startSpeedProcedure(Stepper *stepper)
     stepper->speed.lastTimeUpdate = HAL_GetTick();
 }
 
+// cals multiple times
 void stepper_accelerate(Stepper *stepper) // only if acceleration is set
 {
     uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
@@ -64,10 +68,7 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
     // in FALLING if speed goes to zero or below
     // then set 0 speed and CONSTANT (this actially mean 0 speed (move -> falling finished))
     if (newSpeed < 0.0f)
-    {
         newSpeed = 0.0f;
-        stepper->speed.state = NONE; // CONSTANT
-    }
 
     // in RAISING if speed goes to target or over
     // then need to align it, and set to CONSTANT
@@ -113,4 +114,13 @@ void stepper_resetSpeed(Stepper *stepper)
         stepper->acceleration.current *= -1.0f;
 
     stepper->acceleration.stepsNeededToFullAccelerate = 0;
+}
+
+void stepper_reset(Stepper *stepper)
+{
+    stepper_resetTimers();
+    stepper_resetSpeed(stepper);
+
+    stepper->instance.state = ON;
+    stepper->movement.target = 0;
 }

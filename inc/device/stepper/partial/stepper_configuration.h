@@ -14,6 +14,7 @@ void stepper_setDirection(Stepper *stepper, uint8_t directon); // setups stepper
 void stepper_changeDirectionImmediately(Stepper *stepper); //changes direction with not required delay (helpful in process to synchronize)
 void stepper_changeDirection(Stepper *stepper);            // changes direction with required 5us delay
 
-void stepper_resetSpeed(Stepper *stepper); // resets important stepper speed and accel parameters
+/* PRIVATE */                         //void stepper_resetSpeed(Stepper *stepper); // resets important stepper speed and accel parameters
+void stepper_reset(Stepper *stepper); // resets stepper
 
 #endif // STEPPER_CONFIGURATION_H
