@@ -34,8 +34,9 @@ void stepper_home(Stepper *stepper, uint8_t step)
     else if (step == SLOW_FORWARD)
     {
         stepper_configure(stepper, stepper->speed.homeSlowForward, stepper->acceleration.homeSlowForward);
-        stepper_move(stepper, 10.0f, RIGHT);
+        stepper_move(stepper, 100.0f, RIGHT);
         stepper_setHomeStep(stepper, SLOW_FORWARD);
+        return; // to not set HOMING state, because it's time for MOVING
     }
     else // if step == PRECISE_BACKWARD
     {
