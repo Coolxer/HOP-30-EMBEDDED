@@ -7,6 +7,8 @@
 #include "device/stepper/partial/stepper_calculator.h"
 #include "device/endstop/partial/endstop_operation.h"
 
+float ENDSTOP_OUTGOING_WAY = 20.0f; // way to get out of endstop range
+
 void stepper_switch(Stepper *stepper, uint8_t state)
 {
     if (!stepper_isState(stepper, state)) // check if state is not currently exists
@@ -34,7 +36,7 @@ void stepper_home(Stepper *stepper, uint8_t step)
     else if (step == SLOW_FORWARD)
     {
         stepper_configure(stepper, stepper->speed.homeSlowForward, stepper->acceleration.homeSlowForward);
-        stepper_move(stepper, 100.0f, RIGHT);
+        stepper_move(stepper, ENDSTOP_OUTGOING_WAY, RIGHT);
         stepper_setHomeStep(stepper, SLOW_FORWARD);
         return; // to not set HOMING state, because it's time for MOVING
     }
