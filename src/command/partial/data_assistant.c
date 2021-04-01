@@ -52,13 +52,9 @@ uint8_t stringEqual(uint8_t *str1, uint8_t *str2)
 	return 0;
 }
 
-uint8_t convertStrToNumber(uint8_t *str)
+uint8_t convertStrToBoolean(uint8_t *str)
 {
-	uint8_t value = 0;
-
-	sscanf((void *)str, "%hhu", &value); // str to uint
-
-	return value;
+	return stringEqual(str, (uint8_t *)"0") ? 0 : 1;
 }
 
 float convertStrToFloat(uint8_t *str)

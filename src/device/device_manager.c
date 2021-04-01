@@ -24,7 +24,7 @@ Stepper *W_STEPPER = NULL;
 
 void device_manager_init()
 {
-    stepper_config(); // creates stepper configs
+    stepper_config(); // creates stepper configs, like X_STEPPER_CONFIG etc.
 
     stepper_init(&steppers[0], LINEAR, (uint8_t *)"x", X_STEPPER_CONFIG.hardware, X_STEPPER_CONFIG.speed, X_STEPPER_CONFIG.acceleration);
     stepper_init(&steppers[1], LINEAR, (uint8_t *)"y", Y_STEPPER_CONFIG.hardware, Y_STEPPER_CONFIG.speed, Y_STEPPER_CONFIG.acceleration);
@@ -134,15 +134,22 @@ void manageSteppers()
         {
             if (stepper->speed.type == DYNAMIC)
             {
-                if (stepper->speed.state != CONSTANT)
+                if (stepper->speed.state == RAISING || stepper->speed.state == FALLING) // != CONSTANT
                     stepper_accelerate(stepper);
-                else
+                else if (stepper->speed.state == CONSTANT)
                 {
-                    uint32_t target = stepper->movement.target + stepper->hardware.slaveTimer.Instance->ARR;
+                    uint32_t target = stepper->movement.target + (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
 
                     // check if target is less or equal to number of steps needed for full accel (same value need to deaccel)
-                    if (target <= stepper->acceleration.stepsNeededToFullAccelerate)
+                    // then start to deceleration
+
+                    // start deeceleration with safety barier beacause adding 1% (it may the stepper speed will not falling to really 0 but its ok)
+                    if (target <= (stepper->acceleration.stepsNeededToFullAccelerate - (0.01f * stepper->acceleration.stepsNeededToFullAccelerate)))
+                    //if (target <= stepper->acceleration.stepsNeededToFullAccelerate)
+                    {
                         stepper->speed.state = FALLING;
+                        stepper->speed.lastTimeUpdate = HAL_GetTick(); // need to update time, beacuse it was updated long ago (at speed raising) -> dont know when it was
+                    }
                 }
             }
         }

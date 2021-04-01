@@ -63,15 +63,16 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
 
     // in FALLING if speed goes to zero or below
     // then set 0 speed and CONSTANT (this actially mean 0 speed (move -> falling finished))
-    if (newSpeed <= 0.0f)
+    if (newSpeed < 0.0f)
     {
         newSpeed = 0.0f;
-        stepper->speed.state = CONSTANT;
+        stepper->speed.state = NONE; // CONSTANT
     }
 
     // in RAISING if speed goes to target or over
     // then need to align it, and set to CONSTANT
     // there is also invert of acceleration and calculated required steps
+
     else if (newSpeed >= stepper->speed.target)
     {
         newSpeed = stepper->speed.target;
@@ -81,7 +82,7 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
 
         // deceleration have sense only in MOVING mode (not HOMING), => then need to know how many steps acceleration takes
         if (stepper_isState(stepper, MOVING))
-            stepper->acceleration.stepsNeededToFullAccelerate += (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
+            stepper->acceleration.stepsNeededToFullAccelerate += stepper->hardware.slaveTimer.Instance->CNT;
     }
 
     stepper_updateSpeed(stepper, newSpeed);
@@ -90,7 +91,7 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
 void stepper_setDirection(Stepper *stepper, uint8_t direction)
 {
     HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.dir, direction);
-    //wait(5); // need wait minimum 5us after set direction before go
+    wait(5); // need wait minimum 5us after set direction before go
 }
 
 void stepper_changeDirectionImmediately(Stepper *stepper)
@@ -101,7 +102,7 @@ void stepper_changeDirectionImmediately(Stepper *stepper)
 void stepper_changeDirection(Stepper *stepper)
 {
     stepper_changeDirectionImmediately(stepper);
-    //wait(5); // need wait minimum 5us after change direction before go
+    wait(5); // need wait minimum 5us after change direction before go
 }
 
 void stepper_resetSpeed(Stepper *stepper)

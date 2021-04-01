@@ -11,6 +11,7 @@ enum SpeedState
     RAISING = 0,
     CONSTANT = 1,
     FALLING = 2,
+    NONE = 3
 };
 
 #endif // SPEED_STATE_H

@@ -4,6 +4,7 @@
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_configuration.h"
 
+#include "device/stepper/partial/stepper_calculator.h"
 #include "device/endstop/partial/endstop_operation.h"
 
 void stepper_switch(Stepper *stepper, uint8_t state)
@@ -63,11 +64,13 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction)
 {
     uint32_t target = calculate_way(stepper->info.axisType, way);
 
-    stepper_setDirection(stepper, direction);
-
     // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
     if (stepper->hardware.slaveTimer.Instance == TIM2 || stepper->hardware.slaveTimer.Instance == TIM5)
         target--;
+
+    stepper->movement.target = target;
+
+    stepper_setDirection(stepper, direction);
 
     stepper_manageSlaveTimer(stepper);
     stepper_startMoving(stepper);

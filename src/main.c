@@ -2,9 +2,9 @@
 
 #include "application.h"
 
-int main() 
+int main()
 {
-    application_exec();  //exec() application
+    application_exec(); //exec() application
 }
 
 #endif

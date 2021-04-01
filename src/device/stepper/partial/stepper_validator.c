@@ -8,7 +8,7 @@
 
 uint8_t validate_setSpeed(Stepper *stepper, uint8_t *speed)
 {
-    if (validate_float(speed) == ERR.ERROR)
+    if (validate_float(speed, 0) == ERR.ERROR)
         return ERR.INVALID_SPEED_VALUE;
 
     float _speed = convertStrToFloat(speed);
@@ -21,7 +21,7 @@ uint8_t validate_setSpeed(Stepper *stepper, uint8_t *speed)
 
 uint8_t validate_setAcceleration(Stepper *stepper, uint8_t *acceleration)
 {
-    if (validate_float(acceleration) == ERR.ERROR)
+    if (validate_float(acceleration, 1) == ERR.ERROR)
         return ERR.INVALID_ACCELERATION_VALUE;
 
     float _acceleration = convertStrToFloat(acceleration);
@@ -53,7 +53,7 @@ uint8_t validate_home(Stepper *stepper)
 
 uint8_t validate_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
 {
-    if (validate_float(way) == ERR.ERROR)
+    if (validate_float(way, 0) == ERR.ERROR)
         return ERR.INVALID_WAY_VALUE;
     else if (validate_boolean(direction) == ERR.ERROR)
         return ERR.INVALID_DIRECTION_VALUE;

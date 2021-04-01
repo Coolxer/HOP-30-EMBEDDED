@@ -84,7 +84,7 @@ uint8_t *prepare_switch(uint8_t *idx, uint8_t ***args)
 
 				if (code == ERR.NO_ERROR)
 				{
-					stepper_switch(stepper, convertStrToNumber(args[1][1]));
+					stepper_switch(stepper, convertStrToBoolean(args[1][1]));
 					feedback = cmd_builder_buildFin(idx);
 				}
 				else
@@ -162,10 +162,10 @@ uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 
 					if (code == ERR.NO_ERROR)
 					{
-						stepper_move(stepper, convertStrToFloat(args[1][1]), convertStrToNumber(args[2][1]));
+						stepper_move(stepper, convertStrToFloat(args[1][1]), convertStrToBoolean(args[2][1]));
 
-						feedback = cmd_builder_buildPas(idx);
 						stepper->info.index = idx;
+						feedback = cmd_builder_buildPas(idx);
 					}
 					else
 						feedback = cmd_builder_buildErr(idx, code);
@@ -192,7 +192,7 @@ uint8_t *prepare_process(uint8_t *idx, uint8_t ***args)
 
 		if (code == ERR.NO_ERROR)
 		{
-			process_init(idx, convertStrToNumber(args[0][1]));
+			process_init(idx, convertStrToBoolean(args[0][1]));
 			feedback = cmd_builder_buildPas(idx);
 		}
 		else
