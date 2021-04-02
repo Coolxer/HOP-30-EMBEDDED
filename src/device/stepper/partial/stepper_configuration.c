@@ -13,7 +13,7 @@ void stepper_updateSpeed(Stepper *stepper, float speed)
 
     stepper->speed.current = speed;
 
-    Speed_params regs = calculate_speed(stepper->info.axisType, speed);
+    Speed_params regs = convertSpeedToRegisters(stepper->info.axisType, speed);
 
     __HAL_TIM_SET_PRESCALER(&stepper->hardware.masterTimer, regs.psc);
     __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.masterTimer, regs.arr);
@@ -32,49 +32,34 @@ void stepper_configure(Stepper *stepper, float speed, float acceleration)
 
         stepper_updateSpeed(stepper, 0.0f);
         stepper->speed.type = DYNAMIC;
-        stepper->speed.state = CONSTANT;
     }
     else
     {
         stepper_updateSpeed(stepper, speed);
         stepper->speed.type = STATIC;
-        stepper->speed.state = CONSTANT;
     }
+
+    stepper->speed.state = CONSTANT;
 }
 
-// calls on start moving
-void stepper_startSpeedProcedure(Stepper *stepper)
+void stepper_initAcceleration(Stepper *stepper, enum SpeedState state)
 {
     if (stepper->speed.type == STATIC)
         return;
 
-    stepper->speed.state = RAISING;
+    stepper->speed.state = state;
     stepper->speed.lastTimeUpdate = HAL_GetTick();
 }
 
 // cals multiple times
 void stepper_accelerate(Stepper *stepper) // only if acceleration is set
 {
-    uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
-
-    // calculates increares / decrease of speed in time
-    float delta = (float)((uint32_t)(elapsedTime)*stepper->acceleration.current);
-
-    // calculates new speed by delta
-    float newSpeed = stepper->speed.current + delta;
-
-    // checks if new calculated speed fit within
-
-    // in FALLING if speed goes to zero or below
-    // then set 0 speed and CONSTANT (this actially mean 0 speed (move -> falling finished))
-    if (newSpeed < 0.0f)
-        newSpeed = 0.0f;
+    float newSpeed = calculateSpeed(stepper);
 
     // in RAISING if speed goes to target or over
     // then need to align it, and set to CONSTANT
     // there is also invert of acceleration and calculated required steps
-
-    else if (newSpeed >= stepper->speed.target)
+    if (newSpeed >= stepper->speed.target)
     {
         newSpeed = stepper->speed.target;
         stepper->speed.state = CONSTANT;
@@ -83,7 +68,7 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
         if (stepper_isState(stepper, MOVING))
         {
             stepper->acceleration.current *= -1.0f;
-            stepper->acceleration.stepsNeededToFullAccelerate += stepper->hardware.slaveTimer.Instance->CNT;
+            stepper->acceleration.stepsNeededToAccelerate = calculateStepsNeededToAccelerate(stepper);
         }
     }
 
@@ -114,5 +99,5 @@ void stepper_resetSpeed(Stepper *stepper)
     if (stepper->acceleration.current < 0.0f)
         stepper->acceleration.current *= -1.0f;
 
-    stepper->acceleration.stepsNeededToFullAccelerate = 0;
+    stepper->acceleration.stepsNeededToAccelerate = 0;
 }

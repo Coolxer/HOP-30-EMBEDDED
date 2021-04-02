@@ -40,6 +40,7 @@ void stepper_resume(Stepper *stepper)
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // enable masterTimer
 
     stepper->speed.state = stepper->speed.lastState;
+    stepper_initAcceleration(stepper, RAISING);
 
     stepper_setState(stepper, stepper_getLastState(stepper)); // recover state
 }
@@ -52,6 +53,7 @@ void stepper_stop(Stepper *stepper)
     stepper->movement.target = 0;
 
     stepper_updateStates(stepper, ON);
+    stepper_setHomeStep(stepper, FAST_BACKWARD);
 }
 
 void stepper_emergency_shutdown(Stepper *stepper)

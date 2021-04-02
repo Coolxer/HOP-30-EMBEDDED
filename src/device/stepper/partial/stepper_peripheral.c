@@ -104,7 +104,7 @@ void stepper_stopTimers(Stepper *stepper)
     __HAL_TIM_SET_COUNTER(&stepper->hardware.masterTimer, 0); // reset masterTimer counter
 }
 
-uint8_t stepper_manageSlaveTimer(Stepper *stepper)
+uint8_t stepper_reload(Stepper *stepper)
 {
     uint32_t target = stepper->movement.target;
 
@@ -122,10 +122,10 @@ uint8_t stepper_manageSlaveTimer(Stepper *stepper)
         }
 
         if (stepper_isState(stepper, MOVING))
-            stepper->acceleration.stepsNeededToFullAccelerate += (uint32_t)MAX_16BIT_VALUE - 1;
+            stepper->acceleration.stepsNeededToAccelerate += (uint32_t)MAX_16BIT_VALUE - 1;
 
-        return RELOADED;
+        return 1; // reloaded
     }
 
-    return NOT_RELOADED;
+    return 0; // not reloaded
 }

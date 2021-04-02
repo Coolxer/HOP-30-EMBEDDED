@@ -24,10 +24,9 @@ void stepper_home(Stepper *stepper, uint8_t step)
     {
         if (!endstop_isClicked(stepper->minEndstop))
         {
-            stepper_switch(stepper, UP);
-
             stepper_configure(stepper, stepper->speed.homeFastBackward, stepper->acceleration.homeFastBackward);
             stepper_setDirection(stepper, LEFT);
+            stepper_switch(stepper, UP);
             stepper_run(stepper);
 
             stepper_setHomeStep(stepper, FAST_BACKWARD);
@@ -52,20 +51,9 @@ void stepper_home(Stepper *stepper, uint8_t step)
     stepper_setState(stepper, HOMING);
 }
 
-void stepper_startMoving(Stepper *stepper)
-{
-    stepper_switch(stepper, UP);
-
-    HAL_TIM_Base_Start_IT(&stepper->hardware.slaveTimer);                         // starts counting of PWM cycles
-    HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
-    stepper_startSpeedProcedure(stepper);
-
-    stepper_setState(stepper, MOVING);
-}
-
 void stepper_move(Stepper *stepper, float way, uint8_t direction)
 {
-    uint32_t target = calculate_way(stepper->info.axisType, way);
+    uint32_t target = calculateWay(stepper->info.axisType, way);
 
     // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
     if (stepper->hardware.slaveTimer.Instance == TIM2 || stepper->hardware.slaveTimer.Instance == TIM5)
@@ -75,15 +63,21 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction)
 
     stepper_setDirection(stepper, direction);
 
-    stepper_manageSlaveTimer(stepper);
-    stepper_startMoving(stepper);
+    stepper_reload(stepper);
+
+    stepper_switch(stepper, UP);
+    stepper_setState(stepper, MOVING);
+    stepper_run(stepper);
 }
 
 void stepper_run(Stepper *stepper)
 {
+    if (stepper_isState(stepper, MOVING))
+        HAL_TIM_Base_Start_IT(&stepper->hardware.slaveTimer);
+
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
 
-    stepper_startSpeedProcedure(stepper);
+    stepper_initAcceleration(stepper, RAISING);
 }
 
 void stepper_process(Stepper *stepper)
@@ -97,19 +91,11 @@ void stepper_process(Stepper *stepper)
             stepper_accelerate(stepper);
         else
         {
-            if (stepper_isState(stepper, HOMING))
-                return;
-
-            uint32_t target = stepper->movement.target + (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
-
-            // check if target is less or equal to number of steps needed for full accel (same value need to deaccel)
-            // then start to deceleration
-
-            // start deeceleration with safety barier beacause adding 1% (it may the stepper speed will not falling to really 0 but its ok)
-            if (target <= (float)(stepper->acceleration.stepsNeededToFullAccelerate - (0.01f * (float)stepper->acceleration.stepsNeededToFullAccelerate)))
+            // deceleration is only possible with MOVING, beacuse with HOMING destination is unknown
+            if (stepper_isState(stepper, MOVING))
             {
-                stepper->speed.state = FALLING;
-                stepper->speed.lastTimeUpdate = HAL_GetTick(); // need to update time, beacuse it was updated long ago (at speed raising) -> dont know when it was
+                if (calculateIfShouldStartDecelerate(stepper))
+                    stepper_initAcceleration(stepper, FALLING);
             }
         }
     }

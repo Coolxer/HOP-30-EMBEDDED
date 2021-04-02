@@ -13,8 +13,8 @@ typedef struct
         homeSlowForward,
         homePreciseBackward;
 
-    uint32_t stepsNeededToFullAccelerate; // steps value calculating after stepper finish accelerating
-                                          // value using to know when to start deecelerating (if the target is less or equal this value)
+    uint32_t stepsNeededToAccelerate; // steps value calculating after stepper finish accelerating
+                                      // value using to know when to start deecelerating (if the target is less or equal this value)
 } Acceleration;
 
 Acceleration stepper_acceleration_init(float min, float max, float homeFastBackward, float homeSlowForward, float homePreciseBackward);

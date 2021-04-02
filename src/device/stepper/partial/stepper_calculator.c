@@ -8,7 +8,7 @@
 
 const uint16_t MAX_16BIT_VALUE = 65535;
 
-Speed_params calculate_speed(enum AxisType axisType, float speed)
+Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed)
 {
     Speed_params regs = {0};
     float arr = 0.0f; // autoreload
@@ -78,10 +78,53 @@ Speed_params calculate_speed(enum AxisType axisType, float speed)
     return regs;
 }
 
-uint32_t calculate_way(enum AxisType axisType, float way)
+uint32_t calculateWay(enum AxisType axisType, float way)
 {
     // calc real steps need to make to move by given mm or deg.
     uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
+
+    return steps;
+}
+
+float calculateSpeed(Stepper *stepper)
+{
+    uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
+
+    // calculates increares / decrease of speed in time
+    float delta = (float)((uint32_t)(elapsedTime)*stepper->acceleration.current);
+
+    // calculates new speed by delta
+    float speed = stepper->speed.current + delta;
+
+    // in FALLING if speed goes to zero or below
+    // then set 0 speed
+    if (speed < 0.0f)
+        speed = 0.0f;
+
+    return speed;
+}
+
+uint8_t calculateIfShouldStartDecelerate(Stepper *stepper)
+{
+    uint32_t target = stepper->movement.target + (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
+
+    // check if target is less or equal to number of steps needed for deceleration (same value as acceleration)
+    // then start to deceleration
+    if (target <= stepper->acceleration.stepsNeededToAccelerate)
+        return 1;
+
+    return 0;
+}
+
+uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
+{
+    uint32_t steps = stepper->acceleration.stepsNeededToAccelerate + stepper->hardware.slaveTimer.Instance->CNT;
+
+    float safetyBarier = 0.01f * steps;
+
+    // add safety barier [in deceleration to not zero speed if there are steps to be done]
+    // beacause adding 1% (it may the stepper speed will not falling to really 0 but its ok)
+    steps = (uint32_t)round(steps - safetyBarier);
 
     return steps;
 }

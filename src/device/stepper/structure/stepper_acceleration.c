@@ -13,7 +13,7 @@ Acceleration stepper_acceleration_init(float min, float max, float homeFastBackw
 
     acceleration.current = 0.0f;
 
-    acceleration.stepsNeededToFullAccelerate = 0;
+    acceleration.stepsNeededToAccelerate = 0;
 
     return acceleration;
 }
