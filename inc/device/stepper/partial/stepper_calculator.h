@@ -17,12 +17,11 @@ typedef struct
 
 } Speed_params;
 
-Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed);
-uint32_t calculateWay(enum AxisType axisType, float way);
+Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed); // converts speed value to registers values
+uint32_t convertWayToSteps(enum AxisType axisType, float way);             // converts way to steps number
 
-float calculateSpeed(Stepper *stepper);
-uint8_t calculateIfShouldStartDecelerate(Stepper *stepper);
-
-uint32_t calculateStepsNeededToAccelerate(Stepper *stepper);
+float calculateSpeed(Stepper *stepper);                      // calculates new speed by (acceleration value and delta time)
+uint32_t calculateStepsNeededToAccelerate(Stepper *stepper); // calculates steps needed to accelerate
+uint8_t calculateRemainingTarget(Stepper *stepper);          // calculates remaining target
 
 #endif // STEPPER_CALCULATOR_H

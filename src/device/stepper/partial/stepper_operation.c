@@ -53,7 +53,7 @@ void stepper_home(Stepper *stepper, uint8_t step)
 
 void stepper_move(Stepper *stepper, float way, uint8_t direction)
 {
-    uint32_t target = calculateWay(stepper->info.axisType, way);
+    uint32_t target = convertWayToSteps(stepper->info.axisType, way);
 
     // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
     if (stepper->hardware.slaveTimer.Instance == TIM2 || stepper->hardware.slaveTimer.Instance == TIM5)
@@ -91,10 +91,12 @@ void stepper_process(Stepper *stepper)
             stepper_accelerate(stepper);
         else
         {
-            // deceleration is only possible with MOVING, beacuse with HOMING destination is unknown
+            // deceleration is only possible with MOVING, because with HOMING destination is unknown
             if (stepper_isState(stepper, MOVING))
             {
-                if (calculateIfShouldStartDecelerate(stepper))
+                // check if target is less or equal to number of steps needed for deceleration (same value as acceleration)
+                // then start to deceleration
+                if (calculateRemainingTarget(stepper) <= stepper->acceleration.stepsNeededToAccelerate)
                     stepper_initAcceleration(stepper, FALLING);
             }
         }

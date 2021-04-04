@@ -78,7 +78,7 @@ Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed)
     return regs;
 }
 
-uint32_t calculateWay(enum AxisType axisType, float way)
+uint32_t convertWayToSteps(enum AxisType axisType, float way)
 {
     // calc real steps need to make to move by given mm or deg.
     uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
@@ -104,18 +104,6 @@ float calculateSpeed(Stepper *stepper)
     return speed;
 }
 
-uint8_t calculateIfShouldStartDecelerate(Stepper *stepper)
-{
-    uint32_t target = stepper->movement.target + (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
-
-    // check if target is less or equal to number of steps needed for deceleration (same value as acceleration)
-    // then start to deceleration
-    if (target <= stepper->acceleration.stepsNeededToAccelerate)
-        return 1;
-
-    return 0;
-}
-
 uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
 {
     uint32_t steps = stepper->acceleration.stepsNeededToAccelerate + stepper->hardware.slaveTimer.Instance->CNT;
@@ -127,4 +115,11 @@ uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
     steps = (uint32_t)round(steps - safetyBarier);
 
     return steps;
+}
+
+uint8_t calculateRemainingTarget(Stepper *stepper)
+{
+    uint32_t target = stepper->movement.target + (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
+
+    return target;
 }
