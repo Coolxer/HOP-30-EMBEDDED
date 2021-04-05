@@ -1,10 +1,10 @@
 #ifndef STEPPER_SPEED_H
 #define STEPPER_SPEED_H
 
-#include <stdint.h>
-
 #include "device/stepper/enum/speed_type.h"
 #include "device/stepper/enum/speed_state.h"
+
+#include <stdint.h>
 
 typedef struct
 {

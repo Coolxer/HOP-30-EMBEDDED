@@ -3,8 +3,8 @@
 #include <math.h>
 
 #include "config/clock.h"
-#include "device/stepper/enum/axis_type.h"
 #include "device/stepper/config/stepper_calculation.h"
+#include "device/stepper/partial/stepper_helper.h"
 
 const uint16_t MAX_16BIT_VALUE = 65535;
 
@@ -88,13 +88,13 @@ uint32_t convertWayToSteps(enum AxisType axisType, float way)
 
 float calculateSpeed(Stepper *stepper)
 {
-    uint32_t elapsedTime = (HAL_GetTick() - stepper->speed.lastTimeUpdate);
+    uint32_t elapsedTime = (HAL_GetTick() - getLastTimeUpdate(stepper));
 
     // calculates increares / decrease of speed in time
-    float delta = (float)((uint32_t)(elapsedTime)*stepper->acceleration.current);
+    float delta = (float)((uint32_t)(elapsedTime)*getCurrentAcceleration(stepper));
 
     // calculates new speed by delta
-    float speed = stepper->speed.current + delta;
+    float speed = getCurrentSpeed(stepper) + delta;
 
     // in FALLING if speed goes to zero or below
     // then set 0 speed
@@ -106,7 +106,7 @@ float calculateSpeed(Stepper *stepper)
 
 uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
 {
-    uint32_t steps = stepper->acceleration.stepsNeededToAccelerate + stepper->hardware.slaveTimer.Instance->CNT;
+    uint32_t steps = getStepsNeededToAccelerate(stepper) + getProgress(stepper);
 
     float safetyBarier = 0.01f * steps;
 
@@ -117,9 +117,9 @@ uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
     return steps;
 }
 
-uint8_t calculateRemainingTarget(Stepper *stepper)
+uint32_t calculateRemainingTarget(Stepper *stepper)
 {
-    uint32_t target = stepper->movement.target + (stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT);
+    uint32_t target = getGeneralTarget(stepper) + (getCurrentDestination(stepper) - getProgress(stepper));
 
     return target;
 }

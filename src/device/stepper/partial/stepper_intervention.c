@@ -1,48 +1,48 @@
 #include "device/stepper/partial/stepper_intervention.h"
 
-#include "device/stepper/partial/stepper_state_manager.h"
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_configuration.h"
+#include "device/stepper/partial/stepper_helper.h"
 
 void stepper_pause(Stepper *stepper)
 {
-    if (stepper_isState(stepper, MOVING)) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
+    if (getState(stepper) == MOVING) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
     {
-        uint16_t rest = (uint16_t)(stepper->hardware.slaveTimer.Instance->ARR - stepper->hardware.slaveTimer.Instance->CNT); // MAX_16BITVALUE
+        uint16_t rest = (uint16_t)(getCurrentDestination(stepper) - getProgress(stepper)); // MAX_16BITVALUE
 
         // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
-        if (rest > 0 && (stepper->hardware.slaveTimer.Instance == TIM2 || stepper->hardware.slaveTimer.Instance == TIM5))
+        if (rest > 0 && (getSlaveTimer(stepper)->Instance == TIM2 || getSlaveTimer(stepper)->Instance == TIM5))
             rest--;
 
-        stepper->movement.rest = rest;
+        setRest(stepper, rest);
     }
 
     stepper_stopTimers(stepper); // stop timers
 
-    stepper->speed.lastState = stepper->speed.state;
-    stepper->speed.state = CONSTANT;
-    stepper->speed.current = 0.0f;
+    updateLastSpeedState(stepper);
+    setSpeedState(stepper, CONSTANT);
+    setCurrentSpeed(stepper, 0.0f);
 
-    stepper_updateLastState(stepper);  // save current state to recover
-    stepper_setState(stepper, PAUSED); // update current state
+    updateLastState(stepper);  // save current state to recover
+    setState(stepper, PAUSED); // update current state
 }
 
 void stepper_resume(Stepper *stepper)
 {
     // if stepper was in MOVING state before pause, we need to set target and counter to previous values
-    if (stepper_getLastState(stepper) == MOVING)
+    if (getLastState(stepper) == MOVING)
     {
-        __HAL_TIM_SET_COUNTER(&stepper->hardware.slaveTimer, 0);
-        __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.slaveTimer, stepper->movement.rest);
-        HAL_TIM_Base_Start_IT(&stepper->hardware.slaveTimer); // enable slaveTimer
+        __HAL_TIM_SET_COUNTER(getSlaveTimer(stepper), 0);
+        __HAL_TIM_SET_AUTORELOAD(getSlaveTimer(stepper), getRest(stepper));
+        HAL_TIM_Base_Start_IT(getSlaveTimer(stepper)); // enable slaveTimer
     }
 
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // enable masterTimer
 
-    stepper->speed.state = stepper->speed.lastState;
+    setSpeedState(stepper, getLastSpeedState(stepper));
     stepper_initAcceleration(stepper, RAISING);
 
-    stepper_setState(stepper, stepper_getLastState(stepper)); // recover state
+    setState(stepper, getLastState(stepper)); // recover state
 }
 
 void stepper_stop(Stepper *stepper)
@@ -50,10 +50,9 @@ void stepper_stop(Stepper *stepper)
     stepper_stopTimers(stepper);
     stepper_resetSpeed(stepper);
 
-    stepper->movement.target = 0;
-
-    stepper_updateStates(stepper, ON);
-    stepper_setHomeStep(stepper, FAST_BACKWARD);
+    setGeneralTarget(stepper, 0);
+    setState(stepper, ON);
+    setHomeStep(stepper, FAST_BACKWARD);
 }
 
 void stepper_emergency_shutdown(Stepper *stepper)
@@ -61,5 +60,5 @@ void stepper_emergency_shutdown(Stepper *stepper)
     HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.enable, GPIO_PIN_RESET); // switches the stepper OFF
 
     stepper_stop(stepper);
-    stepper_setState(stepper, OFF);
+    setState(stepper, OFF);
 }

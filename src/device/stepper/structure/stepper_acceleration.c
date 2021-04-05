@@ -12,7 +12,6 @@ Acceleration stepper_acceleration_init(float min, float max, float homeFastBackw
     acceleration.homePreciseBackward = homePreciseBackward;
 
     acceleration.current = 0.0f;
-
     acceleration.stepsNeededToAccelerate = 0;
 
     return acceleration;

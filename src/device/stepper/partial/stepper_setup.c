@@ -1,5 +1,4 @@
 #include "device/stepper/partial/stepper_setup.h"
-
 #include "device/stepper/partial/stepper_peripheral.h"
 
 void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, Hardware hardware, Speed speed, Acceleration acceleration)
@@ -25,6 +24,6 @@ void stepper_assignEndstops(Stepper *stepper, Endstop *min, Endstop *max)
 void stepper_deinit(Stepper *stepper)
 {
     HAL_TIM_PWM_Stop(&stepper->hardware.masterTimer, stepper->hardware.channel);
-    HAL_TIM_Base_Stop_IT(&stepper->hardware.slaveTimer);
+    HAL_TIM_Base_Stop_IT(getSlaveTimer(stepper));
     HAL_NVIC_DisableIRQ(stepper->hardware.irq);
 }

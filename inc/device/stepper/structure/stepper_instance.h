@@ -1,8 +1,6 @@
 #ifndef STEPPER_INSTANCE_H
 #define STEPPER_INSTANCE_H
 
-#include <stdint.h>
-
 #include "device/stepper/enum/state.h"
 #include "device/stepper/enum/home_step.h"
 

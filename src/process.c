@@ -5,6 +5,7 @@
 
 #include "device/stepper/partial/stepper_configuration.h"
 #include "device/stepper/partial/stepper_operation.h"
+#include "device/stepper/partial/stepper_helper.h"
 
 volatile uint8_t PROCESS_FORWARD = RESET;
 
@@ -20,7 +21,7 @@ void process_init(uint8_t *idx, uint8_t direction)
     stepper_run(W_STEPPER);
 
     PROCESS_FORWARD = SET;
-    X_STEPPER->info.index = idx;
+    setIndex(X_STEPPER, idx);
 }
 
 void process_reverse()
@@ -28,13 +29,13 @@ void process_reverse()
     stepper_changeDirectionImmediately(X_STEPPER);
     stepper_changeDirectionImmediately(W_STEPPER);
 
-    X_STEPPER->speed.current = 0.0f;
-    W_STEPPER->speed.current = 0.0f;
+    setCurrentSpeed(X_STEPPER, 0.0f);
+    setCurrentSpeed(W_STEPPER, 0.0f);
 
-    if (X_STEPPER->speed.type == DYNAMIC)
+    if (getSpeedType(X_STEPPER) == DYNAMIC)
     {
-        X_STEPPER->speed.state = RAISING;
-        W_STEPPER->speed.state = RAISING;
+        setSpeedState(X_STEPPER, RAISING);
+        setSpeedState(W_STEPPER, RAISING);
     }
 
     PROCESS_FORWARD = RESET;

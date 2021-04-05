@@ -5,9 +5,9 @@
 
 #include "device/stepper/config/stepper_config.h"
 #include "device/stepper/partial/stepper_setup.h"
-#include "device/stepper/partial/stepper_state_manager.h"
 #include "device/stepper/partial/stepper_operation.h"
 #include "device/stepper/partial/stepper_callback.h"
+#include "device/stepper/partial/stepper_helper.h"
 
 #include "device/endstop/endstop.h"
 #include "device/endstop/config/endstop_connection.h"
@@ -69,7 +69,7 @@ Stepper *device_manager_getStepper(uint8_t *name)
     {
         Stepper *stepper = &steppers[i];
 
-        if (stringEqual(stepper->info.name, name))
+        if (stringEqual(getName(stepper), name))
             return stepper;
     }
 
@@ -127,7 +127,7 @@ void manageSteppers()
     {
         Stepper *stepper = &steppers[i];
 
-        if (stepper->movement.FINISHED_FLAG)
+        if (getFinishedFlag(stepper))
             stepperFinishedCallback(stepper);
         else
             stepper_process(stepper);

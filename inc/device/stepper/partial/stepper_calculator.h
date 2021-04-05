@@ -22,6 +22,7 @@ uint32_t convertWayToSteps(enum AxisType axisType, float way);             // co
 
 float calculateSpeed(Stepper *stepper);                      // calculates new speed by (acceleration value and delta time)
 uint32_t calculateStepsNeededToAccelerate(Stepper *stepper); // calculates steps needed to accelerate
-uint8_t calculateRemainingTarget(Stepper *stepper);          // calculates remaining target
+
+uint32_t calculateRemainingTarget(Stepper *stepper); // calculates remaining target
 
 #endif // STEPPER_CALCULATOR_H

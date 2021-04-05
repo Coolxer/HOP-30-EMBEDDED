@@ -11,4 +11,6 @@ void stepper_setPeripherals(Stepper *stepper); /* calls all setups */
 void stepper_stopTimers(Stepper *stepper); // stop timers
 uint8_t stepper_reload(Stepper *stepper);  // try reloads arr register value of slave timer if needed (overflow), info if RELOADED or NOT_RELOADED
 
+void stepper_setSpeedRegisters(Stepper *stepper, uint16_t psc, uint16_t arr, uint16_t pul);
+
 #endif // STEPPER_PERIPHERAL_H
