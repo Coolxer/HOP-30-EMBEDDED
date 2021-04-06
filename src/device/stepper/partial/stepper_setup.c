@@ -2,16 +2,16 @@
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_helper.h"
 
-void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, Hardware hardware, Speed speed, Acceleration acceleration)
+void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, GPIO_TypeDef *port, TIM_HandleTypeDef *masterTimer, TIM_HandleTypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable)
 {
     stepper->info = stepper_info_init(axisType, name);
-    stepper->instance = stepper_instance_init();
 
-    stepper->hardware = hardware;
-    stepper->speed = speed;
-    stepper->acceleration = acceleration;
-
+    stepper->hardware = stepper_hardware_init(port, masterTimer, slaveTimer, alternateFunction, channel, itr, irq, step, dir, enable);
+    stepper->speed = stepper_speed_init();
+    stepper->acceleration = stepper_acceleration_init();
     stepper->movement = stepper_movement_init();
+
+    stepper->state = OFF;
 
     stepper_setPeripherals(stepper);
 }

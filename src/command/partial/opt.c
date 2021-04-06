@@ -9,7 +9,6 @@ void opt_init()
     strcpy((void *)OPT.CONFIGURE, "cfg\0");
     strcpy((void *)OPT.SWITCH, "sth\0");
     strcpy((void *)OPT.MOVE, "mov\0");
-    strcpy((void *)OPT.HOME, "hom\0");
     strcpy((void *)OPT.PROCESS, "pro\0");
 
     strcpy((void *)OPT.PAUSE, "pau\0");

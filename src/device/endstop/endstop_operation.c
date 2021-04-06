@@ -18,7 +18,7 @@ void endstop_debounce(Endstop *endstop)
     }
     else
     {
-        if ((HAL_GetTick() - endstop->time) >= DEBOUNCE_TIME) // time interval counted up
+        if ((HAL_GetTick() - endstop->time) >= DEBOUNCE_TIME) // time interval counted up (finished)
         {
             endstop->CLICKED_FLAG = endstop->DEBOUNCING_FLAG = RESET;
 

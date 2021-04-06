@@ -45,11 +45,9 @@ uint8_t *proceed_operation(uint8_t *idx, uint8_t *opt, uint8_t ***args)
 {
 	// checks operation (opt) mode and calls appropriate prepare_function
 	if (validate_key(OPT.CONFIGURE, opt) == ERR.NO_ERROR)
-		return prepare_configuration(idx, args);
+		return prepare_configure(idx, args);
 	else if (validate_key(OPT.SWITCH, opt) == ERR.NO_ERROR)
 		return prepare_switch(idx, args);
-	else if (validate_key(OPT.HOME, opt) == ERR.NO_ERROR)
-		return prepare_home(idx, args);
 	else if (validate_key(OPT.MOVE, opt) == ERR.NO_ERROR)
 		return prepare_move(idx, args);
 	else if (validate_key(OPT.PROCESS, opt) == ERR.NO_ERROR)

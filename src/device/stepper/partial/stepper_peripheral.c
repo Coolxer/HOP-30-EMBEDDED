@@ -102,8 +102,8 @@ void stepper_stopTimers(Stepper *stepper)
 {
     HAL_TIM_PWM_Stop(&stepper->hardware.masterTimer, stepper->hardware.channel); // stop masterTimer
 
-    if (getState(stepper) == MOVING)                  // check if stepper is in MOVING state i need to stop slaveTimer too
-        HAL_TIM_Base_Stop_IT(getSlaveTimer(stepper)); // stop slaveTimer
+    if (getMoveType(stepper) == PRECISED)
+        HAL_TIM_Base_Stop_IT(getSlaveTimer(stepper));
 
     __HAL_TIM_SET_COUNTER(getSlaveTimer(stepper), 0);         // reset slaveTimer counter
     __HAL_TIM_SET_COUNTER(&stepper->hardware.masterTimer, 0); // reset masterTimer counter
@@ -128,7 +128,7 @@ uint8_t stepper_reload(Stepper *stepper)
 
         setTarget(stepper, target);
 
-        if (getState(stepper) == MOVING)
+        if (getMoveType(stepper) == PRECISED)
             setStepsNeededToAccelerate(stepper, getStepsNeededToAccelerate(stepper) + ((uint32_t)MAX_16BIT_VALUE - 1));
 
         return 1; // reloaded

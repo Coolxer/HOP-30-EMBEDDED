@@ -8,7 +8,6 @@ typedef struct
     uint8_t CONFIGURE[4],
         SWITCH[4],
         MOVE[4],
-        HOME[4],
         PROCESS[4],
 
         PAUSE[4],

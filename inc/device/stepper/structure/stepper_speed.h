@@ -8,15 +8,8 @@
 
 typedef struct
 {
-    float min,
-        max,
-
-        current, // current speed is increasing / decreasing in time (only if acceleration is set, otherwise current is target speed initially)
-        target,  // destination speed set by user
-
-        homeFastBackward,
-        homeSlowForward,
-        homePreciseBackward;
+    float current, // current speed is increasing / decreasing in time (only if acceleration is set, otherwise current is target speed initially)
+        target;    // destination speed set by user
 
     uint32_t lastTimeUpdate; // last time speed was updated (using to smooth accelerate)
 
@@ -24,6 +17,6 @@ typedef struct
     enum SpeedState state;
 } Speed;
 
-Speed stepper_speed_init(float min, float max, float homeFastBackward, float homeSlowForward, float homePreciseBackward);
+Speed stepper_speed_init();
 
 #endif // STEPPER_SPEED_H

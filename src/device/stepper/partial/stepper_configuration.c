@@ -61,8 +61,8 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
         newSpeed = getTargetSpeed(stepper);
         setSpeedState(stepper, CONSTANT);
 
-        // deceleration have sense only in MOVING mode (not HOMING), => then need to know how many steps acceleration takes
-        if (getState(stepper) == MOVING)
+        // deceleration have sense only in PRECISED move, => then need to know how many steps acceleration takes
+        if (getMoveType(stepper) == PRECISED)
         {
             setStepsNeededToAccelerate(stepper, calculateStepsNeededToAccelerate(stepper));
             setCurrentAcceleration(stepper, getCurrentAcceleration(stepper) * -1.0f);

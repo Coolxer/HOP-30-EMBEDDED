@@ -3,9 +3,10 @@
 
 #include "stm32f4xx_hal.h"
 
+#include "device/stepper/enum/state.h"
+
 #include "device/stepper/structure/stepper_hardware.h"
 #include "device/stepper/structure/stepper_info.h"
-#include "device/stepper/structure/stepper_instance.h"
 
 #include "device/stepper/structure/stepper_speed.h"
 #include "device/stepper/structure/stepper_acceleration.h"
@@ -27,11 +28,12 @@ typedef struct
 {
     Hardware hardware;
     Info info;
-    Instance instance;
 
     Speed speed;
     Acceleration acceleration;
     Movement movement;
+
+    enum State state;
 
     Endstop *minEndstop;
     Endstop *maxEndstop;

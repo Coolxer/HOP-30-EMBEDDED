@@ -5,11 +5,9 @@
 
 typedef struct
 {
-    uint8_t name[2]; // 2-characters name
-
-    GPIO_TypeDef *port; // gpio port
-    uint16_t pin;       // endstop pin
-    uint8_t irq;        // external interrupt name pointer
+    GPIO_TypeDef *port;
+    uint16_t pin;
+    uint8_t irq; // external interrupt name pointer
 
     uint32_t time; // current time (for DEBOUNCE)
 

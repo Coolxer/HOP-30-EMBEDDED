@@ -16,7 +16,7 @@
 #include "device/stepper/partial/stepper_helper.h"
 
 // e.g [spp=x|spd=14.16|acc=1.0]
-uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args)
+uint8_t *prepare_configure(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
 	uint8_t *feedback = EMPTY;
@@ -37,21 +37,15 @@ uint8_t *prepare_configuration(uint8_t *idx, uint8_t ***args)
 					feedback = cmd_builder_buildErr(idx, ERR.NO_ACCELERATION_KEY);
 				else
 				{
-					uint8_t speedCode = validate_setSpeed(stepper, args[1][1]);
-					uint8_t accelCode = validate_setAcceleration(stepper, args[2][1]);
+					uint8_t code = validate_configure(stepper, args[1][1], args[2][1]);
 
-					if (speedCode == ERR.NO_ERROR && accelCode == ERR.NO_ERROR)
+					if (code == ERR.NO_ERROR)
 					{
 						stepper_configure(stepper, convertStrToFloat(args[1][1]), convertStrToFloat(args[2][1]));
 						feedback = cmd_builder_buildFin(idx);
 					}
 					else
-					{
-						if (speedCode != ERR.NO_ERROR)
-							feedback = cmd_builder_buildErr(idx, speedCode);
-						else
-							feedback = cmd_builder_buildErr(idx, accelCode);
-					}
+						feedback = cmd_builder_buildErr(idx, code);
 				}
 			}
 		}
@@ -90,44 +84,6 @@ uint8_t *prepare_switch(uint8_t *idx, uint8_t ***args)
 				else
 					feedback = cmd_builder_buildErr(idx, code);
 			}
-		}
-	}
-
-	free(args);
-
-	return feedback;
-}
-
-// e.g [spp=x|dir=0]
-uint8_t *prepare_home(uint8_t *idx, uint8_t ***args)
-{
-	Stepper *stepper = NULL;
-	uint8_t *feedback = EMPTY;
-
-	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
-		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
-	else
-	{
-		if (!(stepper = device_manager_getStepper(args[0][1])))
-			feedback = cmd_builder_buildErr(idx, ERR.INVALID_STEPPER_VALUE);
-		else
-		{
-			uint8_t code = validate_home(stepper);
-
-			if (code == ERR.NO_ERROR)
-			{
-				stepper_home(stepper, FAST_BACKWARD);
-
-				if (getState(stepper) == HOMING) // check if HOMING really started (mby it is already homed)
-				{
-					feedback = cmd_builder_buildPas(idx);
-					setIndex(stepper, idx);
-				}
-				else // if it is already homed
-					feedback = cmd_builder_buildFin(idx);
-			}
-			else
-				feedback = cmd_builder_buildErr(idx, code);
 		}
 	}
 

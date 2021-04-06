@@ -6,7 +6,7 @@
 
 void stepper_pause(Stepper *stepper)
 {
-    if (getState(stepper) == MOVING) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
+    if (getMoveType(stepper) == PRECISED) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
     {
         uint16_t rest = (uint16_t)(getCurrentTarget(stepper) - getProgress(stepper));
 
@@ -23,15 +23,12 @@ void stepper_pause(Stepper *stepper)
     setSpeedState(stepper, CONSTANT);
     setCurrentSpeed(stepper, 0.0f);
 
-    // service stepper state
-    updateLastState(stepper);  // save current state to recover
     setState(stepper, PAUSED); // update current state
 }
 
 void stepper_resume(Stepper *stepper)
 {
-    // if stepper was in MOVING state before pause, we need to set target and counter to previous values
-    if (getLastState(stepper) == MOVING)
+    if (getMoveType(stepper) == PRECISED)
     {
         __HAL_TIM_SET_COUNTER(getSlaveTimer(stepper), 0);
         __HAL_TIM_SET_AUTORELOAD(getSlaveTimer(stepper), getRest(stepper));
@@ -41,7 +38,7 @@ void stepper_resume(Stepper *stepper)
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // enable masterTimer
 
     stepper_initAcceleration(stepper, RAISING);
-    setState(stepper, getLastState(stepper)); // recover state
+    setState(stepper, MOVING); // recover state
 }
 
 void stepper_stop(Stepper *stepper)

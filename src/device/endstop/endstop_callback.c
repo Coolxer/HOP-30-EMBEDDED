@@ -1,63 +1,29 @@
 #include "device/endstop/partial/endstop_callback.h"
 
-#include "command/partial/data_assistant.h"
-
-#include "device/stepper/stepper.h"
-#include "device/stepper/partial/stepper_callback.h"
-#include "device/stepper/partial/stepper_intervention.h"
-#include "device/stepper/partial/stepper_operation.h"
-
 #include "command/cmd_builder.h"
 #include "communication/uart.h"
+
+#include "device/stepper/stepper.h"
 #include "device/stepper/partial/stepper_helper.h"
+#include "device/stepper/partial/stepper_intervention.h"
 
 #include "process.h"
-
-enum
-{
-    HOME_FINISHED = 1,
-    HOME_CONTINUE = 0,
-};
-
-uint8_t endstop_homeCallback(Stepper *stepper)
-{
-    if (getHomeStep(stepper) == FAST_BACKWARD) // first step of home
-    {
-        stepper_home(stepper, SLOW_FORWARD);
-        return HOME_CONTINUE;
-    }
-
-    return HOME_FINISHED;
-}
 
 // [CALLED FROM MAIN LOOP]
 void endstopClickedCallback(Endstop *endstop)
 {
     Stepper *stepper = device_manager_findParentStepper(endstop);
 
-    if (PROCESS_FORWARD || getState(stepper) == HOMING || getState(stepper) == MOVING)
-    {
-
-        if ((getDirection(stepper) == LEFT || getDirection(stepper) == DOWN) && endstop == stepper->minEndstop)
-
-            else if ((getDirection(stepper) == RIGHT || getDirection(stepper) == UP) && endstop == stepper->maxEndstop)
-    }
-
-    /*
-    // process is currenty running && forward moving && clicked MAX X endstop
-    if (PROCESS_FORWARD && stringEqual(endstop->name, (uint8_t *)"XR")) // cannot compares strings like here
+    if (PROCESSING)
         process_reverse();
-
-    // check if parent stepper is currently running to avoid random signal or press by hand
-    else if (getState(stepper) == HOMING || getState(stepper) == MOVING)
+    else if (getState(stepper) == MOVING)
     {
-        // first condition is to be sure the endstop will not stop stepper if it homing and outgoing
-        if (getHomeStep(stepper) == SLOW_FORWARD || endstop_homeCallback(stepper) == HOME_CONTINUE)
-            return;
+        if ((endstop == stepper->minEndstop && getDirection(stepper) == LEFT) ||
+            (endstop == stepper->maxEndstop && getDirection(stepper) == RIGHT))
+        {
+            stepper_stop(stepper);
 
-        stepper_stop(stepper);
-
-        uart_send(cmd_builder_buildFin(getIndex(stepper))); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
+            uart_send(cmd_builder_buildFin(getIndex(stepper)));
+        }
     }
-    */
 }

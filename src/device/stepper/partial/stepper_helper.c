@@ -26,16 +26,6 @@ void setIndex(Stepper *stepper, uint8_t *index)
 
 /* ACCELERATION SECTION */
 
-float getMinAcceleration(Stepper *stepper)
-{
-    return stepper->acceleration.min;
-}
-
-float getMaxAcceleration(Stepper *stepper)
-{
-    return stepper->acceleration.max;
-}
-
 float getCurrentAcceleration(Stepper *stepper)
 {
     return stepper->acceleration.current;
@@ -44,21 +34,6 @@ float getCurrentAcceleration(Stepper *stepper)
 void setCurrentAcceleration(Stepper *stepper, float acceleration)
 {
     stepper->acceleration.current = acceleration;
-}
-
-float getHomeFastBackwardAcceleration(Stepper *stepper)
-{
-    return stepper->acceleration.homeFastBackward;
-}
-
-float getHomeSlowForwardAcceleration(Stepper *stepper)
-{
-    return stepper->acceleration.homeSlowForward;
-}
-
-float getHomePreciseBackwardAcceleration(Stepper *stepper)
-{
-    return stepper->acceleration.homePreciseBackward;
 }
 
 uint32_t getStepsNeededToAccelerate(Stepper *stepper)
@@ -72,40 +47,6 @@ void setStepsNeededToAccelerate(Stepper *stepper, uint32_t steps)
 }
 
 /* END OF ACCELERATION SECTION */
-
-/* INSTANCE SECTION */
-
-enum State getState(Stepper *stepper)
-{
-    return stepper->instance.state;
-}
-
-void setState(Stepper *stepper, enum State state)
-{
-    stepper->instance.state = state;
-}
-
-enum State getLastState(Stepper *stepper)
-{
-    return stepper->instance.lastState;
-}
-
-void updateLastState(Stepper *stepper)
-{
-    stepper->instance.lastState = stepper->instance.state;
-}
-
-enum HomeStep getHomeStep(Stepper *stepper)
-{
-    return stepper->instance.homeStep;
-}
-
-void setHomeStep(Stepper *stepper, enum HomeStep step)
-{
-    stepper->instance.homeStep = step;
-}
-
-/* END OF INSTANCE SECTION */
 
 /* MOVEMENT SECTION */
 
@@ -129,19 +70,19 @@ void setTarget(Stepper *stepper, uint32_t target)
     stepper->movement.target = target;
 }
 
+enum MoveType getMoveType(Stepper *stepper)
+{
+    return stepper->movement.type;
+}
+
+void setMoveType(Stepper *stepper, enum MoveType type)
+{
+    stepper->movement.type = type;
+}
+
 /* END OF MOVEMENT SECTION */
 
 /* SPEED SECTION */
-
-float getMinSpeed(Stepper *stepper)
-{
-    return stepper->speed.min;
-}
-
-float getMaxSpeed(Stepper *stepper)
-{
-    return stepper->speed.max;
-}
 
 float getCurrentSpeed(Stepper *stepper)
 {
@@ -161,21 +102,6 @@ float getTargetSpeed(Stepper *stepper)
 void setTargetSpeed(Stepper *stepper, float speed)
 {
     stepper->speed.target = speed;
-}
-
-float getHomeFastBackwardSpeed(Stepper *stepper)
-{
-    return stepper->speed.homeFastBackward;
-}
-
-float getHomeSlowForwardSpeed(Stepper *stepper)
-{
-    return stepper->speed.homeSlowForward;
-}
-
-float getHomePreciseBackwardSpeed(Stepper *stepper)
-{
-    return stepper->speed.homePreciseBackward;
 }
 
 uint32_t getLastTimeUpdate(Stepper *stepper)
@@ -228,6 +154,16 @@ uint32_t getProgress(Stepper *stepper)
 }
 
 /* END OF HARDWARE SECTION */
+
+enum State getState(Stepper *stepper)
+{
+    return stepper->state;
+}
+
+void setState(Stepper *stepper, enum State state)
+{
+    stepper->state = state;
+}
 
 uint8_t getDirection(Stepper *stepper)
 {
