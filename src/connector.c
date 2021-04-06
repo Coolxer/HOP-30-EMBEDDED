@@ -44,7 +44,7 @@ uint8_t ***connector_parse(uint8_t *dialog)
 uint8_t *proceed_operation(uint8_t *idx, uint8_t *opt, uint8_t ***args)
 {
 	// checks operation (opt) mode and calls appropriate prepare_function
-	if (validate_key(OPT.SET_SPEED, opt) == ERR.NO_ERROR)
+	if (validate_key(OPT.CONFIGURE, opt) == ERR.NO_ERROR)
 		return prepare_configuration(idx, args);
 	else if (validate_key(OPT.SWITCH, opt) == ERR.NO_ERROR)
 		return prepare_switch(idx, args);

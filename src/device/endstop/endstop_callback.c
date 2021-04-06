@@ -35,6 +35,15 @@ void endstopClickedCallback(Endstop *endstop)
 {
     Stepper *stepper = device_manager_findParentStepper(endstop);
 
+    if (PROCESS_FORWARD || getState(stepper) == HOMING || getState(stepper) == MOVING)
+    {
+
+        if ((getDirection(stepper) == LEFT || getDirection(stepper) == DOWN) && endstop == stepper->minEndstop)
+
+            else if ((getDirection(stepper) == RIGHT || getDirection(stepper) == UP) && endstop == stepper->maxEndstop)
+    }
+
+    /*
     // process is currenty running && forward moving && clicked MAX X endstop
     if (PROCESS_FORWARD && stringEqual(endstop->name, (uint8_t *)"XR")) // cannot compares strings like here
         process_reverse();
@@ -42,15 +51,13 @@ void endstopClickedCallback(Endstop *endstop)
     // check if parent stepper is currently running to avoid random signal or press by hand
     else if (getState(stepper) == HOMING || getState(stepper) == MOVING)
     {
-        if (getState(stepper) == HOMING)
-        {
-            // first condition is to be sure the endstop will not stop stepper if it homing and outgoing
-            if (getHomeStep(stepper) == SLOW_FORWARD || endstop_homeCallback(stepper) == HOME_CONTINUE)
-                return;
-        }
+        // first condition is to be sure the endstop will not stop stepper if it homing and outgoing
+        if (getHomeStep(stepper) == SLOW_FORWARD || endstop_homeCallback(stepper) == HOME_CONTINUE)
+            return;
 
         stepper_stop(stepper);
 
         uart_send(cmd_builder_buildFin(getIndex(stepper))); // this is info mainly for end HOME operation, but mby can happen in normal move if overtaken
     }
+    */
 }

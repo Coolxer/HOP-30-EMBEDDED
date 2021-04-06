@@ -127,10 +127,10 @@ void manageSteppers()
     {
         Stepper *stepper = &steppers[i];
 
-        if (getFinishedFlag(stepper))
+        if (stepper->movement.FINISHED_FLAG)
             stepperFinishedCallback(stepper);
         else
-            stepper_process(stepper);
+            stepper_process(stepper); // stepper real-time movement
     }
 }
 

@@ -8,7 +8,7 @@ void stepper_pause(Stepper *stepper)
 {
     if (getState(stepper) == MOVING) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
     {
-        uint16_t rest = (uint16_t)(getCurrentDestination(stepper) - getProgress(stepper)); // MAX_16BITVALUE
+        uint16_t rest = (uint16_t)(getCurrentTarget(stepper) - getProgress(stepper));
 
         // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
         if (rest > 0 && (getSlaveTimer(stepper)->Instance == TIM2 || getSlaveTimer(stepper)->Instance == TIM5))
@@ -19,10 +19,11 @@ void stepper_pause(Stepper *stepper)
 
     stepper_stopTimers(stepper); // stop timers
 
-    updateLastSpeedState(stepper);
+    // service speed state
     setSpeedState(stepper, CONSTANT);
     setCurrentSpeed(stepper, 0.0f);
 
+    // service stepper state
     updateLastState(stepper);  // save current state to recover
     setState(stepper, PAUSED); // update current state
 }
@@ -39,9 +40,7 @@ void stepper_resume(Stepper *stepper)
 
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // enable masterTimer
 
-    setSpeedState(stepper, getLastSpeedState(stepper));
     stepper_initAcceleration(stepper, RAISING);
-
     setState(stepper, getLastState(stepper)); // recover state
 }
 
@@ -50,9 +49,8 @@ void stepper_stop(Stepper *stepper)
     stepper_stopTimers(stepper);
     stepper_resetSpeed(stepper);
 
-    setGeneralTarget(stepper, 0);
+    setTarget(stepper, 0);
     setState(stepper, ON);
-    setHomeStep(stepper, FAST_BACKWARD);
 }
 
 void stepper_emergency_shutdown(Stepper *stepper)

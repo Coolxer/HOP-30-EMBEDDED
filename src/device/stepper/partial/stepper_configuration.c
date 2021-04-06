@@ -22,17 +22,16 @@ void stepper_updateSpeed(Stepper *stepper, float speed)
 void stepper_configure(Stepper *stepper, float speed, float acceleration)
 {
     setTargetSpeed(stepper, speed);
-    setCurrentAcceleration(stepper, acceleration);
 
     if (acceleration > 0.0f)
     {
         setCurrentAcceleration(stepper, acceleration / 1000.0f); // save acceleration in milliseconds instead of seconds
-
         stepper_updateSpeed(stepper, 0.0f);
         setSpeedType(stepper, DYNAMIC);
     }
     else
     {
+        setCurrentAcceleration(stepper, 0.0f);
         stepper_updateSpeed(stepper, speed);
         setSpeedType(stepper, STATIC);
     }
@@ -45,7 +44,7 @@ void stepper_initAcceleration(Stepper *stepper, enum SpeedState state)
     if (getSpeedType(stepper) == STATIC)
         return;
 
-    setSpeedState(stepper, state);
+    setSpeedState(stepper, state); // state == RAISING || FALLING
     updateLastTime(stepper);
 }
 
@@ -65,12 +64,23 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
         // deceleration have sense only in MOVING mode (not HOMING), => then need to know how many steps acceleration takes
         if (getState(stepper) == MOVING)
         {
-            setCurrentAcceleration(stepper, getCurrentAcceleration(stepper) * -1.0f);
             setStepsNeededToAccelerate(stepper, calculateStepsNeededToAccelerate(stepper));
+            setCurrentAcceleration(stepper, getCurrentAcceleration(stepper) * -1.0f);
         }
     }
 
     stepper_updateSpeed(stepper, newSpeed);
+}
+
+void stepper_resetSpeed(Stepper *stepper)
+{
+    setCurrentSpeed(stepper, 0.0f);
+
+    float acceleration = getCurrentAcceleration(stepper);
+    if (acceleration < 0.0f)
+        setCurrentAcceleration(stepper, acceleration * -1.0f);
+
+    setStepsNeededToAccelerate(stepper, 0);
 }
 
 void stepper_setDirection(Stepper *stepper, uint8_t direction)
@@ -88,14 +98,4 @@ void stepper_changeDirection(Stepper *stepper)
 {
     stepper_changeDirectionImmediately(stepper);
     wait(5); // need wait minimum 5us after change direction before go
-}
-
-void stepper_resetSpeed(Stepper *stepper)
-{
-    setCurrentSpeed(stepper, 0.0f);
-
-    if (getCurrentAcceleration(stepper) < 0.0f)
-        setCurrentAcceleration(stepper, getCurrentAcceleration(stepper) * -1.0f);
-
-    setStepsNeededToAccelerate(stepper, 0);
 }

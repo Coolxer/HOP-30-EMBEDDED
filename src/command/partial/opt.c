@@ -6,7 +6,7 @@ opt OPT;
 
 void opt_init()
 {
-    strcpy((void *)OPT.SET_SPEED, "ses\0");
+    strcpy((void *)OPT.CONFIGURE, "cfg\0");
     strcpy((void *)OPT.SWITCH, "sth\0");
     strcpy((void *)OPT.MOVE, "mov\0");
     strcpy((void *)OPT.HOME, "hom\0");

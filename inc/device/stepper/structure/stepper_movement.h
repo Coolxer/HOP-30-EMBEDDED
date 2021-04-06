@@ -6,7 +6,7 @@
 typedef struct
 {
     uint16_t rest;   // number of steps needed to make after resume (saved at PAUSE)
-    uint32_t target; // long target (can be bigger than register size, but can be also equal) -> this have to been loaded to register in future
+    uint32_t target; // long-way target (can be bigger than register size, but can be also equal) -> this have to been loaded to register in future part-by-part
                      // future mean if current register counted up
 
     volatile uint8_t FINISHED_FLAG; // stepper finish movement flag

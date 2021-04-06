@@ -28,7 +28,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
         if (htim->Instance == getSlaveTimer(&steppers[i])->Instance) // check which timer send callback
         {
-            setFinishedFlag(&steppers[i], SET);
+            steppers[i].movement.FINISHED_FLAG = SET;
             break;
         }
     }

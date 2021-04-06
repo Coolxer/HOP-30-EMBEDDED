@@ -13,18 +13,16 @@
 void stepperFinishedCallback(Stepper *stepper)
 {
     // stepper counted up, try to reload registers, if not it is really end
-    uint8_t reload = stepper_reload(stepper);
+    if (stepper_reload(stepper))
+        return;
 
-    if (!reload)
-    {
-        stepper_stop(stepper);
-        setFinishedFlag(stepper, RESET);
+    stepper_stop(stepper);
+    stepper->movement.FINISHED_FLAG = RESET;
 
-        // if the movoment was homing'outgoing, then continue move
-        if (getHomeStep(stepper) == SLOW_FORWARD)
-            stepper_home(stepper, PRECISE_BACKWARD);
+    // if the movoment was homing'outgoing, then continue move
+    if (getHomeStep(stepper) == SLOW_FORWARD)
+        stepper_home(stepper, PRECISE_BACKWARD);
 
-        else // if the movement was simple movement by user typing
-            uart_send(cmd_builder_buildFin(getIndex(stepper)));
-    }
+    else // if the movement was simple movement by user typing
+        uart_send(cmd_builder_buildFin(getIndex(stepper)));
 }

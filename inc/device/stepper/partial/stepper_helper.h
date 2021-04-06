@@ -17,10 +17,10 @@
 enum AxisType getAxisType(Stepper *stepper);
 
 // stepper->info.name
-uint8_t getName(Stepper *stepper);
+uint8_t *getName(Stepper *stepper);
 
 // stepper->info.index
-uint8_t getIndex(Stepper *stepper);
+uint8_t *getIndex(Stepper *stepper);
 void setIndex(Stepper *stepper, uint8_t *index);
 
 /* END OF INFO SECTION */
@@ -73,12 +73,8 @@ uint16_t getRest(Stepper *stepper);
 void setRest(Stepper *stepper, uint16_t rest);
 
 // stepper->movement.target
-uint32_t getGeneralTarget(Stepper *stepper);
-void setGeneralTarget(Stepper *stepper, uint32_t target);
-
-// stepper->movement.FINISHED_FLAG
-uint8_t getFinishedFlag(Stepper *stepper);
-void setFinishedFlag(Stepper *stepper, uint8_t value);
+uint32_t getTarget(Stepper *stepper);
+void setTarget(Stepper *stepper, uint32_t target);
 
 /* END OF INSTANCE SECTION */
 
@@ -119,10 +115,6 @@ void setSpeedType(Stepper *stepper, enum SpeedType type);
 enum SpeedState getSpeedState(Stepper *stepper);
 void setSpeedState(Stepper *stepper, enum SpeedState state);
 
-// stepper->speed.lastState
-enum SpeedState getLastSpeedState(Stepper *stepper);
-void updateLastSpeedState(Stepper *stepper);
-
 /* END OF SPEED SECTION */
 
 /* HARDWARE SECTION */
@@ -131,11 +123,13 @@ void updateLastSpeedState(Stepper *stepper);
 TIM_HandleTypeDef *getSlaveTimer(Stepper *stepper);
 
 // stepper->hardware.slaveTimer.Instance.ARR
-uint32_t getCurrentDestination(Stepper *stepper);
+uint32_t getCurrentTarget(Stepper *stepper);
 
 // stepper->hardware.slaveTimer.Instance.CNT
 uint32_t getProgress(Stepper *stepper);
 
 /* END OF HARDWARE SECTION */
+
+uint8_t getDirection(Stepper *stepper);
 
 #endif // STEPPER_HELPER_H

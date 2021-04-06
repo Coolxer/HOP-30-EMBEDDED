@@ -8,9 +8,8 @@
 /* PRIVATE */                                  //void stepper_setupSlaveTimer(Stepper *stepper);  /* setups slave timer (that controls number of steps taken) */
 void stepper_setPeripherals(Stepper *stepper); /* calls all setups */
 
-void stepper_stopTimers(Stepper *stepper); // stop timers
-uint8_t stepper_reload(Stepper *stepper);  // try reloads arr register value of slave timer if needed (overflow), info if RELOADED or NOT_RELOADED
-
-void stepper_setSpeedRegisters(Stepper *stepper, uint16_t psc, uint16_t arr, uint16_t pul);
+void stepper_setSpeedRegisters(Stepper *stepper, uint16_t psc, uint16_t arr, uint16_t pul); // setups speed registers (ARR, PSC, PUL)
+void stepper_stopTimers(Stepper *stepper);                                                  // stop timers
+uint8_t stepper_reload(Stepper *stepper);                                                   // try reloads arr register value of slave timer if needed (overflow), info if RELOADED or NOT_RELOADED
 
 #endif // STEPPER_PERIPHERAL_H

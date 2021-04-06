@@ -1,5 +1,6 @@
 #include "device/stepper/partial/stepper_setup.h"
 #include "device/stepper/partial/stepper_peripheral.h"
+#include "device/stepper/partial/stepper_helper.h"
 
 void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, Hardware hardware, Speed speed, Acceleration acceleration)
 {

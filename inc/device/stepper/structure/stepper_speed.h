@@ -22,7 +22,6 @@ typedef struct
 
     enum SpeedType type;
     enum SpeedState state;
-    enum SpeedState lastState; // needed to service pause-resume
 } Speed;
 
 Speed stepper_speed_init(float min, float max, float homeFastBackward, float homeSlowForward, float homePreciseBackward);

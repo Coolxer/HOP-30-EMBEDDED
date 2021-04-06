@@ -62,9 +62,9 @@ void stepper_setupSlaveTimer(Stepper *stepper)
     TIM_SlaveConfigTypeDef slaveConfig = {0};
     TIM_MasterConfigTypeDef masterConfig = {0};
 
-    getSlaveTimer(stepper)->Init.Prescaler = 0;
-    getSlaveTimer(stepper)->Init.CounterMode = TIM_COUNTERMODE_UP;
-    getSlaveTimer(stepper)->Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    stepper->hardware.slaveTimer.Init.Prescaler = 0;
+    stepper->hardware.slaveTimer.Init.CounterMode = TIM_COUNTERMODE_UP;
+    stepper->hardware.slaveTimer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 
     HAL_TIM_Base_Init(getSlaveTimer(stepper));
 
@@ -91,6 +91,13 @@ void stepper_setPeripherals(Stepper *stepper)
     stepper_setupSlaveTimer(stepper);
 }
 
+void stepper_setSpeedRegisters(Stepper *stepper, uint16_t psc, uint16_t arr, uint16_t pul)
+{
+    __HAL_TIM_SET_PRESCALER(&stepper->hardware.masterTimer, psc);
+    __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.masterTimer, arr);
+    __HAL_TIM_SET_COMPARE(&stepper->hardware.masterTimer, stepper->hardware.channel, pul); // set pulse width
+}
+
 void stepper_stopTimers(Stepper *stepper)
 {
     HAL_TIM_PWM_Stop(&stepper->hardware.masterTimer, stepper->hardware.channel); // stop masterTimer
@@ -104,7 +111,7 @@ void stepper_stopTimers(Stepper *stepper)
 
 uint8_t stepper_reload(Stepper *stepper)
 {
-    uint32_t target = getGeneralTarget(stepper);
+    uint32_t target = getTarget(stepper);
 
     if (target > 0)
     {
@@ -119,7 +126,7 @@ uint8_t stepper_reload(Stepper *stepper)
             target = 0;
         }
 
-        setGeneralTarget(stepper, target);
+        setTarget(stepper, target);
 
         if (getState(stepper) == MOVING)
             setStepsNeededToAccelerate(stepper, getStepsNeededToAccelerate(stepper) + ((uint32_t)MAX_16BIT_VALUE - 1));
@@ -128,11 +135,4 @@ uint8_t stepper_reload(Stepper *stepper)
     }
 
     return 0; // not reloaded
-}
-
-void stepper_setSpeedRegisters(Stepper *stepper, uint16_t psc, uint16_t arr, uint16_t pul)
-{
-    __HAL_TIM_SET_PRESCALER(&stepper->hardware.masterTimer, psc);
-    __HAL_TIM_SET_AUTORELOAD(&stepper->hardware.masterTimer, arr);
-    __HAL_TIM_SET_COMPARE(&stepper->hardware.masterTimer, stepper->hardware.channel, pul); // set pulse width
 }

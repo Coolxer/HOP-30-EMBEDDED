@@ -78,7 +78,7 @@ Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed)
     return regs;
 }
 
-uint32_t convertWayToSteps(enum AxisType axisType, float way)
+uint32_t calculateTarget(enum AxisType axisType, float way)
 {
     // calc real steps need to make to move by given mm or deg.
     uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
@@ -91,7 +91,7 @@ float calculateSpeed(Stepper *stepper)
     uint32_t elapsedTime = (HAL_GetTick() - getLastTimeUpdate(stepper));
 
     // calculates increares / decrease of speed in time
-    float delta = (float)((uint32_t)(elapsedTime)*getCurrentAcceleration(stepper));
+    float delta = (float)(elapsedTime)*getCurrentAcceleration(stepper);
 
     // calculates new speed by delta
     float speed = getCurrentSpeed(stepper) + delta;
@@ -108,18 +108,18 @@ uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
 {
     uint32_t steps = getStepsNeededToAccelerate(stepper) + getProgress(stepper);
 
-    float safetyBarier = 0.01f * steps;
+    float safetyBarier = 0.01f * (float)steps;
 
     // add safety barier [in deceleration to not zero speed if there are steps to be done]
     // beacause adding 1% (it may the stepper speed will not falling to really 0 but its ok)
-    steps = (uint32_t)round(steps - safetyBarier);
+    steps = (uint32_t)round(steps - (uint32_t)safetyBarier);
 
     return steps;
 }
 
 uint32_t calculateRemainingTarget(Stepper *stepper)
 {
-    uint32_t target = getGeneralTarget(stepper) + (getCurrentDestination(stepper) - getProgress(stepper));
+    uint32_t target = getTarget(stepper) + (getCurrentTarget(stepper) - getProgress(stepper));
 
     return target;
 }

@@ -1,5 +1,6 @@
 #include "device/stepper/partial/stepper_operation.h"
 
+#include "device/stepper/config/stepper_config.h"
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_configuration.h"
 #include "device/stepper/partial/stepper_calculator.h"
@@ -7,11 +8,9 @@
 
 #include "device/endstop/partial/endstop_operation.h"
 
-float ENDSTOP_OUTGOING_WAY = 20.0f; // way to get out of endstop range
-
 void stepper_switch(Stepper *stepper, uint8_t state)
 {
-    if (getState(stepper) == state) // check if state is not currently exists
+    if (getState(stepper) != state) // check if state is not currently exists
     {
         HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.enable, state); // switches the stepper (OFF or ON)
         setState(stepper, state);
@@ -53,16 +52,14 @@ void stepper_home(Stepper *stepper, uint8_t step)
 
 void stepper_move(Stepper *stepper, float way, uint8_t direction)
 {
-    uint32_t target = convertWayToSteps(getAxisType(stepper), way);
+    uint32_t target = calculateTarget(getAxisType(stepper), way);
 
     // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
     if (getSlaveTimer(stepper)->Instance == TIM2 || getSlaveTimer(stepper)->Instance == TIM5)
         target--;
 
-    setGeneralTarget(stepper, target);
-
+    setTarget(stepper, target);
     stepper_setDirection(stepper, direction);
-
     stepper_reload(stepper);
 
     stepper_switch(stepper, UP);

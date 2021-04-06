@@ -5,6 +5,8 @@
 #include "device/stepper/structure/stepper_speed.h"
 #include "device/stepper/structure/stepper_acceleration.h"
 
+#define ENDSTOP_OUTGOING_WAY 20.0f // way to get out of endstop range
+
 typedef struct
 {
     Hardware hardware;
