@@ -3,12 +3,13 @@
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_configuration.h"
 #include "device/stepper/partial/stepper_helper.h"
+#include "device/stepper/partial/stepper_calculator.h"
 
 void stepper_pause(Stepper *stepper)
 {
     if (getMoveType(stepper) == PRECISED) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
     {
-        uint16_t rest = (uint16_t)(getCurrentTarget(stepper) - getProgress(stepper));
+        uint16_t rest = calculateRemainingSteps(stepper);
 
         // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
         if (rest > 0 && (getSlaveTimer(stepper)->Instance == TIM2 || getSlaveTimer(stepper)->Instance == TIM5))
@@ -19,9 +20,7 @@ void stepper_pause(Stepper *stepper)
 
     stepper_stopTimers(stepper); // stop timers
 
-    // service speed state
     setSpeedState(stepper, CONSTANT);
-    setCurrentSpeed(stepper, 0.0f);
 
     setState(stepper, PAUSED); // update current state
 }
@@ -37,7 +36,7 @@ void stepper_resume(Stepper *stepper)
 
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // enable masterTimer
 
-    stepper_initAcceleration(stepper, RAISING);
+    // stepper_initAcceleration(stepper, RAISING);
     setState(stepper, MOVING); // recover state
 }
 
@@ -46,7 +45,7 @@ void stepper_stop(Stepper *stepper)
     stepper_stopTimers(stepper);
     stepper_resetSpeed(stepper);
 
-    setTarget(stepper, 0);
+    setUnloadedSteps(stepper, 0);
     setState(stepper, ON);
 }
 

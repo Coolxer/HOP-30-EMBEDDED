@@ -3,7 +3,18 @@
 
 #include "device/device_manager.h"
 
-extern volatile uint8_t PROCESSING;
+/* Process State
+    * 0 - LINEAR (X, Y, Z)
+    * 1 - CIRCULAR (W, K)
+*/
+enum ProcessState
+{
+    NONE = 0,
+    FORWARD = 1,
+    BACKWARD = 2
+};
+
+extern volatile enum ProcessState PROCESSING;
 
 void process_init(uint8_t *idx, uint8_t direction); // inits process
 void process_reverse();                             //  reverses direction on "half" process,

@@ -11,14 +11,10 @@ uint8_t validate_boolean(uint8_t *value)
     return ERR.ERROR;
 }
 
-uint8_t validate_float(uint8_t *value, uint8_t allowZero)
+uint8_t validate_float(uint8_t *value)
 {
     uint8_t i = 0;
     uint8_t length = stringLength(value);
-
-    // allow zero to 0 acceleration if set
-    if (allowZero && stringEqual(value, (uint8_t *)"0"))
-        return ERR.NO_ERROR;
 
     // mask [000.00]
 

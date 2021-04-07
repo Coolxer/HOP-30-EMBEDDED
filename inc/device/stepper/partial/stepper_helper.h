@@ -42,9 +42,9 @@ void setStepsNeededToAccelerate(Stepper *stepper, uint32_t steps);
 uint16_t getRest(Stepper *stepper);
 void setRest(Stepper *stepper, uint16_t rest);
 
-// stepper->movement.target
-uint32_t getTarget(Stepper *stepper);
-void setTarget(Stepper *stepper, uint32_t target);
+// stepper->movement.unloadedSteps
+uint32_t getUnloadedSteps(Stepper *stepper);
+void setUnloadedSteps(Stepper *stepper, uint32_t steps);
 
 // stepper->movement.type
 enum MoveType getMoveType(Stepper *stepper);
@@ -82,7 +82,7 @@ void setSpeedState(Stepper *stepper, enum SpeedState state);
 TIM_HandleTypeDef *getSlaveTimer(Stepper *stepper);
 
 // stepper->hardware.slaveTimer.Instance.ARR
-uint32_t getCurrentTarget(Stepper *stepper);
+uint32_t getTarget(Stepper *stepper);
 
 // stepper->hardware.slaveTimer.Instance.CNT
 uint32_t getProgress(Stepper *stepper);

@@ -22,13 +22,13 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction)
     {
         setMoveType(stepper, PRECISED);
 
-        uint32_t target = calculateTarget(getAxisType(stepper), way);
+        uint32_t steps = convertWayToSteps(getAxisType(stepper), way);
 
         // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
         if (getSlaveTimer(stepper)->Instance == TIM2 || getSlaveTimer(stepper)->Instance == TIM5)
-            target--;
+            steps--;
 
-        setTarget(stepper, target);
+        setUnloadedSteps(stepper, steps);
         stepper_reload(stepper);
     }
     else
@@ -41,17 +41,16 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction)
 
 void stepper_run(Stepper *stepper)
 {
-    setState(stepper, MOVING);
-
-    if (getState(stepper) == PRECISED)
+    if (getMoveType(stepper) == PRECISED)
         HAL_TIM_Base_Start_IT(getSlaveTimer(stepper));
 
     HAL_TIM_PWM_Start(&stepper->hardware.masterTimer, stepper->hardware.channel); // starts moving
 
     stepper_initAcceleration(stepper, RAISING);
+    setState(stepper, MOVING);
 }
 
-void stepper_process(Stepper *stepper)
+void stepper_watchdog(Stepper *stepper)
 {
     if (getState(stepper) == MOVING)
     {
@@ -66,7 +65,7 @@ void stepper_process(Stepper *stepper)
                 {
                     // check if target is less or equal to number of steps needed for deceleration (same value as acceleration)
                     // then start to deceleration
-                    if (calculateRemainingTarget(stepper) <= getStepsNeededToAccelerate(stepper))
+                    if ((getUnloadedSteps(stepper) + calculateRemainingSteps(stepper)) <= getStepsNeededToAccelerate(stepper))
                         stepper_initAcceleration(stepper, FALLING);
                 }
             }

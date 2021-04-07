@@ -7,9 +7,9 @@
 
 typedef struct
 {
-    uint16_t rest;   // number of steps needed to make after resume (saved at PAUSE)
-    uint32_t target; // long-way target (can be bigger than register size, but can be also equal) -> this have to been loaded to register in future part-by-part
-                     // future mean if current register counted up
+    uint16_t rest;          // number of steps needed to make after resume (saved at PAUSE)
+    uint32_t unloadedSteps; // can be bigger than register size, but can be also equal -> this have to been loaded to register in future part-by-part
+                            // future mean if current register counted up
 
     enum MoveType type;
 

@@ -8,21 +8,16 @@
 // calls multiple times with acceleration / deceleration
 void stepper_updateSpeed(Stepper *stepper, float speed)
 {
-    if (getSpeedType(stepper) == DYNAMIC)
-        updateLastTime(stepper);
-
+    updateLastTime(stepper);
     setCurrentSpeed(stepper, speed);
 
     Speed_params regs = convertSpeedToRegisters(getAxisType(stepper), speed);
-
     stepper_setSpeedRegisters(stepper, regs.psc, regs.arr, regs.pul);
 }
 
 // calls by user command
 void stepper_configure(Stepper *stepper, float speed, float acceleration)
 {
-    setTargetSpeed(stepper, speed);
-
     if (acceleration > 0.0f)
     {
         setCurrentAcceleration(stepper, acceleration / 1000.0f); // save acceleration in milliseconds instead of seconds
@@ -36,19 +31,17 @@ void stepper_configure(Stepper *stepper, float speed, float acceleration)
         setSpeedType(stepper, STATIC);
     }
 
+    setTargetSpeed(stepper, speed);
     setSpeedState(stepper, CONSTANT);
 }
 
 void stepper_initAcceleration(Stepper *stepper, enum SpeedState state)
 {
-    if (getSpeedType(stepper) == STATIC)
-        return;
-
     setSpeedState(stepper, state); // state == RAISING || FALLING
     updateLastTime(stepper);
 }
 
-// cals multiple times
+// calls multiple times
 void stepper_accelerate(Stepper *stepper) // only if acceleration is set
 {
     float newSpeed = calculateSpeed(stepper);

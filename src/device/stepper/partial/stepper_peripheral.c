@@ -111,24 +111,24 @@ void stepper_stopTimers(Stepper *stepper)
 
 uint8_t stepper_reload(Stepper *stepper)
 {
-    uint32_t target = getTarget(stepper);
+    uint32_t steps = getUnloadedSteps(stepper);
 
-    if (target > 0)
+    if (steps > 0)
     {
-        if (target > MAX_16BIT_VALUE)
+        if (steps > MAX_16BIT_VALUE)
         {
             __HAL_TIM_SET_AUTORELOAD(getSlaveTimer(stepper), MAX_16BIT_VALUE - 1);
-            target -= MAX_16BIT_VALUE;
+            steps -= MAX_16BIT_VALUE;
         }
         else
         {
-            __HAL_TIM_SET_AUTORELOAD(getSlaveTimer(stepper), target);
-            target = 0;
+            __HAL_TIM_SET_AUTORELOAD(getSlaveTimer(stepper), steps);
+            steps = 0;
         }
 
-        setTarget(stepper, target);
+        setUnloadedSteps(stepper, steps);
 
-        if (getMoveType(stepper) == PRECISED)
+        if (getSpeedState(stepper) == RAISING)
             setStepsNeededToAccelerate(stepper, getStepsNeededToAccelerate(stepper) + ((uint32_t)MAX_16BIT_VALUE - 1));
 
         return 1; // reloaded

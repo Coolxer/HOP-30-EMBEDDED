@@ -78,7 +78,7 @@ Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed)
     return regs;
 }
 
-uint32_t calculateTarget(enum AxisType axisType, float way)
+uint32_t convertWayToSteps(enum AxisType axisType, float way)
 {
     // calc real steps need to make to move by given mm or deg.
     uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
@@ -117,9 +117,7 @@ uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
     return steps;
 }
 
-uint32_t calculateRemainingTarget(Stepper *stepper)
+uint16_t calculateRemainingSteps(Stepper *stepper)
 {
-    uint32_t target = getTarget(stepper) + (getCurrentTarget(stepper) - getProgress(stepper));
-
-    return target;
+    return (uint16_t)(getTarget(stepper) - getProgress(stepper));
 }

@@ -7,7 +7,7 @@
 #include "device/stepper/partial/stepper_operation.h"
 #include "device/stepper/partial/stepper_helper.h"
 
-volatile uint8_t PROCESSING = 0;
+volatile enum ProcessState PROCESSING = NONE;
 
 void process_init(uint8_t *idx, uint8_t direction)
 {
@@ -23,7 +23,7 @@ void process_init(uint8_t *idx, uint8_t direction)
     setIndex(X_STEPPER, idx);
     setIndex(W_STEPPER, idx);
 
-    PROCESSING = 1;
+    PROCESSING = FORWARD;
 }
 
 void process_reverse()
@@ -39,6 +39,8 @@ void process_reverse()
         setSpeedState(X_STEPPER, RAISING);
         setSpeedState(W_STEPPER, RAISING);
     }
+
+    PROCESSING = BACKWARD;
 }
 
 uint8_t process_validate(uint8_t *direction)

@@ -5,8 +5,10 @@
 
 typedef struct
 {
-    uint8_t PROCESS[4],
-        ALL[4];
+    uint8_t PROCESS[4], // using in intervention
+        ALL[4],         // using in intervention
+        LIMIT[4],       // using in move
+        NONE[4];        // using with acceleration (if not acceleration)
 
 } val;
 

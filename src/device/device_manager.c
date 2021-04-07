@@ -113,7 +113,7 @@ void manageSteppers()
         if (stepper->movement.FINISHED_FLAG)
             stepperFinishedCallback(stepper);
         else
-            stepper_process(stepper); // stepper real-time movement
+            stepper_watchdog(stepper);
     }
 }
 

@@ -10,12 +10,12 @@
 //  [CALLED FROM MAIN LOOP]
 void stepperFinishedCallback(Stepper *stepper)
 {
+    stepper->movement.FINISHED_FLAG = RESET;
+
     // stepper counted up, try to reload registers, if not it is really end
     if (stepper_reload(stepper))
         return;
 
     stepper_stop(stepper);
-    stepper->movement.FINISHED_FLAG = RESET;
-
     uart_send(cmd_builder_buildFin(getIndex(stepper)));
 }

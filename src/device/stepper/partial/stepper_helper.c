@@ -60,14 +60,14 @@ void setRest(Stepper *stepper, uint16_t rest)
     stepper->movement.rest = rest;
 }
 
-uint32_t getTarget(Stepper *stepper)
+uint32_t getUnloadedSteps(Stepper *stepper)
 {
-    return stepper->movement.target;
+    return stepper->movement.unloadedSteps;
 }
 
-void setTarget(Stepper *stepper, uint32_t target)
+void setUnloadedSteps(Stepper *stepper, uint32_t steps)
 {
-    stepper->movement.target = target;
+    stepper->movement.unloadedSteps = steps;
 }
 
 enum MoveType getMoveType(Stepper *stepper)
@@ -143,7 +143,7 @@ TIM_HandleTypeDef *getSlaveTimer(Stepper *stepper)
     return &stepper->hardware.slaveTimer;
 }
 
-uint32_t getCurrentTarget(Stepper *stepper)
+uint32_t getTarget(Stepper *stepper)
 {
     return stepper->hardware.slaveTimer.Instance->ARR;
 }

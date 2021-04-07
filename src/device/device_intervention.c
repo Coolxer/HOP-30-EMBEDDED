@@ -1,4 +1,4 @@
-#include "device/device_operation.h"
+#include "device/device_intervention.h"
 
 void intervene_process(void (*intervention)(Stepper *))
 {

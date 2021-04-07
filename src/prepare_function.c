@@ -7,7 +7,7 @@
 #include "command/cmd_builder.h"
 
 #include "process.h"
-#include "device/device_operation.h"
+#include "device/device_intervention.h"
 
 #include "device/stepper/partial/stepper_validator.h"
 #include "device/stepper/partial/stepper_configuration.h"
@@ -16,6 +16,7 @@
 #include "device/stepper/partial/stepper_helper.h"
 
 // e.g [spp=x|spd=14.16|acc=1.0]
+// e.g [spp=x|spd=14.16|acc=non]
 uint8_t *prepare_configure(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
@@ -41,7 +42,7 @@ uint8_t *prepare_configure(uint8_t *idx, uint8_t ***args)
 
 					if (code == ERR.NO_ERROR)
 					{
-						stepper_configure(stepper, convertStrToFloat(args[1][1]), convertStrToFloat(args[2][1]));
+						stepper_configure(stepper, convertStrToFloat(args[1][1]), stringEqual(args[2][1], VAL.NONE) ? 0.0f : convertStrToFloat(args[2][1]));
 						feedback = cmd_builder_buildFin(idx);
 					}
 					else
@@ -93,6 +94,7 @@ uint8_t *prepare_switch(uint8_t *idx, uint8_t ***args)
 }
 
 // e.g [spp=x|way=30|dir=0]
+// e.g [spp=x|way=lim|dir=0]
 uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 {
 	Stepper *stepper = NULL;
@@ -118,7 +120,7 @@ uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 
 					if (code == ERR.NO_ERROR)
 					{
-						stepper_move(stepper, convertStrToFloat(args[1][1]), convertStrToBoolean(args[2][1]));
+						stepper_move(stepper, stringEqual(args[1][1], VAL.LIMIT) ? 0.0f : convertStrToFloat(args[1][1]), convertStrToBoolean(args[2][1]));
 
 						setIndex(stepper, idx);
 						feedback = cmd_builder_buildPas(idx);
