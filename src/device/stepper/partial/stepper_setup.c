@@ -2,7 +2,7 @@
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_helper.h"
 
-void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, GPIO_TypeDef *port, TIM_HandleTypeDef *masterTimer, TIM_HandleTypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable)
+void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, GPIO_TypeDef *port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable)
 {
     stepper->info = stepper_info_init(axisType, name);
 
