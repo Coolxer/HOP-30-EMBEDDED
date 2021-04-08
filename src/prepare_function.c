@@ -122,8 +122,14 @@ uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 					{
 						stepper_move(stepper, stringEqual(args[1][1], VAL.LIMIT) ? 0.0f : convertStrToFloat(args[1][1]), convertStrToBoolean(args[2][1]));
 
-						stepper_setIndex(stepper, idx);
-						feedback = cmd_builder_buildPas(idx);
+						// check if move rly started (if endstop is already clicked it finish immediately)
+						if (stepper_getState(stepper) == MOVING)
+						{
+							stepper_setIndex(stepper, idx);
+							feedback = cmd_builder_buildPas(idx);
+						}
+						else
+							feedback = cmd_builder_buildFin(idx);
 					}
 					else
 						feedback = cmd_builder_buildErr(idx, code);

@@ -18,6 +18,10 @@ void stepper_switch(Stepper *stepper, uint8_t state)
 
 void stepper_move(Stepper *stepper, float way, uint8_t direction)
 {
+    if ((!direction && endstop_isClicked(stepper->minEndstop)) ||
+        (direction && endstop_isClicked(stepper->maxEndstop)))
+        return;
+
     if (way > 0.0f)
     {
         stepper_setMoveType(stepper, PRECISED);
