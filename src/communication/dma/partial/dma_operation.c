@@ -3,7 +3,7 @@
 #include "null.h"
 #include "command/partial/data_assistant.h"
 
-const uint8_t MIN_COMMAND_LENGTH = 21;
+#include "config.h"
 
 uint8_t dma_isReady()
 {
