@@ -49,5 +49,8 @@ uint8_t process_validate(uint8_t *direction)
     if (validate_boolean(direction) == ERR.ERROR)
         return ERR.INVALID_DIRECTION_VALUE;
 
+    else if (stepper_getState(X_STEPPER) == MOVING || stepper_getState(W_STEPPER) == MOVING)
+        return ERR.OPERATION_NOT_ALLOWED;
+
     return ERR.NO_ERROR;
 }
