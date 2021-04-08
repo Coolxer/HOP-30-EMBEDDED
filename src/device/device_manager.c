@@ -67,7 +67,7 @@ Stepper *device_manager_getStepper(uint8_t *name)
     {
         Stepper *stepper = &steppers[i];
 
-        if (stringEqual(getName(stepper), name))
+        if (stringEqual(stepper_getName(stepper), name))
             return stepper;
     }
 

@@ -20,8 +20,8 @@ void process_init(uint8_t *idx, uint8_t direction)
     stepper_run(X_STEPPER);
     stepper_run(W_STEPPER);
 
-    setIndex(X_STEPPER, idx);
-    setIndex(W_STEPPER, idx);
+    stepper_setIndex(X_STEPPER, idx);
+    stepper_setIndex(W_STEPPER, idx);
 
     PROCESSING = FORWARD;
 }
@@ -31,13 +31,13 @@ void process_reverse()
     stepper_changeDirectionImmediately(X_STEPPER);
     stepper_changeDirectionImmediately(W_STEPPER);
 
-    setCurrentSpeed(X_STEPPER, 0.0f);
-    setCurrentSpeed(W_STEPPER, 0.0f);
+    stepper_setCurrentSpeed(X_STEPPER, 0.0f);
+    stepper_setCurrentSpeed(W_STEPPER, 0.0f);
 
-    if (getSpeedType(X_STEPPER) == DYNAMIC)
+    if (stepper_getSpeedType(X_STEPPER) == DYNAMIC)
     {
-        setSpeedState(X_STEPPER, RAISING);
-        setSpeedState(W_STEPPER, RAISING);
+        stepper_setSpeedState(X_STEPPER, RAISING);
+        stepper_setSpeedState(W_STEPPER, RAISING);
     }
 
     PROCESSING = BACKWARD;

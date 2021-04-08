@@ -66,22 +66,22 @@ void stepper_setupSlaveTimer(Stepper *stepper)
     stepper->hardware.slaveTimer.Init.CounterMode = TIM_COUNTERMODE_UP;
     stepper->hardware.slaveTimer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 
-    HAL_TIM_Base_Init(getSlaveTimer(stepper));
+    HAL_TIM_Base_Init(stepper_getSlaveTimer(stepper));
 
     slaveConfig.SlaveMode = TIM_SLAVEMODE_EXTERNAL1;
     slaveConfig.InputTrigger = stepper->hardware.itr;
-    HAL_TIM_SlaveConfigSynchronization(getSlaveTimer(stepper), &slaveConfig);
+    HAL_TIM_SlaveConfigSynchronization(stepper_getSlaveTimer(stepper), &slaveConfig);
 
     masterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
     masterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-    HAL_TIMEx_MasterConfigSynchronization(getSlaveTimer(stepper), &masterConfig);
+    HAL_TIMEx_MasterConfigSynchronization(stepper_getSlaveTimer(stepper), &masterConfig);
 
     HAL_NVIC_SetPriority(stepper->hardware.irq, 2, 0); // set priority of stepper slaveTimer interrupt
     HAL_NVIC_EnableIRQ(stepper->hardware.irq);         // enable stepper slaveTimer interrupt
 
-    __HAL_TIM_CLEAR_FLAG(getSlaveTimer(stepper), TIM_SR_UIF);      // clear interrupt flag
-    __HAL_TIM_CLEAR_FLAG(getSlaveTimer(stepper), TIM_FLAG_UPDATE); // clear update flag
-    __HAL_TIM_CLEAR_IT(getSlaveTimer(stepper), TIM_IT_UPDATE);     // clear update flag
+    __HAL_TIM_CLEAR_FLAG(stepper_getSlaveTimer(stepper), TIM_SR_UIF);      // clear interrupt flag
+    __HAL_TIM_CLEAR_FLAG(stepper_getSlaveTimer(stepper), TIM_FLAG_UPDATE); // clear update flag
+    __HAL_TIM_CLEAR_IT(stepper_getSlaveTimer(stepper), TIM_IT_UPDATE);     // clear update flag
 }
 
 void stepper_setPeripherals(Stepper *stepper)
@@ -102,34 +102,34 @@ void stepper_stopTimers(Stepper *stepper)
 {
     HAL_TIM_PWM_Stop(&stepper->hardware.masterTimer, stepper->hardware.channel); // stop masterTimer
 
-    if (getMoveType(stepper) == PRECISED)
-        HAL_TIM_Base_Stop_IT(getSlaveTimer(stepper));
+    if (stepper_getMoveType(stepper) == PRECISED)
+        HAL_TIM_Base_Stop_IT(stepper_getSlaveTimer(stepper));
 
-    __HAL_TIM_SET_COUNTER(getSlaveTimer(stepper), 0);         // reset slaveTimer counter
+    __HAL_TIM_SET_COUNTER(stepper_getSlaveTimer(stepper), 0); // reset slaveTimer counter
     __HAL_TIM_SET_COUNTER(&stepper->hardware.masterTimer, 0); // reset masterTimer counter
 }
 
 uint8_t stepper_reload(Stepper *stepper)
 {
-    uint32_t steps = getUnloadedSteps(stepper);
+    uint32_t steps = stepper_getUnloadedSteps(stepper);
 
     if (steps > 0)
     {
         if (steps > MAX_16BIT_VALUE)
         {
-            __HAL_TIM_SET_AUTORELOAD(getSlaveTimer(stepper), MAX_16BIT_VALUE - 1);
+            __HAL_TIM_SET_AUTORELOAD(stepper_getSlaveTimer(stepper), MAX_16BIT_VALUE - 1);
             steps -= MAX_16BIT_VALUE;
         }
         else
         {
-            __HAL_TIM_SET_AUTORELOAD(getSlaveTimer(stepper), steps);
+            __HAL_TIM_SET_AUTORELOAD(stepper_getSlaveTimer(stepper), steps);
             steps = 0;
         }
 
-        setUnloadedSteps(stepper, steps);
+        stepper_setUnloadedSteps(stepper, steps);
 
-        if (getSpeedState(stepper) == RAISING)
-            setStepsNeededToAccelerate(stepper, getStepsNeededToAccelerate(stepper) + ((uint32_t)MAX_16BIT_VALUE - 1));
+        if (stepper_getSpeedState(stepper) == RAISING)
+            stepper_setStepsNeededToAccelerate(stepper, stepper_getStepsNeededToAccelerate(stepper) + ((uint32_t)MAX_16BIT_VALUE - 1));
 
         return 1; // reloaded
     }

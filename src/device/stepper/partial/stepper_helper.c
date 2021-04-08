@@ -2,22 +2,22 @@
 
 /* INFO SECTION */
 
-enum AxisType getAxisType(Stepper *stepper)
+enum AxisType stepper_getAxisType(Stepper *stepper)
 {
     return stepper->info.axisType;
 }
 
-uint8_t *getName(Stepper *stepper)
+uint8_t *stepper_getName(Stepper *stepper)
 {
     return stepper->info.name;
 }
 
-uint8_t *getIndex(Stepper *stepper)
+uint8_t *stepper_getIndex(Stepper *stepper)
 {
     return stepper->info.index;
 }
 
-void setIndex(Stepper *stepper, uint8_t *index)
+void stepper_setIndex(Stepper *stepper, uint8_t *index)
 {
     stepper->info.index = index;
 }
@@ -26,22 +26,22 @@ void setIndex(Stepper *stepper, uint8_t *index)
 
 /* ACCELERATION SECTION */
 
-float getCurrentAcceleration(Stepper *stepper)
+float stepper_getCurrentAcceleration(Stepper *stepper)
 {
     return stepper->acceleration.current;
 }
 
-void setCurrentAcceleration(Stepper *stepper, float acceleration)
+void stepper_setCurrentAcceleration(Stepper *stepper, float acceleration)
 {
     stepper->acceleration.current = acceleration;
 }
 
-uint32_t getStepsNeededToAccelerate(Stepper *stepper)
+uint32_t stepper_getStepsNeededToAccelerate(Stepper *stepper)
 {
     return stepper->acceleration.stepsNeededToAccelerate;
 }
 
-void setStepsNeededToAccelerate(Stepper *stepper, uint32_t steps)
+void stepper_setStepsNeededToAccelerate(Stepper *stepper, uint32_t steps)
 {
     stepper->acceleration.stepsNeededToAccelerate = steps;
 }
@@ -50,32 +50,32 @@ void setStepsNeededToAccelerate(Stepper *stepper, uint32_t steps)
 
 /* MOVEMENT SECTION */
 
-uint16_t getRest(Stepper *stepper)
+uint16_t stepper_getRest(Stepper *stepper)
 {
     return stepper->movement.rest;
 }
 
-void setRest(Stepper *stepper, uint16_t rest)
+void stepper_setRest(Stepper *stepper, uint16_t rest)
 {
     stepper->movement.rest = rest;
 }
 
-uint32_t getUnloadedSteps(Stepper *stepper)
+uint32_t stepper_getUnloadedSteps(Stepper *stepper)
 {
     return stepper->movement.unloadedSteps;
 }
 
-void setUnloadedSteps(Stepper *stepper, uint32_t steps)
+void stepper_setUnloadedSteps(Stepper *stepper, uint32_t steps)
 {
     stepper->movement.unloadedSteps = steps;
 }
 
-enum MoveType getMoveType(Stepper *stepper)
+enum MoveType stepper_getMoveType(Stepper *stepper)
 {
     return stepper->movement.type;
 }
 
-void setMoveType(Stepper *stepper, enum MoveType type)
+void stepper_setMoveType(Stepper *stepper, enum MoveType type)
 {
     stepper->movement.type = type;
 }
@@ -84,52 +84,52 @@ void setMoveType(Stepper *stepper, enum MoveType type)
 
 /* SPEED SECTION */
 
-float getCurrentSpeed(Stepper *stepper)
+float stepper_getCurrentSpeed(Stepper *stepper)
 {
     return stepper->speed.current;
 }
 
-void setCurrentSpeed(Stepper *stepper, float speed)
+void stepper_setCurrentSpeed(Stepper *stepper, float speed)
 {
     stepper->speed.current = speed;
 }
 
-float getTargetSpeed(Stepper *stepper)
+float stepper_stepper_getTargetSpeed(Stepper *stepper)
 {
     return stepper->speed.target;
 }
 
-void setTargetSpeed(Stepper *stepper, float speed)
+void stepper_setTargetSpeed(Stepper *stepper, float speed)
 {
     stepper->speed.target = speed;
 }
 
-uint32_t getLastTimeUpdate(Stepper *stepper)
+uint32_t stepper_getLastTimeUpdate(Stepper *stepper)
 {
     return stepper->speed.lastTimeUpdate;
 }
 
-void updateLastTime(Stepper *stepper)
+void stepper_updateLastTime(Stepper *stepper)
 {
     stepper->speed.lastTimeUpdate = HAL_GetTick();
 }
 
-enum SpeedType getSpeedType(Stepper *stepper)
+enum SpeedType stepper_getSpeedType(Stepper *stepper)
 {
     return stepper->speed.type;
 }
 
-void setSpeedType(Stepper *stepper, enum SpeedType type)
+void stepper_setSpeedType(Stepper *stepper, enum SpeedType type)
 {
     stepper->speed.type = type;
 }
 
-enum SpeedState getSpeedState(Stepper *stepper)
+enum SpeedState stepper_getSpeedState(Stepper *stepper)
 {
     return stepper->speed.state;
 }
 
-void setSpeedState(Stepper *stepper, enum SpeedState state)
+void stepper_setSpeedState(Stepper *stepper, enum SpeedState state)
 {
     stepper->speed.state = state;
 }
@@ -138,34 +138,34 @@ void setSpeedState(Stepper *stepper, enum SpeedState state)
 
 /* HARDWARE SECTION*/
 
-TIM_HandleTypeDef *getSlaveTimer(Stepper *stepper)
+TIM_HandleTypeDef *stepper_getSlaveTimer(Stepper *stepper)
 {
     return &stepper->hardware.slaveTimer;
 }
 
-uint32_t getTarget(Stepper *stepper)
+uint32_t stepper_getTarget(Stepper *stepper)
 {
     return stepper->hardware.slaveTimer.Instance->ARR;
 }
 
-uint32_t getProgress(Stepper *stepper)
+uint32_t stepper_getProgress(Stepper *stepper)
 {
     return stepper->hardware.slaveTimer.Instance->CNT;
 }
 
 /* END OF HARDWARE SECTION */
 
-enum State getState(Stepper *stepper)
+enum State stepper_getState(Stepper *stepper)
 {
     return stepper->state;
 }
 
-void setState(Stepper *stepper, enum State state)
+void stepper_setState(Stepper *stepper, enum State state)
 {
     stepper->state = state;
 }
 
-uint8_t getDirection(Stepper *stepper)
+uint8_t stepper_getDirection(Stepper *stepper)
 {
     return HAL_GPIO_ReadPin(stepper->hardware.port, stepper->hardware.dir);
 }

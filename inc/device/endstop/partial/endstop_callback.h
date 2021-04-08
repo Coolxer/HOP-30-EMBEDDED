@@ -3,6 +3,6 @@
 
 #include "device/endstop/endstop.h"
 
-void endstopClickedCallback(Endstop *endstop);
+void endstopClickedCallback(Endstop *endstop); // endstop clicked callback function
 
 #endif // ENDSTOP_CALLBACK_H

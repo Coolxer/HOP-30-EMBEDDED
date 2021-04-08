@@ -1,8 +1,8 @@
 #include "device/endstop/partial/endstop_operation.h"
 
-#include "device/endstop/partial/endstop_callback.h"
+#include "config.h"
 
-const uint8_t DEBOUNCE_TIME = 20; // in miliseconds
+#include "device/endstop/partial/endstop_callback.h"
 
 uint8_t endstop_isClicked(Endstop *endstop)
 {
@@ -18,7 +18,7 @@ void endstop_debounce(Endstop *endstop)
     }
     else
     {
-        if ((HAL_GetTick() - endstop->time) >= DEBOUNCE_TIME) // time interval counted up (finished)
+        if ((HAL_GetTick() - endstop->time) >= ENDSTOP_DEBOUNCE_TIME) // time interval counted up (finished)
         {
             endstop->CLICKED_FLAG = endstop->DEBOUNCING_FLAG = RESET;
 

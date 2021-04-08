@@ -26,7 +26,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
     for (i = 0; i < STEPPERS_COUNT; i++) // go through all steppers to check which fired the callback
     {
-        if (htim->Instance == getSlaveTimer(&steppers[i])->Instance) // check which timer send callback
+        if (htim->Instance == stepper_getSlaveTimer(&steppers[i])->Instance) // check which timer send callback
         {
             steppers[i].movement.FINISHED_FLAG = SET;
             break;

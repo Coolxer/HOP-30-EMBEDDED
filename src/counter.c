@@ -1,6 +1,6 @@
 #include "counter.h"
 
-#include "config/clock.h"
+#include "config.h"
 
 TIM_HandleTypeDef counterTimer;
 

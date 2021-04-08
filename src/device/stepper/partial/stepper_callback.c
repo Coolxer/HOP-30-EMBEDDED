@@ -17,5 +17,5 @@ void stepperFinishedCallback(Stepper *stepper)
         return;
 
     stepper_stop(stepper);
-    uart_send(cmd_builder_buildFin(getIndex(stepper)));
+    uart_send(cmd_builder_buildFin(stepper_getIndex(stepper)));
 }

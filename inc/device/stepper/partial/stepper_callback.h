@@ -3,6 +3,6 @@
 
 #include "device/stepper/stepper.h"
 
-void stepperFinishedCallback(Stepper *stepper);
+void stepperFinishedCallback(Stepper *stepper); // stepper finished PRECISED movement callback function
 
 #endif // STEPPER_CALLBACK

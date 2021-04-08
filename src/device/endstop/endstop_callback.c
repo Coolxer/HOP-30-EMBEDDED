@@ -14,18 +14,18 @@ void endstopClickedCallback(Endstop *endstop)
 {
     Stepper *stepper = device_manager_findParentStepper(endstop);
 
-    if (getState(stepper) != MOVING)
+    if (stepper_getState(stepper) != MOVING)
         return;
 
-    if ((endstop == stepper->minEndstop && getDirection(stepper) == LEFT) ||
-        (endstop == stepper->maxEndstop && getDirection(stepper) == RIGHT))
+    if ((endstop == stepper->minEndstop && stepper_getDirection(stepper) == LEFT) ||
+        (endstop == stepper->maxEndstop && stepper_getDirection(stepper) == RIGHT))
     {
         if (PROCESSING == FORWARD)
             process_reverse();
         else
         {
             stepper_stop(stepper);
-            uart_send(cmd_builder_buildFin(getIndex(stepper)));
+            uart_send(cmd_builder_buildFin(stepper_getIndex(stepper)));
 
             if (PROCESSING == BACKWARD)
                 PROCESSING = NONE;

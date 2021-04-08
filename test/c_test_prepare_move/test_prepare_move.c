@@ -5,7 +5,7 @@
 #include "connector.h"
 
 #include "device/device_manager.h"
-#include "device/stepper/partial/stepper_state_manager.h"
+#include "device/stepper/partial/stepper_helper.h"
 
 void setUp() // default setup function
 {
@@ -56,16 +56,29 @@ void test_prepare_move_should_give_invalid_direction_value_error()
 void test_prepare_move_should_give_operation_not_allowed_error()
 {
     Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
-    stepper_setState(stepper, HOMING);
+    stepper_setState(stepper, MOVING);
 
     uint8_t data[] = "idx=1|opt=mov|spp=x|way=89|dir=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data)));
+
+    stepper_setState(stepper, PAUSED);
+
+    uint8_t data2[] = "idx=1|opt=mov|spp=x|way=89|dir=1|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=err|cod=22|\n", connector_manage(connector_parse(data2)));
 }
 
 void test_prepare_move_should_give_passed()
 {
+    Stepper *stepper = (Stepper *)device_manager_getStepper((uint8_t *)"x");
+    stepper_setState(stepper, OFF);
+
     uint8_t data[] = "idx=1|opt=mov|spp=x|way=89|dir=1|\n";
     TEST_ASSERT_EQUAL_STRING("idx=1|res=pas|\n", connector_manage(connector_parse(data)));
+
+    stepper_setState(stepper, ON);
+
+    uint8_t data2[] = "idx=1|opt=mov|spp=x|way=lim|dir=0|\n";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=pas|\n", connector_manage(connector_parse(data2)));
 }
 
 int main()
@@ -77,12 +90,13 @@ int main()
 
     RUN_TEST(test_prepare_move_should_give_no_stepper_key_error);
     RUN_TEST(test_prepare_move_should_give_invalid_stepper_value_error);
+
     RUN_TEST(test_prepare_move_should_give_no_way_key_error);
     RUN_TEST(test_prepare_move_should_give_no_direction_key_error);
     RUN_TEST(test_prepare_move_should_give_invalid_way_value_error);
     RUN_TEST(test_prepare_move_should_give_invalid_direction_value_error);
-    RUN_TEST(test_prepare_move_should_give_operation_not_allowed_error);
 
+    RUN_TEST(test_prepare_move_should_give_operation_not_allowed_error);
     RUN_TEST(test_prepare_move_should_give_passed);
 
     UNITY_END();

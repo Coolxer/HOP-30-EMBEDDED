@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#include "config/clock.h"
+#include "config.h"
 #include "device/stepper/config/stepper_calculation.h"
 #include "device/stepper/partial/stepper_helper.h"
 
@@ -78,23 +78,15 @@ Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed)
     return regs;
 }
 
-uint32_t convertWayToSteps(enum AxisType axisType, float way)
-{
-    // calc real steps need to make to move by given mm or deg.
-    uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
-
-    return steps;
-}
-
 float calculateSpeed(Stepper *stepper)
 {
-    uint32_t elapsedTime = (HAL_GetTick() - getLastTimeUpdate(stepper));
+    uint32_t elapsedTime = (HAL_GetTick() - stepper_getLastTimeUpdate(stepper));
 
     // calculates increares / decrease of speed in time
-    float delta = (float)(elapsedTime)*getCurrentAcceleration(stepper);
+    float delta = (float)(elapsedTime)*stepper_getCurrentAcceleration(stepper);
 
     // calculates new speed by delta
-    float speed = getCurrentSpeed(stepper) + delta;
+    float speed = stepper_getCurrentSpeed(stepper) + delta;
 
     // in FALLING if speed goes to zero or below
     // then set 0 speed
@@ -106,7 +98,7 @@ float calculateSpeed(Stepper *stepper)
 
 uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
 {
-    uint32_t steps = getStepsNeededToAccelerate(stepper) + getProgress(stepper);
+    uint32_t steps = stepper_getStepsNeededToAccelerate(stepper) + stepper_getProgress(stepper);
 
     float safetyBarier = 0.01f * (float)steps;
 
@@ -117,7 +109,15 @@ uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
     return steps;
 }
 
+uint32_t convertWayToSteps(enum AxisType axisType, float way)
+{
+    // calc real steps need to make to move by given mm or deg.
+    uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
+
+    return steps;
+}
+
 uint16_t calculateRemainingSteps(Stepper *stepper)
 {
-    return (uint16_t)(getTarget(stepper) - getProgress(stepper));
+    return (uint16_t)(stepper_getTarget(stepper) - stepper_getProgress(stepper));
 }

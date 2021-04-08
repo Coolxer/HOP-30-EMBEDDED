@@ -122,7 +122,7 @@ uint8_t *prepare_move(uint8_t *idx, uint8_t ***args)
 					{
 						stepper_move(stepper, stringEqual(args[1][1], VAL.LIMIT) ? 0.0f : convertStrToFloat(args[1][1]), convertStrToBoolean(args[2][1]));
 
-						setIndex(stepper, idx);
+						stepper_setIndex(stepper, idx);
 						feedback = cmd_builder_buildPas(idx);
 					}
 					else
