@@ -71,7 +71,7 @@
 
 #define W_STEP GPIO_PIN_6
 #define W_DIR GPIO_PIN_5
-#define W_ENABLE GPIO_PIN_7
+#define W_ENABLE GPIO_PIN_2
 
 /************* END OF W STEPPER  **************/
 
