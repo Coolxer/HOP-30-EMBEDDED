@@ -48,7 +48,7 @@
 /***** LEFT ENDSTOP *****/
 
 #define ZL_PORT GPIOC
-#define ZL_PIN GPIO_PIN_13
+#define ZL_PIN GPIO_PIN_10
 #define ZL_IRQ EXTI4_IRQn
 
 /** END OF LEFT ENDSTOP */
@@ -56,7 +56,7 @@
 /**** RIGHT ENDSTOP *****/
 
 #define ZR_PORT GPIOC
-#define ZR_PIN GPIO_PIN_14
+#define ZR_PIN GPIO_PIN_11
 #define ZR_IRQ EXTI9_5_IRQn
 
 /* END OF RIGHT ENDSTOP */
