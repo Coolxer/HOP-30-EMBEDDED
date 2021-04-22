@@ -15,9 +15,9 @@
 #define X_ITR TIM_TS_ITR2
 #define X_IRQ TIM2_IRQn
 
-#define X_STEP GPIO_PIN_6
-#define X_DIR GPIO_PIN_7
 #define X_ENABLE GPIO_PIN_8
+#define X_STEP GPIO_PIN_6
+#define X_DIR GPIO_PIN_5
 
 /************* END OF X STEPPER  **************/
 
@@ -35,7 +35,7 @@
 
 #define Y_STEP GPIO_PIN_6
 #define Y_DIR GPIO_PIN_7
-#define Y_ENABLE GPIO_PIN_8
+#define Y_ENABLE GPIO_PIN_5
 
 /************* END OF Y STEPPER  **************/
 
@@ -52,8 +52,8 @@
 #define Z_IRQ TIM1_BRK_TIM9_IRQn
 
 #define Z_STEP GPIO_PIN_8
-#define Z_DIR GPIO_PIN_14
-#define Z_ENABLE GPIO_PIN_15
+#define Z_DIR GPIO_PIN_9
+#define Z_ENABLE GPIO_PIN_10
 
 /************* END OF Z STEPPER  **************/
 
@@ -71,7 +71,7 @@
 
 #define W_STEP GPIO_PIN_6
 #define W_DIR GPIO_PIN_5
-#define W_ENABLE GPIO_PIN_10
+#define W_ENABLE GPIO_PIN_4
 
 /************* END OF W STEPPER  **************/
 
