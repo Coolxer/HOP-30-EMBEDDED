@@ -11,7 +11,7 @@ void stepper_setupGpio(Stepper *stepper)
 
     /* setups gpio for all stepper pins except step_pin */
     gpio.Pin = stepper->hardware.dir | stepper->hardware.enable;
-    gpio.Mode = GPIO_MODE_OUTPUT_PP;
+    gpio.Mode = GPIO_MODE_OUTPUT_OD;
     gpio.Pull = GPIO_NOPULL;
     gpio.Speed = GPIO_SPEED_FREQ_LOW;
 
@@ -20,7 +20,7 @@ void stepper_setupGpio(Stepper *stepper)
 
     /* setups gpio for step_pin */
     gpio.Pin = stepper->hardware.step;
-    gpio.Mode = GPIO_MODE_AF_PP;
+    gpio.Mode = GPIO_MODE_AF_OD;
     gpio.Pull = GPIO_PULLUP;
     gpio.Speed = GPIO_SPEED_FREQ_HIGH;
     gpio.Alternate = stepper->hardware.alternateFunction;
