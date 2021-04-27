@@ -1,10 +1,9 @@
 #include "device/stepper/structure/stepper_hardware.h"
 
-Hardware stepper_hardware_init(GPIO_TypeDef *port, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq, uint16_t step, uint16_t dir, uint16_t enable)
+Hardware stepper_hardware_init(TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq,
+                               GPIO_TypeDef *enablePort, uint16_t enablePin, GPIO_TypeDef *stepPort, uint16_t stepPin, GPIO_TypeDef *dirPort, uint16_t dirPin)
 {
     Hardware hardware = {0};
-
-    hardware.port = port;
 
     hardware.masterTimer.Instance = masterTimer;
     hardware.slaveTimer.Instance = slaveTimer;
@@ -14,9 +13,14 @@ Hardware stepper_hardware_init(GPIO_TypeDef *port, TIM_TypeDef *masterTimer, TIM
     hardware.itr = itr;
     hardware.irq = irq;
 
-    hardware.step = step;
-    hardware.dir = dir;
-    hardware.enable = enable;
+    hardware.enablePort = enablePort;
+    hardware.enablePin = enablePin;
+
+    hardware.stepPort = stepPort;
+    hardware.stepPin = stepPin;
+
+    hardware.dirPort = dirPort;
+    hardware.dirPin = dirPin;
 
     return hardware;
 }

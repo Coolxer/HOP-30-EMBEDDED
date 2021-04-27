@@ -7,26 +7,37 @@
 
 void stepper_setupGpio(Stepper *stepper)
 {
-    GPIO_InitTypeDef gpio = {0};
+    GPIO_InitTypeDef gpioEnable = {0};
+    GPIO_InitTypeDef gpioStep = {0};
+    GPIO_InitTypeDef gpioDir = {0};
 
-    /* setups gpio for all stepper pins except step_pin */
-    gpio.Pin = stepper->hardware.dir | stepper->hardware.enable;
-    gpio.Mode = GPIO_MODE_OUTPUT_OD;
-    gpio.Pull = GPIO_NOPULL;
-    gpio.Speed = GPIO_SPEED_FREQ_LOW;
+    /* setups gpio for enable_pin */
+    gpioEnable.Pin = stepper->hardware.enablePin;
+    gpioEnable.Mode = GPIO_MODE_OUTPUT_OD;
+    gpioEnable.Pull = GPIO_NOPULL;
+    gpioEnable.Speed = GPIO_SPEED_FREQ_LOW;
 
-    HAL_GPIO_Init((GPIO_TypeDef *)stepper->hardware.port, &gpio);
-    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.enable, GPIO_PIN_SET);
+    HAL_GPIO_Init((GPIO_TypeDef *)stepper->hardware.enablePort, &gpioEnable);
+    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.enablePort, stepper->hardware.enablePin, GPIO_PIN_SET);
 
     /* setups gpio for step_pin */
-    gpio.Pin = stepper->hardware.step;
-    gpio.Mode = GPIO_MODE_AF_OD;
-    gpio.Pull = GPIO_PULLUP;
-    gpio.Speed = GPIO_SPEED_FREQ_HIGH;
-    gpio.Alternate = stepper->hardware.alternateFunction;
+    gpioStep.Pin = stepper->hardware.stepPin;
+    gpioStep.Mode = GPIO_MODE_AF_OD;
+    gpioStep.Pull = GPIO_PULLUP;
+    gpioStep.Speed = GPIO_SPEED_FREQ_HIGH;
+    gpioStep.Alternate = stepper->hardware.alternateFunction;
 
-    HAL_GPIO_Init((GPIO_TypeDef *)stepper->hardware.port, &gpio);
-    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.step, GPIO_PIN_RESET);
+    HAL_GPIO_Init((GPIO_TypeDef *)stepper->hardware.stepPort, &gpioStep);
+    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.stepPort, stepper->hardware.stepPin, GPIO_PIN_RESET);
+
+    /* setups gpio for dir_pin */
+    gpioDir.Pin = stepper->hardware.dirPin;
+    gpioDir.Mode = GPIO_MODE_OUTPUT_OD;
+    gpioDir.Pull = GPIO_NOPULL;
+    gpioDir.Speed = GPIO_SPEED_FREQ_MEDIUM;
+
+    HAL_GPIO_Init((GPIO_TypeDef *)stepper->hardware.dirPort, &gpioDir);
+    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.dirPort, stepper->hardware.dirPin, GPIO_PIN_RESET);
 }
 
 void stepper_setupMasterTimer(Stepper *stepper)

@@ -167,5 +167,5 @@ void stepper_setState(Stepper *stepper, enum State state)
 
 uint8_t stepper_getDirection(Stepper *stepper)
 {
-    return HAL_GPIO_ReadPin(stepper->hardware.port, stepper->hardware.dir);
+    return HAL_GPIO_ReadPin(stepper->hardware.dirPort, stepper->hardware.dirPin);
 }

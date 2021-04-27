@@ -11,7 +11,7 @@ void stepper_switch(Stepper *stepper, uint8_t state)
 {
     if (stepper_getState(stepper) != state) // check if state is not currently exists
     {
-        HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.port, stepper->hardware.enable, state); // switches the stepper (OFF or ON)
+        HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.enablePort, stepper->hardware.enablePin, state); // switches the stepper (OFF or ON)
         stepper_setState(stepper, state);
     }
 }
