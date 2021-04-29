@@ -14,7 +14,7 @@ void stepper_setupGpio(Stepper *stepper)
     /* setups gpio for enable_pin */
     gpioEnable.Pin = stepper->hardware.enablePin;
     gpioEnable.Mode = GPIO_MODE_OUTPUT_OD;
-    gpioEnable.Pull = GPIO_PULLUP;
+    gpioEnable.Pull = GPIO_NOPULL;
     gpioEnable.Speed = GPIO_SPEED_FREQ_LOW;
 
     HAL_GPIO_Init((GPIO_TypeDef *)stepper->hardware.enablePort, &gpioEnable);
@@ -23,7 +23,7 @@ void stepper_setupGpio(Stepper *stepper)
     /* setups gpio for step_pin */
     gpioStep.Pin = stepper->hardware.stepPin;
     gpioStep.Mode = GPIO_MODE_AF_OD;
-    gpioStep.Pull = GPIO_PULLUP;
+    gpioStep.Pull = GPIO_NOPULL;
     gpioStep.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     gpioStep.Alternate = stepper->hardware.alternateFunction;
 
@@ -33,7 +33,7 @@ void stepper_setupGpio(Stepper *stepper)
     /* setups gpio for dir_pin */
     gpioDir.Pin = stepper->hardware.dirPin;
     gpioDir.Mode = GPIO_MODE_OUTPUT_OD;
-    gpioDir.Pull = GPIO_PULLDOWN;
+    gpioDir.Pull = GPIO_NOPULL;
     gpioDir.Speed = GPIO_SPEED_FREQ_MEDIUM;
 
     HAL_GPIO_Init((GPIO_TypeDef *)stepper->hardware.dirPort, &gpioDir);
