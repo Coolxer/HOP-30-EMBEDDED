@@ -13,6 +13,7 @@ void stepper_setupGpio(Stepper *stepper)
 
     /* setups gpio for enable_pin */
     gpioEnable.Pin = stepper->hardware.enablePin;
+    gpioEnable.Alternate = stepper->hardware.alternateFunction;
     gpioEnable.Mode = GPIO_MODE_OUTPUT_OD;
     gpioEnable.Pull = GPIO_PULLUP;
     gpioEnable.Speed = GPIO_SPEED_FREQ_LOW;

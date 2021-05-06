@@ -89,7 +89,7 @@ Stepper *device_manager_findParentStepper(Endstop *endstop)
     {
         Stepper *stepper = &steppers[i];
 
-        if (stepper->minEndstop == endstop || steppers->maxEndstop == endstop)
+        if (stepper->minEndstop == endstop || stepper->maxEndstop == endstop)
             return stepper;
     }
 
