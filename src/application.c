@@ -32,6 +32,8 @@ void application_loop()
 {
     while (1) // while there is not "FINISH" command on uart
     {
+        manageDevices(); // services endstop and stepper events
+
         uint8_t *command = uart_listen();
 
         if (!stringEmpty(command))
@@ -41,8 +43,6 @@ void application_loop()
 
             uart_send(connector_manage(connector_parse(command))); // send feedback through UART port
         }
-
-        manageDevices(); // services endstop and stepper events
     }
 }
 

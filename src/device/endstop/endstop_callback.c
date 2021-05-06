@@ -24,11 +24,16 @@ void endstopClickedCallback(Endstop *endstop)
             process_reverse();
         else
         {
-            stepper_stop(stepper);
-            uart_send(cmd_builder_buildFin(stepper_getIndex(stepper)));
-
             if (PROCESSING == BACKWARD)
+            {
+                stepper_stop(X_STEPPER);
+                stepper_stop(W_STEPPER);
                 PROCESSING = NONE;
+            }
+            else
+                stepper_stop(stepper);
+
+            uart_send(cmd_builder_buildFin(stepper_getIndex(stepper)));
         }
     }
 }

@@ -14,7 +14,7 @@ enum
 extern Stepper steppers[STEPPERS_COUNT];
 extern Endstop endstops[ENDSTOPS_COUNT];
 
-// additional pointers to easy grab
+// additional pointers to easy grab (useful)
 extern Stepper *W_STEPPER;
 extern Stepper *X_STEPPER;
 extern Stepper *Y_STEPPER;
