@@ -81,6 +81,21 @@ Stepper *device_manager_getStepper(uint8_t *name)
     return NULL;
 }
 
+uint8_t *device_manager_getStepperIndex(uint8_t *name)
+{
+    uint8_t i = 0;
+
+    for (i = 0; i < STEPPERS_COUNT; i++)
+    {
+        Stepper *stepper = &steppers[i];
+
+        if (stringEqual(stepper_getName(stepper), name))
+            return i;
+    }
+
+    return 9;
+}
+
 Stepper *device_manager_findParentStepper(Endstop *endstop)
 {
     uint8_t i = 0;

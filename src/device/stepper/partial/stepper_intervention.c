@@ -5,7 +5,7 @@
 #include "device/stepper/partial/stepper_helper.h"
 #include "device/stepper/partial/stepper_calculator.h"
 
-void stepper_pause(Stepper *stepper)
+void stepper_pause(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
 {
     if (stepper_getMoveType(stepper) == PRECISED) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
     {
@@ -25,7 +25,7 @@ void stepper_pause(Stepper *stepper)
     stepper_setState(stepper, PAUSED); // update current state
 }
 
-void stepper_resume(Stepper *stepper)
+void stepper_resume(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
 {
     if (stepper_getMoveType(stepper) == PRECISED)
     {
@@ -40,19 +40,11 @@ void stepper_resume(Stepper *stepper)
     stepper_setState(stepper, MOVING); // recover state
 }
 
-void stepper_stop(Stepper *stepper)
+void stepper_stop(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
 {
     stepper_stopTimers(stepper);
     stepper_resetSpeed(stepper);
 
     stepper_setUnloadedSteps(stepper, 0);
     stepper_setState(stepper, ON);
-}
-
-void stepper_emergency_shutdown(Stepper *stepper)
-{
-    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.enablePort, stepper->hardware.enablePin, GPIO_PIN_RESET); // switches the stepper OFF
-
-    stepper_stop(stepper);
-    stepper_setState(stepper, OFF);
 }

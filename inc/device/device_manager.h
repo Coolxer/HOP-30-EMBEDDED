@@ -24,6 +24,7 @@ void device_manager_init();   // sets devices
 void device_manager_deinit(); // resets devices
 
 Stepper *device_manager_getStepper(uint8_t *name);           // returns pointer to stepper by name, if device name is not recognized, returns NULL
+uint8_t *device_manager_getStepperIndex(uint8_t *name);      // returns stepper index by name, if device name is not recognized, returns 9
 Stepper *device_manager_findParentStepper(Endstop *endstop); // returns parent stepper of given endstop
 
 void manageDevices(); // manages devices events

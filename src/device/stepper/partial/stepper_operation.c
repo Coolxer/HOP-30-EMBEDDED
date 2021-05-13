@@ -1,5 +1,8 @@
 #include "device/stepper/partial/stepper_operation.h"
 
+#include "command/partial/val.h"
+#include "command/partial/data_assistant.h"
+
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_configuration.h"
 #include "device/stepper/partial/stepper_calculator.h"
@@ -7,7 +10,7 @@
 
 #include "device/endstop/partial/endstop_operation.h"
 
-void stepper_switch(Stepper *stepper, uint8_t state)
+void stepper_switch(Stepper *stepper, uint8_t *state, uint8_t *EMPTY1)
 {
     if (stepper_getState(stepper) != state) // check if state is not currently exists
     {
@@ -16,8 +19,12 @@ void stepper_switch(Stepper *stepper, uint8_t state)
     }
 }
 
-void stepper_move(Stepper *stepper, float way, uint8_t direction)
+void stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
 {
+
+    float road = stringEqual(way, VAL.LIMIT) ? 0.0f : convertStrToFloat(way);
+    uint8_t dir = convertStrToBoolean(direction);
+
     if (stepper->minEndstop != NULL && stepper->maxEndstop != NULL)
     {
         if ((!direction && endstop_isClicked(stepper->minEndstop)) ||
@@ -25,11 +32,11 @@ void stepper_move(Stepper *stepper, float way, uint8_t direction)
             return;
     }
 
-    if (way > 0.0f)
+    if (road > 0.0f)
     {
         stepper_setMoveType(stepper, PRECISED);
 
-        uint32_t steps = convertWayToSteps(stepper_getAxisType(stepper), way);
+        uint32_t steps = convertWayToSteps(stepper_getAxisType(stepper), road);
 
         // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
         if (stepper_getSlaveTimer(stepper)->Instance == TIM2 || stepper_getSlaveTimer(stepper)->Instance == TIM5)

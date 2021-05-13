@@ -14,15 +14,10 @@
 
 #include "device/endstop/endstop.h"
 
-// defines helpful macros
-enum
-{
-    LEFT = 0,
-    RIGHT = 1,
-
-    DOWN = 0,
-    UP = 1,
-};
+#define LEFT (uint8_t *)"0\0"
+#define RIGHT (uint8_t *)"1\0"
+#define DOWN (uint8_t *)"0\0"
+#define UP (uint8_t *)"1\0"
 
 typedef struct
 {

@@ -6,6 +6,8 @@
 #include "validator.h"
 #include "command/cmd_builder.h"
 
+#include "multiple_operations.h"
+
 #include "process.h"
 #include "device/device_intervention.h"
 
@@ -22,33 +24,21 @@ uint8_t *prepare_configure(uint8_t *idx, uint8_t ***args)
 	Stepper *stepper = NULL;
 	uint8_t *feedback = EMPTY;
 
-	if (validate_key(KEY.STEPPER, args[0][0]) == ERR.ERROR)
-		feedback = cmd_builder_buildErr(idx, ERR.NO_STEPPER_KEY);
-	else
+	uint8_t steppersAmount = 0;
+	uint8_t stepperIndex = 9;
+
+	feedback = validateSteppers(idx, args[0][0], args[0][1], &steppersAmount, &stepperIndex);
+
+	if (!stringLength(feedback))
 	{
-		if (!(stepper = device_manager_getStepper(args[0][1])))
-			feedback = cmd_builder_buildErr(idx, ERR.INVALID_STEPPER_VALUE);
+		if (validate_key(KEY.SPEED, args[1][0]) == ERR.ERROR)
+			feedback = cmd_builder_buildErr(idx, ERR.NO_SPEED_KEY);
 		else
 		{
-			if (validate_key(KEY.SPEED, args[1][0]) == ERR.ERROR)
-				feedback = cmd_builder_buildErr(idx, ERR.NO_SPEED_KEY);
+			if (validate_key(KEY.ACCELERATION, args[2][0]) == ERR.ERROR)
+				feedback = cmd_builder_buildErr(idx, ERR.NO_ACCELERATION_KEY);
 			else
-			{
-				if (validate_key(KEY.ACCELERATION, args[2][0]) == ERR.ERROR)
-					feedback = cmd_builder_buildErr(idx, ERR.NO_ACCELERATION_KEY);
-				else
-				{
-					uint8_t code = validate_configure(stepper, args[1][1], args[2][1]);
-
-					if (code == ERR.NO_ERROR)
-					{
-						stepper_configure(stepper, convertStrToFloat(args[1][1]), stringEqual(args[2][1], VAL.NONE) ? 0.0f : convertStrToFloat(args[2][1]));
-						feedback = cmd_builder_buildFin(idx);
-					}
-					else
-						feedback = cmd_builder_buildErr(idx, code);
-				}
-			}
+				feedback = operate(idx, args[1][1], args[2][1], steppersAmount, stepperIndex, validate_configure, stepper_configure);
 		}
 	}
 

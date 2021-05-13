@@ -3,6 +3,8 @@
 #include "config.h"
 #include "counter.h"
 
+#include "command/partial/data_assistant.h"
+
 #include "device/stepper/partial/stepper_calculator.h"
 #include "device/stepper/partial/stepper_peripheral.h"
 #include "device/stepper/partial/stepper_helper.h"
@@ -18,22 +20,25 @@ void stepper_updateSpeed(Stepper *stepper, float speed)
 }
 
 // calls by user command
-void stepper_configure(Stepper *stepper, float speed, float acceleration)
+void stepper_configure(Stepper *stepper, uint8_t *speed, uint8_t *acceleration)
 {
-    if (acceleration > 0.0f)
+    float spd = convertStrToFloat(speed);
+    float acc = convertStrToFloat(acceleration);
+
+    if (acc > 0.0f)
     {
-        stepper_setCurrentAcceleration(stepper, acceleration / 1000.0f); // save acceleration in milliseconds instead of seconds
+        stepper_setCurrentAcceleration(stepper, spd / 1000.0f); // save acceleration in milliseconds instead of seconds
         stepper_updateSpeed(stepper, 0.0f);
         stepper_setSpeedType(stepper, DYNAMIC);
     }
     else
     {
         stepper_setCurrentAcceleration(stepper, 0.0f);
-        stepper_updateSpeed(stepper, speed);
+        stepper_updateSpeed(stepper, spd);
         stepper_setSpeedType(stepper, STATIC);
     }
 
-    stepper_setTargetSpeed(stepper, speed);
+    stepper_setTargetSpeed(stepper, spd);
     stepper_setSpeedState(stepper, CONSTANT);
 }
 
