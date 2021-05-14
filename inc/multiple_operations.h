@@ -7,7 +7,7 @@
 // returns number of steppers affected by the command (0 if error)
 uint8_t getCommandSteppersAmount(uint8_t *value); // value is possible stepper value (PRO / ALL / (W, X, Y, Z)) but not sure yet
 
-// validates if the correct key and value was given and returns result,
+// validates if the correct value was given and returns result,
 // if everything is ok then updates steppersCount by pointer and returns null string (no error)
 // additionaly if steppersCount == 1, then updates stepperIndex by pointer
 // if there was invalid key or value then returns error feedbacks
@@ -21,5 +21,9 @@ uint8_t *validateSteppers(uint8_t *idx, uint8_t *key, uint8_t *value, uint8_t *s
 // function is universal because have pointers to validate and process functions
 uint8_t *operate(uint8_t *idx, uint8_t *value1, uint8_t *value2, uint8_t steppersAmount, uint8_t stepperIndex,
                  uint8_t (*validate)(Stepper *, uint8_t *, uint8_t *), void (*operate)(Stepper *, uint8_t *, uint8_t *));
+
+uint8_t getErrorByKey(uint8_t *key);
+
+uint8_t *prepare(uint8_t *idx, uint8_t ***args, uint8_t **requiredKeys, uint8_t requiredKeysAmount, uint8_t (*validate)(Stepper *, uint8_t *, uint8_t *), void (*operate)(Stepper *, uint8_t *, uint8_t *));
 
 #endif // MULTIPLE_OPERATIONS_H

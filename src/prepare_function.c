@@ -21,7 +21,6 @@
 // e.g [spp=x|spd=14.16|acc=non]
 uint8_t *prepare_configure(uint8_t *idx, uint8_t ***args)
 {
-	Stepper *stepper = NULL;
 	uint8_t *feedback = EMPTY;
 
 	uint8_t steppersAmount = 0;

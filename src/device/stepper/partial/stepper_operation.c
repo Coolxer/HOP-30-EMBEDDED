@@ -1,5 +1,6 @@
 #include "device/stepper/partial/stepper_operation.h"
 
+#include "null.h"
 #include "command/partial/val.h"
 #include "command/partial/data_assistant.h"
 
@@ -12,10 +13,12 @@
 
 void stepper_switch(Stepper *stepper, uint8_t *state, uint8_t *EMPTY1)
 {
-    if (stepper_getState(stepper) != state) // check if state is not currently exists
+    uint8_t st = convertStrToBoolean(state);
+
+    if (stepper_getState(stepper) != st) // check if state is not currently exists
     {
-        HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.enablePort, stepper->hardware.enablePin, state); // switches the stepper (OFF or ON)
-        stepper_setState(stepper, state);
+        HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.enablePort, stepper->hardware.enablePin, st); // switches the stepper (OFF or ON)
+        stepper_setState(stepper, st);
     }
 }
 
@@ -49,7 +52,7 @@ void stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
         stepper_setMoveType(stepper, LIMITED);
 
     stepper_setDirection(stepper, direction);
-    stepper_switch(stepper, UP);
+    stepper_switch(stepper, UP, EMPTY);
     stepper_run(stepper);
 }
 
