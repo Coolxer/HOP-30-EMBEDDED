@@ -6,8 +6,9 @@
 typedef struct
 {
     uint8_t PASSED[4],
-        ERR[4],
-        FINISHED[4];
+        ERROR[4],
+        FINISHED[4],
+        VALUE[4];
 } res;
 
 extern res RES;

@@ -1,8 +1,16 @@
 #ifndef DEVICE_MANAGER_H
 #define DEVICE_MANAGER_H
 
-#include "device/stepper/stepper.h"
-#include "device/endstop/endstop.h"
+#include "device/low_voltage/stepper/stepper.h"
+#include "device/low_voltage/endstop/endstop.h"
+
+#include "device/high_voltage/high_voltage_device.h"
+
+enum InformationType
+{
+    POINTER = 0,
+    INDEX = 1
+};
 
 enum
 {
@@ -20,12 +28,16 @@ extern Stepper *X_STEPPER;
 extern Stepper *Y_STEPPER;
 extern Stepper *Z_STEPPER;
 
+extern HVDevice POMP;
+extern HVDevice TH_PHASE_MOTOR;
+
 void device_manager_init();   // sets devices
 void device_manager_deinit(); // resets devices
 
-Stepper *device_manager_getStepper(uint8_t *name);           // returns pointer to stepper by name, if device name is not recognized, returns NULL
-uint8_t *device_manager_getStepperIndex(uint8_t *name);      // returns stepper index by name, if device name is not recognized, returns 9
-Stepper *device_manager_findParentStepper(Endstop *endstop); // returns parent stepper of given endstop
+Stepper *device_manager_getStepperOrIndex(uint8_t *name, enum InformationType it); // returns pointer or index for stepper
+Stepper *device_manager_findParentStepper(Endstop *endstop);                       // returns parent stepper of given endstop
+
+Endstop *device_manager_getEndstopOrIndex(uint8_t *name, enum InformationType it); // returns pointer or index for endstop
 
 void manageDevices(); // manages devices events
 

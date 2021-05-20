@@ -8,8 +8,8 @@
 #include "command/cmd_builder.h"
 #include "prepare_function.h"
 
-#include "device/stepper/partial/stepper_intervention.h"
-#include "device/stepper/partial/stepper_validator.h"
+#include "device/low_voltage/stepper/partial/stepper_intervention.h"
+#include "device/low_voltage/stepper/partial/stepper_validator.h"
 
 uint8_t *dialog_delimiter = (uint8_t *)"|"; // the dialog delimiter, that seprates 2 sentences; e.g. opt=mov|spp=x|
 uint8_t *param_delimiter = (uint8_t *)"=";	// the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov

@@ -5,7 +5,7 @@
 #include "connector.h"
 
 #include "device/device_manager.h"
-#include "device/stepper/partial/stepper_helper.h"
+#include "device/low_voltage/stepper/partial/stepper_helper.h"
 
 void setUp() // default setup function
 {

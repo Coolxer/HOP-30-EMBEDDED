@@ -3,16 +3,22 @@
 #include "null.h"
 #include "command/partial/data_assistant.h"
 
-#include "device/stepper/config/stepper_connection.h"
-#include "device/stepper/partial/stepper_setup.h"
-#include "device/stepper/partial/stepper_operation.h"
-#include "device/stepper/partial/stepper_callback.h"
-#include "device/stepper/partial/stepper_helper.h"
+#include "device/low_voltage/stepper/config/stepper_connection.h"
+#include "device/low_voltage/stepper/partial/stepper_setup.h"
+#include "device/low_voltage/stepper/partial/stepper_operation.h"
+#include "device/low_voltage/stepper/partial/stepper_callback.h"
+#include "device/low_voltage/stepper/partial/stepper_helper.h"
 
-#include "device/endstop/endstop.h"
-#include "device/endstop/config/endstop_connection.h"
-#include "device/endstop/partial/endstop_setup.h"
-#include "device/endstop/partial/endstop_operation.h"
+#include "device/low_voltage/endstop/endstop.h"
+#include "device/low_voltage/endstop/config/endstop_connection.h"
+#include "device/low_voltage/endstop/partial/endstop_setup.h"
+#include "device/low_voltage/endstop/partial/endstop_operation.h"
+
+#include "device/high_voltage/pomp/config/pomp_connection.h"
+#include "device/high_voltage/pomp/partial/pomp_setup.h"
+
+#include "device/high_voltage/th_phase_motor/config/th_phase_motor_connection.h"
+#include "device/high_voltage/th_phase_motor/partial/th_phase_motor_setup.h"
 
 Stepper steppers[STEPPERS_COUNT] = {0};
 Endstop endstops[ENDSTOPS_COUNT] = {0};
@@ -21,6 +27,9 @@ Stepper *W_STEPPER = NULL;
 Stepper *X_STEPPER = NULL;
 Stepper *Y_STEPPER = NULL;
 Stepper *Z_STEPPER = NULL;
+
+HVDevice POMP = NULL;
+HVDevice TH_PHASE_MOTOR = NULL;
 
 void device_manager_init()
 {
@@ -36,14 +45,14 @@ void device_manager_init()
     stepper_init(&steppers[3], LINEAR, (uint8_t *)"z", Z_MASTER_TIMER, Z_SLAVE_TIMER, Z_ALTERNATE_FUNCTION, Z_CHANNEL, Z_ITR, Z_IRQ,
                  Z_ENABLE_PORT, Z_ENABLE_PIN, Z_STEP_PORT, Z_STEP_PIN, Z_DIR_PORT, Z_DIR_PIN);
 
-    endstop_init(&endstops[0], XL_PORT, XL_PIN, XL_IRQ);
-    endstop_init(&endstops[1], XR_PORT, XR_PIN, XR_IRQ);
+    endstop_init(&endstops[0], (uint8_t *)"xl", XL_PORT, XL_PIN, XL_IRQ);
+    endstop_init(&endstops[1], (uint8_t *)"xr", XR_PORT, XR_PIN, XR_IRQ);
 
-    endstop_init(&endstops[2], YL_PORT, YL_PIN, YL_IRQ);
-    endstop_init(&endstops[3], YR_PORT, YR_PIN, YR_IRQ);
+    endstop_init(&endstops[2], (uint8_t *)"yl", YL_PORT, YL_PIN, YL_IRQ);
+    endstop_init(&endstops[3], (uint8_t *)"yr", YR_PORT, YR_PIN, YR_IRQ);
 
-    endstop_init(&endstops[4], ZL_PORT, ZL_PIN, ZL_IRQ);
-    endstop_init(&endstops[5], ZR_PORT, ZR_PIN, ZR_IRQ);
+    endstop_init(&endstops[4], (uint8_t *)"zl", ZL_PORT, ZL_PIN, ZL_IRQ);
+    endstop_init(&endstops[5], (uint8_t *)"zr", ZR_PORT, ZR_PIN, ZR_IRQ);
 
     W_STEPPER = &steppers[0];
     X_STEPPER = &steppers[1];
@@ -53,6 +62,9 @@ void device_manager_init()
     stepper_assignEndstops(X_STEPPER, &endstops[0], &endstops[1]);
     stepper_assignEndstops(Y_STEPPER, &endstops[2], &endstops[3]);
     stepper_assignEndstops(Z_STEPPER, &endstops[4], &endstops[5]);
+
+    pomp_init(&POMP, POMP_PORT, POMP_PIN);
+    th_phase_motor_setup(&TH_PHASE_MOTOR, TH_PHASE_MOTOR_PORT, TH_PHASE_MOTOR_PIN);
 }
 
 void device_manager_deinit()
@@ -66,7 +78,7 @@ void device_manager_deinit()
         endstop_deinit(&endstops[i]);
 }
 
-Stepper *device_manager_getStepper(uint8_t *name)
+Stepper *device_manager_getStepperOrIndex(uint8_t *name, enum InformationType it)
 {
     uint8_t i = 0;
 
@@ -75,25 +87,10 @@ Stepper *device_manager_getStepper(uint8_t *name)
         Stepper *stepper = &steppers[i];
 
         if (stringEqual(stepper_getName(stepper), name))
-            return stepper;
+            return it == POINTER ? stepper : i;
     }
 
     return NULL;
-}
-
-uint8_t *device_manager_getStepperIndex(uint8_t *name)
-{
-    uint8_t i = 0;
-
-    for (i = 0; i < STEPPERS_COUNT; i++)
-    {
-        Stepper *stepper = &steppers[i];
-
-        if (stringEqual(stepper_getName(stepper), name))
-            return i;
-    }
-
-    return 9;
 }
 
 Stepper *device_manager_findParentStepper(Endstop *endstop)
@@ -111,6 +108,20 @@ Stepper *device_manager_findParentStepper(Endstop *endstop)
     return NULL;
 }
 
+Endstop *device_manager_getEndstopOrIndex(uint8_t *name, enum InformationType it)
+{
+    uint8_t i = 0;
+
+    for (i = 0; i < ENDSTOPS_COUNT; i++)
+    {
+        Endstop *endstop = &endstops[i];
+
+        if (stringEqual(endstop->name, name))
+            return it == POINTER ? endstop : i;
+    }
+
+    return NULL;
+}
 void manageEndstops()
 {
     uint8_t i = 0;
@@ -119,7 +130,7 @@ void manageEndstops()
     {
         Endstop *endstop = &endstops[i];
 
-        if (endstop->CLICKED_FLAG)
+        if (endstop->debounce.CLICKED_FLAG)
             endstop_debounce(endstop);
     }
 }

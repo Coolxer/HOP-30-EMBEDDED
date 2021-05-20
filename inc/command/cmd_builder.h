@@ -18,5 +18,8 @@ void cmd_builder_init();
 uint8_t *cmd_builder_buildPas(uint8_t *id);
 uint8_t *cmd_builder_buildErr(uint8_t *id, uint8_t code);
 uint8_t *cmd_builder_buildFin(uint8_t *id);
+uint8_t *cmd_builder_builRes(uint8_t *id, uint8_t *states);
+
+uint8_t getErrorByKey(uint8_t *key, enum ErrorType et);
 
 #endif // CMD_BUILDER_H

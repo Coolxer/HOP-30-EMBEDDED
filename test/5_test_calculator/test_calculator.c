@@ -1,10 +1,10 @@
 #ifdef UNIT_TEST
 
 #include <unity.h> // includes unit testing library
-#include "device/stepper/enum/axis_type.h"
+#include "device/low_voltage/stepper/enum/axis_type.h"
 #include "device/device_manager.h"
 
-#include "device/stepper/partial/stepper_calculator.h"
+#include "device/low_voltage/stepper/partial/stepper_calculator.h"
 
 void setUp() // default setup function
 {

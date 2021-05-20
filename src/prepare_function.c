@@ -11,11 +11,11 @@
 #include "process.h"
 #include "device/device_intervention.h"
 
-#include "device/stepper/partial/stepper_validator.h"
-#include "device/stepper/partial/stepper_configuration.h"
-#include "device/stepper/partial/stepper_operation.h"
-#include "device/stepper/partial/stepper_intervention.h"
-#include "device/stepper/partial/stepper_helper.h"
+#include "device/low_voltage/stepper/partial/stepper_validator.h"
+#include "device/low_voltage/stepper/partial/stepper_configuration.h"
+#include "device/low_voltage/stepper/partial/stepper_operation.h"
+#include "device/low_voltage/stepper/partial/stepper_intervention.h"
+#include "device/low_voltage/stepper/partial/stepper_helper.h"
 
 // e.g [spp=x|spd=14.16|acc=1.0]
 // e.g [spp=x|spd=14.16|acc=non]

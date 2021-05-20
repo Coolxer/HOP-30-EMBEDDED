@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 
+enum ErrorType
+{
+    KEY_ERROR = 0,
+    VALUE_ERROR = 1
+};
+
 typedef struct
 {
     uint8_t NO_ERROR,
@@ -20,6 +26,9 @@ typedef struct
 
         NO_STEPPER_KEY,
         INVALID_STEPPER_VALUE,
+
+        NO_ENDSTOP_KEY,
+        INVALID_ENDSTOP_VALUE,
 
         NO_SPEED_KEY,
         INVALID_SPEED_VALUE,

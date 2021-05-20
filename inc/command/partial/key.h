@@ -5,9 +5,12 @@
 
 typedef struct
 {
-    uint8_t OPERATION[4],
-        INDEX[4],
+    uint8_t INDEX[4],
+        OPERATION[4],
+
         STEPPER[4],
+        ENDSTOP[4],
+
         SPEED[4],
         ACCELERATION[4],
         WAY[4],

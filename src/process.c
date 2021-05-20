@@ -3,9 +3,9 @@
 #include "validator.h"
 #include "command/partial/err.h"
 
-#include "device/stepper/partial/stepper_configuration.h"
-#include "device/stepper/partial/stepper_operation.h"
-#include "device/stepper/partial/stepper_helper.h"
+#include "device/low_voltage/stepper/partial/stepper_configuration.h"
+#include "device/low_voltage/stepper/partial/stepper_operation.h"
+#include "device/low_voltage/stepper/partial/stepper_helper.h"
 
 volatile enum ProcessState PROCESSING = NONE;
 
