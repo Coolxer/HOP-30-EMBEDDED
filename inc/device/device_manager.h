@@ -4,13 +4,9 @@
 #include "device/low_voltage/stepper/stepper.h"
 #include "device/low_voltage/endstop/endstop.h"
 
-#include "device/high_voltage/high_voltage_device.h"
+#include "device/low_voltage/stepper/partial/stepper_helper.h"
 
-enum InformationType
-{
-    POINTER = 0,
-    INDEX = 1
-};
+#include "device/high_voltage/hvd.h"
 
 enum
 {
@@ -18,7 +14,7 @@ enum
     ENDSTOPS_COUNT = 6
 };
 
-// main devices arrays
+// low voltage devices arrays
 extern Stepper steppers[STEPPERS_COUNT];
 extern Endstop endstops[ENDSTOPS_COUNT];
 
@@ -28,8 +24,9 @@ extern Stepper *X_STEPPER;
 extern Stepper *Y_STEPPER;
 extern Stepper *Z_STEPPER;
 
-extern HVDevice POMP;
-extern HVDevice TH_PHASE_MOTOR;
+// high voltage devices
+extern HVD POMP;
+extern HVD TH_PHASE_MOTOR;
 
 void device_manager_init();   // sets devices
 void device_manager_deinit(); // resets devices

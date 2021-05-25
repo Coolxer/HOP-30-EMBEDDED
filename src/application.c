@@ -3,7 +3,7 @@
 #include "clock_manager.h"
 #include "communication/uart.h"
 #include "command/cmd_builder.h"
-#include "connector.h"
+#include "command/cmd_parser.h"
 
 #include "device/device_manager.h"
 
@@ -41,7 +41,7 @@ void application_loop()
             if (stringEqual(command, SHUTDOWN_REQUEST)) // checks if receive command is "FINISH"
                 break;
 
-            uart_send(connector_manage(connector_parse(command))); // send feedback through UART port
+            uart_send(cmd_proceed(cmd_parse(command))); // send feedback through UART port
         }
     }
 }

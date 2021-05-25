@@ -3,7 +3,7 @@
 
 #include "stm32f4xx_hal.h"
 
-#define POMP_PORT GPIOC      // to change
-#define POMP_PIN GPIO_PIN_13 // to change
+#define POMP_PORT GPIOC
+#define POMP_PIN GPIO_PIN_5
 
 #endif // POMP_CONNECTION_H

@@ -15,10 +15,7 @@
 #include "device/low_voltage/endstop/partial/endstop_operation.h"
 
 #include "device/high_voltage/pomp/config/pomp_connection.h"
-#include "device/high_voltage/pomp/partial/pomp_setup.h"
-
 #include "device/high_voltage/th_phase_motor/config/th_phase_motor_connection.h"
-#include "device/high_voltage/th_phase_motor/partial/th_phase_motor_setup.h"
 
 Stepper steppers[STEPPERS_COUNT] = {0};
 Endstop endstops[ENDSTOPS_COUNT] = {0};
@@ -63,8 +60,8 @@ void device_manager_init()
     stepper_assignEndstops(Y_STEPPER, &endstops[2], &endstops[3]);
     stepper_assignEndstops(Z_STEPPER, &endstops[4], &endstops[5]);
 
-    pomp_init(&POMP, POMP_PORT, POMP_PIN);
-    th_phase_motor_setup(&TH_PHASE_MOTOR, TH_PHASE_MOTOR_PORT, TH_PHASE_MOTOR_PIN);
+    hvd_init(&POMP, POMP_PORT, POMP_PIN);
+    hvd_init(&TH_PHASE_MOTOR, TH_PHASE_MOTOR_PORT, TH_PHASE_MOTOR_PIN);
 }
 
 void device_manager_deinit()

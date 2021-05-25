@@ -4,7 +4,7 @@
 #include "stm32f4xx.h"
 
 /* PRIVATE */ //void application_setup(); // setups all modules
-/* PRIVATE */ // void application_loop(); // main program loop
+/* PRIVATE */ //void application_loop(); // main program loop
 /* PRIVATE */ //void application_run();   // runs main application loop
 /* PRIVATE */ //void application_close(); // closes all modules
 
