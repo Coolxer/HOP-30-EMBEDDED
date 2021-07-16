@@ -8,10 +8,10 @@ typedef struct
     GPIO_TypeDef *port;
     uint16_t pin;
     uint8_t irq;
-} Hardware;
+} Hardwaree;
 
-Hardware endstop_hardware_init(GPIO_TypeDef *port, uint16_t pin, uint8_t irq);
+/* PRIVATE */ //void endstop_setupGpio(Hardwaree *hardware); // setups gpio for endstop
 
-/* PRIVATE */ //void endstop_setupGpio(Hardware *hardware); // setups gpio for endstop
+Hardwaree endstop_hardware_init(GPIO_TypeDef *port, uint16_t pin, uint8_t irq);
 
 #endif // ENDSTOP_HARDWARE_H

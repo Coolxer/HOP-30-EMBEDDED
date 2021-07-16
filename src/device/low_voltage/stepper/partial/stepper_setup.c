@@ -25,7 +25,5 @@ void stepper_assignEndstops(Stepper *stepper, Endstop *min, Endstop *max)
 
 void stepper_deinit(Stepper *stepper)
 {
-    HAL_TIM_PWM_Stop(&stepper->hardware.masterTimer, stepper->hardware.channel);
-    HAL_TIM_Base_Stop_IT(stepper_getSlaveTimer(stepper));
-    HAL_NVIC_DisableIRQ(stepper->hardware.irq);
+    stepper_resetPeriherals(stepper);
 }

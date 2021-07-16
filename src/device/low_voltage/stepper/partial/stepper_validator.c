@@ -1,10 +1,10 @@
 #include "device/low_voltage/stepper/partial/stepper_validator.h"
 
 #include "validator.h"
-#include "command/partial/err.h"
-#include "command/partial/val.h"
+#include "command/builder/partial/err.h"
+#include "command/builder/partial/val.h"
+#include "command/builder/partial/data_assistant.h"
 
-#include "command/partial/data_assistant.h"
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 
 uint8_t validate_configure(Stepper *stepper, uint8_t *speed, uint8_t *acceleration)

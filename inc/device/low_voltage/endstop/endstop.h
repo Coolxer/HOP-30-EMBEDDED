@@ -10,7 +10,7 @@ typedef struct
 {
     uint8_t *name;
 
-    Hardware hardware;
+    Hardwaree hardware;
     Debounce debounce;
 
 } Endstop;

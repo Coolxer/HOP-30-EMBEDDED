@@ -4,7 +4,7 @@
 #include "device/low_voltage/stepper/partial/stepper_intervention.h"
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 
-#include "command/cmd_builder.h"
+//#include "command/response_builder.h"
 #include "communication/uart.h"
 
 //  [CALLED FROM MAIN LOOP]
@@ -16,6 +16,9 @@ void stepperFinishedCallback(Stepper *stepper)
     if (stepper_reload(stepper))
         return;
 
-    stepper_stop(stepper);
-    uart_send(cmd_builder_buildFin(stepper_getIndex(stepper)));
+    // TODO
+    //stepper_stop(stepper);
+
+    // TODO
+    //uart_send(cmd_builder_buildFin(stepper_getIndex(stepper)));
 }

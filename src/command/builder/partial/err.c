@@ -1,6 +1,6 @@
-#include "command/partial/err.h"
+#include "command/builder/partial/err.h"
 
-err ERR;
+err ERR = {0};
 
 void err_init()
 {

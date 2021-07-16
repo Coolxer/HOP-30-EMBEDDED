@@ -1,8 +1,8 @@
 #include "device/low_voltage/stepper/partial/stepper_operation.h"
 
 #include "null.h"
-#include "command/partial/val.h"
-#include "command/partial/data_assistant.h"
+#include "command/builder/partial/val.h"
+#include "command/builder/partial/data_assistant.h"
 
 #include "device/low_voltage/stepper/partial/stepper_peripheral.h"
 #include "device/low_voltage/stepper/partial/stepper_configuration.h"

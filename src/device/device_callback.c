@@ -11,9 +11,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
     for (i = 0; i < ENDSTOPS_COUNT; i++) // go through all endstops to check which fire the callback
     {
-        if (GPIO_Pin == endstops[i].pin) // check if concret endstop fired interrupt
+        if (GPIO_Pin == endstops[i].hardware.pin) // check if concret endstop fired interrupt
         {
-            endstops[i].CLICKED_FLAG = SET;
+            endstops[i].debounce.CLICKED_FLAG = SET;
             break;
         }
     }

@@ -147,3 +147,18 @@ uint8_t stepper_reload(Stepper *stepper)
 
     return 0; // not reloaded
 }
+
+void stepper_resetPeriherals(Stepper *stepper)
+{
+    HAL_GPIO_DeInit(stepper->hardware.stepPort, stepper->hardware.stepPin);
+    HAL_GPIO_DeInit(stepper->hardware.dirPort, stepper->hardware.dirPin);
+    HAL_GPIO_DeInit(stepper->hardware.enablePort, stepper->hardware.enablePin);
+
+    HAL_TIM_PWM_Stop(&stepper->hardware.masterTimer, stepper->hardware.channel);
+    HAL_TIM_Base_Stop_IT(stepper_getSlaveTimer(stepper));
+
+    HAL_TIM_Base_DeInit(&stepper->hardware.masterTimer);
+    HAL_TIM_Base_DeInit(&stepper->hardware.slaveTimer);
+
+    HAL_NVIC_DisableIRQ(stepper->hardware.irq);
+}

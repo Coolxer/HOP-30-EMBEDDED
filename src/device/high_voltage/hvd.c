@@ -1,5 +1,6 @@
 #include "device/high_voltage/hvd.h"
 
+#include "command/builder/partial/data_assistant.h"
 #include <string.h>
 
 void hvd_setupGpio(HVD *hvd)
@@ -24,8 +25,15 @@ void hvd_init(HVD *hvd, GPIO_TypeDef *port, uint16_t pin)
     hvd_setupGpio(hvd);
 }
 
+void hvd_deinit(HVD *hvd)
+{
+    HAL_GPIO_DeInit(hvd->port, hvd->pin);
+}
+
 void hvd_switch(HVD *hvd, uint8_t *state)
 {
+    uint8_t st = convertStrToBoolean(state);
+
     if (HAL_GPIO_ReadPin(hvd->port, hvd->pin) != st)
     {
         HAL_GPIO_WritePin((GPIO_TypeDef *)hvd->port, hvd->pin, st);

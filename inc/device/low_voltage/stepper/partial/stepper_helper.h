@@ -10,12 +10,6 @@
 #include "device/low_voltage/stepper/enum/speed_type.h"
 #include "device/low_voltage/stepper/enum/state.h"
 
-enum InformationType
-{
-    POINTER = 0,
-    INDEX = 1
-};
-
 /* INFO SECTION */
 
 // stepper->info.axisType

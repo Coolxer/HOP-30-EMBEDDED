@@ -31,10 +31,10 @@ extern HVD TH_PHASE_MOTOR;
 void device_manager_init();   // sets devices
 void device_manager_deinit(); // resets devices
 
-Stepper *device_manager_getStepperOrIndex(uint8_t *name, enum InformationType it); // returns pointer or index for stepper
-Stepper *device_manager_findParentStepper(Endstop *endstop);                       // returns parent stepper of given endstop
+Stepper *device_manager_getStepper(uint8_t *name);           // returns pointer to stepper
+Stepper *device_manager_findParentStepper(Endstop *endstop); // returns parent stepper of given endstop
 
-Endstop *device_manager_getEndstopOrIndex(uint8_t *name, enum InformationType it); // returns pointer or index for endstop
+Endstop *device_manager_getEndstop(uint8_t *name); // returns pointer to endstop
 
 void manageDevices(); // manages devices events
 

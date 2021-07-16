@@ -1,19 +1,6 @@
 #include "device/low_voltage/endstop/structure/endstop_hardware.h"
 
-Hardware endstop_hardware_init(GPIO_TypeDef *port, uint16_t pin, uint8_t irq)
-{
-    Hardware hardware = {0};
-
-    hardware.port = port;
-    hardware.pin = pin;
-    hardware.irq = irq;
-
-    endstop_setupGpio(&hardware);
-
-    return hardware;
-}
-
-void endstop_setupGpio(Hardware *hardware)
+void endstop_setupGpio(Hardwaree *hardware)
 {
     GPIO_InitTypeDef gpio = {0};
 
@@ -25,4 +12,17 @@ void endstop_setupGpio(Hardware *hardware)
 
     HAL_NVIC_SetPriority(hardware->irq, 0, 0); // set priority of endstop interrupt [MOST IMPORTANT]
     HAL_NVIC_EnableIRQ(hardware->irq);         // enables external interrupt on endstop pin
+}
+
+Hardwaree endstop_hardware_init(GPIO_TypeDef *port, uint16_t pin, uint8_t irq)
+{
+    Hardwaree hardware = {0};
+
+    hardware.port = port;
+    hardware.pin = pin;
+    hardware.irq = irq;
+
+    endstop_setupGpio(&hardware);
+
+    return hardware;
 }

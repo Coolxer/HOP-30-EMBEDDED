@@ -12,6 +12,8 @@ typedef struct
 
 /* PRIVATE */ //void hvd_setupGpio(HVD *hvd);
 void hvd_init(HVD *hvd, GPIO_TypeDef *port, uint16_t pin);
+void hvd_deinit(HVD *hvd);
+
 void hvd_switch(HVD *hvd, uint8_t *state);
 
 uint8_t *hvd_getState(HVD *hvd);

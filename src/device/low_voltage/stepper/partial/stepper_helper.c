@@ -92,6 +92,9 @@ float stepper_getCurrentSpeed(Stepper *stepper)
 void stepper_setCurrentSpeed(Stepper *stepper, float speed)
 {
     stepper->speed.current = speed;
+
+    if (stepper_getSpeedType(stepper) == DYNAMIC)
+        stepper_setSpeedState(stepper, RAISING);
 }
 
 float stepper_stepper_getTargetSpeed(Stepper *stepper)

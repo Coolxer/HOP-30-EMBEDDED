@@ -1,4 +1,4 @@
-#include "command/partial/data_assistant.h"
+#include "command/builder/partial/data_assistant.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +9,14 @@
 uint8_t stringLength(uint8_t *str)
 {
 	return (uint8_t)strlen((void *)str);
+}
+
+uint8_t stringEqual(uint8_t *str1, uint8_t *str2)
+{
+	if (strcmp((void *)str1, (void *)str2) == 0)
+		return 1;
+
+	return 0;
 }
 
 uint8_t *charAppend(uint8_t *src, uint8_t ch)
@@ -37,19 +45,6 @@ uint8_t *strAppend(uint8_t *src, uint8_t *str)
 	tmp[s + 1] = '\0';				  // set end of string
 
 	return (uint8_t *)strdup((void *)tmp); // return new string
-}
-
-uint8_t stringEmpty(uint8_t *str)
-{
-	return stringLength(str) == 0;
-}
-
-uint8_t stringEqual(uint8_t *str1, uint8_t *str2)
-{
-	if (strcmp((void *)str1, (void *)str2) == 0)
-		return 1;
-
-	return 0;
 }
 
 uint8_t convertStrToBoolean(uint8_t *str)

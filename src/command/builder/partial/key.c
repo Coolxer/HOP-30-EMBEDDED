@@ -1,8 +1,8 @@
-#include "command/partial/key.h"
+#include "command/builder/partial/key.h"
 
 #include <string.h>
 
-key KEY;
+key KEY = {0};
 
 void key_init()
 {
@@ -12,10 +12,10 @@ void key_init()
     strcpy((void *)KEY.STEPPER, "spp\0");
     strcpy((void *)KEY.ENDSTOP, "end\0");
 
+    strcpy((void *)KEY.STATE, "stt\0");
     strcpy((void *)KEY.SPEED, "spd\0");
     strcpy((void *)KEY.ACCELERATION, "acc\0");
     strcpy((void *)KEY.WAY, "way\0");
-    strcpy((void *)KEY.STATE, "stt\0");
     strcpy((void *)KEY.DIRECTION, "dir\0");
 
     strcpy((void *)KEY.RESPONSE, "res\0");

@@ -1,7 +1,7 @@
 #include "validator.h"
 
-#include "command/partial/data_assistant.h"
-#include "command/partial/err.h"
+#include "command/builder/partial/data_assistant.h"
+#include "command/builder/partial/err.h"
 
 uint8_t validate_boolean(uint8_t *value)
 {

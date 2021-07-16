@@ -4,7 +4,7 @@
 #include "stm32f4xx_hal.h"
 
 // MASTER_TIMER is PWM timer
-// SLAVE_TIMER is Counter timer
+// SLAVE_TIMER is Step-Counter timer
 
 /**************** W STEPPER  ******************/
 

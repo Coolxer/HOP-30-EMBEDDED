@@ -3,27 +3,17 @@
 
 #include "stm32f4xx_hal.h"
 
-enum
-{
-	DMA_BUFFER_SIZE = 64,
-	UART_BUFFER_SIZE = 256
-};
+#include "communication/config/communication.h"
 
 typedef struct
 {
-	UART_HandleTypeDef *uart; // pointer to UART structure
+	uint8_t commandBuffer[COMMAND_SIZE];
+	uint8_t responseBuffer[RESPONSE_SIZE];
 
-	uint8_t dma_buffer[DMA_BUFFER_SIZE];   // dma buffer
-	uint8_t uart_buffer[UART_BUFFER_SIZE]; // uart buffer
-
-	uint16_t head, tail;	// head, tail indexes
-	uint8_t commands_count; // number of commands
+	DMA_HandleTypeDef commandLine;
+	DMA_HandleTypeDef responseLine;
 } DMA;
 
-extern DMA_HandleTypeDef hdma_usart2_rx; // dma uart rx channel
-extern DMA_HandleTypeDef hdma_usart2_tx; // dma uart tx channel
-
-extern UART_HandleTypeDef *huart;
 extern DMA dma;
 
 #endif // DMA_H

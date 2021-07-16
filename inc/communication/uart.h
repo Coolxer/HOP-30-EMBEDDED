@@ -1,11 +1,28 @@
 #ifndef UART_H
 #define UART_H
 
-#include <stdint.h>
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-void uart_init(); // calls all UART setups
+#include "stm32f4xx_hal.h"
 
-uint8_t *uart_listen();           // enables listening to connected COM port, returns 1 if there is properly command length, otherwise 0
-void uart_send(uint8_t *message); // sends message through uart interface
+    extern UART_HandleTypeDef uart; // uart interface
+
+    /* PRIVATE */ //void uart_setupGpio();         // sets both tx & rx gpio ports to be ready for uart transmission
+    /* PRIVATE */ //void uart_setupInterface();    // prepares uart interface (name, baudrate, parity, oversampling settings, etc...)
+
+    void uart_init();
+    void uart_deinit();
+
+    void uart_write(char c); // [unit test]
+    void uart_send(uint8_t *message);
+
+    void uart_flush(); // [unit test]
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // UART_H

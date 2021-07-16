@@ -1,6 +1,6 @@
 #include "device/low_voltage/endstop/partial/endstop_callback.h"
 
-#include "command/cmd_builder.h"
+//#include "command/response_builder.h"
 #include "communication/uart.h"
 
 #include "device/low_voltage/stepper/stepper.h"
@@ -26,14 +26,17 @@ void endstopClickedCallback(Endstop *endstop)
         {
             if (PROCESSING == BACKWARD)
             {
-                stepper_stop(X_STEPPER);
-                stepper_stop(W_STEPPER);
+                // TODO
+                //stepper_stop(X_STEPPER);
+                //stepper_stop(W_STEPPER);
                 PROCESSING = NONE;
             }
-            else
-                stepper_stop(stepper);
+            // TODO
+            //else
+            //    stepper_stop(stepper);
 
-            uart_send(cmd_builder_buildFin(stepper_getIndex(stepper)));
+            // TODO
+            //uart_send(cmd_builder_buildFin(stepper_getIndex(stepper)));
         }
     }
 }
