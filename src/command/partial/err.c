@@ -1,4 +1,4 @@
-#include "command/builder/partial/err.h"
+#include "command/partial/err.h"
 
 err ERR = {0};
 
@@ -7,7 +7,7 @@ void err_init()
     ERR.NO_ERROR = 0;
     ERR.ERROR = 1;
 
-    ERR.INVALID_COMMAND_LENGTH = 2;
+    ERR.INVALID_REQUEST_LENGTH = 2;
     ERR.NO_PARAMS = 3;
     ERR.ONE_PARAM_ONLY = 4;
     ERR.TO_MANY_PARAMS = 5;

@@ -1,4 +1,4 @@
-#include "command/builder/partial/val.h"
+#include "command/partial/val.h"
 
 #include <string.h>
 

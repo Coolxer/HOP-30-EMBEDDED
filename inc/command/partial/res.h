@@ -14,6 +14,10 @@ typedef struct
 
 extern res RES;
 
+extern uint8_t *ZERO_INDEX;
+extern uint8_t *SHUTDOWN_REQUEST;
+extern uint8_t *SHUTDOWN_RESPONSE;
+
 void res_init();
 
 #endif // RES_H

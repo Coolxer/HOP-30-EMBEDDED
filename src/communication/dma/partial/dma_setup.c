@@ -4,18 +4,18 @@
 
 void dma_setupInterface()
 {
-    dma.commandLine.Instance = DMA1_Stream5;
-    dma.commandLine.Init.Channel = DMA_CHANNEL_4;
-    dma.commandLine.Init.Direction = DMA_PERIPH_TO_MEMORY;
-    dma.commandLine.Init.PeriphInc = DMA_PINC_DISABLE;
-    dma.commandLine.Init.MemInc = DMA_MINC_ENABLE;
-    dma.commandLine.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-    dma.commandLine.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    dma.commandLine.Init.Mode = DMA_NORMAL;
-    dma.commandLine.Init.Priority = DMA_PRIORITY_LOW;
-    dma.commandLine.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    dma.requestLine.Instance = DMA1_Stream5;
+    dma.requestLine.Init.Channel = DMA_CHANNEL_4;
+    dma.requestLine.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    dma.requestLine.Init.PeriphInc = DMA_PINC_DISABLE;
+    dma.requestLine.Init.MemInc = DMA_MINC_ENABLE;
+    dma.requestLine.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    dma.requestLine.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    dma.requestLine.Init.Mode = DMA_NORMAL;
+    dma.requestLine.Init.Priority = DMA_PRIORITY_LOW;
+    dma.requestLine.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
 
-    HAL_DMA_Init(&dma.commandLine);
+    HAL_DMA_Init(&dma.requestLine);
 
     dma.responseLine.Instance = DMA1_Stream6;
     dma.responseLine.Init.Channel = DMA_CHANNEL_4;
@@ -54,7 +54,7 @@ void dma_init()
 
 void dma_deinit()
 {
-    HAL_DMA_DeInit(&dma.commandLine);
+    HAL_DMA_DeInit(&dma.requestLine);
     HAL_DMA_DeInit(&dma.responseLine);
 
     HAL_NVIC_DisableIRQ(USART2_IRQn);

@@ -1,13 +1,14 @@
 #include "device/low_voltage/stepper/partial/stepper_validator.h"
 
 #include "validator.h"
-#include "command/builder/partial/err.h"
-#include "command/builder/partial/val.h"
-#include "command/builder/partial/data_assistant.h"
+#include "data_assistant.h"
+
+#include "command/partial/err.h"
+#include "command/partial/val.h"
 
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 
-uint8_t validate_configure(Stepper *stepper, uint8_t *speed, uint8_t *acceleration)
+uint8_t stepper_validateConfigure(Stepper *stepper, uint8_t *speed, uint8_t *acceleration)
 {
     if (validate_float(speed) == ERR.ERROR)
         return ERR.INVALID_SPEED_VALUE;
@@ -19,7 +20,7 @@ uint8_t validate_configure(Stepper *stepper, uint8_t *speed, uint8_t *accelerati
     return ERR.NO_ERROR;
 }
 
-uint8_t validate_switch(Stepper *stepper, uint8_t *state, uint8_t *EMPTY1)
+uint8_t stepper_validateSwitch(Stepper *stepper, uint8_t *state, uint8_t *EMPTY1)
 {
     if (validate_boolean(state) == ERR.ERROR)
         return ERR.INVALID_STATE_VALUE;
@@ -30,7 +31,7 @@ uint8_t validate_switch(Stepper *stepper, uint8_t *state, uint8_t *EMPTY1)
     return ERR.NO_ERROR;
 }
 
-uint8_t validate_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
+uint8_t stepper_validateMove(Stepper *stepper, uint8_t *way, uint8_t *direction)
 {
     if (validate_key(VAL.LIMIT, way) == ERR.ERROR && validate_float(way) == ERR.ERROR)
         return ERR.INVALID_WAY_VALUE;
@@ -42,7 +43,7 @@ uint8_t validate_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
     return ERR.NO_ERROR;
 }
 
-uint8_t validate_pause(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
+uint8_t stepper_validatePause(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
 {
     if (stepper_getState(stepper) == MOVING)
         return ERR.NO_ERROR;
@@ -50,7 +51,7 @@ uint8_t validate_pause(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
     return ERR.OPERATION_NOT_ALLOWED;
 }
 
-uint8_t validate_resume(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
+uint8_t stepper_validateResume(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
 {
     if (stepper_getState(stepper) == PAUSED)
         return ERR.NO_ERROR;
@@ -58,7 +59,7 @@ uint8_t validate_resume(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
     return ERR.OPERATION_NOT_ALLOWED;
 }
 
-uint8_t validate_stop(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
+uint8_t stepper_validateStop(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
 {
     if (stepper_getState(stepper) == MOVING || stepper_getState(stepper) == PAUSED)
         return ERR.NO_ERROR;

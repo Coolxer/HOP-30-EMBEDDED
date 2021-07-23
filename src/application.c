@@ -2,11 +2,12 @@
 
 #include "null.h"
 
+#include "communication/connector.h"
+#include "command/cmd_manager.h"
+
 #include "clock_manager.h"
 #include "device/device_manager.h"
 
-#include "communication/connector.h"
-//#include "command/cmd_manager.h"
 //#include "command/response_builder.h"
 
 void application_setup()
@@ -18,7 +19,7 @@ void application_setup()
     /// enables FPU service
     //SCB->CPACR |= ((3 << 10 * 2) | (3 << 11 * 2));
 
-    //cmd_builder_init();    // creates opts & keys structures
+    cmd_manager_init();    // creates opts & keys structures
     connector_init();      // inits connector (uart + dma) module
     device_manager_init(); // inits device manager kit
 }
@@ -45,8 +46,8 @@ void application_loop()
     }
     */
 
-    while (1)            // while there is not "FINISH" command on uart
-        manageDevices(); // services endstop and stepper events
+    while (1)                           // while there is not "FINISH" command on uart
+        device_manager_manageDevices(); // services endstop and stepper events
 }
 
 void application_run()

@@ -11,6 +11,6 @@
 void connector_init();
 void connector_deinit();
 
-void connector_sendMessage(uint8_t *message);
+void connector_sendResponse(uint8_t *response);
 
 #endif // CONNECTOR_H

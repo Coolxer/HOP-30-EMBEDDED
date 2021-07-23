@@ -36,9 +36,11 @@ Stepper *device_manager_findParentStepper(Endstop *endstop); // returns parent s
 
 Endstop *device_manager_getEndstop(uint8_t *name); // returns pointer to endstop
 
-void manageDevices(); // manages devices events
+void device_manager_manageDevices(); // manages devices events
 
-/* PRIVATE */ //void manageEndstops(); // manages endstops services (events)
-/* PRIVATE */ //void manageSteppers(); // manages steppers services (events)
+uint8_t *device_manager_getAllDevicesStates();
+
+/* PRIVATE */ //void device_manager_manageEndstops(); // manages endstops services (events)
+/* PRIVATE */ //void device_manager_manageSteppers(); // manages steppers services (events)
 
 #endif // DEVICE_MANAGER_H

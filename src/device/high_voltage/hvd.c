@@ -1,7 +1,8 @@
 #include "device/high_voltage/hvd.h"
 
-#include "command/builder/partial/data_assistant.h"
 #include <string.h>
+
+#include "data_assistant.h"
 
 void hvd_setupGpio(HVD *hvd)
 {

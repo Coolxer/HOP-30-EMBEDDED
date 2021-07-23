@@ -10,7 +10,7 @@ void USART2_IRQHandler(void)
 
 void DMA1_Stream5_IRQHandler(void)
 {
-    HAL_DMA_IRQHandler(&dma.commandLine);
+    HAL_DMA_IRQHandler(&dma.requestLine);
 }
 
 void DMA1_Stream6_IRQHandler(void)

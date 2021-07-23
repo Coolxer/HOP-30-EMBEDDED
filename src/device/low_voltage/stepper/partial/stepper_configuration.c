@@ -2,8 +2,7 @@
 
 #include "config.h"
 #include "counter.h"
-
-#include "command/builder/partial/data_assistant.h"
+#include "data_assistant.h"
 
 #include "device/low_voltage/stepper/partial/stepper_calculator.h"
 #include "device/low_voltage/stepper/partial/stepper_peripheral.h"

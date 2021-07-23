@@ -1,4 +1,4 @@
-#include "command/builder/partial/data_assistant.h"
+#include "data_assistant.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,4 +1,4 @@
-#include "command/builder/partial/key.h"
+#include "command/partial/key.h"
 
 #include <string.h>
 

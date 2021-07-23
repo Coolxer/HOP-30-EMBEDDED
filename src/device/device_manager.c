@@ -1,7 +1,7 @@
 #include "device/device_manager.h"
 
 #include "null.h"
-#include "command/builder/partial/data_assistant.h"
+#include "data_assistant.h"
 
 #include "device/low_voltage/stepper/config/stepper_connection.h"
 #include "device/low_voltage/stepper/partial/stepper_setup.h"
@@ -127,7 +127,7 @@ Endstop *device_manager_getEndstop(uint8_t *name)
 
     return NULL;
 }
-void manageEndstops()
+void device_manager_manageEndstops()
 {
     uint8_t i = 0;
 
@@ -140,7 +140,7 @@ void manageEndstops()
     }
 }
 
-void manageSteppers()
+void device_manager_manageSteppers()
 {
     uint8_t i = 0;
 
@@ -155,8 +155,26 @@ void manageSteppers()
     }
 }
 
-void manageDevices()
+void device_manager_manageDevices()
 {
-    manageEndstops();
-    manageSteppers();
+    device_manager_manageEndstops();
+    device_manager_manageSteppers();
+}
+
+uint8_t *device_manager_getAllDevicesStates()
+{
+    uint8_t *states = EMPTY;
+
+    uint8_t i = 0;
+
+    for (i = 0; i < STEPPERS_COUNT; i++)
+        states = charAppend(states, stepper_getState(&steppers[i]));
+
+    for (i = 0; i < ENDSTOPS_COUNT; i++)
+        states = charAppend(states, endstop_isClicked(&endstops[i]));
+
+    states = strAppend(states, hvd_getState(&POMP));
+    states = strAppend(states, hvd_getState(&TH_PHASE_MOTOR));
+
+    return states;
 }
