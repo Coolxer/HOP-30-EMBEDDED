@@ -8,7 +8,7 @@
 
 #include "command/partial/err.h"
 #include "command/partial/res.h"
-#include "command/partial/type.h"
+#include "command/request/structure/type.h"
 
 #include "command/request/request_validator.h"
 #include "command/request/request_parser.h"
@@ -49,51 +49,103 @@ uint8_t *request_process()
     memmove(args, args + 2, records * sizeof(uint8_t *));
 
     // STEP 7: CHECK IF OPERATION TYPE IS FINE AND PREPARE DATA FOR NEXT STEPS DEPEND ON OPERATION
-    if (stringLength(feedback = request_operate(index, operation)))
-        return feedback;
+    Request request = request_operate(operation);
+
+    if (request.type != LONG_TERM && request.type != INSTANT)
+        return response_builder_buildErr(index, ERR.INVALID_OPERATION_VALUE);
 
     // STEP 8: VALIDATE REQUEST KEYS
-    if (requiredKeysAmount > 0)
+    if (request.requiredKeysAmount > 0)
     {
-        if (stringLength(feedback = request_validateRequestKeys(args, index, requiredKeys, requiredKeysAmount)))
+        if (stringLength(feedback = request_validateRequestKeys(args, index, request.requiredKeys, request.requiredKeysAmount)))
             return feedback;
     }
 
     // STEP 9: VALIDATE REQUEST VALUES AND ENVIRONMENT STATES
-    Stepper *st = NULL;
+    // STEP 10: EXECUTE COMMAND
 
-    if (validateRequestFunction != NULL)
+    if (request.validateFunction != NULL)
     {
-        if (stepper)
-        {
-            st = device_manager_getStepper(args[0][1]);
+        uint8_t code = 0;
 
-            if (!st)
+        if (request.stepper)
+        {
+            Stepper *stepper = device_manager_getStepper(args[0][1]);
+
+            if (!stepper)
                 return response_builder_buildErr(index, ERR.INVALID_STEPPER_VALUE);
 
-            uint8_t code = validateRequestFunction(st, args[1][1], args[2][1]);
+            switch (request.numberOfValues)
+            {
+            case 0:
+                code = request.validateFunction(stepper);
 
-            if (code != ERR.NO_ERROR)
-                return response_builder_buildErr(index, code);
+                if (code == ERR.NO_ERROR)
+                    request.executeFunction(stepper);
+
+                break;
+
+            case 1:
+                code = request.validateFunction(stepper, args[1][1]);
+
+                if (code == ERR.NO_ERROR)
+                    request.executeFunction(stepper, args[1][1]);
+
+                break;
+
+            case 2:
+                code = request.validateFunction(stepper, args[1][1], args[2][1]);
+
+                if (code == ERR.NO_ERROR)
+                    request.executeFunction(stepper, args[1][1], args[2][1]);
+
+                break;
+
+            default:
+                return EMPTY;
+            }
         }
+        else if (request.hvd)
+            code = request.validateFunction(request.hvd, args[1][1]);
         else
         {
-            uint8_t code = validateRequestFunction(NULL, args[1][1], EMPTY);
+            switch (request.numberOfValues)
+            {
+            case 0:
+                code = request.validateFunction();
 
-            if (code != ERR.NO_ERROR)
-                return response_builder_buildErr(index, code);
+                if (code == ERR.NO_ERROR)
+                    request.executeFunction();
+
+                break;
+
+            case 1:
+                code = request.validateFunction(args[1][1]);
+
+                if (code == ERR.NO_ERROR)
+                    request.executeFunction(args[1][1]);
+
+                break;
+
+            case 2:
+                code = request.validateFunction(args[1][1], args[2][1]);
+
+                if (code == ERR.NO_ERROR)
+                    request.executeFunction(args[1][1], args[2][1]);
+
+                break;
+
+            default:
+                return EMPTY;
+            }
         }
+
+        if (code != ERR.NO_ERROR)
+            return response_builder_buildErr(index, code);
     }
 
-    // STEP 10: EXECUTE COMMAND
-    if (stepper)
-        executeRequestFunction(st, args[1][1], args[2][1]);
-    else if (hvd)
-        executeRequestFunction(hvd, args[1][1], args[2][1]);
-    else
-        executeRequestFunction(NULL, args[1][1], args[2][1]);
-
-    if (requestType == LONG_TERM)
+    // GIVE FEEDBACK
+    if (request.type == LONG_TERM)
         return response_builder_buildPas(index);
     else
         return response_builder_buildFin(index);

@@ -9,8 +9,8 @@
 
 void process_pause()
 {
-    stepper_pause(X_STEPPER, EMPTY, EMPTY);
-    stepper_pause(W_STEPPER, EMPTY, EMPTY);
+    stepper_pause(X_STEPPER);
+    stepper_pause(W_STEPPER);
 
     hvd_switch(&POMP, OFF);
     hvd_switch(&TH_PHASE_MOTOR, OFF);
@@ -21,8 +21,8 @@ void process_pause()
 
 void process_resume()
 {
-    stepper_resume(X_STEPPER, EMPTY, EMPTY);
-    stepper_resume(W_STEPPER, EMPTY, EMPTY);
+    stepper_resume(X_STEPPER);
+    stepper_resume(W_STEPPER);
 
     hvd_switch(&POMP, ON);
     hvd_switch(&TH_PHASE_MOTOR, ON);
@@ -32,8 +32,8 @@ void process_resume()
 
 void process_stop()
 {
-    stepper_stop(X_STEPPER, EMPTY, EMPTY);
-    stepper_stop(W_STEPPER, EMPTY, EMPTY);
+    stepper_stop(X_STEPPER);
+    stepper_stop(W_STEPPER);
 
     hvd_switch(&POMP, OFF);
     hvd_switch(&TH_PHASE_MOTOR, OFF);

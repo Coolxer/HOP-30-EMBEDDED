@@ -11,7 +11,7 @@
 
 #include "device/low_voltage/endstop/partial/endstop_operation.h"
 
-void stepper_switch(Stepper *stepper, uint8_t *state, uint8_t *EMPTY1)
+void stepper_switch(Stepper *stepper, uint8_t *state)
 {
     uint8_t st = convertStrToBoolean(state);
 
@@ -52,7 +52,7 @@ void stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
         stepper_setMoveType(stepper, LIMITED);
 
     stepper_setDirection(stepper, direction);
-    stepper_switch(stepper, UP, EMPTY);
+    stepper_switch(stepper, UP);
     stepper_run(stepper);
 }
 

@@ -20,233 +20,58 @@
 #include "process/partial/process_operation.h"
 #include "process/partial/process_intervention.h"
 
-enum RequestType requestType;
-
-uint8_t *requiredKeys[MAX_REQUIRED_KEYS_AMOUNT] = {""};
-uint8_t requiredKeysAmount = 0;
-
-uint8_t (*validateRequestFunction)() = NULL;
-void (*executeRequestFunction)() = NULL;
-
-uint8_t numberOfValuesToValidate = 0;
-
-Stepper *stepper = NULL;
-HVD *hvd = NULL;
-
-uint8_t *request_operate(uint8_t *index, uint8_t *operation)
+Request request_operate(uint8_t *operation)
 {
-    stepper = NULL;
-    hvd = NULL;
+    /* STEPPER REQUESTS */
 
     if (stringEqual(OPT.CONFIGURE_STEPPER, operation))
-    {
-        requestType = INSTANT;
-
-        requiredKeys[0] = KEY.STEPPER;
-        requiredKeys[1] = KEY.SPEED;
-        requiredKeys[2] = KEY.ACCELERATION;
-        requiredKeysAmount = 3;
-
-        validateRequestFunction = &stepper_validateConfigure;
-        executeRequestFunction = &stepper_configure;
-
-        numberOfValuesToValidate = 2;
-
-        stepper = X_STEPPER;
-
-        return EMPTY;
-    }
-
-    else if (stringEqual(OPT.CONFIGURE_PROCESS, operation))
-    {
-        requestType = INSTANT;
-
-        requiredKeys[0] = KEY.DIRECTION;
-        requiredKeysAmount = 1;
-
-        validateRequestFunction = &process_validateConfigure;
-        executeRequestFunction = &process_init;
-
-        return EMPTY;
-    }
+        return request_init(INSTANT, KEY.STEPPER, KEY.SPEED, KEY.ACCELERATION, 3, &stepper_validateConfigure, &stepper_configure, 2, X_STEPPER, NULL);
 
     else if (stringEqual(OPT.SWITCH_STEPPER, operation))
-    {
-        requestType = INSTANT;
-
-        requiredKeys[0] = KEY.STEPPER;
-        requiredKeys[1] = KEY.STATE;
-        requiredKeysAmount = 2;
-
-        validateRequestFunction = &stepper_validateSwitch;
-        executeRequestFunction = &stepper_switch;
-
-        numberOfValuesToValidate = 1;
-
-        stepper = X_STEPPER;
-
-        return EMPTY;
-    }
-
-    else if (stringEqual(OPT.SWITCH_POMP, operation))
-    {
-        requestType = INSTANT;
-
-        requiredKeys[0] = KEY.STATE;
-        requiredKeysAmount = 1;
-
-        validateRequestFunction = NULL;
-        executeRequestFunction = &hvd_switch;
-
-        numberOfValuesToValidate = 1;
-
-        hvd = &POMP;
-
-        return EMPTY;
-    }
-
-    else if (stringEqual(OPT.SWITCH_TH_PHASE_MOTOR, operation))
-    {
-        requestType = INSTANT;
-
-        requiredKeys[0] = KEY.STATE;
-        requiredKeysAmount = 1;
-
-        validateRequestFunction = NULL;
-        executeRequestFunction = &hvd_switch;
-
-        numberOfValuesToValidate = 1;
-
-        hvd = &TH_PHASE_MOTOR;
-
-        return EMPTY;
-    }
+        return request_init(INSTANT, KEY.STEPPER, KEY.STATE, EMPTY, 2, &stepper_validateSwitch, &stepper_switch, 1, X_STEPPER, NULL);
 
     else if (stringEqual(OPT.MOVE_STEPPER, operation))
-    {
-        requestType = LONG_TERM;
-
-        requiredKeys[0] = KEY.STEPPER;
-        requiredKeys[1] = KEY.WAY;
-        requiredKeys[2] = KEY.DIRECTION;
-        requiredKeysAmount = 3;
-
-        validateRequestFunction = &stepper_validateMove;
-        executeRequestFunction = &stepper_move;
-
-        numberOfValuesToValidate = 2;
-
-        stepper = X_STEPPER;
-
-        return EMPTY;
-    }
+        return request_init(LONG_TERM, KEY.STEPPER, KEY.WAY, KEY.DIRECTION, 3, &stepper_validateMove, &stepper_move, 2, X_STEPPER, NULL);
 
     else if (stringEqual(OPT.PAUSE_STEPPER, operation))
-    {
-        requestType = INSTANT;
-
-        requiredKeys[0] = KEY.STEPPER;
-        requiredKeysAmount = 1;
-
-        validateRequestFunction = &stepper_validatePause;
-        executeRequestFunction = &stepper_pause;
-
-        numberOfValuesToValidate = 0;
-
-        stepper = X_STEPPER;
-
-        return EMPTY;
-    }
+        return request_init(INSTANT, KEY.STEPPER, EMPTY, EMPTY, 1, &stepper_validatePause, &stepper_pause, 0, X_STEPPER, NULL);
 
     else if (stringEqual(OPT.RESUME_STEPPER, operation))
-    {
-        requestType = INSTANT;
-
-        requiredKeys[0] = KEY.STEPPER;
-        requiredKeysAmount = 1;
-
-        validateRequestFunction = &stepper_validateResume;
-        executeRequestFunction = &stepper_resume;
-
-        numberOfValuesToValidate = 0;
-
-        stepper = X_STEPPER;
-
-        return EMPTY;
-    }
+        return request_init(INSTANT, KEY.STEPPER, EMPTY, EMPTY, 1, &stepper_validateResume, &stepper_resume, 0, X_STEPPER, NULL);
 
     else if (stringEqual(OPT.STOP_STEPPER, operation))
-    {
-        requestType = INSTANT;
+        return request_init(INSTANT, KEY.STEPPER, EMPTY, EMPTY, 1, &stepper_validateStop, &stepper_stop, 0, X_STEPPER, NULL);
 
-        requiredKeys[0] = KEY.STEPPER;
-        requiredKeysAmount = 1;
+    /* POMP AND TH_PHASE_MOTOR REQUESTS */
 
-        validateRequestFunction = &stepper_validateStop;
-        executeRequestFunction = &stepper_stop;
+    else if (stringEqual(OPT.SWITCH_POMP, operation))
+        return request_init(INSTANT, KEY.STATE, EMPTY, EMPTY, 1, NULL, &hvd_switch, 1, NULL, &POMP);
 
-        numberOfValuesToValidate = 0;
+    else if (stringEqual(OPT.SWITCH_TH_PHASE_MOTOR, operation))
+        return request_init(INSTANT, KEY.STATE, EMPTY, EMPTY, 1, NULL, &hvd_switch, 1, NULL, &TH_PHASE_MOTOR);
 
-        stepper = X_STEPPER;
+    /* PROCESS REQUESTS */
 
-        return EMPTY;
-    }
+    else if (stringEqual(OPT.CONFIGURE_PROCESS, operation))
+        return request_init(INSTANT, KEY.DIRECTION, EMPTY, EMPTY, 1, &process_validateConfigure, &process_init, 1, NULL, NULL);
+
+    else if (stringEqual(OPT.INIT_PROCESS, operation))
+        return request_init(INSTANT, EMPTY, EMPTY, EMPTY, 0, NULL, &process_init, 0, NULL, NULL);
 
     else if (stringEqual(OPT.PAUSE_PROCESS, operation))
-    {
-        requestType = INSTANT;
-
-        requiredKeysAmount = 0;
-
-        validateRequestFunction = &process_validatePause;
-        executeRequestFunction = &process_pause;
-
-        numberOfValuesToValidate = 0;
-
-        return EMPTY;
-    }
+        return request_init(INSTANT, EMPTY, EMPTY, EMPTY, 0, &process_validatePause, &process_pause, 0, NULL, NULL);
 
     else if (stringEqual(OPT.RESUME_PROCESS, operation))
-    {
-        requestType = INSTANT;
-
-        requiredKeysAmount = 0;
-
-        validateRequestFunction = &process_validateResume;
-        executeRequestFunction = &process_resume;
-
-        numberOfValuesToValidate = 0;
-
-        return EMPTY;
-    }
+        return request_init(INSTANT, EMPTY, EMPTY, EMPTY, 0, &process_validateResume, &process_resume, 0, NULL, NULL);
 
     else if (stringEqual(OPT.STOP_PROCESS, operation))
-    {
-        requestType = INSTANT;
+        return request_init(INSTANT, EMPTY, EMPTY, EMPTY, 0, &process_validateStop, &process_stop, 0, NULL, NULL);
 
-        requiredKeysAmount = 0;
-
-        validateRequestFunction = &process_validateStop;
-        executeRequestFunction = &process_stop;
-
-        numberOfValuesToValidate = 0;
-
-        return EMPTY;
-    }
-
+    /* GET STATES REQUEST */
     else if (stringEqual(OPT.GET_ALL_STATES, operation))
-    {
-        requestType = INSTANT;
+        return request_init(INSTANT, EMPTY, EMPTY, EMPTY, 0, NULL, &device_manager_getAllDevicesStates, 0, NULL, NULL);
 
-        requiredKeysAmount = 0;
+    Request request = {0};
 
-        validateRequestFunction = NULL;
-        executeRequestFunction = &device_manager_getAllDevicesStates;
-
-        numberOfValuesToValidate = 0;
-
-        return EMPTY;
-    }
-
-    return response_builder_buildErr(index, ERR.INVALID_OPERATION_VALUE);
+    return request;
 }

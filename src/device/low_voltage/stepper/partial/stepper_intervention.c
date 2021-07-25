@@ -5,7 +5,7 @@
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 #include "device/low_voltage/stepper/partial/stepper_calculator.h"
 
-void stepper_pause(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
+void stepper_pause(Stepper *stepper)
 {
     if (stepper_getMoveType(stepper) == PRECISED) // if stepper is in MOVING state i need to remember register values TARGET and COUNTER
     {
@@ -25,7 +25,7 @@ void stepper_pause(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
     stepper_setState(stepper, PAUSED); // update current state
 }
 
-void stepper_resume(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
+void stepper_resume(Stepper *stepper)
 {
     if (stepper_getMoveType(stepper) == PRECISED)
     {
@@ -40,7 +40,7 @@ void stepper_resume(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
     stepper_setState(stepper, MOVING); // recover state
 }
 
-void stepper_stop(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
+void stepper_stop(Stepper *stepper)
 {
     stepper_stopTimers(stepper);
     stepper_resetSpeed(stepper);

@@ -20,7 +20,7 @@ uint8_t stepper_validateConfigure(Stepper *stepper, uint8_t *speed, uint8_t *acc
     return ERR.NO_ERROR;
 }
 
-uint8_t stepper_validateSwitch(Stepper *stepper, uint8_t *state, uint8_t *EMPTY1)
+uint8_t stepper_validateSwitch(Stepper *stepper, uint8_t *state)
 {
     if (validate_boolean(state) == ERR.ERROR)
         return ERR.INVALID_STATE_VALUE;
@@ -43,7 +43,7 @@ uint8_t stepper_validateMove(Stepper *stepper, uint8_t *way, uint8_t *direction)
     return ERR.NO_ERROR;
 }
 
-uint8_t stepper_validatePause(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
+uint8_t stepper_validatePause(Stepper *stepper)
 {
     if (stepper_getState(stepper) == MOVING)
         return ERR.NO_ERROR;
@@ -51,7 +51,7 @@ uint8_t stepper_validatePause(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2
     return ERR.OPERATION_NOT_ALLOWED;
 }
 
-uint8_t stepper_validateResume(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
+uint8_t stepper_validateResume(Stepper *stepper)
 {
     if (stepper_getState(stepper) == PAUSED)
         return ERR.NO_ERROR;
@@ -59,7 +59,7 @@ uint8_t stepper_validateResume(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY
     return ERR.OPERATION_NOT_ALLOWED;
 }
 
-uint8_t stepper_validateStop(Stepper *stepper, uint8_t *EMPTY1, uint8_t *EMPTY2)
+uint8_t stepper_validateStop(Stepper *stepper)
 {
     if (stepper_getState(stepper) == MOVING || stepper_getState(stepper) == PAUSED)
         return ERR.NO_ERROR;

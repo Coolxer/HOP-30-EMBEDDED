@@ -7,10 +7,10 @@
 #include "device/low_voltage/stepper/partial/stepper_operation.h"
 #include "device/low_voltage/stepper/partial/stepper_configuration.h"
 
-void process_init(uint8_t *idx)
+void process_init(uint8_t *index)
 {
-    stepper_switch(X_STEPPER, UP, EMPTY);
-    stepper_switch(W_STEPPER, UP, EMPTY);
+    stepper_switch(X_STEPPER, UP);
+    stepper_switch(W_STEPPER, UP);
 
     hvd_switch(&POMP, ON);
     hvd_switch(&TH_PHASE_MOTOR, ON);
@@ -18,8 +18,8 @@ void process_init(uint8_t *idx)
     stepper_run(X_STEPPER);
     stepper_run(W_STEPPER);
 
-    stepper_setIndex(X_STEPPER, idx);
-    stepper_setIndex(W_STEPPER, idx);
+    stepper_setIndex(X_STEPPER, index);
+    stepper_setIndex(W_STEPPER, index);
 
     PROCESS_STATE = FORWARD;
 }
