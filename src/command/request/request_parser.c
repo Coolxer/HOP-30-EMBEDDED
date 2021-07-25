@@ -18,39 +18,36 @@
 uint8_t *cmd_delimiter = (uint8_t *)"|";   // the cmd delimiter, that seprates 2 sentences; e.g. opt=mov|spp=x|
 uint8_t *param_delimiter = (uint8_t *)"="; // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
 
-uint8_t ***args = NULL;
-uint8_t records = 0; // number of rows (key:value) of parsered cmd
+uint8_t records = 0; // number of rows (key:value) of parsered request
 
-uint8_t *request_truncate(uint8_t *cmd)
+uint8_t *request_truncate(uint8_t *request)
 {
     uint8_t i = 0;
     uint8_t n = 0;
 
     for (i = 0; i < REQUEST_SIZE; i++)
-        if (cmd[i] == '\n')
+        if (request[i] == '\n')
             break;
 
     n = (uint8_t)(i + 1);
 
-    uint8_t *m = malloc(sizeof(uint8_t) * n);
+    uint8_t m[n];
 
     for (i = 0; i < n; i++)
-        m[i] = cmd[i];
+        m[i] = request[i];
 
     m[n] = '\0';
 
     return m;
 }
 
-uint8_t ***request_explode(uint8_t *cmd)
+uint8_t ***request_explode(uint8_t *request)
 {
-    uint8_t *param = NULL, *key = NULL, *value = NULL;
-
-    args = NULL;
+    uint8_t ***args = NULL, *param = NULL, *key = NULL, *value = NULL;
 
     records = 0; // number of records (rows) with 2 columns: key:value
 
-    for (param = (uint8_t *)strtok((void *)cmd, (void *)cmd_delimiter); param != NULL; param = (uint8_t *)strtok(NULL, (void *)cmd_delimiter))
+    for (param = (uint8_t *)strtok((void *)request, (void *)cmd_delimiter); param != NULL; param = (uint8_t *)strtok(NULL, (void *)cmd_delimiter))
     {
         if (param[0] == '=' || strchr((void *)param, *param_delimiter) == NULL)
             break;

@@ -3,10 +3,13 @@
 //#include "command/response_builder.h"
 #include "communication/uart.h"
 
+#include "device/device_manager.h"
+
 #include "device/low_voltage/stepper/stepper.h"
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 #include "device/low_voltage/stepper/partial/stepper_intervention.h"
 
+#include "process/partial/process_operation.h"
 #include "process/process.h"
 
 // [CALLED FROM MAIN LOOP]

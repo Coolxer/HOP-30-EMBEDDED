@@ -16,9 +16,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
     uint8_t *response = request_process();
 
-    connector_sendResponse("GUCIA KOT");
+    connector_sendResponse(response);
 
-    //dma.requestBuffer[0] = "\0";
+    dma.requestBuffer[0] = "\0";
+    dma.responseBuffer[0] = "\0";
 
     HAL_UART_Receive_DMA(&uart, dma.requestBuffer, REQUEST_SIZE);
 

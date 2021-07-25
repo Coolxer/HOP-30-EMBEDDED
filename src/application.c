@@ -34,18 +34,6 @@ void application_close()
 
 void application_loop()
 {
-    /*
-    while (1) // while there is not "FINISH" command on uart
-    {
-        manageDevices(); // services endstop and stepper events
-
-        uint8_t *cmd = uart_listen();
-
-        if (!stringEqual(cmd, EMPTY))
-            cmd_manage(cmd);
-    }
-    */
-
     while (1)                           // while there is not "FINISH" command on uart
         device_manager_manageDevices(); // services endstop and stepper events
 }
@@ -54,8 +42,8 @@ void application_run()
 {
     application_loop();
 
-    //uart_send(SHUTDOWN_RESPONSE); // sends "FINISHED" through UART after get "FINISH" command
-    application_close(); // close the application
+    connector_sendResponse(SHUTDOWN_RESPONSE); // sends "FINISHED" through UART after get "FINISH" command
+    application_close();                       // close the application
 }
 
 void application_exec()

@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-extern uint8_t ***args;
 extern uint8_t records;
 
 uint8_t *request_truncate(uint8_t *request);

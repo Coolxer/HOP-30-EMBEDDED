@@ -163,8 +163,10 @@ void device_manager_manageDevices()
 
 uint8_t *device_manager_getAllDevicesStates()
 {
+
     uint8_t *states = EMPTY;
 
+    /*
     uint8_t i = 0;
 
     for (i = 0; i < STEPPERS_COUNT; i++)
@@ -176,5 +178,6 @@ uint8_t *device_manager_getAllDevicesStates()
     states = strAppend(states, hvd_getState(&POMP));
     states = strAppend(states, hvd_getState(&TH_PHASE_MOTOR));
 
+*/
     return states;
 }

@@ -8,9 +8,9 @@
 #include "command/response/response_builder.h"
 #include "command/cmd_manager.h"
 
-uint8_t *request_checkMinLength(uint8_t *cmd)
+uint8_t *request_checkMinLength(uint8_t *request)
 {
-    if (stringLength(cmd) < MIN_TRUNC_REQUEST_SIZE)
+    if (stringLength(request) < MIN_TRUNC_REQUEST_SIZE)
         return response_builder_buildErr(ZERO_INDEX, ERR.INVALID_REQUEST_LENGTH);
 
     return EMPTY;
@@ -39,14 +39,14 @@ uint8_t *request_checkGeneralThings(uint8_t ***args, uint8_t records)
     return EMPTY;
 }
 
-uint8_t *request_validateRequestKeys(uint8_t ***args, uint8_t *index, uint8_t **requiredRequestKeys, uint8_t requiredRequestKeysAmount)
+uint8_t *request_validateRequestKeys(uint8_t ***args, uint8_t *index, uint8_t *requiredKeys[], uint8_t requiredKeysAmount)
 {
     uint8_t i = 0;
 
-    for (i = 0; i < requiredRequestKeysAmount; i++)
+    for (i = 0; i < requiredKeysAmount; i++)
     {
-        if (validate_key(requiredRequestKeys[i], args[i][0]) == ERR.ERROR)
-            return response_builder_buildErr(index, cmd_manager_getErrorByKey(requiredRequestKeys[i], KEY_ERROR));
+        if (validate_key(requiredKeys[i], args[i][0]) == ERR.ERROR)
+            return response_builder_buildErr(index, cmd_manager_getErrorByKey(requiredKeys[i], KEY_ERROR));
     }
 
     return EMPTY;

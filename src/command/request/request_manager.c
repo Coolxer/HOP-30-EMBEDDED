@@ -24,17 +24,17 @@ uint8_t *request_process()
     uint8_t *feedback = EMPTY;
 
     // STEP 1: TRUNCATE REQUEST
-    uint8_t *request = request_truncate(dma.requestBuffer);
+    //uint8_t *request = request_truncate(dma.requestBuffer);
 
     // STEP 2: VALIDATE REQUEST COMMAND LENGTH
-    if (!stringLength(feedback = request_checkMinLength(request)))
-        return feedback;
+    //if (!stringLength(feedback = request_checkMinLength(request)))
+    //    return feedback;
 
     // STEP 3: EXPLODE FOR PAIRS KEY:VALUE
-    uint8_t ***args = request_explode(request);
+    uint8_t ***args = request_explode(dma.requestBuffer);
 
     // STEP 4: GENERAL VALIDATION (RECORDS, INDEX, OPERATION CHECKS)
-    if (!stringLength(feedback = request_checkGeneralThings(args, records)))
+    if (stringLength(feedback = request_checkGeneralThings(args, records)))
         return feedback;
 
     // STEP 5: GET INDEX AND OPERATION TYPE
@@ -42,7 +42,6 @@ uint8_t *request_process()
     uint8_t *operation = args[1][1];
 
     // STEP 6: SCHRINK DATA TO LEAVE ONLY NEEDED DATA
-
     // decrease number of rows by 2 (remove index and operation)
     records = (uint8_t)(records - 2);
 
@@ -50,13 +49,13 @@ uint8_t *request_process()
     memmove(args, args + 2, records * sizeof(uint8_t *));
 
     // STEP 7: CHECK IF OPERATION TYPE IS FINE AND PREPARE DATA FOR NEXT STEPS DEPEND ON OPERATION
-    if (!stringLength(feedback = request_operate(index, operation)))
+    if (stringLength(feedback = request_operate(index, operation)))
         return feedback;
 
     // STEP 8: VALIDATE REQUEST KEYS
-    if (requiredRequestKeysAmount > 0)
+    if (requiredKeysAmount > 0)
     {
-        if (!stringLength(feedback = request_validateRequestKeys(args, index, requiredRequestKeys, requiredRequestKeysAmount)))
+        if (stringLength(feedback = request_validateRequestKeys(args, index, requiredKeys, requiredKeysAmount)))
             return feedback;
     }
 
@@ -94,7 +93,7 @@ uint8_t *request_process()
     else
         executeRequestFunction(NULL, args[1][1], args[2][1]);
 
-    if (requestType == INSTANT)
+    if (requestType == LONG_TERM)
         return response_builder_buildPas(index);
     else
         return response_builder_buildFin(index);
