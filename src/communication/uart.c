@@ -61,18 +61,3 @@ void uart_flush()
 {
 	return;
 }
-
-/*
-uint8_t *uart_listen()
-{
-	if (BUFFER_IS_NOT_EMPTY())
-	{
-		if (dma_isReady()) // if there are command with min 21 length characters
-			return dma_getCommand();
-		else // if string is too short
-			uart_send(cmd_builder_buildErr(ZER0_INDEX, ERR.INVALID_COMMAND_LENGTH));
-	}
-
-	return EMPTY;
-}
-*/

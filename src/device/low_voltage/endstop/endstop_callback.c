@@ -1,6 +1,6 @@
 #include "device/low_voltage/endstop/partial/endstop_callback.h"
 
-//#include "command/response_builder.h"
+#include "command/response/response_builder.h"
 #include "communication/uart.h"
 
 #include "device/device_manager.h"
@@ -11,6 +11,8 @@
 
 #include "process/partial/process_operation.h"
 #include "process/process.h"
+
+#include "communication/connector.h"
 
 // [CALLED FROM MAIN LOOP]
 void endstopClickedCallback(Endstop *endstop)
@@ -29,17 +31,14 @@ void endstopClickedCallback(Endstop *endstop)
         {
             if (PROCESS_STATE == BACKWARD)
             {
-                // TODO
-                //stepper_stop(X_STEPPER);
-                //stepper_stop(W_STEPPER);
+                stepper_stop(X_STEPPER);
+                stepper_stop(W_STEPPER);
                 PROCESS_STATE = NONE;
             }
-            // TODO
-            //else
-            //    stepper_stop(stepper);
+            else
+                stepper_stop(stepper);
 
-            // TODO
-            //uart_send(cmd_builder_buildFin(stepper_getIndex(stepper)));
+            connector_sendResponse(response_builder_buildFin(stepper_getIndex(stepper)));
         }
     }
 }

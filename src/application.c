@@ -42,7 +42,7 @@ void application_run()
 {
     application_loop();
 
-    connector_sendResponse(SHUTDOWN_RESPONSE); // sends "FINISHED" through UART after get "FINISH" command
+    connector_sendResponse(SHUTDOWN_RESPONSE); // sends "SHUTDOWNED" through UART after get "SHUTDOWN" command
     application_close();                       // close the application
 }
 

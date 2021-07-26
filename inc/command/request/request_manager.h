@@ -17,6 +17,6 @@
     STEP 10: EXECUTE REQUEST
 */
 
-uint8_t *request_process();
+uint8_t *request_process(uint8_t *request);
 
 #endif // REQUEST_MANAGER_H

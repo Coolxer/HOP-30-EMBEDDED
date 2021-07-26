@@ -7,7 +7,6 @@ typedef struct
 {
     uint8_t ERROR[4],
         PASSED[4],
-        IN_PROGRESS[4],
         FINISHED[4],
         VALUE[4];
 } res;

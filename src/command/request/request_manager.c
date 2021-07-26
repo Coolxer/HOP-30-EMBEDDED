@@ -15,23 +15,22 @@
 #include "command/request/request_operator.h"
 #include "command/response/response_builder.h"
 
-#include "communication/connector.h"
-
 #include "device/device_manager.h"
 
-uint8_t *request_process()
+uint8_t *request_process(uint8_t *request)
 {
     uint8_t *feedback = EMPTY;
 
     // STEP 1: TRUNCATE REQUEST
-    //uint8_t *request = request_truncate(dma.requestBuffer);
+    //uint8_t *requestString = request_truncate(request);
 
     // STEP 2: VALIDATE REQUEST COMMAND LENGTH
-    //if (!stringLength(feedback = request_checkMinLength(request)))
+    //if (stringLength(feedback = request_checkMinLength(requestString)))
     //    return feedback;
 
     // STEP 3: EXPLODE FOR PAIRS KEY:VALUE
-    uint8_t ***args = request_explode(dma.requestBuffer);
+    //uint8_t ***args = request_explode(requestString);
+    uint8_t ***args = request_explode(request);
 
     // STEP 4: GENERAL VALIDATION (RECORDS, INDEX, OPERATION CHECKS)
     if (stringLength(feedback = request_checkGeneralThings(args, records)))
@@ -49,55 +48,55 @@ uint8_t *request_process()
     memmove(args, args + 2, records * sizeof(uint8_t *));
 
     // STEP 7: CHECK IF OPERATION TYPE IS FINE AND PREPARE DATA FOR NEXT STEPS DEPEND ON OPERATION
-    Request request = request_operate(operation);
+    Request req = request_operate(operation);
 
-    if (request.type != LONG_TERM && request.type != INSTANT)
+    if (req.type != LONG_TERM && req.type != INSTANT)
         return response_builder_buildErr(index, ERR.INVALID_OPERATION_VALUE);
 
     // STEP 8: VALIDATE REQUEST KEYS
-    if (request.requiredKeysAmount > 0)
+    if (req.requiredKeysAmount > 0)
     {
-        if (stringLength(feedback = request_validateRequestKeys(args, index, request.requiredKeys, request.requiredKeysAmount)))
+        if (stringLength(feedback = request_validateRequestKeys(args, index, req.requiredKeys, req.requiredKeysAmount)))
             return feedback;
     }
 
     // STEP 9: VALIDATE REQUEST VALUES AND ENVIRONMENT STATES
     // STEP 10: EXECUTE COMMAND
 
-    if (request.validateFunction != NULL)
+    if (req.validateFunction != NULL)
     {
         uint8_t code = 0;
 
-        if (request.stepper)
+        if (req.stepper)
         {
             Stepper *stepper = device_manager_getStepper(args[0][1]);
 
             if (!stepper)
                 return response_builder_buildErr(index, ERR.INVALID_STEPPER_VALUE);
 
-            switch (request.numberOfValues)
+            switch (req.numberOfValues)
             {
             case 0:
-                code = request.validateFunction(stepper);
+                code = req.validateFunction(stepper);
 
                 if (code == ERR.NO_ERROR)
-                    request.executeFunction(stepper);
+                    req.executeFunction(stepper);
 
                 break;
 
             case 1:
-                code = request.validateFunction(stepper, args[1][1]);
+                code = req.validateFunction(stepper, args[1][1]);
 
                 if (code == ERR.NO_ERROR)
-                    request.executeFunction(stepper, args[1][1]);
+                    req.executeFunction(stepper, args[1][1]);
 
                 break;
 
             case 2:
-                code = request.validateFunction(stepper, args[1][1], args[2][1]);
+                code = req.validateFunction(stepper, args[1][1], args[2][1]);
 
                 if (code == ERR.NO_ERROR)
-                    request.executeFunction(stepper, args[1][1], args[2][1]);
+                    req.executeFunction(stepper, args[1][1], args[2][1]);
 
                 break;
 
@@ -105,33 +104,33 @@ uint8_t *request_process()
                 return EMPTY;
             }
         }
-        else if (request.hvd)
-            code = request.validateFunction(request.hvd, args[1][1]);
+        else if (req.hvd)
+            code = req.validateFunction(req.hvd, args[1][1]);
         else
         {
-            switch (request.numberOfValues)
+            switch (req.numberOfValues)
             {
             case 0:
-                code = request.validateFunction();
+                code = req.validateFunction();
 
                 if (code == ERR.NO_ERROR)
-                    request.executeFunction();
+                    req.executeFunction();
 
                 break;
 
             case 1:
-                code = request.validateFunction(args[1][1]);
+                code = req.validateFunction(args[1][1]);
 
                 if (code == ERR.NO_ERROR)
-                    request.executeFunction(args[1][1]);
+                    req.executeFunction(args[1][1]);
 
                 break;
 
             case 2:
-                code = request.validateFunction(args[1][1], args[2][1]);
+                code = req.validateFunction(args[1][1], args[2][1]);
 
                 if (code == ERR.NO_ERROR)
-                    request.executeFunction(args[1][1], args[2][1]);
+                    req.executeFunction(args[1][1], args[2][1]);
 
                 break;
 
@@ -145,7 +144,7 @@ uint8_t *request_process()
     }
 
     // GIVE FEEDBACK
-    if (request.type == LONG_TERM)
+    if (req.type == LONG_TERM)
         return response_builder_buildPas(index);
     else
         return response_builder_buildFin(index);

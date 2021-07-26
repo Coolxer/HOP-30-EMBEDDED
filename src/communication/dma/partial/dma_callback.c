@@ -12,15 +12,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     huart = huart; // turn of warning
 
-    //HAL_UART_Transmit_DMA(&uart, dma.requestBuffer, REQUEST_SIZE);
+    // add terminate string sign
+    dma.requestBuffer[REQUEST_SIZE - 1] = '\0';
 
-    uint8_t *response = request_process();
-
+    uint8_t *response = request_process(dma.requestBuffer);
     connector_sendResponse(response);
 
-    dma.requestBuffer[0] = "\0";
-    dma.responseBuffer[0] = "\0";
+    // clear buffer
+    dma.requestBuffer[0] = '\0';
 
+    // start listening to again
     HAL_UART_Receive_DMA(&uart, dma.requestBuffer, REQUEST_SIZE);
 
     return;

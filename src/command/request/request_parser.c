@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "data_assistant.h"
 #include "null.h"
 #include "validator.h"
 #include "communication/config/communication.h"
@@ -26,15 +27,15 @@ uint8_t *request_truncate(uint8_t *request)
     uint8_t n = 0;
 
     for (i = 0; i < REQUEST_SIZE; i++)
-        if (request[i] == '\n')
+        if (request[i] == '\n' || request[i] == '\\')
             break;
 
-    n = (uint8_t)(i + 1);
+    n = (uint8_t)i;
 
-    uint8_t m[n];
+    uint8_t *m = EMPTY;
 
     for (i = 0; i < n; i++)
-        m[i] = request[i];
+        m = charAppend(m, request[i]);
 
     m[n] = '\0';
 
