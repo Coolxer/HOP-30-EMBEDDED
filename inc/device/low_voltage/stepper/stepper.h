@@ -14,10 +14,10 @@
 
 #include "device/low_voltage/endstop/endstop.h"
 
-#define LEFT (uint8_t *)"0\0"
-#define RIGHT (uint8_t *)"1\0"
-#define DOWN (uint8_t *)"0\0"
-#define UP (uint8_t *)"1\0"
+#define LEFT 0
+#define RIGHT 1
+#define DOWN 0
+#define UP 1
 
 typedef struct
 {

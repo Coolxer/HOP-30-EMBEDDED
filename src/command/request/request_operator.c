@@ -71,6 +71,7 @@ Request request_operate(uint8_t *operation)
     else if (stringEqual(OPT.GET_ALL_STATES, operation))
         return request_init(INSTANT, EMPTY, EMPTY, EMPTY, 0, NULL, &device_manager_getAllDevicesStates, 0, NULL, NULL);
 
+    // if the operation type was not resolved i creating empty request object
     Request request = {0};
 
     return request;

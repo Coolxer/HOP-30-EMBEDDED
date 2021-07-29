@@ -3,8 +3,8 @@
 #include "null.h"
 #include "data_assistant.h"
 #include "validator.h"
-#include "communication/config/communication.h"
 
+#include "communication/config/communication.h"
 #include "command/response/response_builder.h"
 #include "command/cmd_manager.h"
 

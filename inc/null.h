@@ -4,6 +4,6 @@
 #include <stdint.h>
 
 #define NULL ((void *)0)
-#define EMPTY (uint8_t *)"\0"
+#define EMPTY (void *)"\0"
 
 #endif // NULL_H

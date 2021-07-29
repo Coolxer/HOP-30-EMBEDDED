@@ -3,8 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "data_assistant.h"
 #include "null.h"
+#include "data_assistant.h"
 #include "validator.h"
 #include "communication/config/communication.h"
 

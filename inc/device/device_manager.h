@@ -38,7 +38,7 @@ Endstop *device_manager_getEndstop(uint8_t *name); // returns pointer to endstop
 
 void device_manager_manageDevices(); // manages devices events
 
-uint8_t *device_manager_getAllDevicesStates();
+void device_manager_getAllDevicesStates(uint8_t* s);
 
 /* PRIVATE */ //void device_manager_manageEndstops(); // manages endstops services (events)
 /* PRIVATE */ //void device_manager_manageSteppers(); // manages steppers services (events)

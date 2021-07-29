@@ -56,87 +56,90 @@ uint8_t *request_process(uint8_t *request)
     // STEP 7: VALIDATE REQUEST VALUES AND ENVIRONMENT STATES
     // STEP 8: EXECUTE COMMAND
 
-    if (req.validateFunction != NULL)
+    uint8_t code = 0;
+
+    if (req.stepper)
     {
-        uint8_t code = 0;
+        Stepper *stepper = device_manager_getStepper(args[0][1]);
 
-        if (req.stepper)
+        if (!stepper)
+            return response_builder_buildErr(index, ERR.INVALID_STEPPER_VALUE);
+
+        switch (req.numberOfValues)
         {
-            Stepper *stepper = device_manager_getStepper(args[0][1]);
+        case 0:
+            code = (req.validateFunction) ? req.validateFunction(stepper) : ERR.NO_ERROR;
 
-            if (!stepper)
-                return response_builder_buildErr(index, ERR.INVALID_STEPPER_VALUE);
+            if (code == ERR.NO_ERROR)
+                req.executeFunction(stepper);
 
-            switch (req.numberOfValues)
-            {
-            case 0:
-                code = req.validateFunction(stepper);
+            break;
 
-                if (code == ERR.NO_ERROR)
-                    req.executeFunction(stepper);
+        case 1:
+            code = (req.validateFunction) ? req.validateFunction(stepper, args[1][1]) : ERR.NO_ERROR;
 
-                break;
+            if (code == ERR.NO_ERROR)
+                req.executeFunction(stepper, args[1][1]);
 
-            case 1:
-                code = req.validateFunction(stepper, args[1][1]);
+            break;
 
-                if (code == ERR.NO_ERROR)
-                    req.executeFunction(stepper, args[1][1]);
+        case 2:
+            code = (req.validateFunction) ? req.validateFunction(stepper, args[1][1], args[2][1]) : ERR.NO_ERROR;
 
-                break;
+            if (code == ERR.NO_ERROR)
+                req.executeFunction(stepper, args[1][1], args[2][1]);
 
-            case 2:
-                code = req.validateFunction(stepper, args[1][1], args[2][1]);
+            break;
 
-                if (code == ERR.NO_ERROR)
-                    req.executeFunction(stepper, args[1][1], args[2][1]);
-
-                break;
-
-            default:
-                return EMPTY;
-            }
+        default:
+            return EMPTY;
         }
-        else if (req.hvd)
-            code = req.validateFunction(req.hvd, args[1][1]);
-        else
+    }
+    else if (req.hvd)
+    {
+        code = (req.validateFunction) ? req.validateFunction(req.hvd, args[1][1]) : ERR.NO_ERROR;
+
+        if (code == ERR.NO_ERROR)
+            req.executeFunction(req.hvd, args[1][1]);
+    }
+    else
+    {
+        switch (req.numberOfValues)
         {
-            switch (req.numberOfValues)
-            {
-            case 0:
-                code = req.validateFunction();
+        case 0:
+            code = (req.validateFunction) ? req.validateFunction() : ERR.NO_ERROR;
 
-                if (code == ERR.NO_ERROR)
-                    req.executeFunction();
+            if (code == ERR.NO_ERROR)
+                req.executeFunction();
 
-                break;
+            break;
 
-            case 1:
-                code = req.validateFunction(args[1][1]);
+        case 1:
+            code = (req.validateFunction) ? req.validateFunction(args[1][1]) : ERR.NO_ERROR;
 
-                if (code == ERR.NO_ERROR)
-                    req.executeFunction(args[1][1]);
+            if (code == ERR.NO_ERROR)
+                req.executeFunction(args[1][1]);
 
-                break;
+            break;
 
-            case 2:
-                code = req.validateFunction(args[1][1], args[2][1]);
+        case 2:
+            code = (req.validateFunction) ? req.validateFunction(args[1][1], args[2][1]) : ERR.NO_ERROR;
 
-                if (code == ERR.NO_ERROR)
-                    req.executeFunction(args[1][1], args[2][1]);
+            if (code == ERR.NO_ERROR)
+                req.executeFunction(args[1][1], args[2][1]);
 
-                break;
+            break;
 
-            default:
-                return EMPTY;
-            }
+        default:
+            return EMPTY;
         }
-
-        if (code != ERR.NO_ERROR)
-            return response_builder_buildErr(index, code);
     }
 
-    // GIVE FEEDBACK
+    // check if there was an error, just send it
+    if (code != ERR.NO_ERROR)
+        return response_builder_buildErr(index, code);
+
+    // GIVE POSITIVE FEEDBACK
     if (req.type == LONG_TERM)
         return response_builder_buildPas(index);
     else
