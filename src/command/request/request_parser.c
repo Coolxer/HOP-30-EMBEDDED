@@ -19,34 +19,11 @@
 uint8_t *cmd_delimiter = (uint8_t *)"|";   // the cmd delimiter, that seprates 2 sentences; e.g. opt=mov|spp=x|
 uint8_t *param_delimiter = (uint8_t *)"="; // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov
 
-uint8_t records = 0; // number of rows (key:value) of parsered request
-
-uint8_t *request_truncate(uint8_t *request)
-{
-    uint8_t i = 0;
-    uint8_t n = 0;
-
-    for (i = 0; i < REQUEST_SIZE; i++)
-        if (request[i] == '\n' || request[i] == '\\')
-            break;
-
-    n = (uint8_t)i;
-
-    uint8_t *m = EMPTY;
-
-    for (i = 0; i < n; i++)
-        m = charAppend(m, request[i]);
-
-    m[n] = '\0';
-
-    return m;
-}
-
-uint8_t ***request_explode(uint8_t *request)
+uint8_t ***request_explode(uint8_t *request, uint8_t *recs)
 {
     uint8_t ***args = NULL, *param = NULL, *key = NULL, *value = NULL;
 
-    records = 0; // number of records (rows) with 2 columns: key:value
+    uint8_t records = 0; // number of records (rows) with 2 columns: key:value
 
     for (param = (uint8_t *)strtok((void *)request, (void *)cmd_delimiter); param != NULL; param = (uint8_t *)strtok(NULL, (void *)cmd_delimiter))
     {
@@ -63,6 +40,8 @@ uint8_t ***request_explode(uint8_t *request)
         strcpy((void *)args[records - 1][0], (void *)key);   // copy  key string to the array
         strcpy((void *)args[records - 1][1], (void *)value); // copies value string to the array
     }
+
+    *recs = records;
 
     return args; // returns 2d array of array of uint8_t
 }

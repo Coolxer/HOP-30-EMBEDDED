@@ -21,47 +21,40 @@ uint8_t *request_process(uint8_t *request)
 {
     uint8_t *feedback = EMPTY;
 
-    // STEP 1: TRUNCATE REQUEST
-    //uint8_t *requestString = request_truncate(request);
+    // STEP 1: EXPLODE FOR PAIRS KEY:VALUE
+    uint8_t records = 0;
+    uint8_t ***args = request_explode(request, &records);
 
-    // STEP 2: VALIDATE REQUEST COMMAND LENGTH
-    //if (stringLength(feedback = request_checkMinLength(requestString)))
-    //    return feedback;
-
-    // STEP 3: EXPLODE FOR PAIRS KEY:VALUE
-    //uint8_t ***args = request_explode(requestString);
-    uint8_t ***args = request_explode(request);
-
-    // STEP 4: GENERAL VALIDATION (RECORDS, INDEX, OPERATION CHECKS)
+    // STEP 2: GENERAL VALIDATION (RECORDS, INDEX, OPERATION CHECKS)
     if (stringLength(feedback = request_checkGeneralThings(args, records)))
         return feedback;
 
-    // STEP 5: GET INDEX AND OPERATION TYPE
+    // STEP 3: GET INDEX AND OPERATION TYPE
     uint8_t *index = args[0][1];
     uint8_t *operation = args[1][1];
 
-    // STEP 6: SCHRINK DATA TO LEAVE ONLY NEEDED DATA
+    // STEP 4: SCHRINK DATA TO LEAVE ONLY NEEDED DATA
     // decrease number of rows by 2 (remove index and operation)
     records = (uint8_t)(records - 2);
 
     // move the array 2 place forward (removes 2 first rows with idx and opt)
     memmove(args, args + 2, records * sizeof(uint8_t *));
 
-    // STEP 7: CHECK IF OPERATION TYPE IS FINE AND PREPARE DATA FOR NEXT STEPS DEPEND ON OPERATION
+    // STEP 5: CHECK IF OPERATION TYPE IS FINE AND PREPARE DATA FOR NEXT STEPS DEPEND ON OPERATION
     Request req = request_operate(operation);
 
     if (req.type != LONG_TERM && req.type != INSTANT)
         return response_builder_buildErr(index, ERR.INVALID_OPERATION_VALUE);
 
-    // STEP 8: VALIDATE REQUEST KEYS
+    // STEP 6: VALIDATE REQUEST KEYS
     if (req.requiredKeysAmount > 0)
     {
         if (stringLength(feedback = request_validateRequestKeys(args, index, req.requiredKeys, req.requiredKeysAmount)))
             return feedback;
     }
 
-    // STEP 9: VALIDATE REQUEST VALUES AND ENVIRONMENT STATES
-    // STEP 10: EXECUTE COMMAND
+    // STEP 7: VALIDATE REQUEST VALUES AND ENVIRONMENT STATES
+    // STEP 8: EXECUTE COMMAND
 
     if (req.validateFunction != NULL)
     {

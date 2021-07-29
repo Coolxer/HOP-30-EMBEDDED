@@ -8,14 +8,6 @@
 #include "command/response/response_builder.h"
 #include "command/cmd_manager.h"
 
-uint8_t *request_checkMinLength(uint8_t *request)
-{
-    if (stringLength(request) < MIN_TRUNC_REQUEST_SIZE)
-        return response_builder_buildErr(ZERO_INDEX, ERR.INVALID_REQUEST_LENGTH);
-
-    return EMPTY;
-}
-
 uint8_t *request_checkGeneralThings(uint8_t ***args, uint8_t records)
 {
     if (records == 0) // check if no records detected

@@ -8,6 +8,8 @@
 
 #include "command/request/request_manager.h"
 
+#include "command/cmd_manager.h"
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     huart = huart; // turn of warning
@@ -15,8 +17,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     // add terminate string sign
     dma.requestBuffer[REQUEST_SIZE - 1] = '\0';
 
-    uint8_t *response = request_process(dma.requestBuffer);
-    connector_sendResponse(response);
+    cmd_manager_delive(dma.requestBuffer);
 
     // clear buffer
     dma.requestBuffer[0] = '\0';

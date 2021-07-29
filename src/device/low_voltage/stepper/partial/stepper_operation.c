@@ -24,14 +24,13 @@ void stepper_switch(Stepper *stepper, uint8_t *state)
 
 void stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
 {
-
     float road = stringEqual(way, VAL.LIMIT) ? 0.0f : convertStrToFloat(way);
     uint8_t dir = convertStrToBoolean(direction);
 
     if (stepper->minEndstop != NULL && stepper->maxEndstop != NULL)
     {
-        if ((!direction && endstop_isClicked(stepper->minEndstop)) ||
-            (direction && endstop_isClicked(stepper->maxEndstop)))
+        if ((!dir && endstop_isClicked(stepper->minEndstop)) ||
+            (dir && endstop_isClicked(stepper->maxEndstop)))
             return;
     }
 
@@ -51,7 +50,7 @@ void stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
     else
         stepper_setMoveType(stepper, LIMITED);
 
-    stepper_setDirection(stepper, direction);
+    stepper_setDirection(stepper, dir);
     stepper_switch(stepper, UP);
     stepper_run(stepper);
 }
