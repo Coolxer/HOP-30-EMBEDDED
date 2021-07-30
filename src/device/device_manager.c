@@ -176,5 +176,5 @@ void device_manager_getAllDevicesStates(uint8_t *s)
     states = strAppend(states, hvd_getState(&POMP));
     states = strAppend(states, hvd_getState(&TH_PHASE_MOTOR));
 
-    *s = states;
+    *s = (uint8_t *)states;
 }

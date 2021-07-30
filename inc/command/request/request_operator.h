@@ -1,8 +1,6 @@
 #ifndef REQUEST_OPERATOR_H
 #define REQUEST_OPERATOR_H
 
-#define MAX_REQUIRED_KEYS_AMOUNT 3
-
 #include "command/request/request.h"
 
 #include "device/high_voltage/hvd.h"

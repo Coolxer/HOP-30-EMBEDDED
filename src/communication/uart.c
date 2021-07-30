@@ -48,7 +48,7 @@ void uart_deinit()
 	__HAL_RCC_GPIOA_CLK_DISABLE();
 #endif
 
-	HAL_GPIO_DeInit(GPIOA, &uartGPIO);
+	HAL_GPIO_DeInit(GPIOA, (GPIO_InitTypeDef *)&uartGPIO);
 	HAL_UART_DeInit(&uart);
 }
 

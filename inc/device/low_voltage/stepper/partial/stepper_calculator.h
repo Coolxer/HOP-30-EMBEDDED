@@ -6,7 +6,7 @@
 #include "device/low_voltage/stepper/enum/axis_type.h"
 #include "device/low_voltage/stepper/stepper.h"
 
-extern const uint16_t MAX_16BIT_VALUE;
+#define MAX_16BIT_VALUE 65535
 
 // structure of speed setting registers
 typedef struct

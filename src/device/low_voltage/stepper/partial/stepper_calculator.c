@@ -6,8 +6,6 @@
 #include "device/low_voltage/stepper/config/stepper_calculation.h"
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 
-const uint16_t MAX_16BIT_VALUE = 65535;
-
 Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed)
 {
     Speed_params regs = {0};

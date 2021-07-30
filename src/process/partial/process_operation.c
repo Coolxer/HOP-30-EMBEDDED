@@ -12,8 +12,8 @@ void process_init(uint8_t *index)
     stepper_switch(X_STEPPER, UP);
     stepper_switch(W_STEPPER, UP);
 
-    hvd_switch(&POMP, ON);
-    hvd_switch(&TH_PHASE_MOTOR, ON);
+    hvd_switch(&POMP, UP);
+    hvd_switch(&TH_PHASE_MOTOR, UP);
 
     stepper_run(X_STEPPER);
     stepper_run(W_STEPPER);

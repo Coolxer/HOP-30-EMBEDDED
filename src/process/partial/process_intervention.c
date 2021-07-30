@@ -24,8 +24,8 @@ void process_resume()
     stepper_resume(X_STEPPER);
     stepper_resume(W_STEPPER);
 
-    hvd_switch(&POMP, ON);
-    hvd_switch(&TH_PHASE_MOTOR, ON);
+    hvd_switch(&POMP, UP);
+    hvd_switch(&TH_PHASE_MOTOR, UP);
 
     PROCESS_STATE = PROCESS_PREVIOUS_STATE;
 }
