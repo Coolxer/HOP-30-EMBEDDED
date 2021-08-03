@@ -12,13 +12,14 @@ Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed)
     float arr = 0.0f; // autoreload
     float stepsPerSecond = 0.0f;
 
-    if (speed < 0.000061f) // cannot handle speed less than this value (reqister limit)
+    // if (speed < 0.000061f) // cannot handle speed less than this value (reqister limit) [FOR 40 MHz]
+    if (speed < 0.00025f) // cannot handle speed less than this value (reqister limit)
         return regs;
 
     // convert mm/s to steps/s
     if (axisType == LINEAR)
         stepsPerSecond = (float)(speed * STEPS_PER_MM);
-    else // conver obr/min to steps/s
+    else // convert obr/min to steps/s
         stepsPerSecond = (float)((speed * STEPS_PER_REVOLUTION) / 60.0f);
 
     /* MATHEMATICAL FORMULA
@@ -36,7 +37,7 @@ Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed)
 
     /*
         ATTENTION!
-        In many exmaples there was different values on ARR register,
+        In many examples there was different values on ARR register,
         but PSC still be const as it was set up at start
 
         I'm not sure if it can be changine at time like ARR,

@@ -1,7 +1,7 @@
 #include "device/device_manager.h"
 
 #include "null.h"
-#include "data_assistant.h"
+#include "data/assistant.h"
 
 #include "device/low_voltage/stepper/config/stepper_connection.h"
 #include "device/low_voltage/stepper/partial/stepper_setup.h"

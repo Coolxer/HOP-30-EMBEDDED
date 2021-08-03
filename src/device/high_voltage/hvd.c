@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#include "data_assistant.h"
+#include "data/assistant.h"
 
 void hvd_setupGpio(HVD *hvd)
 {

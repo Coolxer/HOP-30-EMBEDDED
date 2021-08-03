@@ -1,5 +1,5 @@
-#ifndef DATA_ASSISTANT
-#define DATA_ASSISTANT
+#ifndef ASSISTANT_H
+#define ASSISTANT_H
 
 #include <stdint.h> // includes uint8_t data type
 
@@ -14,4 +14,4 @@ float convertStrToFloat(uint8_t *str);     // converts str to float
 
 uint8_t containsOnlyDigits(uint8_t *str); // checks if string contains only digits, if only numbers returns true
 
-#endif // DATA_ASSISTANT
+#endif // ASSISTANT_H

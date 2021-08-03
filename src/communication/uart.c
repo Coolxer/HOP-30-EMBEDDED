@@ -52,12 +52,12 @@ void uart_deinit()
 	HAL_UART_DeInit(&uart);
 }
 
-void uart_write(char c)
-{
-	HAL_UART_Transmit(&uart, (uint8_t *)(&c), 1, 1000); // sends 1 char with timeout 1000 through UART
-}
-
 void uart_flush()
 {
 	return;
+}
+
+void uart_write(char c)
+{
+	HAL_UART_Transmit(&uart, (uint8_t *)(&c), 1, 1000); // sends 1 char with timeout 1000 through UART
 }

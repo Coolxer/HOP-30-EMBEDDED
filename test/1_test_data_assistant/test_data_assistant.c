@@ -2,8 +2,9 @@
 
 #include <unity.h> // includes unit testing library
 #include "stm32f4xx_hal.h"
+
 #include "null.h"
-#include "command/partial/data_assistant.h"
+#include "data/assistant.h"
 
 void setUp();    // default setup function
 void tearDown(); // default release function

@@ -1,7 +1,7 @@
 #include "device/low_voltage/stepper/partial/stepper_validator.h"
 
-#include "validator.h"
-#include "data_assistant.h"
+#include "data/validator.h"
+#include "data/assistant.h"
 
 #include "command/partial/err.h"
 #include "command/partial/val.h"

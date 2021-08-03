@@ -17,9 +17,7 @@ extern "C"
     void uart_deinit();
 
     void uart_write(char c); // [unit test]
-    void uart_send(uint8_t *message);
-
-    void uart_flush(); // [unit test]
+    void uart_flush();       // [unit test]
 
 #ifdef __cplusplus
 }

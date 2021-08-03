@@ -11,8 +11,6 @@
 #include "command/partial/err.h"
 #include "command/partial/res.h"
 
-extern uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_SINGLE_REQUEST_SIZE];
-
 void cmd_manager_init();
 
 void cmd_manager_delive(uint8_t *cmd);

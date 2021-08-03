@@ -3,7 +3,7 @@
 #include "process/process.h"
 #include "device/device_manager.h"
 
-#include "validator.h"
+#include "data/validator.h"
 #include "command/partial/err.h"
 
 #include "device/low_voltage/stepper/partial/stepper_helper.h"

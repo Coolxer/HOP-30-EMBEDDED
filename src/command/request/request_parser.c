@@ -4,17 +4,6 @@
 #include <stdlib.h>
 
 #include "null.h"
-#include "data_assistant.h"
-#include "validator.h"
-#include "communication/config/communication.h"
-
-#include "command/partial/res.h"
-#include "command/partial/err.h"
-
-#include "device/low_voltage/stepper/partial/stepper_configuration.h"
-#include "device/low_voltage/stepper/partial/stepper_operation.h"
-#include "device/low_voltage/stepper/partial/stepper_intervention.h"
-#include "device/low_voltage/stepper/partial/stepper_validator.h"
 
 uint8_t *cmd_delimiter = (uint8_t *)"|";   // the cmd delimiter, that seprates 2 sentences; e.g. opt=mov|spp=x|
 uint8_t *param_delimiter = (uint8_t *)"="; // the param (sentence) delimiter, that seperate key and value of sentence; e.g. opt=mov

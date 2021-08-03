@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "null.h"
-#include "data_assistant.h"
+#include "data/assistant.h"
 
 #include "command/response/response_builder.h"
 

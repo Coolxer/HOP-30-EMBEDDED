@@ -1,6 +1,6 @@
 #include "communication/connector.h"
 
-#include "data_assistant.h"
+#include "data/assistant.h"
 
 #include "communication/dma/partial/dma_setup.h"
 

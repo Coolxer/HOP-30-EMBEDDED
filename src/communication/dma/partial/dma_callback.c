@@ -1,6 +1,6 @@
 #include "communication/dma/partial/dma_callback.h"
 
-#include "data_assistant.h"
+#include "data/assistant.h"
 
 #include "communication/uart.h"
 #include "communication/dma/dma.h"

@@ -4,30 +4,31 @@
 #include <stdlib.h>
 
 #include "null.h"
-#include "data_assistant.h"
+#include "data/assistant.h"
 
 #include "command/partial/err.h"
 #include "command/partial/res.h"
-#include "command/request/structure/type.h"
 
+#include "command/request/structure/type.h"
 #include "command/request/request_validator.h"
 #include "command/request/request_parser.h"
 #include "command/request/request_operator.h"
+
 #include "command/response/response_builder.h"
 
 #include "device/device_manager.h"
 
 uint8_t *request_process(uint8_t *request)
 {
-    uint8_t *feedback = EMPTY;
-
     // STEP 1: EXPLODE FOR PAIRS KEY:VALUE
     uint8_t records = 0;
     uint8_t ***args = request_explode(request, &records);
 
     // STEP 2: GENERAL VALIDATION (RECORDS, INDEX, OPERATION CHECKS)
-    if (stringLength(feedback = request_checkGeneralThings(args, records)))
-        return feedback;
+    uint8_t code = request_checkGeneralThings(args, records);
+
+    if (code != ERR.NO_ERROR)
+        return response_builder_buildErr(ZERO_INDEX, code);
 
     // STEP 3: GET INDEX AND OPERATION TYPE
     uint8_t *index = args[0][1];
@@ -49,14 +50,14 @@ uint8_t *request_process(uint8_t *request)
     // STEP 6: VALIDATE REQUEST KEYS
     if (req.requiredKeysAmount > 0)
     {
-        if (stringLength(feedback = request_validateRequestKeys(args, index, req.requiredKeys, req.requiredKeysAmount)))
-            return feedback;
+        code = request_validateRequestKeys(args, req.requiredKeys, req.requiredKeysAmount);
+
+        if (code != ERR.NO_ERROR)
+            return response_builder_buildErr(index, code);
     }
 
     // STEP 7: VALIDATE REQUEST VALUES AND ENVIRONMENT STATES
     // STEP 8: EXECUTE COMMAND
-
-    uint8_t code = 0;
 
     if (req.stepper)
     {

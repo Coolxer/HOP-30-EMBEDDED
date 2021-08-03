@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "null.h"
-#include "data_assistant.h"
+#include "data/assistant.h"
 
 #include "communication/connector.h"
 #include "command/request/request_manager.h"
@@ -38,7 +38,8 @@ void cmd_manager_delive(uint8_t *cmd)
             previousRegisteredRequestIndex = registeredRequestIndex;
             registeredRequestsAmount++;
         }
-        // else (if there is not free slot in queue)
+        else // (if there is not free slot in queue)
+            return;
         // QUEUE IS FULL
 
         request = (uint8_t *)strtok(NULL, "\n");
@@ -56,9 +57,12 @@ void cmd_manager_manage()
     {
         if (stringLength(REQUESTS[i]))
         {
-            connector_sendResponse((void *)request_process(REQUESTS[i]));
+            uint8_t *feedback = request_process(REQUESTS[i]);
+            connector_sendResponse(feedback);
+
             strcpy((void *)REQUESTS[i], EMPTY);
             registeredRequestsAmount--;
+
             break; // break here to start using devices in main loop, not starting all requests at all
         }
     }
