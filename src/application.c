@@ -37,7 +37,7 @@ void application_loop()
     while (1) // while there is not "FINISH" command on uart
     {
         cmd_manager_manage();
-        device_manager_manageDevices(); // services endstop and stepper events
+        //device_manager_manageDevices(); // services endstop and stepper events
     }
 }
 

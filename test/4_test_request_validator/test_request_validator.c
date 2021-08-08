@@ -18,7 +18,7 @@ void setUp()
 
 void tearDown();
 
-// check general things
+/************************** checkGeneralThings() ****************************/
 
 void test_request_checkGeneralThings_should_give_no_params_error()
 {
@@ -90,8 +90,7 @@ void test_request_checkGeneralThings_should_give_no_error()
     TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, request_checkGeneralThings(args, records));
 }
 
-// validate keys
-
+/************************** validateKeys() ****************************/
 void test_request_validate_keys_shoud_give_no_key_error()
 {
     uint8_t data[] = "idx=3|opt=cfs|spa=x|spd=1|\n";

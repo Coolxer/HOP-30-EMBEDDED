@@ -82,15 +82,18 @@ void stepper_resetSpeed(Stepper *stepper)
     stepper_setStepsNeededToAccelerate(stepper, 0);
 }
 
-void stepper_setDirection(Stepper *stepper, uint8_t direction)
+void stepper_setDirection(Stepper *stepper, uint8_t *direction)
 {
-    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.dirPort, stepper->hardware.dirPin, direction);
+    uint8_t dir = convertStrToBoolean(direction);
+    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.dirPort, stepper->hardware.dirPin, dir);
+    stepper->movement.direction = dir;
     wait(STEPPER_SET_DIRECTION_DELAY); // need wait minimum 5us after set direction before go
 }
 
 void stepper_changeDirectionImmediately(Stepper *stepper)
 {
     HAL_GPIO_TogglePin((GPIO_TypeDef *)stepper->hardware.dirPort, stepper->hardware.dirPin);
+    stepper->movement.direction = !stepper->movement.direction;
 }
 
 void stepper_changeDirection(Stepper *stepper)

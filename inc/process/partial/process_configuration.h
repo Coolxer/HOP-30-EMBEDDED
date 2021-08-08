@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-void process_configure(uint8_t direction);
+void process_configure(uint8_t *direction);
 
 #endif // PROCESS_VALIDATOR_H

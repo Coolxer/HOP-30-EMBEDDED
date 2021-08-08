@@ -14,7 +14,7 @@ void setUp()
 
 void tearDown();
 
-/* PASSED */
+/************************** BUILD PASS ****************************/
 
 void test_response_builder_buildPas_1()
 {
@@ -31,7 +31,7 @@ void test_response_builder_buildPas_3()
     TEST_ASSERT_EQUAL_STRING("idx=3|res=pas|\n||||||||||||||||", response_builder_buildPas((uint8_t *)"3"));
 }
 
-/* ERROR */
+/************************** BUILD ERROR ****************************/
 
 void test_response_builder_buildErr_1()
 {
@@ -48,7 +48,7 @@ void test_response_builder_buildErr_3()
     TEST_ASSERT_EQUAL_STRING("idx=3|res=err|cod=10|\n|||||||||", response_builder_buildErr((uint8_t *)"3", ERR.INVALID_STEPPER_VALUE));
 }
 
-/* FINISHED */
+/************************** BUILD FINISH ****************************/
 
 void test_response_builder_buildFin_1()
 {
@@ -63,6 +63,26 @@ void test_response_builder_buildFin_2()
 void test_response_builder_buildFin_3()
 {
     TEST_ASSERT_EQUAL_STRING("idx=3|res=fin|\n||||||||||||||||", response_builder_buildFin((uint8_t *)"3"));
+}
+
+/************************** BUILD VALUE ****************************/
+
+void test_response_builder_buildVal_1()
+{
+    uint8_t states[13] = "000000000000\0";
+    TEST_ASSERT_EQUAL_STRING("idx=1|res=val|stt=000000000000\n", response_builder_buildVal((uint8_t *)"1", states));
+}
+
+void test_response_builder_buildVal_2()
+{
+    uint8_t states[13] = "111111111111\0";
+    TEST_ASSERT_EQUAL_STRING("idx=2|res=val|stt=111111111111\n", response_builder_buildVal((uint8_t *)"2", states));
+}
+
+void test_response_builder_buildVal_3()
+{
+    uint8_t states[13] = "000000111111\0";
+    TEST_ASSERT_EQUAL_STRING("idx=3|res=val|stt=000000111111\n", response_builder_buildVal((uint8_t *)"3", states));
 }
 
 int main()

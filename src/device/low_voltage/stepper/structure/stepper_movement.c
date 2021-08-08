@@ -10,5 +10,7 @@ Movement stepper_movement_init()
     movement.type = LIMITED;
     movement.FINISHED_FLAG = 0;
 
+    movement.direction = 0;
+
     return movement;
 }

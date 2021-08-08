@@ -1,14 +1,14 @@
 #ifndef RES_H
 #define RES_H
 
-#include <stdint.h>
+#include "command/partial/part.h"
 
 typedef struct
 {
-    uint8_t ERROR[4],
-        PASSED[4],
-        FINISHED[4],
-        VALUE[4];
+    uint8_t ERROR[PART_LENGTH],
+        PASSED[PART_LENGTH],
+        FINISHED[PART_LENGTH],
+        VALUE[PART_LENGTH];
 } res;
 
 extern res RES;

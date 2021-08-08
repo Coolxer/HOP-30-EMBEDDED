@@ -44,7 +44,7 @@ uint8_t *request_process(uint8_t *request)
     // STEP 5: CHECK IF OPERATION TYPE IS FINE AND PREPARE DATA FOR NEXT STEPS DEPEND ON OPERATION
     Request req = request_operate(operation);
 
-    if (req.type != LONG_TERM && req.type != INSTANT)
+    if (req.type != LONG_TERM && req.type != INSTANT && req.type != ANSWER)
         return response_builder_buildErr(index, ERR.INVALID_OPERATION_VALUE);
 
     // STEP 6: VALIDATE REQUEST KEYS
@@ -143,8 +143,10 @@ uint8_t *request_process(uint8_t *request)
     // GIVE POSITIVE FEEDBACK
     if (req.type == LONG_TERM)
         return response_builder_buildPas(index);
-    else
+    else if (req.type == INSTANT)
         return response_builder_buildFin(index);
+    else if (req.type == ANSWER)
+        return response_builder_buildVal(index, devicesStates);
 
     return EMPTY;
 }

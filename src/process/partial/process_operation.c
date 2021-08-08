@@ -9,11 +9,11 @@
 
 void process_init(uint8_t *index)
 {
-    stepper_switch(X_STEPPER, UP);
-    stepper_switch(W_STEPPER, UP);
+    stepper_switch(X_STEPPER, ON);
+    stepper_switch(W_STEPPER, ON);
 
-    hvd_switch(&POMP, UP);
-    hvd_switch(&TH_PHASE_MOTOR, UP);
+    hvd_switch(&POMP, ON);
+    hvd_switch(&TH_PHASE_MOTOR, ON);
 
     stepper_run(X_STEPPER);
     stepper_run(W_STEPPER);

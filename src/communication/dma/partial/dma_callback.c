@@ -12,7 +12,7 @@
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    huart = huart; // turn of warning
+    huart = huart; // turn off warning: unused parameter...
 
     // add terminate string sign
     dma.requestBuffer[REQUEST_SIZE - 1] = '\0';
@@ -30,7 +30,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-    huart = huart; // turn of warning
+    huart = huart; // turn off warning: unused parameter...
 
     return;
 }

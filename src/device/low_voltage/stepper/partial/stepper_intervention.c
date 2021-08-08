@@ -46,5 +46,5 @@ void stepper_stop(Stepper *stepper)
     stepper_resetSpeed(stepper);
 
     stepper_setUnloadedSteps(stepper, 0);
-    stepper_setState(stepper, ON);
+    stepper_setState(stepper, HIGH);
 }

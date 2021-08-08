@@ -2,6 +2,7 @@
 #define STEPPER_OPERATION_H
 
 #include "device/low_voltage/stepper/stepper.h"
+#include "device/power_state.h"
 
 void stepper_switch(Stepper *stepper, uint8_t *state); // switch stepper motor depend on state value (0 -> OFF, 1 -> ON)
 

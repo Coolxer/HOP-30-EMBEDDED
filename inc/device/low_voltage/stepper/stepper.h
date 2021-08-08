@@ -14,11 +14,6 @@
 
 #include "device/low_voltage/endstop/endstop.h"
 
-#define LEFT 0
-#define RIGHT 1
-#define DOWN "0\0"
-#define UP "1\0"
-
 typedef struct
 {
     Hardware hardware;

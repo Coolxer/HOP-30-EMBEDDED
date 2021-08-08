@@ -13,7 +13,7 @@ void setUp() // default setup function
 
 void tearDown(); // default release function
 
-/**************** linear stepper speed calculator ********************/
+/**************** LINEAR stepper speed calculator ********************/
 
 void test_linear_stepper_speed_calculator_1()
 {
@@ -60,7 +60,7 @@ void test_linear_stepper_speed_calculator_5()
     TEST_ASSERT_EQUAL_UINT16(5167, regs.pul);
 }
 
-/**************** circular stepper speed calculator ********************/
+/**************** CIRCULAR stepper speed calculator ********************/
 
 void test_circular_stepper_speed_calculator_1()
 {

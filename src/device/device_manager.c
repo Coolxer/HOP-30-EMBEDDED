@@ -1,5 +1,7 @@
 #include "device/device_manager.h"
 
+#include <string.h>
+
 #include "null.h"
 #include "data/assistant.h"
 
@@ -17,8 +19,8 @@
 #include "device/high_voltage/pomp/config/pomp_connection.h"
 #include "device/high_voltage/th_phase_motor/config/th_phase_motor_connection.h"
 
-Stepper steppers[STEPPERS_COUNT] = {0};
-Endstop endstops[ENDSTOPS_COUNT] = {0};
+Stepper steppers[STEPPERS_AMOUNT] = {0};
+Endstop endstops[ENDSTOPS_AMOUNT] = {0};
 
 Stepper *W_STEPPER = NULL;
 Stepper *X_STEPPER = NULL;
@@ -27,6 +29,8 @@ Stepper *Z_STEPPER = NULL;
 
 HVD POMP;
 HVD TH_PHASE_MOTOR;
+
+uint8_t devicesStates[13] = "000000000000\0";
 
 void device_manager_init()
 {
@@ -73,10 +77,10 @@ void device_manager_deinit()
 {
     uint8_t i = 0;
 
-    for (i = 0; i < STEPPERS_COUNT; i++)
+    for (i = 0; i < STEPPERS_AMOUNT; i++)
         stepper_deinit(&steppers[i]);
 
-    for (i = 0; i < ENDSTOPS_COUNT; i++)
+    for (i = 0; i < ENDSTOPS_AMOUNT; i++)
         endstop_deinit(&endstops[i]);
 
     hvd_deinit(&POMP);
@@ -87,7 +91,7 @@ Stepper *device_manager_getStepper(uint8_t *name)
 {
     uint8_t i = 0;
 
-    for (i = 0; i < STEPPERS_COUNT; i++)
+    for (i = 0; i < STEPPERS_AMOUNT; i++)
     {
         Stepper *stepper = &steppers[i];
 
@@ -102,7 +106,7 @@ Stepper *device_manager_findParentStepper(Endstop *endstop)
 {
     uint8_t i = 0;
 
-    for (i = 0; i < STEPPERS_COUNT; i++)
+    for (i = 0; i < STEPPERS_AMOUNT; i++)
     {
         Stepper *stepper = &steppers[i];
 
@@ -117,7 +121,7 @@ Endstop *device_manager_getEndstop(uint8_t *name)
 {
     uint8_t i = 0;
 
-    for (i = 0; i < ENDSTOPS_COUNT; i++)
+    for (i = 0; i < ENDSTOPS_AMOUNT; i++)
     {
         Endstop *endstop = &endstops[i];
 
@@ -131,7 +135,7 @@ void device_manager_manageEndstops()
 {
     uint8_t i = 0;
 
-    for (i = 0; i < ENDSTOPS_COUNT; i++)
+    for (i = 0; i < ENDSTOPS_AMOUNT; i++)
     {
         Endstop *endstop = &endstops[i];
 
@@ -144,7 +148,7 @@ void device_manager_manageSteppers()
 {
     uint8_t i = 0;
 
-    for (i = 0; i < STEPPERS_COUNT; i++)
+    for (i = 0; i < STEPPERS_AMOUNT; i++)
     {
         Stepper *stepper = &steppers[i];
 
@@ -161,20 +165,23 @@ void device_manager_manageDevices()
     device_manager_manageSteppers();
 }
 
-void device_manager_getAllDevicesStates(uint8_t *s)
+void device_manager_getAllDevicesStates()
 {
-    uint8_t *states = EMPTY;
-
     uint8_t i = 0;
+    uint8_t index = 0;
 
-    for (i = 0; i < STEPPERS_COUNT; i++)
-        states = charAppend(states, stepper_getState(&steppers[i]));
+    for (i = 0; i < STEPPERS_AMOUNT; i++)
+    {
+        devicesStates[index] = stepper_getState(&steppers[i]);
+        index++;
+    }
 
-    for (i = 0; i < ENDSTOPS_COUNT; i++)
-        states = charAppend(states, endstop_isClicked(&endstops[i]));
+    for (i = 0; i < ENDSTOPS_AMOUNT; i++)
+    {
+        devicesStates[index] = endstop_isClicked(&endstops[i]);
+        index++;
+    }
 
-    states = strAppend(states, hvd_getState(&POMP));
-    states = strAppend(states, hvd_getState(&TH_PHASE_MOTOR));
-
-    *s = (uint8_t *)states;
+    devicesStates[index] = hvd_getState(&POMP);
+    devicesStates[index + 1] = hvd_getState(&TH_PHASE_MOTOR);
 }

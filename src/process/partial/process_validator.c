@@ -13,7 +13,7 @@ uint8_t process_validateConfigure(uint8_t *direction)
     if (validate_boolean(direction) == ERR.ERROR)
         return ERR.INVALID_DIRECTION_VALUE;
 
-    else if (stepper_getState(X_STEPPER) == MOVING || stepper_getState(W_STEPPER) == MOVING)
+    else if (stepper_getState(X_STEPPER) == MOVING || stepper_getState(W_STEPPER) == MOVING || PROCESS_STATE != NONE)
         return ERR.OPERATION_NOT_ALLOWED;
 
     return ERR.NO_ERROR;

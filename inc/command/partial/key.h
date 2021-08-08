@@ -1,24 +1,24 @@
 #ifndef KEY_H
 #define KEY_H
 
-#include <stdint.h>
+#include "command/partial/part.h"
 
 typedef struct
 {
-    uint8_t INDEX[4],
-        OPERATION[4],
+    uint8_t INDEX[PART_LENGTH],
+        OPERATION[PART_LENGTH],
 
-        STEPPER[4],
-        ENDSTOP[4],
+        STEPPER[PART_LENGTH],
+        ENDSTOP[PART_LENGTH],
 
-        STATE[4],
-        SPEED[4],
-        ACCELERATION[4],
-        WAY[4],
-        DIRECTION[4],
+        STATE[PART_LENGTH],
+        SPEED[PART_LENGTH],
+        ACCELERATION[PART_LENGTH],
+        WAY[PART_LENGTH],
+        DIRECTION[PART_LENGTH],
 
-        RESPONSE[4],
-        CODE[4];
+        RESPONSE[PART_LENGTH],
+        CODE[PART_LENGTH];
 } key;
 
 extern key KEY;

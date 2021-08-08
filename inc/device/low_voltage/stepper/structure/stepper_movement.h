@@ -14,6 +14,8 @@ typedef struct
     enum MoveType type;
 
     volatile uint8_t FINISHED_FLAG; // stepper finish movement flag
+
+    uint8_t direction;
 } Movement;
 
 Movement stepper_movement_init();

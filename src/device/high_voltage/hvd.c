@@ -38,11 +38,11 @@ void hvd_switch(HVD *hvd, uint8_t *state)
     if (HAL_GPIO_ReadPin(hvd->port, hvd->pin) != st)
     {
         HAL_GPIO_WritePin((GPIO_TypeDef *)hvd->port, hvd->pin, st);
-        strcpy((void *)hvd->state, (void *)state);
+        hvd->state = (uint8_t)st;
     }
 }
 
-uint8_t *hvd_getState(HVD *hvd)
+uint8_t hvd_getState(HVD *hvd)
 {
     return hvd->state;
 }

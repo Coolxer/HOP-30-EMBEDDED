@@ -17,7 +17,7 @@ void stepper_switch(Stepper *stepper, uint8_t *state)
 
     if (stepper_getState(stepper) != st) // check if state is not currently exists
     {
-        HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.enablePort, stepper->hardware.enablePin, st); // switches the stepper (OFF or ON)
+        HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.enablePort, stepper->hardware.enablePin, st); // switches the stepper (LOW or HIGH)
         stepper_setState(stepper, st);
     }
 }
@@ -50,8 +50,8 @@ void stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
     else
         stepper_setMoveType(stepper, LIMITED);
 
-    stepper_setDirection(stepper, dir);
-    stepper_switch(stepper, UP);
+    stepper_setDirection(stepper, direction);
+    stepper_switch(stepper, ON);
     stepper_run(stepper);
 }
 

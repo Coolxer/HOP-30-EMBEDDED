@@ -33,7 +33,7 @@ uint8_t request_validateRequestKeys(uint8_t ***args, uint8_t *requiredKeys[], ui
 {
     uint8_t i = 0;
 
-    for (i = 0; i < requiredKeysAmount; i++)
+    for (; i < requiredKeysAmount; i++)
     {
         if (validate_key(requiredKeys[i], args[i][0]) == ERR.ERROR)
             return cmd_manager_getErrorByKey(requiredKeys[i], KEY_ERROR);

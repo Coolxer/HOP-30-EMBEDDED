@@ -19,6 +19,7 @@
 #include "process/partial/process_validator.h"
 #include "process/partial/process_operation.h"
 #include "process/partial/process_intervention.h"
+#include "process/partial/process_configuration.h"
 
 Request request_operate(uint8_t *operation)
 {
@@ -53,7 +54,7 @@ Request request_operate(uint8_t *operation)
     /* PROCESS REQUESTS */
 
     else if (stringEqual(OPT.CONFIGURE_PROCESS, operation))
-        return request_init(INSTANT, KEY.DIRECTION, EMPTY, EMPTY, 1, &process_validateConfigure, &process_init, 1, NULL, NULL);
+        return request_init(INSTANT, KEY.DIRECTION, EMPTY, EMPTY, 1, &process_validateConfigure, &process_configure, 1, NULL, NULL);
 
     else if (stringEqual(OPT.INIT_PROCESS, operation))
         return request_init(INSTANT, EMPTY, EMPTY, EMPTY, 0, NULL, &process_init, 0, NULL, NULL);
@@ -69,7 +70,7 @@ Request request_operate(uint8_t *operation)
 
     /* GET STATES REQUEST */
     else if (stringEqual(OPT.GET_ALL_STATES, operation))
-        return request_init(INSTANT, EMPTY, EMPTY, EMPTY, 0, NULL, &device_manager_getAllDevicesStates, 0, NULL, NULL);
+        return request_init(ANSWER, EMPTY, EMPTY, EMPTY, 0, NULL, &device_manager_getAllDevicesStates, 0, NULL, NULL);
 
     // if the operation type was not resolved i creating empty request object
     Request request = {0};

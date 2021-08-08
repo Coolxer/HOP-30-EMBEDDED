@@ -22,8 +22,8 @@ void endstopClickedCallback(Endstop *endstop)
     if (stepper_getState(stepper) != MOVING)
         return;
 
-    if ((endstop == stepper->minEndstop && stepper_getDirection(stepper) == LEFT) ||
-        (endstop == stepper->maxEndstop && stepper_getDirection(stepper) == RIGHT))
+    if ((endstop == stepper->minEndstop && !stepper_getDirection(stepper)) ||
+        (endstop == stepper->maxEndstop && stepper_getDirection(stepper)))
     {
         if (PROCESS_STATE == FORWARD)
             process_reverse();

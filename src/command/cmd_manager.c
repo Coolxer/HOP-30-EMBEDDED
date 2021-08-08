@@ -1,6 +1,7 @@
 #include "command/cmd_manager.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 #include "null.h"
 #include "data/assistant.h"
@@ -26,16 +27,20 @@ void cmd_manager_delive(uint8_t *cmd)
 {
     uint8_t *request = (uint8_t *)strtok((void *)cmd, "\n");
 
-    while (request != NULL && request[0] != '|')
+    while (request != NULL)
     {
+        if (request[0] == '|')
+            break;
+
         // find next slot index to place request in queue. Check for overfill (this is circular)
-        uint8_t registeredRequestIndex = (previousRegisteredRequestIndex < MAX_BUFFER_REQUESTS - 1) ? previousRegisteredRequestIndex + 1 : 1;
+        uint8_t nextIndex = (previousRegisteredRequestIndex < MAX_BUFFER_REQUESTS) ? previousRegisteredRequestIndex + 1 : 1;
 
         // check if next slot is free. If it is then use it.
-        if (!stringLength(REQUESTS[registeredRequestIndex]))
+        if (!stringLength(REQUESTS[nextIndex]))
         {
-            strcpy((void *)REQUESTS[registeredRequestIndex], (void *)request);
-            previousRegisteredRequestIndex = registeredRequestIndex;
+            //strcpy((void *)REQUESTS[nextIndex], (void *)request);
+            strcpy((void *)REQUESTS[nextIndex], "012345678901234567890123456789\0");
+            previousRegisteredRequestIndex = nextIndex;
             registeredRequestsAmount++;
         }
         else // (if there is not free slot in queue)
@@ -50,18 +55,22 @@ void cmd_manager_manage()
 {
     uint8_t i = 0;
 
-    if (!registeredRequestsAmount)
-        return;
+    //if (!registeredRequestsAmount)
+    //    return;
 
-    for (; i < MAX_BUFFER_REQUESTS; i++)
+    for (i = 1; i <= MAX_BUFFER_REQUESTS; i++)
     {
-        if (stringLength(REQUESTS[i]))
+        //if (stringLength(REQUESTS[i]))
+        if (REQUESTS[i][0] != '\0')
         {
-            uint8_t *feedback = request_process(REQUESTS[i]);
-            connector_sendResponse(feedback);
+            //uint8_t *feedback = request_process(REQUESTS[i]);
+            //connector_sendResponse(feedback);
 
-            strcpy((void *)REQUESTS[i], EMPTY);
+            //strcpy((void *)REQUESTS[i], EMPTY);
+            REQUESTS[i][0] = '\0';
+
             registeredRequestsAmount--;
+            //registeredRequestsAmount = 0;
 
             break; // break here to start using devices in main loop, not starting all requests at all
         }

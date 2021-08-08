@@ -14,6 +14,8 @@ void setUp()
 
 void tearDown(); // default release function
 
+/************************** validate_boolean() ****************************/
+
 void test_validate_boolean_should_give_error()
 {
     TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)"\0"));
@@ -29,6 +31,8 @@ void test_validate_boolean_should_give_success()
     TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_boolean((uint8_t *)"0"));
     TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_boolean((uint8_t *)"1"));
 }
+
+/************************** validate_float() ****************************/
 
 void test_validate_float_should_give_error()
 {

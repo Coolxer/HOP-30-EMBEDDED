@@ -12,7 +12,7 @@ void stepper_init(Stepper *stepper, enum AxisType axisType, uint8_t *name, TIM_T
     stepper->acceleration = stepper_acceleration_init();
     stepper->movement = stepper_movement_init();
 
-    stepper->state = OFF;
+    stepper->state = LOW;
 
     stepper_setPeripherals(stepper);
 }

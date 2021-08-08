@@ -4,7 +4,8 @@
 enum RequestType
 {
     INSTANT = 1,
-    LONG_TERM = 2
+    LONG_TERM = 2,
+    ANSWER = 3
 };
 
 #endif // TYPE_H
