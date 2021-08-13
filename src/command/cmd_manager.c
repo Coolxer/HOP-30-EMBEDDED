@@ -9,8 +9,10 @@
 #include "communication/connector.h"
 #include "command/request/request_manager.h"
 
-uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_SINGLE_REQUEST_SIZE] = {""};
+uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE] = {""};
+uint8_t awaitingResponsesAmount = 0;
 
+uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_SINGLE_REQUEST_SIZE] = {""};
 uint8_t registeredRequestsAmount = 0;
 uint8_t previousRegisteredRequestIndex = 0;
 
@@ -25,55 +27,80 @@ void cmd_manager_init()
 
 void cmd_manager_delive(uint8_t *cmd)
 {
-    uint8_t *request = (uint8_t *)strtok((void *)cmd, "\n");
+    uint8_t generalIndex = 0;
+    uint8_t tempIndex = 0;
+    uint8_t tempRequest[MAX_SINGLE_REQUEST_SIZE] = {0};
 
-    while (request != NULL)
+    for (; generalIndex < REQUEST_SIZE; generalIndex++)
     {
-        if (request[0] == '|')
-            break;
-
-        // find next slot index to place request in queue. Check for overfill (this is circular)
-        uint8_t nextIndex = (previousRegisteredRequestIndex < MAX_BUFFER_REQUESTS) ? previousRegisteredRequestIndex + 1 : 1;
-
-        // check if next slot is free. If it is then use it.
-        if (!stringLength(REQUESTS[nextIndex]))
+        if (cmd[generalIndex] != COMMAND_END_TERMINATOR)
         {
-            //strcpy((void *)REQUESTS[nextIndex], (void *)request);
-            strcpy((void *)REQUESTS[nextIndex], "012345678901234567890123456789\0");
-            previousRegisteredRequestIndex = nextIndex;
-            registeredRequestsAmount++;
-        }
-        else // (if there is not free slot in queue)
-            return;
-        // QUEUE IS FULL
+            if (tempIndex == 0 && (cmd[generalIndex] != 'i' && cmd[generalIndex + 1] != 'd' && cmd[generalIndex + 2] != 'x'))
+                break;
 
-        request = (uint8_t *)strtok(NULL, "\n");
+            else if (tempIndex >= MAX_SINGLE_REQUEST_SIZE)
+                break;
+
+            tempRequest[tempIndex] = cmd[generalIndex];
+            tempIndex++;
+        }
+        else // if(cmd[generalIndex] == COMMAND_END_TERMINATOR)
+        {
+            // find next slot index to place request in queue. Check for overfill (this is circular)
+            uint8_t nextIndex = (previousRegisteredRequestIndex < MAX_BUFFER_REQUESTS) ? previousRegisteredRequestIndex + 1 : 1;
+
+            // check if next slot is free. If it is then use it.
+            if (REQUESTS[nextIndex][0] == EMPTY_CHARACTER)
+            {
+                strcpy((void *)REQUESTS[nextIndex], (void *)tempRequest);
+                previousRegisteredRequestIndex = nextIndex;
+                registeredRequestsAmount++;
+            }
+            else       // (if there is not free slot in queue)
+                break; // QUEUE IS FULL
+
+            // fully clear single temporary REQUEST container
+            uint8_t j = 0;
+            for (; j <= tempIndex; j++)
+                tempRequest[j] = EMPTY_CHARACTER;
+
+            // clear single temporary request index
+            tempIndex = 0;
+        }
     }
+    generalIndex = 0;
 }
 
 void cmd_manager_manage()
 {
-    uint8_t i = 0;
+    if (!registeredRequestsAmount)
+        return;
 
-    //if (!registeredRequestsAmount)
-    //    return;
+    uint8_t i = 1;
 
-    for (i = 1; i <= MAX_BUFFER_REQUESTS; i++)
+    for (; i <= MAX_BUFFER_REQUESTS; i++)
     {
-        //if (stringLength(REQUESTS[i]))
-        if (REQUESTS[i][0] != '\0')
+        if (REQUESTS[i][0] == EMPTY_CHARACTER)
+            continue;
+
+        uint8_t *feedback = request_process(REQUESTS[i]);
+
+        if (TRANSFER_COMPLETE)
+            connector_sendResponse(feedback);
+        else
         {
-            //uint8_t *feedback = request_process(REQUESTS[i]);
-            //connector_sendResponse(feedback);
-
-            //strcpy((void *)REQUESTS[i], EMPTY);
-            REQUESTS[i][0] = '\0';
-
-            registeredRequestsAmount--;
-            //registeredRequestsAmount = 0;
-
-            break; // break here to start using devices in main loop, not starting all requests at all
+            strcpy((void *)RESPONSES[i], (void *)feedback);
+            awaitingResponsesAmount++;
         }
+
+        // fully clear single REQUEST container
+        uint8_t j = 0;
+        for (; j < MAX_SINGLE_REQUEST_SIZE; j++)
+            REQUESTS[i][j] = EMPTY_CHARACTER;
+
+        registeredRequestsAmount--;
+
+        break; // break here to start using devices in main loop, not starting all requests at all
     }
 }
 

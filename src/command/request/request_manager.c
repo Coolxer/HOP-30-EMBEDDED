@@ -93,7 +93,7 @@ uint8_t *request_process(uint8_t *request)
             break;
 
         default:
-            return EMPTY;
+            return EMPTY_STRING;
         }
     }
     else if (req.hvd)
@@ -132,7 +132,7 @@ uint8_t *request_process(uint8_t *request)
             break;
 
         default:
-            return EMPTY;
+            return EMPTY_STRING;
         }
     }
 
@@ -148,5 +148,5 @@ uint8_t *request_process(uint8_t *request)
     else if (req.type == ANSWER)
         return response_builder_buildVal(index, devicesStates);
 
-    return EMPTY;
+    return EMPTY_STRING;
 }

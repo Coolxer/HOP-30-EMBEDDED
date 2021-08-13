@@ -11,6 +11,9 @@
 #include "command/partial/err.h"
 #include "command/partial/res.h"
 
+extern uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE];
+extern uint8_t awaitingResponsesAmount;
+
 void cmd_manager_init();
 
 void cmd_manager_delive(uint8_t *cmd);

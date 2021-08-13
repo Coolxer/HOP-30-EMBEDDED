@@ -15,4 +15,6 @@ typedef struct
 
 extern DMA dma;
 
+extern volatile uint8_t TRANSFER_COMPLETE;
+
 #endif // DMA_H

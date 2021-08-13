@@ -23,5 +23,6 @@ void connector_deinit()
 
 void connector_sendResponse(uint8_t *response)
 {
+    TRANSFER_COMPLETE = 0;
     HAL_UART_Transmit_DMA(&uart, (uint8_t *)response, RESPONSE_SIZE);
 }
