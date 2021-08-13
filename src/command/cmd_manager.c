@@ -11,7 +11,8 @@
 
 uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_SINGLE_REQUEST_SIZE] = {0};
 uint8_t registeredRequestsAmount = 0;
-uint8_t previousRegisteredRequestIndex = 0;
+uint8_t justRegisteredRequestIndex = 0;
+uint8_t justProcessedRequestIndex = 0;
 
 uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE] = {0};
 uint8_t awaitingResponsesAmount = 0;
@@ -56,13 +57,13 @@ void cmd_manager_delive(uint8_t *cmd)
         else // if(cmd[index] == COMMAND_END_TERMINATOR)
         {
             // find next slot index to place request in queue. Check for overfill (this is circular)
-            uint8_t nextIndex = (previousRegisteredRequestIndex < MAX_BUFFER_REQUESTS) ? previousRegisteredRequestIndex + 1 : 1;
+            uint8_t requestIndex = (justRegisteredRequestIndex < MAX_BUFFER_REQUESTS) ? justRegisteredRequestIndex + 1 : 1;
 
             // check if next slot is free. If it is then use it.
-            if (REQUESTS[nextIndex][0] == EMPTY_CHARACTER)
+            if (REQUESTS[requestIndex][0] == EMPTY_CHARACTER)
             {
-                strcpy((void *)REQUESTS[nextIndex], (void *)tempRequest);
-                previousRegisteredRequestIndex = nextIndex;
+                strcpy((void *)REQUESTS[requestIndex], (void *)tempRequest);
+                justRegisteredRequestIndex = requestIndex;
                 registeredRequestsAmount++;
             }
             else       // (if there is not free slot in queue)
@@ -79,13 +80,12 @@ void cmd_manager_delive(uint8_t *cmd)
 
 void cmd_manager_manage_requests()
 {
-    if (!registeredRequestsAmount)
-        return;
+    uint8_t i = justProcessedRequestIndex;
 
-    uint8_t i = 1;
-
-    for (; i <= MAX_BUFFER_REQUESTS; i++)
+    while (registeredRequestsAmount)
     {
+        i = (i < MAX_BUFFER_REQUESTS) ? i + 1 : 1;
+
         if (REQUESTS[i][0] == EMPTY_CHARACTER)
             continue;
 
@@ -97,8 +97,9 @@ void cmd_manager_manage_requests()
 
         // save Response
         strcpy((void *)RESPONSES[i], (void *)feedback);
-        RESPONSES[i][RESPONSE_SIZE - 1] = '\0';
         awaitingResponsesAmount++;
+
+        justProcessedRequestIndex = i;
 
         break; // break here to start using devices in main loop, not starting all requests at all
     }
@@ -106,20 +107,19 @@ void cmd_manager_manage_requests()
 
 void cmd_manager_manage_responses()
 {
-    if (!awaitingResponsesAmount)
-        return;
+    uint8_t i = justSendedResponseIndex;
 
-    uint8_t i = 1;
-
-    for (; i < MAX_BUFFER_RESPONSES; i++)
+    while (awaitingResponsesAmount)
     {
+        i = (i < MAX_BUFFER_RESPONSES) ? i + 1 : 1;
+
         if (RESPONSES[i][0] == EMPTY_CHARACTER || !TRANSFER_COMPLETE)
             continue;
 
         justSendedResponseIndex = i;
-        connector_sendResponse(RESPONSES[i]);
-
         awaitingResponsesAmount--;
+
+        connector_sendResponse(RESPONSES[justSendedResponseIndex]);
 
         break;
     }
