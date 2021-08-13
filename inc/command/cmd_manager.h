@@ -13,11 +13,17 @@
 
 extern uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE];
 extern uint8_t awaitingResponsesAmount;
+extern uint8_t justSendedResponseIndex;
 
 void cmd_manager_init();
 
 void cmd_manager_delive(uint8_t *cmd);
-void cmd_manager_manage();
+void cmd_manager_process();
+
+/* PRIVATE */ // void cmd_manager_manage_requests();
+/* PRIVATE */ // void cmd_manager_manage_responses();
+
+void cmd_response();
 
 uint8_t cmd_manager_getErrorByKey(uint8_t *key, enum ErrorType errorType);
 

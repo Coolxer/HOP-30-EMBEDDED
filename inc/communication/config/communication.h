@@ -12,7 +12,7 @@
 
 #define COMMAND_END_TERMINATOR '@'
 
-#define REQUEST_SIZE (255 + 2) // 255 i real length, 2 additional places for \r \n
+#define REQUEST_SIZE (253 + 2) // 253 i real length, 2 additional places for \r\n
 #define MAX_SINGLE_REQUEST_SIZE 50
 #define MAX_BUFFER_REQUESTS 10
 

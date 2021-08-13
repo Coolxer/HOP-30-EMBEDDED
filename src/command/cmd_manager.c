@@ -9,12 +9,13 @@
 #include "communication/connector.h"
 #include "command/request/request_manager.h"
 
-uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE] = {""};
-uint8_t awaitingResponsesAmount = 0;
-
-uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_SINGLE_REQUEST_SIZE] = {""};
+uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_SINGLE_REQUEST_SIZE] = {0};
 uint8_t registeredRequestsAmount = 0;
 uint8_t previousRegisteredRequestIndex = 0;
+
+uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE] = {0};
+uint8_t awaitingResponsesAmount = 0;
+uint8_t justSendedResponseIndex = 0;
 
 void cmd_manager_init()
 {
@@ -23,28 +24,36 @@ void cmd_manager_init()
     val_init();
     err_init();
     res_init();
+
+    uint8_t i = 0;
+
+    for (i = 0; i < MAX_BUFFER_REQUESTS; i++)
+        clearString(REQUESTS[i], MAX_SINGLE_REQUEST_SIZE);
+
+    for (i = 0; i < MAX_BUFFER_RESPONSES; i++)
+        clearString(RESPONSES[i], RESPONSE_SIZE);
 }
 
 void cmd_manager_delive(uint8_t *cmd)
 {
-    uint8_t generalIndex = 0;
+    uint8_t index = 0;
     uint8_t tempIndex = 0;
     uint8_t tempRequest[MAX_SINGLE_REQUEST_SIZE] = {0};
 
-    for (; generalIndex < REQUEST_SIZE; generalIndex++)
+    for (; index < REQUEST_SIZE; index++)
     {
-        if (cmd[generalIndex] != COMMAND_END_TERMINATOR)
+        if (cmd[index] != COMMAND_END_TERMINATOR)
         {
-            if (tempIndex == 0 && (cmd[generalIndex] != 'i' && cmd[generalIndex + 1] != 'd' && cmd[generalIndex + 2] != 'x'))
+            if (tempIndex == 0 && (cmd[index] != 'i' || cmd[index + 1] != 'd' || cmd[index + 2] != 'x'))
                 break;
 
             else if (tempIndex >= MAX_SINGLE_REQUEST_SIZE)
                 break;
 
-            tempRequest[tempIndex] = cmd[generalIndex];
+            tempRequest[tempIndex] = cmd[index];
             tempIndex++;
         }
-        else // if(cmd[generalIndex] == COMMAND_END_TERMINATOR)
+        else // if(cmd[index] == COMMAND_END_TERMINATOR)
         {
             // find next slot index to place request in queue. Check for overfill (this is circular)
             uint8_t nextIndex = (previousRegisteredRequestIndex < MAX_BUFFER_REQUESTS) ? previousRegisteredRequestIndex + 1 : 1;
@@ -59,19 +68,16 @@ void cmd_manager_delive(uint8_t *cmd)
             else       // (if there is not free slot in queue)
                 break; // QUEUE IS FULL
 
-            // fully clear single temporary REQUEST container
-            uint8_t j = 0;
-            for (; j <= tempIndex; j++)
-                tempRequest[j] = EMPTY_CHARACTER;
+            // clear temporary request container
+            clearString(tempRequest, tempIndex);
 
             // clear single temporary request index
             tempIndex = 0;
         }
     }
-    generalIndex = 0;
 }
 
-void cmd_manager_manage()
+void cmd_manager_manage_requests()
 {
     if (!registeredRequestsAmount)
         return;
@@ -85,23 +91,44 @@ void cmd_manager_manage()
 
         uint8_t *feedback = request_process(REQUESTS[i]);
 
-        if (TRANSFER_COMPLETE)
-            connector_sendResponse(feedback);
-        else
-        {
-            strcpy((void *)RESPONSES[i], (void *)feedback);
-            awaitingResponsesAmount++;
-        }
-
-        // fully clear single REQUEST container
-        uint8_t j = 0;
-        for (; j < MAX_SINGLE_REQUEST_SIZE; j++)
-            REQUESTS[i][j] = EMPTY_CHARACTER;
-
+        // clear Request
+        clearString(REQUESTS[i], MAX_SINGLE_REQUEST_SIZE);
         registeredRequestsAmount--;
+
+        // save Response
+        strcpy((void *)RESPONSES[i], (void *)feedback);
+        RESPONSES[i][RESPONSE_SIZE - 1] = '\0';
+        awaitingResponsesAmount++;
 
         break; // break here to start using devices in main loop, not starting all requests at all
     }
+}
+
+void cmd_manager_manage_responses()
+{
+    if (!awaitingResponsesAmount)
+        return;
+
+    uint8_t i = 1;
+
+    for (; i < MAX_BUFFER_RESPONSES; i++)
+    {
+        if (RESPONSES[i][0] == EMPTY_CHARACTER || !TRANSFER_COMPLETE)
+            continue;
+
+        justSendedResponseIndex = i;
+        connector_sendResponse(RESPONSES[i]);
+
+        awaitingResponsesAmount--;
+
+        break;
+    }
+}
+
+void cmd_manager_process()
+{
+    cmd_manager_manage_requests();
+    cmd_manager_manage_responses();
 }
 
 uint8_t cmd_manager_getErrorByKey(uint8_t *key, enum ErrorType errorType)

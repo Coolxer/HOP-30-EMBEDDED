@@ -27,31 +27,8 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
     huart = huart; // turn off warning: unused parameter...
 
+    // after sending is finish i can safety clear Response
+    clearString(RESPONSES[justSendedResponseIndex], RESPONSE_SIZE);
+
     TRANSFER_COMPLETE = 1;
-
-    if (!awaitingResponsesAmount)
-        return;
-
-    uint8_t i = 1;
-
-    uint8_t res[RESPONSE_SIZE] = {0};
-
-    for (; i < MAX_BUFFER_RESPONSES; i++)
-    {
-        if (RESPONSES[i][0] == EMPTY_CHARACTER)
-            continue;
-
-        strcpy(res, RESPONSES[i]);
-
-        // fully clear single REQUEST container
-        uint8_t j = 0;
-        for (; j < RESPONSE_SIZE; j++)
-            RESPONSES[i][j] = EMPTY_CHARACTER;
-
-        awaitingResponsesAmount--;
-
-        break;
-    }
-
-    connector_sendResponse(res);
 }

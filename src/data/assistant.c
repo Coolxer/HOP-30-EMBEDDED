@@ -19,6 +19,13 @@ uint8_t stringEqual(uint8_t *str1, uint8_t *str2)
 	return 0;
 }
 
+void clearString(uint8_t *src, uint8_t len)
+{
+	uint8_t i = 0;
+	for (; i < len; i++)
+		src[i] = EMPTY_CHARACTER;
+}
+
 uint8_t *charAppend(uint8_t *src, uint8_t ch)
 {
 	uint8_t s = stringLength(src); // read length of src string

@@ -159,7 +159,7 @@ void device_manager_manageSteppers()
     }
 }
 
-void device_manager_manageDevices()
+void device_manager_process()
 {
     device_manager_manageEndstops();
     device_manager_manageSteppers();

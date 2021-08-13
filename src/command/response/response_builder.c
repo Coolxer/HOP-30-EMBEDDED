@@ -23,7 +23,7 @@ void response_builder_formatResponse()
     for (; i < RESPONSE_SIZE; i++)
         response[i] = '|';
 
-    //response[RESPONSE_SIZE - 1] = '\0';
+    response[RESPONSE_SIZE - 1] = '\0';
 }
 
 uint8_t *response_builder_buildPas(uint8_t *index)
