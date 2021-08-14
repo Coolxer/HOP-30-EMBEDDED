@@ -22,7 +22,7 @@ void tearDown();
 
 void test_request_checkGeneralThings_should_give_no_params_error()
 {
-    uint8_t data[] = "aaaaaaaaaaaaaaa|\n";
+    uint8_t data[] = "aaaaaaaaaaaaaaa|@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);
@@ -32,7 +32,7 @@ void test_request_checkGeneralThings_should_give_no_params_error()
 
 void test_request_checkGeneralThings_should_give_one_param_only_error()
 {
-    uint8_t data[] = "opt=aaaaaaaaaa|\n";
+    uint8_t data[] = "opt=aaaaaaaaaa|@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);
@@ -42,7 +42,7 @@ void test_request_checkGeneralThings_should_give_one_param_only_error()
 
 void test_request_checkGeneralThings_should_give_to_many_params_error()
 {
-    uint8_t data[] = "abc=123|spp=12|spd=1|alf=56|afk=3|dfg=3\n";
+    uint8_t data[] = "abc=123|spp=12|spd=1|alf=56|afk=3|dfg=3@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);
@@ -52,7 +52,7 @@ void test_request_checkGeneralThings_should_give_to_many_params_error()
 
 void test_request_checkGeneralThings_should_give_no_index_key_error()
 {
-    uint8_t data[] = "abc=123|spp=12|spd=1|\n";
+    uint8_t data[] = "abc=123|spp=12|spd=1|@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);
@@ -62,7 +62,7 @@ void test_request_checkGeneralThings_should_give_no_index_key_error()
 
 void test_request_checkGeneralThings_should_give_invalid_index_value_error()
 {
-    uint8_t data[] = "idx=ab|spp=12|spd=1|\n";
+    uint8_t data[] = "idx=ab|spp=12|spd=1|@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);
@@ -72,7 +72,7 @@ void test_request_checkGeneralThings_should_give_invalid_index_value_error()
 
 void test_request_checkGeneralThings_should_give_no_operation_key_error()
 {
-    uint8_t data[] = "idx=3|spp=12|spd=1|\n";
+    uint8_t data[] = "idx=3|spp=12|spd=1|@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);
@@ -82,7 +82,7 @@ void test_request_checkGeneralThings_should_give_no_operation_key_error()
 
 void test_request_checkGeneralThings_should_give_no_error()
 {
-    uint8_t data[] = "idx=3|opt=cfs|spp=12|spd=1|\n";
+    uint8_t data[] = "idx=3|opt=cfs|spp=12|spd=1|@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);
@@ -93,7 +93,7 @@ void test_request_checkGeneralThings_should_give_no_error()
 /************************** validateKeys() ****************************/
 void test_request_validate_keys_shoud_give_no_key_error()
 {
-    uint8_t data[] = "idx=3|opt=cfs|spa=x|spd=1|\n";
+    uint8_t data[] = "idx=3|opt=cfs|spa=x|spd=1|@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);
@@ -108,7 +108,7 @@ void test_request_validate_keys_shoud_give_no_key_error()
 
 void test_request_validate_keys_shoud_give_no_error()
 {
-    uint8_t data[] = "idx=3|opt=cfs|spp=x|spd=1|acc=non|\n";
+    uint8_t data[] = "idx=3|opt=cfs|spp=x|spd=1|acc=non|@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);

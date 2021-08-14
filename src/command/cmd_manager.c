@@ -121,7 +121,7 @@ void cmd_manager_manage_responses()
 
         connector_sendResponse(RESPONSES[justSendedResponseIndex]);
 
-        break;
+        break; // break here to start using devices in main loop, not blocking too much time
     }
 }
 

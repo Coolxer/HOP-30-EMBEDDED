@@ -11,7 +11,7 @@ void tearDown();
 
 void test_request_explode_should_give_null_if_white_spaces_only()
 {
-    uint8_t data[] = "              \n";
+    uint8_t data[] = "              @";
     uint8_t records = 0;
 
     TEST_ASSERT_NULL(request_explode(data, &records));
@@ -20,7 +20,7 @@ void test_request_explode_should_give_null_if_white_spaces_only()
 
 void test_request_explode_should_give_null_if_normal_text()
 {
-    uint8_t data[] = "aaaaaaaaaaaaaa\n";
+    uint8_t data[] = "aaaaaaaaaaaaaa@";
     uint8_t records = 0;
 
     TEST_ASSERT_NULL(request_explode(data, &records));
@@ -29,7 +29,7 @@ void test_request_explode_should_give_null_if_normal_text()
 
 void test_request_explode_should_give_null_if_pipes_only()
 {
-    uint8_t data[] = "||||||||||||||\n";
+    uint8_t data[] = "||||||||||||||@";
     uint8_t records = 0;
 
     TEST_ASSERT_NULL(request_explode(data, &records));
@@ -38,7 +38,7 @@ void test_request_explode_should_give_null_if_pipes_only()
 
 void test_request_explode_should_give_null_if_equal_signs_only()
 {
-    uint8_t data[] = "==============\n";
+    uint8_t data[] = "==============@";
     uint8_t records = 0;
 
     TEST_ASSERT_NULL(request_explode(data, &records));
@@ -47,7 +47,7 @@ void test_request_explode_should_give_null_if_equal_signs_only()
 
 void test_request_explode_should_give_one_record()
 {
-    uint8_t data[] = "aaaaaaa=bbbbbb|\n";
+    uint8_t data[] = "aaaaaaa=bbbbbb|@";
     uint8_t records = 0;
     uint8_t ***args = request_explode(data, &records);
 
@@ -59,7 +59,7 @@ void test_request_explode_should_give_one_record()
 
 void test_request_explode_should_give_three_records()
 {
-    uint8_t data[] = "a1=b|c1=d|e1=f|\n";
+    uint8_t data[] = "a1=b|c1=d|e1=f|@";
     uint8_t records = 0;
     uint8_t ***args = request_explode(data, &records);
 
