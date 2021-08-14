@@ -28,7 +28,6 @@ void response_builder_formatResponse()
 
 uint8_t *response_builder_buildPas(uint8_t *index)
 {
-    //response_builder_formatResponse();
 
     snprintf((void *)response, sizeof(response), "%s%c%s%c%s%c%s%c%c", KEY.INDEX, '=', index, '|', KEY.RESPONSE, '=', RES.PASSED, '|', COMMAND_END_TERMINATOR);
 
@@ -39,8 +38,6 @@ uint8_t *response_builder_buildPas(uint8_t *index)
 
 uint8_t *response_builder_buildErr(uint8_t *index, uint8_t code)
 {
-    //response_builder_formatResponse();
-
     snprintf((void *)response, sizeof(response), "%s%c%s%c%s%c%s%c%s%c%u%c%c", KEY.INDEX, '=', index, '|', KEY.RESPONSE, '=', RES.ERROR, '|', KEY.CODE, '=', code, '|', COMMAND_END_TERMINATOR);
 
     response_builder_formatResponse();
@@ -50,8 +47,6 @@ uint8_t *response_builder_buildErr(uint8_t *index, uint8_t code)
 
 uint8_t *response_builder_buildFin(uint8_t *index)
 {
-    //response_builder_formatResponse();
-
     snprintf((void *)response, sizeof(response), "%s%c%s%c%s%c%s%c%c", KEY.INDEX, '=', index, '|', KEY.RESPONSE, '=', RES.FINISHED, '|', COMMAND_END_TERMINATOR);
 
     response_builder_formatResponse();
