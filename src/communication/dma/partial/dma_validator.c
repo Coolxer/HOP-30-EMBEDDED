@@ -7,8 +7,8 @@ uint8_t checkMessageTerminators()
 {
     uint8_t i = 0;
 
-    // just look for \r, because i mby i would be pressed to use @ later for commands seperator
-    for (i = 0; i < (REQUEST_SIZE - 2); i++)
+    // just look for \r, because i mby i would be pressed to use \n later for commands seperator
+    for (; i < (REQUEST_SIZE - 2); i++)
     {
         if (dma.requestBuffer[i] == '\r')
             return 0;
