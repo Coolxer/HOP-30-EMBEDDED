@@ -25,9 +25,6 @@ extern Stepper *Z_STEPPER;
 extern HVD POMP;
 extern HVD TH_PHASE_MOTOR;
 
-// 12 devices at all : STEPPERS_AMOUNT (4) + ENDSTOPS_AMOUNT (6) + POMP (1) + TH_PHASE_MOTOR (1) = 12
-extern uint8_t devicesStates[12];
-
 void device_manager_init();   // sets devices
 void device_manager_deinit(); // resets devices
 
@@ -38,7 +35,7 @@ Endstop *device_manager_getEndstop(uint8_t *name); // returns pointer to endstop
 
 void device_manager_process(); // manages devices events
 
-void device_manager_updateDevicesStatesMap();
+uint8_t *device_manager_getDevicesStatesMap();
 
 /* PRIVATE */ //void device_manager_manageEndstops(); // manages endstops services (events)
 /* PRIVATE */ //void device_manager_manageSteppers(); // manages steppers services (events)
