@@ -10,6 +10,8 @@
 #define USART2_TX GPIO_PIN_2 // define uart tx pin (send)
 #define USART2_RX GPIO_PIN_3 // define uart rx pins (receive)
 
+#define COMMAND_PAIR_CONNECTOR '='
+#define COMMAND_PARAM_SEPARATOR '|'
 #define COMMAND_END_TERMINATOR '@'
 
 #define REQUEST_SIZE (253 + 2) // 253 i real length, 2 additional places for \r\n

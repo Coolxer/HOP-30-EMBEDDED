@@ -26,34 +26,6 @@ void clearString(uint8_t *src, uint8_t len)
 		src[i] = EMPTY_CHARACTER;
 }
 
-uint8_t *charAppend(uint8_t *src, uint8_t ch)
-{
-	uint8_t s = stringLength(src); // read length of src string
-
-	uint8_t tmp[s + 1]; // declare table with additional place for char
-	tmp[0] = 0;			// clear table
-
-	strcpy((void *)tmp, (void *)src); // copy src to new table
-	tmp[s] = ch;					  // set char at the pre-last pos
-	tmp[s + 1] = '\0';				  // set end of string
-
-	return (uint8_t *)strdup((void *)tmp); // return new string
-}
-
-uint8_t *strAppend(uint8_t *src, uint8_t *str)
-{
-	uint8_t s = (uint8_t)(stringLength(src) + stringLength(str) + 1); // read length of src and str
-
-	uint8_t tmp[s]; // declare table for keep 2 strings
-	tmp[0] = 0;		// clear table
-
-	strcat((void *)tmp, (void *)src); // copy src to new table
-	strcat((void *)tmp, (void *)str); // copy str to new table
-	tmp[s + 1] = '\0';				  // set end of string
-
-	return (uint8_t *)strdup((void *)tmp); // return new string
-}
-
 uint8_t convertStrToBoolean(uint8_t *str)
 {
 	return stringEqual(str, (uint8_t *)"0") ? 0 : 1;
