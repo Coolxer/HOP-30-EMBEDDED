@@ -1,9 +1,8 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
-// #define UART_PORT "COM3"     // signature of serial port
-#define UART_PORT "COM4"      // signature of serial port
-#define UART_BAUDRATE 2000000 // default baudrate of UART communication
+#define UART_PORT "COM4"      // signature of serial port [COM3 on the other board]
+#define UART_BAUDRATE 2000000 // baudrate of UART communication [default: 115200]
 
 #define UART_NAME USART2
 #define USART2_TX GPIO_PIN_2 // define uart tx pin (send)
