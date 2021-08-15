@@ -16,6 +16,7 @@ typedef struct
         ACCELERATION[PART_LENGTH],
         WAY[PART_LENGTH],
         DIRECTION[PART_LENGTH],
+        COOLANT[PART_LENGTH],
 
         RESPONSE[PART_LENGTH],
         CODE[PART_LENGTH];

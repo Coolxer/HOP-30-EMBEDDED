@@ -44,6 +44,9 @@ typedef struct
         NO_DIRECTION_KEY,
         INVALID_DIRECTION_VALUE,
 
+        NO_COOLANT_KEY,
+        INVALID_COOLANT_VALUE,
+
         OPERATION_NOT_ALLOWED;
 } err;
 

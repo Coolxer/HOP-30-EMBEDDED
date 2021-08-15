@@ -54,7 +54,7 @@ Request request_operate(uint8_t *operation)
     /* PROCESS REQUESTS */
 
     else if (stringEqual(OPT.CONFIGURE_PROCESS, operation))
-        return request_init(INSTANT, KEY.DIRECTION, EMPTY_STRING, EMPTY_STRING, 1, &process_validateConfigure, &process_configure, 1, NULL, NULL);
+        return request_init(INSTANT, KEY.DIRECTION, KEY.COOLANT, EMPTY_STRING, 1, &process_validateConfigure, &process_configure, 1, NULL, NULL);
 
     else if (stringEqual(OPT.INIT_PROCESS, operation))
         return request_init(INSTANT, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, NULL, &process_init, 0, NULL, NULL);

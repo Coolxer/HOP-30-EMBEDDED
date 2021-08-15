@@ -8,10 +8,13 @@
 
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 
-uint8_t process_validateConfigure(uint8_t *direction)
+uint8_t process_validateConfigure(uint8_t *direction, uint8_t *coolant)
 {
     if (validate_boolean(direction) == ERR.ERROR)
         return ERR.INVALID_DIRECTION_VALUE;
+
+    else if (validate_boolean(coolant) == ERR.ERROR)
+        return ERR.INVALID_COOLANT_VALUE;
 
     else if (stepper_getState(X_STEPPER) == MOVING || stepper_getState(W_STEPPER) == MOVING || PROCESS_STATE != NONE)
         return ERR.OPERATION_NOT_ALLOWED;

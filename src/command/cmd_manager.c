@@ -160,5 +160,8 @@ uint8_t cmd_manager_getErrorByKey(uint8_t *key, enum ErrorType errorType)
     else if (stringEqual(key, KEY.DIRECTION))
         return errorType == KEY_ERROR ? ERR.NO_DIRECTION_KEY : ERR.INVALID_DIRECTION_VALUE;
 
+    else if (stringEqual(key, KEY.COOLANT))
+        return errorType == KEY_ERROR ? ERR.NO_COOLANT_KEY : ERR.INVALID_COOLANT_VALUE;
+
     return ERR.NO_ERROR;
 }

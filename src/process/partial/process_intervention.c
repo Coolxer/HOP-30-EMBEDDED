@@ -12,7 +12,9 @@ void process_pause()
     stepper_pause(X_STEPPER);
     stepper_pause(W_STEPPER);
 
-    hvd_switch(&POMP, OFF);
+    if (COOLANT_ENABLE)
+        hvd_switch(&POMP, OFF);
+
     hvd_switch(&TH_PHASE_MOTOR, OFF);
 
     PROCESS_PREVIOUS_STATE = PROCESS_STATE;
@@ -24,7 +26,9 @@ void process_resume()
     stepper_resume(X_STEPPER);
     stepper_resume(W_STEPPER);
 
-    hvd_switch(&POMP, ON);
+    if (COOLANT_ENABLE)
+        hvd_switch(&POMP, ON);
+
     hvd_switch(&TH_PHASE_MOTOR, ON);
 
     PROCESS_STATE = PROCESS_PREVIOUS_STATE;
@@ -35,7 +39,9 @@ void process_stop()
     stepper_stop(X_STEPPER);
     stepper_stop(W_STEPPER);
 
-    hvd_switch(&POMP, OFF);
+    if (COOLANT_ENABLE)
+        hvd_switch(&POMP, OFF);
+
     hvd_switch(&TH_PHASE_MOTOR, OFF);
 
     PROCESS_STATE = PROCESS_PREVIOUS_STATE = NONE;

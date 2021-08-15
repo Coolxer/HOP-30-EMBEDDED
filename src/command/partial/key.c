@@ -17,6 +17,7 @@ void key_init()
     strcpy((void *)KEY.ACCELERATION, "acc\0");
     strcpy((void *)KEY.WAY, "way\0");
     strcpy((void *)KEY.DIRECTION, "dir\0");
+    strcpy((void *)KEY.COOLANT, "coo\0");
 
     strcpy((void *)KEY.RESPONSE, "res\0");
     strcpy((void *)KEY.CODE, "cod\0");
