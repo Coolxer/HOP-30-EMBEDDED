@@ -24,6 +24,18 @@ void application_setup()
     device_manager_init(); // inits device manager kit
 }
 
+void application_loop()
+{
+    while (1) // while there is not "FINISH" command on uart
+    {
+        cmd_manager_process();
+        device_manager_process(); // services endstop and stepper events
+
+        if (SHUTDOWN_FLAG)
+            break;
+    }
+}
+
 void application_close()
 {
     connector_deinit();      // deinits connector
@@ -32,21 +44,11 @@ void application_close()
     HAL_DeInit();            // deinits HAL library
 }
 
-void application_loop()
-{
-    while (1) // while there is not "FINISH" command on uart
-    {
-        cmd_manager_process();
-        device_manager_process(); // services endstop and stepper events
-    }
-}
-
 void application_run()
 {
     application_loop();
-
-    connector_sendResponse(SHUTDOWN_RESPONSE); // sends "SHUTDOWNED" through UART after get "SHUTDOWN" command
     application_close();                       // close the application
+    connector_sendResponse(SHUTDOWN_RESPONSE); // sends "SHUTDOWNED" through UART after get "SHUTDOWN" command
 }
 
 void application_exec()

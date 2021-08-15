@@ -15,6 +15,8 @@ extern uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE];
 extern uint8_t awaitingResponsesAmount;
 extern uint8_t justSendedResponseIndex;
 
+extern volatile uint8_t SHUTDOWN_FLAG;
+
 void cmd_manager_init();
 
 void cmd_manager_delive(uint8_t *cmd);

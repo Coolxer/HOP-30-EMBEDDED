@@ -15,7 +15,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     UNUSED(huart); // turn off warning: unused parameter...
 
     if (validateTransmission())
+    {
+        if (stringEqual(SHUTDOWN_REQUEST, dma.requestBuffer))
+        {
+            SHUTDOWN_FLAG = 1;
+            return;
+        }
+
         cmd_manager_delive(dma.requestBuffer);
+    }
     else
         clearString(dma.requestBuffer, REQUEST_SIZE);
 
