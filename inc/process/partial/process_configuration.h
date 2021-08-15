@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-void process_configure(uint8_t *direction, uint8_t *coolant)
+void process_configure(uint8_t *direction, uint8_t *coolant);
 
 #endif // PROCESS_VALIDATOR_H

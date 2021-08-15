@@ -1,6 +1,8 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
+#include <stdint.h>
+
 enum ProcessState
 {
     NONE = 0,

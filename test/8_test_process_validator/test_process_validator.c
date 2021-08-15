@@ -30,7 +30,7 @@ void test_process_validateConfigure_should_give_error_if_steppers_running()
     stepper_setState(X_STEPPER, MOVING);
     stepper_setState(W_STEPPER, MOVING);
 
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 }
 
 void test_process_validateConfigure_should_give_error_if_process_running()
@@ -40,13 +40,13 @@ void test_process_validateConfigure_should_give_error_if_process_running()
     stepper_setState(X_STEPPER, LOW);
     stepper_setState(W_STEPPER, LOW);
 
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 
     PROCESS_STATE = BACKWARD;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 
     PROCESS_STATE = HALTED;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 }
 
 void test_process_validateConfigure_should_give_error_no_error()
@@ -56,7 +56,7 @@ void test_process_validateConfigure_should_give_error_no_error()
     stepper_setState(X_STEPPER, LOW);
     stepper_setState(W_STEPPER, LOW);
 
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateConfigure((void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 }
 
 /************************** validatePause() ****************************/

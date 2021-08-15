@@ -11,7 +11,6 @@ void tearDown();
 
 void test_contains_only_digits_should_give_false()
 {
-    TEST_ASSERT_EQUAL_UINT8(0, containsOnlyDigits(""));
     TEST_ASSERT_EQUAL_UINT8(0, containsOnlyDigits(" "));
     TEST_ASSERT_EQUAL_UINT8(0, containsOnlyDigits("a"));
     TEST_ASSERT_EQUAL_UINT8(0, containsOnlyDigits(" 1"));
