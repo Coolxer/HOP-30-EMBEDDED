@@ -146,7 +146,7 @@ uint8_t *request_process(uint8_t *request)
     else if (req.type == INSTANT)
         return response_builder_buildFin(index);
     else if (req.type == ANSWER)
-        return response_builder_buildVal(index, device_manager_getDevicesStatesMap());
+        return response_builder_buildVal(index, devicesStates);
 
     return response_builder_buildErr(index, 1);
 }

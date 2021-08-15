@@ -18,12 +18,11 @@ extern uint8_t justSendedResponseIndex;
 void cmd_manager_init();
 
 void cmd_manager_delive(uint8_t *cmd);
-void cmd_manager_process();
 
 /* PRIVATE */ // void cmd_manager_manage_requests();
 /* PRIVATE */ // void cmd_manager_manage_responses();
 
-void cmd_response();
+void cmd_manager_process();
 
 uint8_t cmd_manager_getErrorByKey(uint8_t *key, enum ErrorType errorType);
 

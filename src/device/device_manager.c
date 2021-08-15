@@ -30,7 +30,6 @@ Stepper *Z_STEPPER = NULL;
 HVD POMP;
 HVD TH_PHASE_MOTOR;
 
-// 12 devices at all : STEPPERS_AMOUNT (4) + ENDSTOPS_AMOUNT (6) + POMP (1) + TH_PHASE_MOTOR (1) = 12
 uint8_t devicesStates[12] = {0};
 
 void device_manager_init()
@@ -166,7 +165,7 @@ void device_manager_process()
     device_manager_manageSteppers();
 }
 
-uint8_t *device_manager_getDevicesStatesMap()
+void device_manager_updateDevicesStatesMap()
 {
     uint8_t i = 0;
     uint8_t index = 0;
@@ -185,6 +184,4 @@ uint8_t *device_manager_getDevicesStatesMap()
 
     devicesStates[index] = (uint8_t)hvd_getState(&POMP);
     devicesStates[index + 1] = (uint8_t)hvd_getState(&TH_PHASE_MOTOR);
-
-    return devicesStates;
 }

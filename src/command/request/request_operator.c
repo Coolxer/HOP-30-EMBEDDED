@@ -70,7 +70,7 @@ Request request_operate(uint8_t *operation)
 
     /* GET STATES REQUEST */
     else if (stringEqual(OPT.GET_ALL_STATES, operation))
-        return request_init(ANSWER, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, NULL, &device_manager_getDevicesStatesMap, 0, NULL, NULL);
+        return request_init(ANSWER, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, NULL, &device_manager_updateDevicesStatesMap, 0, NULL, NULL);
 
     // if the operation type was not resolved i creating empty request object
     Request request = {0};
