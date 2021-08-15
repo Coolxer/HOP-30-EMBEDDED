@@ -10,9 +10,10 @@
 
 #define COMMAND_PAIR_CONNECTOR '='
 #define COMMAND_PARAM_SEPARATOR '|'
-#define COMMAND_END_TERMINATOR '@'
+#define SENTENCE_END_TERMINATOR '@'
+#define COMMAND_END_TERMINATOR '#'
 
-#define REQUEST_SIZE (253 + 2) // 253 i real length, 2 additional places for \r\n
+#define REQUEST_SIZE 255
 #define MAX_SINGLE_REQUEST_SIZE 50
 #define MAX_BUFFER_REQUESTS 10
 

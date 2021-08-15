@@ -45,7 +45,7 @@ void cmd_manager_delive(uint8_t *cmd)
 
     for (; index < REQUEST_SIZE; index++)
     {
-        if (cmd[index] != COMMAND_END_TERMINATOR)
+        if (cmd[index] != SENTENCE_END_TERMINATOR)
         {
             if (tempIndex == 0 && (cmd[index] != 'i' || cmd[index + 1] != 'd' || cmd[index + 2] != 'x'))
                 break;
@@ -56,7 +56,7 @@ void cmd_manager_delive(uint8_t *cmd)
             tempRequest[tempIndex] = cmd[index];
             tempIndex++;
         }
-        else // if(cmd[index] == COMMAND_END_TERMINATOR)
+        else // if(cmd[index] == SENTENCE_END_TERMINATOR)
         {
             // find next slot index to place request in queue. Check for overfill (this is circular)
             uint8_t requestIndex = (justRegisteredRequestIndex < MAX_BUFFER_REQUESTS) ? justRegisteredRequestIndex + 1 : 1;

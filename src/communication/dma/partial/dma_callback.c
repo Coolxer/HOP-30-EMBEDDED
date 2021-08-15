@@ -24,8 +24,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
         cmd_manager_delive(dma.requestBuffer);
     }
-    else
-        clearString(dma.requestBuffer, REQUEST_SIZE);
+
+    clearString(dma.requestBuffer, REQUEST_SIZE);
 
     // start listening to again
     HAL_UART_Receive_DMA(&uart, dma.requestBuffer, REQUEST_SIZE);

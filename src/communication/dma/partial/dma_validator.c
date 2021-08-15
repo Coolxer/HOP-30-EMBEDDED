@@ -7,14 +7,13 @@ uint8_t checkMessageTerminators()
 {
     uint8_t i = 0;
 
-    // just look for \r, because i mby i would be pressed to use \n later for commands seperator
-    for (; i < (REQUEST_SIZE - 2); i++)
+    for (; i < (REQUEST_SIZE - 1); i++)
     {
-        if (dma.requestBuffer[i] == '\r')
+        if (dma.requestBuffer[i] == COMMAND_END_TERMINATOR)
             return 0;
     }
 
-    if (dma.requestBuffer[REQUEST_SIZE - 2] != '\r' || dma.requestBuffer[REQUEST_SIZE - 1] != '\n')
+    if (dma.requestBuffer[REQUEST_SIZE - 1] != COMMAND_END_TERMINATOR)
         return 0;
 
     return 1;
