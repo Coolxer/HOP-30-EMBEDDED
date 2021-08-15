@@ -16,7 +16,7 @@
 enum AxisType stepper_getAxisType(Stepper *stepper);
 
 // stepper->info.name
-uint8_t *stepper_getName(Stepper *stepper);
+uint8_t stepper_getName(Stepper *stepper);
 
 // stepper->info.index
 uint8_t *stepper_getIndex(Stepper *stepper);

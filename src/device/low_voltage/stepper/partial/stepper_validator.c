@@ -39,6 +39,8 @@ uint8_t stepper_validateMove(Stepper *stepper, uint8_t *way, uint8_t *direction)
         return ERR.INVALID_DIRECTION_VALUE;
     else if (stepper_getState(stepper) == MOVING || stepper_getState(stepper) == PAUSED) // cannot move if motor is homing or moving or is paused right now
         return ERR.OPERATION_NOT_ALLOWED;
+    else if (stringEqual(VAL.LIMIT, way) && stepper_getName(stepper) == 'w') // w stepper cannot be hommed
+        return ERR.OPERATION_NOT_ALLOWED;
 
     return ERR.NO_ERROR;
 }

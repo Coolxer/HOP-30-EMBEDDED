@@ -7,7 +7,7 @@ enum AxisType stepper_getAxisType(Stepper *stepper)
     return stepper->info.axisType;
 }
 
-uint8_t *stepper_getName(Stepper *stepper)
+uint8_t stepper_getName(Stepper *stepper)
 {
     return stepper->info.name;
 }

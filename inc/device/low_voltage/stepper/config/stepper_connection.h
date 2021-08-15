@@ -8,6 +8,8 @@
 
 /**************** W STEPPER  ******************/
 
+#define W_NAME 'w'
+
 #define W_MASTER_TIMER TIM10
 #define W_SLAVE_TIMER TIM9
 
@@ -30,6 +32,9 @@
 /************* END OF W STEPPER  **************/
 
 /**************** X STEPPER  ******************/
+
+#define X_NAME 'x'
+
 #define X_MASTER_TIMER TIM13
 #define X_SLAVE_TIMER TIM12
 
@@ -53,6 +58,8 @@
 
 /**************** Y STEPPER  ******************/
 
+#define Y_NAME 'y'
+
 #define Y_MASTER_TIMER TIM4
 #define Y_SLAVE_TIMER TIM3
 
@@ -75,6 +82,8 @@
 /************* END OF Y STEPPER  **************/
 
 /**************** Z STEPPER  ******************/
+
+#define Z_NAME 'z'
 
 #define Z_MASTER_TIMER TIM2
 #define Z_SLAVE_TIMER TIM5
