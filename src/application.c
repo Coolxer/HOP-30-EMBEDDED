@@ -16,7 +16,7 @@ void application_setup()
 
     clock_manager_init(); // inits clocks
 
-    /// enables FPU service
+    /// enables FPU service (not working with that)
     //SCB->CPACR |= ((3 << 10 * 2) | (3 << 11 * 2));
 
     cmd_manager_init();    // creates opts & keys structures
