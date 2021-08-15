@@ -35,16 +35,16 @@ uint8_t devicesStates[12] = {0};
 void device_manager_init()
 {
     // create stepper with configs
-    stepper_init(&steppers[0], CIRCULAR, (uint8_t *)"w", W_MASTER_TIMER, W_SLAVE_TIMER, W_ALTERNATE_FUNCTION, W_CHANNEL, W_ITR, W_IRQ,
+    stepper_init(&steppers[0], CIRCULAR, (uint8_t *)"w", W_DIR_INV, W_MASTER_TIMER, W_SLAVE_TIMER, W_ALTERNATE_FUNCTION, W_CHANNEL, W_ITR, W_IRQ,
                  W_ENABLE_PORT, W_ENABLE_PIN, W_STEP_PORT, W_STEP_PIN, W_DIR_PORT, W_DIR_PIN);
 
-    stepper_init(&steppers[1], LINEAR, (uint8_t *)"x", X_MASTER_TIMER, X_SLAVE_TIMER, X_ALTERNATE_FUNCTION, X_CHANNEL, X_ITR, X_IRQ,
+    stepper_init(&steppers[1], LINEAR, (uint8_t *)"x", X_DIR_INV, X_MASTER_TIMER, X_SLAVE_TIMER, X_ALTERNATE_FUNCTION, X_CHANNEL, X_ITR, X_IRQ,
                  X_ENABLE_PORT, X_ENABLE_PIN, X_STEP_PORT, X_STEP_PIN, X_DIR_PORT, X_DIR_PIN);
 
-    stepper_init(&steppers[2], LINEAR, (uint8_t *)"y", Y_MASTER_TIMER, Y_SLAVE_TIMER, Y_ALTERNATE_FUNCTION, Y_CHANNEL, Y_ITR, Y_IRQ,
+    stepper_init(&steppers[2], LINEAR, (uint8_t *)"y", Y_DIR_INV, Y_MASTER_TIMER, Y_SLAVE_TIMER, Y_ALTERNATE_FUNCTION, Y_CHANNEL, Y_ITR, Y_IRQ,
                  Y_ENABLE_PORT, Y_ENABLE_PIN, Y_STEP_PORT, Y_STEP_PIN, Y_DIR_PORT, Y_DIR_PIN);
 
-    stepper_init(&steppers[3], LINEAR, (uint8_t *)"z", Z_MASTER_TIMER, Z_SLAVE_TIMER, Z_ALTERNATE_FUNCTION, Z_CHANNEL, Z_ITR, Z_IRQ,
+    stepper_init(&steppers[3], LINEAR, (uint8_t *)"z", Z_DIR_INV, Z_MASTER_TIMER, Z_SLAVE_TIMER, Z_ALTERNATE_FUNCTION, Z_CHANNEL, Z_ITR, Z_IRQ,
                  Z_ENABLE_PORT, Z_ENABLE_PIN, Z_STEP_PORT, Z_STEP_PIN, Z_DIR_PORT, Z_DIR_PIN);
 
     // create endstops with configs

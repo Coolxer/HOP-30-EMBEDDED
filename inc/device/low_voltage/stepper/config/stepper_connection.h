@@ -25,6 +25,8 @@
 #define W_DIR_PORT GPIOB
 #define W_DIR_PIN GPIO_PIN_9
 
+#define W_DIR_INV 1
+
 /************* END OF W STEPPER  **************/
 
 /**************** X STEPPER  ******************/
@@ -44,6 +46,8 @@
 
 #define X_DIR_PORT GPIOA
 #define X_DIR_PIN GPIO_PIN_7
+
+#define X_DIR_INV 0
 
 /************* END OF X STEPPER  **************/
 
@@ -66,6 +70,8 @@
 #define Y_DIR_PORT GPIOA
 #define Y_DIR_PIN GPIO_PIN_9
 
+#define Y_DIR_INV 0
+
 /************* END OF Y STEPPER  **************/
 
 /**************** Z STEPPER  ******************/
@@ -86,6 +92,8 @@
 
 #define Z_DIR_PORT GPIOB
 #define Z_DIR_PIN GPIO_PIN_4
+
+#define Z_DIR_INV 1
 
 /************* END OF Z STEPPER  **************/
 

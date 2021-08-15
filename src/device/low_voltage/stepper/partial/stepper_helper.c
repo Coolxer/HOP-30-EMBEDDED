@@ -160,15 +160,20 @@ uint32_t stepper_getProgress(Stepper *stepper)
 
 enum State stepper_getState(Stepper *stepper)
 {
-    return stepper->state;
+    return stepper->info.state;
 }
 
 void stepper_setState(Stepper *stepper, enum State state)
 {
-    stepper->state = state;
+    stepper->info.state = state;
 }
 
 uint8_t stepper_getDirection(Stepper *stepper)
 {
     return stepper->movement.direction;
+}
+
+uint8_t stepper_isDirectionInverted(Stepper *stepper)
+{
+    return stepper->info.invertedDirection;
 }

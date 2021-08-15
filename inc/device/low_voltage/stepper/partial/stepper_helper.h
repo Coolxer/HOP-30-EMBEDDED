@@ -89,10 +89,14 @@ uint32_t stepper_getProgress(Stepper *stepper);
 
 /* END OF HARDWARE SECTION */
 
-// stepper->state
+// stepper->info.state
 enum State stepper_getState(Stepper *stepper);
 void stepper_setState(Stepper *stepper, enum State state);
 
+// stepper->movement.direction
 uint8_t stepper_getDirection(Stepper *stepper);
+
+// stepper->info.invertedDirection
+uint8_t stepper_isDirectionInverted(Stepper *stepper);
 
 #endif // STEPPER_HELPER_H

@@ -3,8 +3,6 @@
 
 #include "stm32f4xx_hal.h"
 
-#include "device/low_voltage/stepper/enum/state.h"
-
 #include "device/low_voltage/stepper/structure/stepper_hardware.h"
 #include "device/low_voltage/stepper/structure/stepper_info.h"
 
@@ -22,8 +20,6 @@ typedef struct
     Speed speed;
     Acceleration acceleration;
     Movement movement;
-
-    enum State state;
 
     Endstop *minEndstop;
     Endstop *maxEndstop;
