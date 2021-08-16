@@ -14,10 +14,11 @@
 #define COMMAND_END_TERMINATOR '#'
 
 #define REQUEST_SIZE 255
-#define MAX_SINGLE_REQUEST_SIZE 50
+#define SINGLE_REQUEST_SIZE 50
 #define MAX_BUFFER_REQUESTS 10
 
 #define RESPONSE_SIZE 32
-#define MAX_BUFFER_RESPONSES 10
+#define MAX_BUFFER_RESPONSES (MAX_BUFFER_REQUESTS + 10) // responses amount same as the requests, \
+                                                        // but there are additional 10 for devices callbacks (4 steppers and 6 endstops)
 
 #endif // COMMUNICATION_H

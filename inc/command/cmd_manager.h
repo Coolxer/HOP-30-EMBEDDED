@@ -13,7 +13,7 @@
 
 extern uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE];
 extern uint8_t awaitingResponsesAmount;
-extern uint8_t justRegisteredResponseIndex;
+extern uint8_t justRegisteredCallbackResponseIndex;
 extern uint8_t justSendedResponseIndex;
 
 extern volatile uint8_t SHUTDOWN_FLAG;

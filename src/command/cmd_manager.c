@@ -9,14 +9,14 @@
 #include "communication/connector.h"
 #include "command/request/request_manager.h"
 
-uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_SINGLE_REQUEST_SIZE] = {0};
+uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][SINGLE_REQUEST_SIZE] = {0};
 uint8_t registeredRequestsAmount = 0;
 uint8_t justRegisteredRequestIndex = 0;
 uint8_t justProcessedRequestIndex = 0;
 
 uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE] = {0};
 uint8_t awaitingResponsesAmount = 0;
-uint8_t justRegisteredResponseIndex = 0;
+uint8_t justRegisteredCallbackResponseIndex = MAX_BUFFER_REQUESTS + 1; // starts fo 11 (using only for callback)
 uint8_t justSendedResponseIndex = 0;
 
 volatile uint8_t SHUTDOWN_FLAG = 0;
@@ -32,7 +32,7 @@ void cmd_manager_init()
     uint8_t i = 0;
 
     for (i = 0; i < MAX_BUFFER_REQUESTS; i++)
-        clearString(REQUESTS[i], MAX_SINGLE_REQUEST_SIZE);
+        clearString(REQUESTS[i], SINGLE_REQUEST_SIZE);
 
     for (i = 0; i < MAX_BUFFER_RESPONSES; i++)
         clearString(RESPONSES[i], RESPONSE_SIZE);
@@ -42,7 +42,7 @@ void cmd_manager_delive(uint8_t *cmd)
 {
     uint8_t index = 0;
     uint8_t tempIndex = 0;
-    uint8_t tempRequest[MAX_SINGLE_REQUEST_SIZE] = {0};
+    uint8_t tempRequest[SINGLE_REQUEST_SIZE] = {0};
 
     for (; index < REQUEST_SIZE; index++)
     {
@@ -51,7 +51,7 @@ void cmd_manager_delive(uint8_t *cmd)
             if (tempIndex == 0 && (cmd[index] != 'i' || cmd[index + 1] != 'd' || cmd[index + 2] != 'x'))
                 break;
 
-            else if (tempIndex >= MAX_SINGLE_REQUEST_SIZE)
+            else if (tempIndex >= SINGLE_REQUEST_SIZE)
                 break;
 
             tempRequest[tempIndex] = cmd[index];
@@ -95,7 +95,7 @@ void cmd_manager_manage_requests()
         uint8_t *feedback = request_process(REQUESTS[i]);
 
         // clear Request
-        clearString(REQUESTS[i], MAX_SINGLE_REQUEST_SIZE);
+        clearString(REQUESTS[i], SINGLE_REQUEST_SIZE);
         registeredRequestsAmount--;
 
         // save Response

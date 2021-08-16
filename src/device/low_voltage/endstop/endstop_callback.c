@@ -1,5 +1,7 @@
 #include "device/low_voltage/endstop/partial/endstop_callback.h"
 
+#include <string.h>
+
 #include "command/response/response_builder.h"
 #include "communication/uart.h"
 
@@ -12,7 +14,7 @@
 #include "process/partial/process_operation.h"
 #include "process/process.h"
 
-#include "communication/connector.h"
+#include "command/cmd_manager.h"
 
 // [CALLED FROM MAIN LOOP]
 void endstopClickedCallback(Endstop *endstop)
@@ -38,7 +40,9 @@ void endstopClickedCallback(Endstop *endstop)
             else
                 stepper_stop(stepper);
 
-            connector_sendResponse(response_builder_buildFin(stepper_getIndex(stepper)));
+            justRegisteredCallbackResponseIndex = (justRegisteredCallbackResponseIndex < MAX_BUFFER_RESPONSES) ? justRegisteredCallbackResponseIndex + 1 : MAX_BUFFER_REQUESTS + 1;
+
+            strcpy((void *)RESPONSES[justRegisteredCallbackResponseIndex], response_builder_buildFin(stepper_getIndex(stepper)));
         }
     }
 }

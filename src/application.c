@@ -47,7 +47,13 @@ void application_close()
 void application_run()
 {
     application_loop();
-    application_close();                       // close the application
+    application_close(); // close the application
+
+    // wait until uart will be ready for transfer feedback
+    while (!TRANSFER_COMPLETE)
+    {
+    };
+
     connector_sendResponse(SHUTDOWN_RESPONSE); // sends "SHUTDOWNED" through UART after get "SHUTDOWN" command
 }
 
