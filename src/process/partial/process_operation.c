@@ -17,13 +17,12 @@ void process_init(uint8_t *index)
 
     hvd_switch(&TH_PHASE_MOTOR, ON);
 
-    stepper_run(X_STEPPER);
-    stepper_run(W_STEPPER);
-
     stepper_setIndex(X_STEPPER, index);
     stepper_setIndex(W_STEPPER, index);
-
     PROCESS_STATE = FORWARD;
+
+    stepper_run(X_STEPPER);
+    stepper_run(W_STEPPER);
 }
 
 void process_reverse()
