@@ -59,9 +59,11 @@ uint8_t *request_process(uint8_t *request)
     // STEP 7: VALIDATE REQUEST VALUES AND ENVIRONMENT STATES
     // STEP 8: EXECUTE COMMAND
 
+    Stepper *stepper = NULL;
+
     if (req.stepper)
     {
-        Stepper *stepper = device_manager_getStepper(args[0][1]);
+        stepper = device_manager_getStepper(args[0][1]);
 
         if (!stepper)
             return response_builder_buildErr(index, ERR.INVALID_STEPPER_VALUE);
@@ -142,7 +144,12 @@ uint8_t *request_process(uint8_t *request)
 
     // GIVE POSITIVE FEEDBACK
     if (req.type == LONG_TERM)
+    {
+        if (stepper)
+            stepper_setIndex(stepper, index);
+
         return response_builder_buildPas(index);
+    }
     else if (req.type == INSTANT)
         return response_builder_buildFin(index);
     else if (req.type == ANSWER)

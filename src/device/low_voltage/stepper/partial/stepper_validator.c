@@ -50,7 +50,7 @@ uint8_t stepper_validateMove(Stepper *stepper, uint8_t *way, uint8_t *direction)
     else if (stringEqual(VAL.LIMIT, way) && stepper_getName(stepper) == 'w') // w stepper cannot be hommed
         return ERR.OPERATION_NOT_ALLOWED;
 
-    else if (stepper->minEndstop != NULL && stepper->maxEndstop != NULL)
+    else if (stepper->minEndstop && stepper->maxEndstop)
     {
         uint8_t dir = convertStrToBoolean(direction);
 

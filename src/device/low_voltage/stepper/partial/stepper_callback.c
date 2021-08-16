@@ -21,6 +21,6 @@ void stepperFinishedCallback(Stepper *stepper)
     stepper_stop(stepper);
 
     justRegisteredCallbackResponseIndex = (justRegisteredCallbackResponseIndex < MAX_BUFFER_RESPONSES) ? justRegisteredCallbackResponseIndex + 1 : MAX_BUFFER_REQUESTS + 1;
-
-    strcpy((void *)RESPONSES[justRegisteredCallbackResponseIndex], response_builder_buildFin(stepper_getIndex(stepper)));
+    strcpy((void *)RESPONSES[justRegisteredCallbackResponseIndex], (void *)response_builder_buildFin(stepper_getIndex(stepper)));
+    awaitingResponsesAmount++;
 }

@@ -18,7 +18,7 @@ void stepper_setupGpio(Stepper *stepper)
     gpioEnable.Speed = GPIO_SPEED_FREQ_LOW;
 
     HAL_GPIO_Init((GPIO_TypeDef *)stepper->hardware.enablePort, &gpioEnable);
-    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.enablePort, stepper->hardware.enablePin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin((GPIO_TypeDef *)stepper->hardware.enablePort, stepper->hardware.enablePin, GPIO_PIN_RESET);
 
     /* setups gpio for step_pin */
     gpioStep.Pin = stepper->hardware.stepPin;
