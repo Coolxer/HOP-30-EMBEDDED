@@ -16,4 +16,6 @@ extern volatile enum ProcessState PROCESS_PREVIOUS_STATE;
 
 extern volatile uint8_t COOLANT_ENABLE;
 
+extern volatile uint8_t PROCESS_CONFIGURED;
+
 #endif // PROCESS_H

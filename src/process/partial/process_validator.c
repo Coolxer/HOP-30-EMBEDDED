@@ -22,6 +22,14 @@ uint8_t process_validateConfigure(uint8_t *direction, uint8_t *coolant)
     return ERR.NO_ERROR;
 }
 
+uint8_t process_validateInit()
+{
+    if (!PROCESS_CONFIGURED)
+        return ERR.PROCESS_NOT_CONFIGURED;
+
+    return ERR.NO_ERROR;
+}
+
 uint8_t process_validatePause()
 {
     if (PROCESS_STATE == FORWARD || PROCESS_STATE == BACKWARD)

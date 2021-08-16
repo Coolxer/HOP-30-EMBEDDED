@@ -7,7 +7,7 @@
 #include "device/low_voltage/stepper/partial/stepper_operation.h"
 #include "device/low_voltage/stepper/partial/stepper_configuration.h"
 
-void process_init(uint8_t *index)
+void process_init()
 {
     stepper_switch(X_STEPPER, ON);
     stepper_switch(W_STEPPER, ON);
@@ -17,9 +17,8 @@ void process_init(uint8_t *index)
 
     hvd_switch(&TH_PHASE_MOTOR, ON);
 
-    stepper_setIndex(X_STEPPER, index);
-    stepper_setIndex(W_STEPPER, index);
     PROCESS_STATE = FORWARD;
+    PROCESS_CONFIGURED = 0;
 
     stepper_run(X_STEPPER);
     stepper_run(W_STEPPER);

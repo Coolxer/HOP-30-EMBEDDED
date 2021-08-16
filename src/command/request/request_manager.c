@@ -147,6 +147,8 @@ uint8_t *request_process(uint8_t *request)
     {
         if (stepper)
             stepper_setIndex(stepper, index);
+        else
+            stepper_setIndex(X_STEPPER, index); // for process
 
         return response_builder_buildPas(index);
     }

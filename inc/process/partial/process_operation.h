@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void process_init(uint8_t *index);
+void process_init();
 void process_reverse();
 
 #endif // PROCESS_OPERATION_H

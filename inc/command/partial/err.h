@@ -49,7 +49,8 @@ typedef struct
 
         ENDSTOP_CLICKED,
 
-        OPERATION_NOT_ALLOWED;
+        OPERATION_NOT_ALLOWED,
+        PROCESS_NOT_CONFIGURED;
 } err;
 
 extern err ERR;

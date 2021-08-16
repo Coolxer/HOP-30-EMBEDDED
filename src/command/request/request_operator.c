@@ -57,7 +57,7 @@ Request request_operate(uint8_t *operation)
         return request_init(INSTANT, KEY.DIRECTION, KEY.COOLANT, EMPTY_STRING, 2, &process_validateConfigure, &process_configure, 2, NULL, NULL);
 
     else if (stringEqual(OPT.INIT_PROCESS, operation))
-        return request_init(INSTANT, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, NULL, &process_init, 0, NULL, NULL);
+        return request_init(LONG_TERM, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, &process_validateInit, &process_init, 0, NULL, NULL);
 
     else if (stringEqual(OPT.PAUSE_PROCESS, operation))
         return request_init(INSTANT, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, &process_validatePause, &process_pause, 0, NULL, NULL);

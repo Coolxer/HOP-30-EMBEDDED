@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 uint8_t process_validateConfigure(uint8_t *direction, uint8_t *coolant);
+uint8_t process_validateInit();
 
 uint8_t process_validatePause();
 uint8_t process_validateResume();
