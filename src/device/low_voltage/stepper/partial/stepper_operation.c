@@ -27,13 +27,6 @@ void stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
     float road = stringEqual(way, VAL.LIMIT) ? 0.0f : convertStrToFloat(way);
     uint8_t dir = convertStrToBoolean(direction);
 
-    if (stepper->minEndstop != NULL && stepper->maxEndstop != NULL)
-    {
-        if ((!dir && endstop_isClicked(stepper->minEndstop)) ||
-            (dir && endstop_isClicked(stepper->maxEndstop)))
-            return;
-    }
-
     if (road > 0.0f)
     {
         stepper_setMoveType(stepper, PRECISED);

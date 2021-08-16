@@ -55,9 +55,11 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
     // in RAISING if speed goes to target or over
     // then need to align it, and set to CONSTANT
     // there is also invert of acceleration and calculated required steps
-    if (newSpeed >= stepper_stepper_getTargetSpeed(stepper))
+    float targetSpeed = stepper_getTargetSpeed(stepper);
+
+    if (newSpeed >= targetSpeed)
     {
-        newSpeed = stepper_stepper_getTargetSpeed(stepper);
+        newSpeed = targetSpeed;
         stepper_setSpeedState(stepper, CONSTANT);
 
         // deceleration have sense only in PRECISED move, => then need to know how many steps acceleration takes

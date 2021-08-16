@@ -47,6 +47,8 @@ typedef struct
         NO_COOLANT_KEY,
         INVALID_COOLANT_VALUE,
 
+        ENDSTOP_CLICKED,
+
         OPERATION_NOT_ALLOWED;
 } err;
 

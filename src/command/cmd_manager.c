@@ -16,6 +16,7 @@ uint8_t justProcessedRequestIndex = 0;
 
 uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE] = {0};
 uint8_t awaitingResponsesAmount = 0;
+uint8_t justRegisteredResponseIndex = 0;
 uint8_t justSendedResponseIndex = 0;
 
 volatile uint8_t SHUTDOWN_FLAG = 0;

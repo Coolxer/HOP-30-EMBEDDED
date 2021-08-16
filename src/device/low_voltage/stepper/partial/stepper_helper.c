@@ -97,7 +97,7 @@ void stepper_setCurrentSpeed(Stepper *stepper, float speed)
         stepper_setSpeedState(stepper, RAISING);
 }
 
-float stepper_stepper_getTargetSpeed(Stepper *stepper)
+float stepper_getTargetSpeed(Stepper *stepper)
 {
     return stepper->speed.target;
 }

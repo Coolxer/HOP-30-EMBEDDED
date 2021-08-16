@@ -59,7 +59,7 @@ float stepper_getCurrentSpeed(Stepper *stepper);
 void stepper_setCurrentSpeed(Stepper *stepper, float speed);
 
 // stepper->speed.current
-float stepper_stepper_getTargetSpeed(Stepper *stepper);
+float stepper_getTargetSpeed(Stepper *stepper);
 void stepper_setTargetSpeed(Stepper *stepper, float speed);
 
 // stepper->speed.lastTimeUpdate
