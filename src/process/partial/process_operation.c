@@ -7,6 +7,8 @@
 #include "device/low_voltage/stepper/partial/stepper_operation.h"
 #include "device/low_voltage/stepper/partial/stepper_configuration.h"
 
+#include "device/low_voltage/stepper/partial/stepper_calculator.h"
+
 void process_init()
 {
     stepper_switch(X_STEPPER, ON);
@@ -29,8 +31,8 @@ void process_reverse()
     stepper_changeDirectionImmediately(X_STEPPER);
     stepper_changeDirectionImmediately(W_STEPPER);
 
-    stepper_setCurrentSpeed(X_STEPPER, 0.0f);
-    stepper_setCurrentSpeed(W_STEPPER, 0.0f);
+    stepper_setCurrentSpeed(X_STEPPER, MINIMUM_HANDLED_SPEED);
+    stepper_setCurrentSpeed(W_STEPPER, MINIMUM_HANDLED_SPEED);
 
     PROCESS_STATE = BACKWARD;
 }

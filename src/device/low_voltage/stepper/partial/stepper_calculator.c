@@ -6,14 +6,16 @@
 #include "device/low_voltage/stepper/config/stepper_calculation.h"
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 
+float MINIMUM_HANDLED_SPEED = 0.00025f; // [160 MHz]
+                                        // 0.000061f [40 MHz]
+
 Speed_params convertSpeedToRegisters(enum AxisType axisType, float speed)
 {
     Speed_params regs = {0};
     float arr = 0.0f; // autoreload
     float stepsPerSecond = 0.0f;
 
-    // if (speed < 0.000061f) // cannot handle speed less than this value (reqister limit) [FOR 40 MHz]
-    if (speed < 0.00025f) // cannot handle speed less than this value (reqister limit)
+    if (speed < MINIMUM_HANDLED_SPEED)
         return regs;
 
     // convert mm/s to steps/s

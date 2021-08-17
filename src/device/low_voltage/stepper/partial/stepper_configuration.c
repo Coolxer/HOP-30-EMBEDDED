@@ -27,7 +27,7 @@ void stepper_configure(Stepper *stepper, uint8_t *speed, uint8_t *acceleration)
     if (acc > 0.0f)
     {
         stepper_setCurrentAcceleration(stepper, spd / 1000.0f); // save acceleration in milliseconds instead of seconds
-        stepper_updateSpeed(stepper, 0.0f);
+        stepper_updateSpeed(stepper, MINIMUM_HANDLED_SPEED);
         stepper_setSpeedType(stepper, DYNAMIC);
     }
     else
@@ -75,7 +75,7 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
 
 void stepper_resetSpeed(Stepper *stepper)
 {
-    stepper_setCurrentSpeed(stepper, 0.0f);
+    stepper_setCurrentSpeed(stepper, MINIMUM_HANDLED_SPEED);
 
     float acceleration = stepper_getCurrentAcceleration(stepper);
     if (acceleration < 0.0f)
