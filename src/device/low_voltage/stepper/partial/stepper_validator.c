@@ -16,8 +16,10 @@ uint8_t stepper_validateConfigure(Stepper *stepper, uint8_t *speed, uint8_t *acc
         return ERR.INVALID_SPEED_VALUE;
     else if (validate_key(VAL.NONE, acceleration) == ERR.ERROR && validate_float(acceleration) == ERR.ERROR)
         return ERR.INVALID_ACCELERATION_VALUE;
-    else if (stepper_getState(stepper) == MOVING || stepper_getState(stepper) == PAUSED)
-        return ERR.OPERATION_NOT_ALLOWED;
+    else if (stepper_getState(stepper) == MOVING)
+        return ERR.STEPPER_ALREADY_RUNNING;
+    else if (stepper_getState(stepper) == PAUSED)
+        return ERR.STEPPER_ALREADY_PAUSED;
 
     return ERR.NO_ERROR;
 }
@@ -28,7 +30,7 @@ uint8_t stepper_validateSwitch(Stepper *stepper, uint8_t *state)
         return ERR.INVALID_STATE_VALUE;
 
     else if (stepper_getState(stepper) == MOVING)
-        return ERR.OPERATION_NOT_ALLOWED;
+        return ERR.STEPPER_ALREADY_RUNNING;
 
     return ERR.NO_ERROR;
 }
@@ -42,13 +44,13 @@ uint8_t stepper_validateMove(Stepper *stepper, uint8_t *way, uint8_t *direction)
         return ERR.INVALID_DIRECTION_VALUE;
 
     else if (!(stepper_getTargetSpeed(stepper) < 0.0f || stepper_getTargetSpeed(stepper) > 0.0f)) // cannot move if speed is not set (0.0f)
-        return ERR.OPERATION_NOT_ALLOWED;
+        return ERR.STEPPER_SPEED_NOT_SET;
 
-    else if (stepper_getState(stepper) == MOVING || stepper_getState(stepper) == PAUSED) // cannot move if motor is homing or moving or is paused right now
-        return ERR.OPERATION_NOT_ALLOWED;
+    else if (stepper_getState(stepper) == MOVING) // cannot move if motor is homing or moving or is paused right now
+        return ERR.STEPPER_ALREADY_RUNNING;
 
-    else if (stringEqual(VAL.LIMIT, way) && stepper_getName(stepper) == 'w') // w stepper cannot be hommed
-        return ERR.OPERATION_NOT_ALLOWED;
+    else if (stepper_getState(stepper) == PAUSED)
+        return ERR.STEPPER_ALREADY_PAUSED;
 
     else if (stepper->minEndstop && stepper->maxEndstop)
     {
@@ -56,7 +58,7 @@ uint8_t stepper_validateMove(Stepper *stepper, uint8_t *way, uint8_t *direction)
 
         if ((!dir && endstop_isClicked(stepper->minEndstop)) ||
             (dir && endstop_isClicked(stepper->maxEndstop)))
-            return ERR.ENDSTOP_CLICKED;
+            return ERR.LIMIT_SWITCH_REACHED;
     }
 
     return ERR.NO_ERROR;
@@ -64,24 +66,24 @@ uint8_t stepper_validateMove(Stepper *stepper, uint8_t *way, uint8_t *direction)
 
 uint8_t stepper_validatePause(Stepper *stepper)
 {
-    if (stepper_getState(stepper) == MOVING)
-        return ERR.NO_ERROR;
+    if (stepper_getState(stepper) != MOVING)
+        return ERR.STEPPER_NOT_RUNNING;
 
-    return ERR.OPERATION_NOT_ALLOWED;
+    return ERR.NO_ERROR;
 }
 
 uint8_t stepper_validateResume(Stepper *stepper)
 {
-    if (stepper_getState(stepper) == PAUSED)
-        return ERR.NO_ERROR;
+    if (stepper_getState(stepper) != PAUSED)
+        return ERR.STEPPER_NOT_PAUSED;
 
-    return ERR.OPERATION_NOT_ALLOWED;
+    return ERR.NO_ERROR;
 }
 
 uint8_t stepper_validateStop(Stepper *stepper)
 {
-    if (stepper_getState(stepper) == MOVING || stepper_getState(stepper) == PAUSED)
-        return ERR.NO_ERROR;
+    if (stepper_getState(stepper) != MOVING && stepper_getState(stepper) != PAUSED)
+        return ERR.STEPPER_NOT_RUNNING_OR_PAUSED;
 
-    return ERR.OPERATION_NOT_ALLOWED;
+    return ERR.NO_ERROR;
 }

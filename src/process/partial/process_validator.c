@@ -16,8 +16,16 @@ uint8_t process_validateConfigure(uint8_t *direction, uint8_t *coolant)
     else if (validate_boolean(coolant) == ERR.ERROR)
         return ERR.INVALID_COOLANT_VALUE;
 
-    else if (stepper_getState(X_STEPPER) == MOVING || stepper_getState(W_STEPPER) == MOVING || PROCESS_STATE != NONE)
-        return ERR.OPERATION_NOT_ALLOWED;
+    else if (PROCESS_STATE != NONE)
+        return ERR.PROCESS_ALREADY_RUNNING;
+
+    uint8_t i = 0;
+
+    for (; i < STEPPERS_AMOUNT; i++)
+    {
+        if (stepper_getState(&steppers[i]) == MOVING)
+            return ERR.STEPPER_ALREADY_RUNNING;
+    }
 
     return ERR.NO_ERROR;
 }
@@ -32,24 +40,24 @@ uint8_t process_validateInit()
 
 uint8_t process_validatePause()
 {
-    if (PROCESS_STATE == FORWARD || PROCESS_STATE == BACKWARD)
-        return ERR.NO_ERROR;
+    if (PROCESS_STATE != FORWARD && PROCESS_STATE != BACKWARD)
+        return ERR.PROCESS_NOT_RUNNING;
 
-    return ERR.OPERATION_NOT_ALLOWED;
+    return ERR.NO_ERROR;
 }
 
 uint8_t process_validateResume()
 {
-    if (PROCESS_STATE == HALTED)
-        return ERR.NO_ERROR;
+    if (PROCESS_STATE != HALTED)
+        return ERR.PROCESS_NOT_HALTED;
 
-    return ERR.OPERATION_NOT_ALLOWED;
+    return ERR.NO_ERROR;
 }
 
 uint8_t process_validateStop()
 {
-    if (PROCESS_STATE != NONE)
-        return ERR.NO_ERROR;
+    if (PROCESS_STATE == NONE)
+        return ERR.PROCESS_NOT_RUNNING;
 
-    return ERR.OPERATION_NOT_ALLOWED;
+    return ERR.NO_ERROR;
 }

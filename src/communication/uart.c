@@ -11,7 +11,7 @@ void uart_setupGpio()
 	__HAL_RCC_USART2_CLK_ENABLE();
 #endif
 
-	uartGPIO.Pin = USART2_TX | USART2_RX;
+	uartGPIO.Pin = UART2_TX | UART2_RX;
 	uartGPIO.Mode = GPIO_MODE_AF_PP;
 	uartGPIO.Pull = GPIO_PULLUP;
 	uartGPIO.Speed = GPIO_SPEED_FREQ_VERY_HIGH;

@@ -11,6 +11,8 @@ enum ErrorType
 
 typedef struct
 {
+    // STRUCTURE ERRORS
+
     uint8_t NO_ERROR,
         ERROR,
         NO_PARAMS,
@@ -47,10 +49,24 @@ typedef struct
         NO_COOLANT_KEY,
         INVALID_COOLANT_VALUE,
 
-        ENDSTOP_CLICKED,
+        // ENVIRONMENT STATE ERRORS
 
-        OPERATION_NOT_ALLOWED,
-        PROCESS_NOT_CONFIGURED;
+        LIMIT_SWITCH_REACHED,
+
+        STEPPER_SPEED_NOT_SET,
+        STEPPER_NOT_RUNNING,
+        STEPPER_NOT_PAUSED,
+        STEPPER_NOT_RUNNING_OR_PAUSED,
+
+        STEPPER_ALREADY_RUNNING,
+        STEPPER_ALREADY_PAUSED,
+
+        PROCESS_NOT_CONFIGURED,
+        PROCESS_NOT_HALTED,
+        PROCESS_NOT_RUNNING,
+        PROCESS_ALREADY_RUNNING,
+
+        OPERATION_NOT_ALLOWED;
 } err;
 
 extern err ERR;

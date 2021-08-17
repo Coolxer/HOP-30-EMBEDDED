@@ -19,7 +19,6 @@ extern uint8_t justSendedResponseIndex;
 extern volatile uint8_t SHUTDOWN_FLAG;
 
 void cmd_manager_init();
-
 void cmd_manager_delive(uint8_t *cmd);
 
 /* PRIVATE */ // void cmd_manager_manage_requests();
@@ -27,6 +26,6 @@ void cmd_manager_delive(uint8_t *cmd);
 
 void cmd_manager_process();
 
-uint8_t cmd_manager_getErrorByKey(uint8_t *key, enum ErrorType errorType);
+uint8_t cmd_manager_getStructureErrorByKey(uint8_t *key, enum ErrorType errorType);
 
 #endif //CMD_MANAGER_H

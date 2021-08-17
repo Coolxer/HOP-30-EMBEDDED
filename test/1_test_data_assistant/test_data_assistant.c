@@ -9,7 +9,7 @@
 void setUp();
 void tearDown();
 
-void test_contains_only_digits_should_give_false()
+void test_contains_only_digits_should_give_0()
 {
     TEST_ASSERT_EQUAL_UINT8(0, containsOnlyDigits((void *)" "));
     TEST_ASSERT_EQUAL_UINT8(0, containsOnlyDigits((void *)"a"));
@@ -17,7 +17,7 @@ void test_contains_only_digits_should_give_false()
     TEST_ASSERT_EQUAL_UINT8(0, containsOnlyDigits((void *)"a1"));
 }
 
-void test_contains_only_digits_should_give_true()
+void test_contains_only_digits_should_give_1()
 {
     TEST_ASSERT_EQUAL_UINT8(1, containsOnlyDigits((void *)"0"));
     TEST_ASSERT_EQUAL_UINT8(1, containsOnlyDigits((void *)"1"));
@@ -32,8 +32,8 @@ int main()
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_contains_only_digits_should_give_false);
-    RUN_TEST(test_contains_only_digits_should_give_true);
+    RUN_TEST(test_contains_only_digits_should_give_0);
+    RUN_TEST(test_contains_only_digits_should_give_1);
 
     UNITY_END();
 }

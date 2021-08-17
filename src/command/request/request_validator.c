@@ -36,7 +36,7 @@ uint8_t request_validateRequestKeys(uint8_t ***args, uint8_t *requiredKeys[], ui
     for (; i < requiredKeysAmount; i++)
     {
         if (validate_key(requiredKeys[i], args[i][0]) == ERR.ERROR)
-            return cmd_manager_getErrorByKey(requiredKeys[i], KEY_ERROR);
+            return cmd_manager_getStructureErrorByKey(requiredKeys[i], KEY_ERROR);
     }
 
     return ERR.NO_ERROR;

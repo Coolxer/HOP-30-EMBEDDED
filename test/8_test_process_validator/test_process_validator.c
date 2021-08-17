@@ -22,7 +22,7 @@ void tearDown();
 
 /************************** validateConfigure() ****************************/
 
-void test_process_validateConfigure_should_give_error_if_steppers_running()
+void test_process_validateConfigure_should_give_error()
 {
     PROCESS_STATE = NONE;
     PROCESS_PREVIOUS_STATE = NONE;
@@ -30,26 +30,20 @@ void test_process_validateConfigure_should_give_error_if_steppers_running()
     stepper_setState(X_STEPPER, MOVING);
     stepper_setState(W_STEPPER, MOVING);
 
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0", (void *)"0\0"));
-}
+    TEST_ASSERT_EQUAL_UINT8(ERR.STEPPER_ALREADY_RUNNING, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 
-void test_process_validateConfigure_should_give_error_if_process_running()
-{
     PROCESS_STATE = FORWARD;
 
-    stepper_setState(X_STEPPER, LOW);
-    stepper_setState(W_STEPPER, LOW);
-
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0", (void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_ALREADY_RUNNING, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 
     PROCESS_STATE = BACKWARD;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0", (void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_ALREADY_RUNNING, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 
     PROCESS_STATE = HALTED;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateConfigure((void *)"0\0", (void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_ALREADY_RUNNING, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 }
 
-void test_process_validateConfigure_should_give_error_no_error()
+void test_process_validateConfigure_should_give_no_error()
 {
     PROCESS_STATE = NONE;
 
@@ -59,15 +53,30 @@ void test_process_validateConfigure_should_give_error_no_error()
     TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 }
 
-/************************** validatePause() ****************************/
-
-void test_process_validatePause_should_give_error_if_process_is_not_running()
+/************************** validateInit() ****************************/
+void test_process_validateInit_should_give_error()
 {
     PROCESS_STATE = NONE;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validatePause());
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_NOT_CONFIGURED, process_validateInit());
+}
+
+void test_process_validateInit_should_give_no_error()
+{
+    PROCESS_STATE = NONE;
+    PROCESS_CONFIGURED = 1;
+
+    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateInit());
+}
+
+/************************** validatePause() ****************************/
+
+void test_process_validatePause_should_give_error()
+{
+    PROCESS_STATE = NONE;
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_NOT_RUNNING, process_validatePause());
 
     PROCESS_STATE = HALTED;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validatePause());
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_NOT_RUNNING, process_validatePause());
 }
 
 void test_process_validatePause_should_give_no_error()
@@ -81,16 +90,16 @@ void test_process_validatePause_should_give_no_error()
 
 /************************** validateResume() ****************************/
 
-void test_process_validateResume_should_give_error_if_process_is_not_paused()
+void test_process_validateResume_should_give_error()
 {
     PROCESS_STATE = NONE;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateResume());
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_NOT_HALTED, process_validateResume());
 
     PROCESS_STATE = FORWARD;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateResume());
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_NOT_HALTED, process_validateResume());
 
     PROCESS_STATE = BACKWARD;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateResume());
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_NOT_HALTED, process_validateResume());
 }
 
 void test_process_validateResume_should_give_no_error()
@@ -101,10 +110,10 @@ void test_process_validateResume_should_give_no_error()
 
 /************************** validateStop() ****************************/
 
-void test_process_validateStop_should_give_error_if_process_not_initialized()
+void test_process_validateStop_should_give_error()
 {
     PROCESS_STATE = NONE;
-    TEST_ASSERT_EQUAL_UINT8(ERR.OPERATION_NOT_ALLOWED, process_validateStop());
+    TEST_ASSERT_EQUAL_UINT8(ERR.PROCESS_NOT_RUNNING, process_validateStop());
 }
 
 void test_process_validateStop_should_give_no_error()
@@ -126,17 +135,16 @@ int main()
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_process_validateConfigure_should_give_error_if_steppers_running);
-    RUN_TEST(test_process_validateConfigure_should_give_error_if_process_running);
-    RUN_TEST(test_process_validateConfigure_should_give_error_no_error);
+    RUN_TEST(test_process_validateConfigure_should_give_error);
+    RUN_TEST(test_process_validateConfigure_should_give_no_error);
 
-    RUN_TEST(test_process_validatePause_should_give_error_if_process_is_not_running);
+    RUN_TEST(test_process_validatePause_should_give_error);
     RUN_TEST(test_process_validatePause_should_give_no_error);
 
-    RUN_TEST(test_process_validateResume_should_give_error_if_process_is_not_paused);
+    RUN_TEST(test_process_validateResume_should_give_error);
     RUN_TEST(test_process_validateResume_should_give_no_error);
 
-    RUN_TEST(test_process_validateStop_should_give_error_if_process_not_initialized);
+    RUN_TEST(test_process_validateStop_should_give_error);
     RUN_TEST(test_process_validateStop_should_give_no_error);
 
     UNITY_END();

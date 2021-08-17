@@ -9,11 +9,13 @@
 #include "communication/connector.h"
 #include "command/request/request_manager.h"
 
+// REQUESTS
 uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][SINGLE_REQUEST_SIZE] = {0};
 uint8_t registeredRequestsAmount = 0;
 uint8_t justRegisteredRequestIndex = 0;
 uint8_t justProcessedRequestIndex = 0;
 
+// RESPONSES
 uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE] = {0};
 uint8_t awaitingResponsesAmount = 0;
 uint8_t justRegisteredCallbackResponseIndex = MAX_BUFFER_REQUESTS + 1; // starts fo 11 (using only for callback)
@@ -134,7 +136,7 @@ void cmd_manager_process()
     cmd_manager_manage_responses();
 }
 
-uint8_t cmd_manager_getErrorByKey(uint8_t *key, enum ErrorType errorType)
+uint8_t cmd_manager_getStructureErrorByKey(uint8_t *key, enum ErrorType errorType)
 {
     if (stringEqual(key, KEY.INDEX))
         return errorType == KEY_ERROR ? ERR.NO_INDEX_KEY : ERR.INVALID_INDEX_VALUE;

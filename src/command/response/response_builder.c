@@ -1,8 +1,8 @@
 #include "command/response/response_builder.h"
 
 #include <stdio.h>
-#include "null.h"
 
+#include "null.h"
 #include "communication/config/communication.h"
 
 uint8_t response[RESPONSE_SIZE];

@@ -25,7 +25,6 @@ void stepper_switch(Stepper *stepper, uint8_t *state)
 void stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
 {
     float road = stringEqual(way, VAL.LIMIT) ? 0.0f : convertStrToFloat(way);
-    uint8_t dir = convertStrToBoolean(direction);
 
     if (road > 0.0f)
     {
