@@ -60,14 +60,14 @@ void test_request_checkGeneralThings_should_give_no_index_key_error()
     TEST_ASSERT_EQUAL_UINT8(ERR.NO_INDEX_KEY, request_checkGeneralThings(args, records));
 }
 
-void test_request_checkGeneralThings_should_give_invalid_index_value_error()
+void test_request_checkGeneralThings_should_give_INCORRECT_INDEX_VALUE_error()
 {
     uint8_t data[] = "idx=ab|spp=12|spd=1|@";
     uint8_t records = 0;
 
     uint8_t ***args = request_explode(data, &records);
 
-    TEST_ASSERT_EQUAL_UINT8(ERR.INVALID_INDEX_VALUE, request_checkGeneralThings(args, records));
+    TEST_ASSERT_EQUAL_UINT8(ERR.INCORRECT_INDEX_VALUE, request_checkGeneralThings(args, records));
 }
 
 void test_request_checkGeneralThings_should_give_no_operation_key_error()
@@ -87,7 +87,7 @@ void test_request_checkGeneralThings_should_give_no_error()
 
     uint8_t ***args = request_explode(data, &records);
 
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, request_checkGeneralThings(args, records));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, request_checkGeneralThings(args, records));
 }
 
 /************************** validateKeys() ****************************/
@@ -121,7 +121,7 @@ void test_request_validate_keys_shoud_give_no_error()
 
     request.requiredKeysAmount = 3;
 
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, request_validateRequestKeys(args, request.requiredKeys, request.requiredKeysAmount));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, request_validateRequestKeys(args, request.requiredKeys, request.requiredKeysAmount));
 }
 
 int main()
@@ -135,7 +135,7 @@ int main()
     RUN_TEST(test_request_checkGeneralThings_should_give_one_param_only_error);
     RUN_TEST(test_request_checkGeneralThings_should_give_to_many_params_error);
     RUN_TEST(test_request_checkGeneralThings_should_give_no_index_key_error);
-    RUN_TEST(test_request_checkGeneralThings_should_give_invalid_index_value_error);
+    RUN_TEST(test_request_checkGeneralThings_should_give_INCORRECT_INDEX_VALUE_error);
     RUN_TEST(test_request_checkGeneralThings_should_give_no_operation_key_error);
     RUN_TEST(test_request_checkGeneralThings_should_give_no_error);
 

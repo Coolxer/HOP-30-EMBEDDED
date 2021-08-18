@@ -27,7 +27,7 @@ uint8_t *request_process(uint8_t *request)
     // STEP 2: GENERAL VALIDATION (RECORDS, INDEX, OPERATION CHECKS)
     uint8_t code = request_checkGeneralThings(args, records);
 
-    if (code != ERR.NO_ERROR)
+    if (code != CORRECT)
         return response_builder_buildErr(ZERO_INDEX, code);
 
     // STEP 3: GET INDEX AND OPERATION TYPE
@@ -45,14 +45,14 @@ uint8_t *request_process(uint8_t *request)
     Request req = request_operate(operation);
 
     if (req.type != LONG_TERM && req.type != INSTANT && req.type != ANSWER)
-        return response_builder_buildErr(index, ERR.INVALID_OPERATION_VALUE);
+        return response_builder_buildErr(index, ERR.INCORRECT_OPERATION_VALUE);
 
     // STEP 6: VALIDATE REQUEST KEYS
     if (req.requiredKeysAmount > 0)
     {
         code = request_validateRequestKeys(args, req.requiredKeys, req.requiredKeysAmount);
 
-        if (code != ERR.NO_ERROR)
+        if (code != CORRECT)
             return response_builder_buildErr(index, code);
     }
 
@@ -66,30 +66,30 @@ uint8_t *request_process(uint8_t *request)
         stepper = device_manager_getStepper(args[0][1]);
 
         if (!stepper)
-            return response_builder_buildErr(index, ERR.INVALID_STEPPER_VALUE);
+            return response_builder_buildErr(index, ERR.INCORRECT_STEPPER_VALUE);
 
         switch (req.numberOfValues)
         {
         case 0:
-            code = (req.validateFunction) ? req.validateFunction(stepper) : ERR.NO_ERROR;
+            code = (req.validateFunction) ? req.validateFunction(stepper) : CORRECT;
 
-            if (code == ERR.NO_ERROR)
+            if (code == CORRECT)
                 req.executeFunction(stepper);
 
             break;
 
         case 1:
-            code = (req.validateFunction) ? req.validateFunction(stepper, args[1][1]) : ERR.NO_ERROR;
+            code = (req.validateFunction) ? req.validateFunction(stepper, args[1][1]) : CORRECT;
 
-            if (code == ERR.NO_ERROR)
+            if (code == CORRECT)
                 req.executeFunction(stepper, args[1][1]);
 
             break;
 
         case 2:
-            code = (req.validateFunction) ? req.validateFunction(stepper, args[1][1], args[2][1]) : ERR.NO_ERROR;
+            code = (req.validateFunction) ? req.validateFunction(stepper, args[1][1], args[2][1]) : CORRECT;
 
-            if (code == ERR.NO_ERROR)
+            if (code == CORRECT)
                 req.executeFunction(stepper, args[1][1], args[2][1]);
 
             break;
@@ -100,9 +100,9 @@ uint8_t *request_process(uint8_t *request)
     }
     else if (req.hvd)
     {
-        code = (req.validateFunction) ? req.validateFunction(req.hvd, args[1][1]) : ERR.NO_ERROR;
+        code = (req.validateFunction) ? req.validateFunction(req.hvd, args[1][1]) : CORRECT;
 
-        if (code == ERR.NO_ERROR)
+        if (code == CORRECT)
             req.executeFunction(req.hvd, args[1][1]);
     }
     else
@@ -110,25 +110,25 @@ uint8_t *request_process(uint8_t *request)
         switch (req.numberOfValues)
         {
         case 0:
-            code = (req.validateFunction) ? req.validateFunction() : ERR.NO_ERROR;
+            code = (req.validateFunction) ? req.validateFunction() : CORRECT;
 
-            if (code == ERR.NO_ERROR)
+            if (code == CORRECT)
                 req.executeFunction();
 
             break;
 
         case 1:
-            code = (req.validateFunction) ? req.validateFunction(args[1][1]) : ERR.NO_ERROR;
+            code = (req.validateFunction) ? req.validateFunction(args[1][1]) : CORRECT;
 
-            if (code == ERR.NO_ERROR)
+            if (code == CORRECT)
                 req.executeFunction(args[1][1]);
 
             break;
 
         case 2:
-            code = (req.validateFunction) ? req.validateFunction(args[1][1], args[2][1]) : ERR.NO_ERROR;
+            code = (req.validateFunction) ? req.validateFunction(args[1][1], args[2][1]) : CORRECT;
 
-            if (code == ERR.NO_ERROR)
+            if (code == CORRECT)
                 req.executeFunction(args[1][1], args[2][1]);
 
             break;
@@ -139,7 +139,7 @@ uint8_t *request_process(uint8_t *request)
     }
 
     // check if there was an error, just send it
-    if (code != ERR.NO_ERROR)
+    if (code != CORRECT)
         return response_builder_buildErr(index, code);
 
     // GIVE POSITIVE FEEDBACK

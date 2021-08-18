@@ -18,47 +18,47 @@ void tearDown(); // default release function
 
 void test_validate_boolean_should_give_error()
 {
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)"\0"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)" "));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)"."));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)"a"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)"-1"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_boolean((uint8_t *)"5"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_boolean((uint8_t *)"\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_boolean((uint8_t *)" "));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_boolean((uint8_t *)"."));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_boolean((uint8_t *)"a"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_boolean((uint8_t *)"-1"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_boolean((uint8_t *)"5"));
 }
 
 void test_validate_boolean_should_give_no_error()
 {
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_boolean((uint8_t *)"0"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_boolean((uint8_t *)"1"));
+    TEST_ASSERT_EQUAL_UINT8(VALID, validate_boolean((uint8_t *)"0"));
+    TEST_ASSERT_EQUAL_UINT8(VALID, validate_boolean((uint8_t *)"1"));
 }
 
 /************************** validate_float() ****************************/
 
 void test_validate_float_should_give_error()
 {
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"\0"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)" "));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"."));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"a"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"-1"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"0"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"0."));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"1."));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)".1"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"0a"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"012"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.ERROR, validate_float((uint8_t *)"0.00"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"\0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)" "));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"."));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"a"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"-1"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"0"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"0."));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"1."));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)".1"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"0a"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"012"));
+    TEST_ASSERT_EQUAL_UINT8(ERR.UNDEFINED, validate_float((uint8_t *)"0.00"));
 }
 
 void test_validate_float_should_give_no_error()
 {
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_float((uint8_t *)"1"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_float((uint8_t *)"9"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_float((uint8_t *)"10"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_float((uint8_t *)"99"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_float((uint8_t *)"0.1"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_float((uint8_t *)"0.01"));
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, validate_float((uint8_t *)"0.84"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, validate_float((uint8_t *)"1"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, validate_float((uint8_t *)"9"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, validate_float((uint8_t *)"10"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, validate_float((uint8_t *)"99"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, validate_float((uint8_t *)"0.1"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, validate_float((uint8_t *)"0.01"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, validate_float((uint8_t *)"0.84"));
 }
 
 int main()

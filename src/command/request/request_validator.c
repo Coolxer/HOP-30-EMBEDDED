@@ -15,18 +15,18 @@ uint8_t request_checkGeneralThings(uint8_t ***args, uint8_t records)
     else if (records > 5) // check if there is more than 5 records
         return ERR.TO_MANY_PARAMS;
 
-    if (args != NULL && validate_key(KEY.INDEX, args[0][0]) == ERR.ERROR) // check if there is "idx" key
+    if (args != NULL && validate_key(KEY.INDEX, args[0][0]) == ERR.UNDEFINED) // check if there is "idx" key
         return ERR.NO_INDEX_KEY;
 
     uint8_t *index = args[0][1];
 
     if (!containsOnlyDigits(index))
-        return ERR.INVALID_INDEX_VALUE;
+        return ERR.INCORRECT_INDEX_VALUE;
 
-    if (args != NULL && validate_key(KEY.OPERATION, args[1][0]) == ERR.ERROR) // check if there is "opt" key
+    if (args != NULL && validate_key(KEY.OPERATION, args[1][0]) == ERR.UNDEFINED) // check if there is "opt" key
         return ERR.NO_OPERATION_KEY;
 
-    return ERR.NO_ERROR;
+    return CORRECT;
 }
 
 uint8_t request_validateRequestKeys(uint8_t ***args, uint8_t *requiredKeys[], uint8_t requiredKeysAmount)
@@ -35,9 +35,9 @@ uint8_t request_validateRequestKeys(uint8_t ***args, uint8_t *requiredKeys[], ui
 
     for (; i < requiredKeysAmount; i++)
     {
-        if (validate_key(requiredKeys[i], args[i][0]) == ERR.ERROR)
+        if (validate_key(requiredKeys[i], args[i][0]) == ERR.UNDEFINED)
             return cmd_manager_getStructureErrorByKey(requiredKeys[i], KEY_ERROR);
     }
 
-    return ERR.NO_ERROR;
+    return CORRECT;
 }

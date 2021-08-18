@@ -50,7 +50,7 @@ void test_process_validateConfigure_should_give_no_error()
     stepper_setState(X_STEPPER, LOW);
     stepper_setState(W_STEPPER, LOW);
 
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateConfigure((void *)"0\0", (void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 }
 
 /************************** validateInit() ****************************/
@@ -65,7 +65,7 @@ void test_process_validateInit_should_give_no_error()
     PROCESS_STATE = NONE;
     PROCESS_CONFIGURED = 1;
 
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateInit());
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, process_validateInit());
 }
 
 /************************** validatePause() ****************************/
@@ -82,10 +82,10 @@ void test_process_validatePause_should_give_error()
 void test_process_validatePause_should_give_no_error()
 {
     PROCESS_STATE = FORWARD;
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validatePause());
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, process_validatePause());
 
     PROCESS_STATE = BACKWARD;
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validatePause());
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, process_validatePause());
 }
 
 /************************** validateResume() ****************************/
@@ -105,7 +105,7 @@ void test_process_validateResume_should_give_error()
 void test_process_validateResume_should_give_no_error()
 {
     PROCESS_STATE = HALTED;
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateResume());
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, process_validateResume());
 }
 
 /************************** validateStop() ****************************/
@@ -119,13 +119,13 @@ void test_process_validateStop_should_give_error()
 void test_process_validateStop_should_give_no_error()
 {
     PROCESS_STATE = FORWARD;
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateStop());
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, process_validateStop());
 
     PROCESS_STATE = BACKWARD;
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateStop());
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, process_validateStop());
 
     PROCESS_STATE = HALTED;
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, process_validateStop());
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, process_validateStop());
 }
 
 int main()

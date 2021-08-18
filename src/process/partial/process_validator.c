@@ -10,11 +10,11 @@
 
 uint8_t process_validateConfigure(uint8_t *direction, uint8_t *coolant)
 {
-    if (validate_boolean(direction) == ERR.ERROR)
-        return ERR.INVALID_DIRECTION_VALUE;
+    if (validate_boolean(direction) == ERR.UNDEFINED)
+        return ERR.INCORRECT_DIRECTION_VALUE;
 
-    else if (validate_boolean(coolant) == ERR.ERROR)
-        return ERR.INVALID_COOLANT_VALUE;
+    else if (validate_boolean(coolant) == ERR.UNDEFINED)
+        return ERR.INCORRECT_COOLANT_VALUE;
 
     else if (PROCESS_STATE != NONE)
         return ERR.PROCESS_ALREADY_RUNNING;
@@ -27,7 +27,7 @@ uint8_t process_validateConfigure(uint8_t *direction, uint8_t *coolant)
             return ERR.STEPPER_ALREADY_RUNNING;
     }
 
-    return ERR.NO_ERROR;
+    return CORRECT;
 }
 
 uint8_t process_validateInit()
@@ -35,7 +35,7 @@ uint8_t process_validateInit()
     if (!PROCESS_CONFIGURED)
         return ERR.PROCESS_NOT_CONFIGURED;
 
-    return ERR.NO_ERROR;
+    return CORRECT;
 }
 
 uint8_t process_validatePause()
@@ -43,7 +43,7 @@ uint8_t process_validatePause()
     if (PROCESS_STATE != FORWARD && PROCESS_STATE != BACKWARD)
         return ERR.PROCESS_NOT_RUNNING;
 
-    return ERR.NO_ERROR;
+    return CORRECT;
 }
 
 uint8_t process_validateResume()
@@ -51,7 +51,7 @@ uint8_t process_validateResume()
     if (PROCESS_STATE != HALTED)
         return ERR.PROCESS_NOT_HALTED;
 
-    return ERR.NO_ERROR;
+    return CORRECT;
 }
 
 uint8_t process_validateStop()
@@ -59,5 +59,5 @@ uint8_t process_validateStop()
     if (PROCESS_STATE == NONE)
         return ERR.PROCESS_NOT_RUNNING;
 
-    return ERR.NO_ERROR;
+    return CORRECT;
 }

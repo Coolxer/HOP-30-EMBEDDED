@@ -10,13 +10,13 @@
 #include "command/request/request_manager.h"
 
 // REQUESTS
-uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][SINGLE_REQUEST_SIZE] = {0};
+uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_REQUEST_SIZE] = {0};
 uint8_t registeredRequestsAmount = 0;
 uint8_t justRegisteredRequestIndex = 0;
 uint8_t justProcessedRequestIndex = 0;
 
 // RESPONSES
-uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE] = {0};
+uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][MAX_RESPONSE_SIZE] = {0};
 uint8_t awaitingResponsesAmount = 0;
 uint8_t justRegisteredCallbackResponseIndex = MAX_BUFFER_REQUESTS + 1; // starts fo 11 (using only for callback)
 uint8_t justSendedResponseIndex = 0;
@@ -34,26 +34,26 @@ void cmd_manager_init()
     uint8_t i = 0;
 
     for (i = 0; i < MAX_BUFFER_REQUESTS; i++)
-        clearString(REQUESTS[i], SINGLE_REQUEST_SIZE);
+        clearString(REQUESTS[i], MAX_REQUEST_SIZE);
 
     for (i = 0; i < MAX_BUFFER_RESPONSES; i++)
-        clearString(RESPONSES[i], RESPONSE_SIZE);
+        clearString(RESPONSES[i], MAX_RESPONSE_SIZE);
 }
 
-void cmd_manager_delive(uint8_t *cmd)
+void cmd_manager_delive(uint8_t *cmd, uint16_t size)
 {
-    uint8_t index = 0;
+    uint16_t index = 0;
     uint8_t tempIndex = 0;
-    uint8_t tempRequest[SINGLE_REQUEST_SIZE] = {0};
+    uint8_t tempRequest[MAX_REQUEST_SIZE] = {0};
 
-    for (; index < REQUEST_SIZE; index++)
+    for (; index < size; index++)
     {
         if (cmd[index] != SENTENCE_END_TERMINATOR)
         {
             if (tempIndex == 0 && (cmd[index] != 'i' || cmd[index + 1] != 'd' || cmd[index + 2] != 'x'))
                 break;
 
-            else if (tempIndex >= SINGLE_REQUEST_SIZE)
+            else if (tempIndex >= MAX_REQUEST_SIZE)
                 break;
 
             tempRequest[tempIndex] = cmd[index];
@@ -97,7 +97,7 @@ void cmd_manager_manage_requests()
         uint8_t *feedback = request_process(REQUESTS[i]);
 
         // clear Request
-        clearString(REQUESTS[i], SINGLE_REQUEST_SIZE);
+        clearString(REQUESTS[i], MAX_REQUEST_SIZE);
         registeredRequestsAmount--;
 
         // save Response
@@ -139,34 +139,34 @@ void cmd_manager_process()
 uint8_t cmd_manager_getStructureErrorByKey(uint8_t *key, enum ErrorType errorType)
 {
     if (stringEqual(key, KEY.INDEX))
-        return errorType == KEY_ERROR ? ERR.NO_INDEX_KEY : ERR.INVALID_INDEX_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_INDEX_KEY : ERR.INCORRECT_INDEX_VALUE;
 
     else if (stringEqual(key, KEY.OPERATION))
-        return errorType == KEY_ERROR ? ERR.NO_OPERATION_KEY : ERR.INVALID_OPERATION_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_OPERATION_KEY : ERR.INCORRECT_OPERATION_VALUE;
 
     else if (stringEqual(key, KEY.STEPPER))
-        return errorType == KEY_ERROR ? ERR.NO_STEPPER_KEY : ERR.INVALID_STEPPER_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_STEPPER_KEY : ERR.INCORRECT_STEPPER_VALUE;
 
     else if (stringEqual(key, KEY.ENDSTOP))
-        return errorType == KEY_ERROR ? ERR.NO_ENDSTOP_KEY : ERR.INVALID_ENDSTOP_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_ENDSTOP_KEY : ERR.INCORRECT_ENDSTOP_VALUE;
 
     else if (stringEqual(key, KEY.SPEED))
-        return errorType == KEY_ERROR ? ERR.NO_SPEED_KEY : ERR.INVALID_SPEED_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_SPEED_KEY : ERR.INCORRECT_SPEED_VALUE;
 
     else if (stringEqual(key, KEY.ACCELERATION))
-        return errorType == KEY_ERROR ? ERR.NO_ACCELERATION_KEY : ERR.INVALID_ACCELERATION_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_ACCELERATION_KEY : ERR.INCORRECT_ACCELERATION_VALUE;
 
     else if (stringEqual(key, KEY.WAY))
-        return errorType == KEY_ERROR ? ERR.NO_WAY_KEY : ERR.INVALID_WAY_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_WAY_KEY : ERR.INCORRECT_WAY_VALUE;
 
     else if (stringEqual(key, KEY.STATE))
-        return errorType == KEY_ERROR ? ERR.NO_STATE_KEY : ERR.INVALID_STATE_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_STATE_KEY : ERR.INCORRECT_STATE_VALUE;
 
     else if (stringEqual(key, KEY.DIRECTION))
-        return errorType == KEY_ERROR ? ERR.NO_DIRECTION_KEY : ERR.INVALID_DIRECTION_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_DIRECTION_KEY : ERR.INCORRECT_DIRECTION_VALUE;
 
     else if (stringEqual(key, KEY.COOLANT))
-        return errorType == KEY_ERROR ? ERR.NO_COOLANT_KEY : ERR.INVALID_COOLANT_VALUE;
+        return errorType == KEY_ERROR ? ERR.NO_COOLANT_KEY : ERR.INCORRECT_COOLANT_VALUE;
 
-    return ERR.NO_ERROR;
+    return CORRECT;
 }

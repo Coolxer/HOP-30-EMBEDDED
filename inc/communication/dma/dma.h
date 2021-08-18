@@ -7,7 +7,7 @@
 
 typedef struct
 {
-	uint8_t requestBuffer[REQUEST_SIZE];
+	uint8_t requestBuffer[MAX_COMMAND_SIZE];
 
 	DMA_HandleTypeDef requestLine;
 	DMA_HandleTypeDef responseLine;

@@ -11,7 +11,7 @@
 #include "command/partial/err.h"
 #include "command/partial/res.h"
 
-extern uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][RESPONSE_SIZE];
+extern uint8_t RESPONSES[MAX_BUFFER_RESPONSES + 1][MAX_RESPONSE_SIZE];
 extern uint8_t awaitingResponsesAmount;
 extern uint8_t justRegisteredCallbackResponseIndex;
 extern uint8_t justSendedResponseIndex;
@@ -19,7 +19,7 @@ extern uint8_t justSendedResponseIndex;
 extern volatile uint8_t SHUTDOWN_FLAG;
 
 void cmd_manager_init();
-void cmd_manager_delive(uint8_t *cmd);
+void cmd_manager_delive(uint8_t *cmd, uint16_t size);
 
 /* PRIVATE */ // void cmd_manager_manage_requests();
 /* PRIVATE */ // void cmd_manager_manage_responses();

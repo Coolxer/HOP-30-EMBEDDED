@@ -45,7 +45,7 @@ void test_response_builder_buildErr_2()
 
 void test_response_builder_buildErr_3()
 {
-    TEST_ASSERT_EQUAL_STRING("idx=3|res=err|cod=10|@|||||||||#", response_builder_buildErr((uint8_t *)"3", ERR.INVALID_STEPPER_VALUE));
+    TEST_ASSERT_EQUAL_STRING("idx=3|res=err|cod=10|@|||||||||#", response_builder_buildErr((uint8_t *)"3", ERR.INCORRECT_STEPPER_VALUE));
 }
 
 /************************** BUILD FINISH ****************************/

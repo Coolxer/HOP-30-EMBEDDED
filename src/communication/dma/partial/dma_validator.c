@@ -3,40 +3,50 @@
 #include "communication/dma/dma.h"
 #include "communication/config/communication.h"
 
-uint8_t checkMessageTerminators()
+#include "command/partial/err.h"
+
+uint8_t checkCommandLengthLimits(uint16_t size)
 {
-    uint8_t i = 0;
+    if (size < MIN_COMMAND_SIZE)
+        return ERR.COMMAND_TOO_SHORT;
+    else if (size > MAX_COMMAND_SIZE)
+        return ERR.COMMAND_TOO_LONG;
 
-    for (; i < (REQUEST_SIZE - 1); i++)
-    {
-        if (dma.requestBuffer[i] == COMMAND_END_TERMINATOR)
-            return 0;
-    }
-
-    if (dma.requestBuffer[REQUEST_SIZE - 1] != COMMAND_END_TERMINATOR)
-        return 0;
-
-    return 1;
+    return CORRECT;
 }
 
-uint8_t checkFirstMessageCharacters()
+uint8_t checkCommandBeginTerminator()
 {
-    if (dma.requestBuffer[0] != 'i')
-        return 0;
+    if (dma.requestBuffer[0] != COMMAND_BEGIN_TERMINATOR)
+        return ERR.COMMAND_INCORRECT_BEGINING;
 
-    if (dma.requestBuffer[1] != 'd')
-        return 0;
-
-    if (dma.requestBuffer[2] != 'x')
-        return 0;
-
-    return 1;
+    return CORRECT;
 }
 
-uint8_t validateTransmission()
+uint8_t checkCommandEndTerminator(uint16_t size)
 {
-    if (checkMessageTerminators() && checkFirstMessageCharacters())
-        return 1;
+    if (dma.requestBuffer[size - 1] != COMMAND_END_TERMINATOR)
+        return ERR.COMMAND_INCORRECT_END;
 
-    return 0;
+    return CORRECT;
+}
+
+uint8_t validateTransmission(uint16_t size)
+{
+    uint8_t code = checkCommandLengthLimits(size);
+
+    if (code != CORRECT)
+        return code;
+
+    code = checkCommandBeginTerminator();
+
+    if (code != CORRECT)
+        return code;
+
+    code = checkCommandEndTerminator(size);
+
+    if (code != CORRECT)
+        return code;
+
+    return CORRECT;
 }

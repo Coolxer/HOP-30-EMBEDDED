@@ -33,10 +33,10 @@ void test_stepper_validateConfigure_should_give_error()
 void test_stepper_validateConfigure_should_give_no_error()
 {
     stepper_setState(X_STEPPER, LOW);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateConfigure(X_STEPPER, (void *)"50\0", (void *)"10\0"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateConfigure(X_STEPPER, (void *)"50\0", (void *)"10\0"));
 
     stepper_setState(X_STEPPER, HIGH);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateConfigure(X_STEPPER, (void *)"50\0", (void *)"10\0"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateConfigure(X_STEPPER, (void *)"50\0", (void *)"10\0"));
 }
 
 /************************** validateSwitch() ****************************/
@@ -50,13 +50,13 @@ void test_stepper_validateSwitch_should_give_error()
 void test_stepper_validateSwitch_should_give_no_error()
 {
     stepper_setState(X_STEPPER, LOW);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateSwitch(X_STEPPER, (void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateSwitch(X_STEPPER, (void *)"0\0"));
 
     stepper_setState(X_STEPPER, HIGH);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateSwitch(X_STEPPER, (void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateSwitch(X_STEPPER, (void *)"0\0"));
 
     stepper_setState(X_STEPPER, PAUSED);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateSwitch(X_STEPPER, (void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateSwitch(X_STEPPER, (void *)"0\0"));
 }
 
 /************************** validateMove() ****************************/
@@ -79,10 +79,10 @@ void test_stepper_validateMove_should_give_no_error()
     stepper_setTargetSpeed(X_STEPPER, 1.0f);
 
     stepper_setState(X_STEPPER, LOW);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateMove(X_STEPPER, (void *)"50\0", (void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateMove(X_STEPPER, (void *)"50\0", (void *)"0\0"));
 
     stepper_setState(X_STEPPER, HIGH);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateMove(X_STEPPER, (void *)"50\0", (void *)"0\0"));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateMove(X_STEPPER, (void *)"50\0", (void *)"0\0"));
 }
 
 /************************** validatePause() ****************************/
@@ -102,7 +102,7 @@ void test_stepper_validatePause_should_give_error()
 void test_stepper_validatePause_should_give_no_error()
 {
     stepper_setState(X_STEPPER, MOVING);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validatePause(X_STEPPER));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validatePause(X_STEPPER));
 }
 
 /************************** validateResume() ****************************/
@@ -122,7 +122,7 @@ void test_stepper_validateResume_should_give_error()
 void test_stepper_validateResume_should_give_no_error()
 {
     stepper_setState(X_STEPPER, PAUSED);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateResume(X_STEPPER));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateResume(X_STEPPER));
 }
 
 /************************** validateStop() ****************************/
@@ -139,10 +139,10 @@ void test_stepper_validateStop_should_give_error()
 void test_stepper_validateStop_should_give_no_error()
 {
     stepper_setState(X_STEPPER, MOVING);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateStop(X_STEPPER));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateStop(X_STEPPER));
 
     stepper_setState(X_STEPPER, PAUSED);
-    TEST_ASSERT_EQUAL_UINT8(ERR.NO_ERROR, stepper_validateStop(X_STEPPER));
+    TEST_ASSERT_EQUAL_UINT8(CORRECT, stepper_validateStop(X_STEPPER));
 }
 
 int main()
