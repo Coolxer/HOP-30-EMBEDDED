@@ -5,8 +5,8 @@
 res RES = {0};
 
 uint8_t *ZERO_INDEX = (uint8_t *)"0\0";
-uint8_t *SHUTDOWN_REQUEST = (uint8_t *)"SHUTDOWN|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||";
-uint8_t *SHUTDOWN_RESPONSE = (uint8_t *)"SHUTDOWNED||||||||||||||||||||||";
+uint8_t *SHUTDOWN_REQUEST = (uint8_t *)"SHUTDOWN";
+uint8_t *SHUTDOWN_RESPONSE = (uint8_t *)"$SHUTDOWNED#";
 
 void res_init()
 {

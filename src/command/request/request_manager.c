@@ -20,10 +20,6 @@
 
 uint8_t *request_process(uint8_t *request)
 {
-    // STEP 0: REMOVE FIRST AND LAST CHARACTER
-    memmove(request, request + 1, stringLength(request));
-    request[stringLength(request) - 1] = '\0';
-
     // STEP 1: EXPLODE FOR PAIRS KEY:VALUE
     uint8_t records = 0;
     uint8_t ***args = request_explode(request, &records);

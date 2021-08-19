@@ -12,9 +12,9 @@
 #include "communication/connector.h"
 #include "command/response/response_builder.h"
 
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size)
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-    uint8_t code = validateTransmission(size);
+    uint8_t code = validateTransmission(Size);
 
     if (code == CORRECT)
     {
@@ -24,7 +24,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size)
             return;
         }
 
-        cmd_manager_delive(dma.requestBuffer, size);
+        cmd_manager_delive(dma.requestBuffer, Size);
     }
     else // if there was as cmd length or begining or end error
         connector_sendResponse(response_builder_buildErr(ZERO_INDEX, code));

@@ -8,6 +8,7 @@
 
 #include "communication/connector.h"
 #include "command/request/request_manager.h"
+#include "command/response/response_builder.h"
 
 // REQUESTS
 uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_REQUEST_SIZE] = {0};
@@ -42,18 +43,16 @@ void cmd_manager_init()
 
 void cmd_manager_delive(uint8_t *cmd, uint16_t size)
 {
-    uint16_t index = 0;
+    uint16_t index = 1; //  starts with 1 to discard  COMMAND_BEGIN_TERMINATOR
     uint8_t tempIndex = 0;
     uint8_t tempRequest[MAX_REQUEST_SIZE] = {0};
 
-    for (; index < size; index++)
+    // size -1 to discard COMMAND_END_TERMINATOR
+    for (; index < size - 1; index++)
     {
         if (cmd[index] != SENTENCE_END_TERMINATOR)
         {
-            if (tempIndex == 0 && (cmd[index] != 'i' || cmd[index + 1] != 'd' || cmd[index + 2] != 'x'))
-                break;
-
-            else if (tempIndex >= MAX_REQUEST_SIZE)
+            if ((tempIndex == 0 && cmd[index] != 'i') || tempIndex >= MAX_REQUEST_SIZE)
                 break;
 
             tempRequest[tempIndex] = cmd[index];
@@ -81,6 +80,9 @@ void cmd_manager_delive(uint8_t *cmd, uint16_t size)
             tempIndex = 0;
         }
     }
+
+    if (!registeredRequestsAmount)
+        connector_sendResponse(response_builder_buildErr(ZERO_INDEX, ERR.COMMAND_INCORRECT_CONTENT));
 }
 
 void cmd_manager_manage_requests()
