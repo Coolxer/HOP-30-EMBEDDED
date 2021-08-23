@@ -50,7 +50,7 @@ void application_run()
     application_close(); // close the application
 
     // wait until uart will be ready for transfer feedback
-    while (!TRANSFER_COMPLETE)
+    while (!dma.TRANSFER_COMPLETE)
     {
     };
 

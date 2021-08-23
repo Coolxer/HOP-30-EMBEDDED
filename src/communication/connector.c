@@ -13,6 +13,7 @@ void connector_init()
     __HAL_LINKDMA(&uart, hdmatx, dma.responseLine);
 
     HAL_UARTEx_ReceiveToIdle_DMA(&uart, dma.requestBuffer, MAX_COMMAND_SIZE);
+    __HAL_DMA_DISABLE_IT(&dma.requestLine, DMA_IT_HT);
 }
 
 void connector_deinit()
@@ -23,6 +24,8 @@ void connector_deinit()
 
 void connector_sendResponse(uint8_t *response)
 {
-    TRANSFER_COMPLETE = 0;
+    dma.TRANSFER_COMPLETE = 0;
+    dma.READY_FOR_TRANSFER = 0;
+
     HAL_UART_Transmit_DMA(&uart, (uint8_t *)response, stringLength(response));
 }

@@ -25,11 +25,11 @@ void uart_setupInterface()
 	uart.Instance = UART_NAME;
 	uart.Init.BaudRate = UART_BAUDRATE;
 	uart.Init.WordLength = USART_WORDLENGTH_8B;
-	uart.Init.Parity = USART_PARITY_NONE;
 	uart.Init.StopBits = UART_STOPBITS_1;
-	uart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-	uart.Init.OverSampling = UART_OVERSAMPLING_16;
+	uart.Init.Parity = USART_PARITY_NONE;
 	uart.Init.Mode = UART_MODE_TX_RX;
+	uart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	uart.Init.OverSampling = UART_OVERSAMPLING_8;
 
 	HAL_UART_Init(&uart);
 	//uart.Instance->BRR = 2;

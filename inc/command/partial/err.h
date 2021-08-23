@@ -75,7 +75,10 @@ typedef struct
         PROCESS_NOT_RUNNING,
         PROCESS_ALREADY_RUNNING,
 
-        OPERATION_NOT_ALLOWED;
+        OPERATION_NOT_ALLOWED,
+
+        // OTHERS
+        REQUESTING_TOO_FAST;
 } err;
 
 extern err ERR;

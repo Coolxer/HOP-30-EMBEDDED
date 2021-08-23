@@ -19,7 +19,7 @@ extern uint8_t justSendedResponseIndex;
 extern volatile uint8_t SHUTDOWN_FLAG;
 
 void cmd_manager_init();
-void cmd_manager_delive(uint8_t *cmd, uint16_t size);
+void cmd_manager_delive(uint8_t *cmd);
 
 /* PRIVATE */ // void cmd_manager_manage_requests();
 /* PRIVATE */ // void cmd_manager_manage_responses();

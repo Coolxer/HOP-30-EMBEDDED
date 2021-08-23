@@ -10,6 +10,8 @@
 #include "command/request/request_manager.h"
 #include "command/response/response_builder.h"
 
+#include "communication/dma/partial/dma_callback.h"
+
 // REQUESTS
 uint8_t REQUESTS[MAX_BUFFER_REQUESTS + 1][MAX_REQUEST_SIZE] = {0};
 uint8_t registeredRequestsAmount = 0;
@@ -41,14 +43,14 @@ void cmd_manager_init()
         clearString(RESPONSES[i], MAX_RESPONSE_SIZE);
 }
 
-void cmd_manager_delive(uint8_t *cmd, uint16_t size)
+void cmd_manager_delive(uint8_t *cmd)
 {
     uint16_t index = 1; //  starts with 1 to discard  COMMAND_BEGIN_TERMINATOR
     uint8_t tempIndex = 0;
     uint8_t tempRequest[MAX_REQUEST_SIZE] = {0};
 
     // size -1 to discard COMMAND_END_TERMINATOR
-    for (; index < size - 1; index++)
+    for (; index < dma.receivedCommandSize - 1; index++)
     {
         if (cmd[index] != SENTENCE_END_TERMINATOR)
         {
@@ -120,8 +122,11 @@ void cmd_manager_manage_responses()
     {
         i = (i < MAX_BUFFER_RESPONSES) ? i + 1 : 1;
 
-        if (RESPONSES[i][0] == EMPTY_CHARACTER || !TRANSFER_COMPLETE)
+        if (RESPONSES[i][0] == EMPTY_CHARACTER)
             continue;
+
+        if (!dma.READY_FOR_TRANSFER)
+            break;
 
         justSendedResponseIndex = i;
         awaitingResponsesAmount--;
@@ -134,8 +139,13 @@ void cmd_manager_manage_responses()
 
 void cmd_manager_process()
 {
+    if (dma.RECEIVED_COMMAND)
+        receivedCommandCallback();
     cmd_manager_manage_requests();
+
     cmd_manager_manage_responses();
+    if (dma.TRANSFER_COMPLETE && !dma.READY_FOR_TRANSFER)
+        transferCompletedCallback();
 }
 
 uint8_t cmd_manager_getStructureErrorByKey(uint8_t *key, enum ErrorType errorType)

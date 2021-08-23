@@ -2,4 +2,8 @@
 
 DMA dma = {0};
 
-volatile uint8_t TRANSFER_COMPLETE = 1;
+void dma_structure_init()
+{
+    dma.TRANSFER_COMPLETE = 1;
+    dma.READY_FOR_TRANSFER = 1;
+}

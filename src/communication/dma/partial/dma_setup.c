@@ -48,6 +48,7 @@ void dma_setupInterrupts()
 
 void dma_init()
 {
+    dma_structure_init();
     dma_setupInterface();
     dma_setupInterrupts();
 }
