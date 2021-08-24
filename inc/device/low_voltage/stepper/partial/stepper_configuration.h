@@ -4,6 +4,9 @@
 #include "device/low_voltage/stepper/stepper.h"
 #include "device/low_voltage/stepper/type/direction.h"
 
+// cannot handle speed less than this value (reqister limit)
+extern float MINIMUM_NOTICEABLED_SPEED;
+
 /* PRIVATE */                                                                    //void stepper_updateSpeed(Stepper *stepper, float speed); // sets speed of stepper [speed in mm/s or obr/min.]
 void stepper_configure(Stepper *stepper, uint8_t *speed, uint8_t *acceleration); // sets speed [in mm/s or obr/min.] and acceleration [in mm/s^2 or obr/s^2.] [called by user]
 void stepper_initAcceleration(Stepper *stepper, enum SpeedState state);          // sets speed state and get current movement time

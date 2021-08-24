@@ -7,12 +7,11 @@
 
 typedef struct
 {
-	uint8_t requestBuffer[MAX_COMMAND_SIZE];
+	uint8_t commandBuffer[MAX_COMMAND_SIZE];
+	uint16_t receivedCommandSize;
 
 	DMA_HandleTypeDef requestLine;
 	DMA_HandleTypeDef responseLine;
-
-	uint16_t receivedCommandSize;
 
 	volatile uint8_t RECEIVED_COMMAND;
 	volatile uint8_t TRANSFER_COMPLETE;	 // flag signs after transfer is complete, but response is not cleared

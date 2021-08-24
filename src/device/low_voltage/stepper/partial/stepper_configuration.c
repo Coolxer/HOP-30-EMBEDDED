@@ -8,14 +8,17 @@
 #include "device/low_voltage/stepper/partial/stepper_peripheral.h"
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 
+float MINIMUM_NOTICEABLED_SPEED = 0.01f; // 0.00025f;[160 MHz]
+                                         // 0.000061f [40 MHz]
+
 // calls multiple times with acceleration / deceleration
 void stepper_updateSpeed(Stepper *stepper, float speed)
 {
-    stepper_updateLastTime(stepper);
-    stepper_setCurrentSpeed(stepper, speed);
-
     Speed_params regs = convertSpeedToRegisters(stepper_getAxisType(stepper), speed);
     stepper_setSpeedRegisters(stepper, regs.psc, regs.arr, regs.pul);
+
+    stepper_setCurrentSpeed(stepper, speed);
+    stepper_updateLastTime(stepper);
 }
 
 // calls by user command
@@ -26,8 +29,8 @@ void stepper_configure(Stepper *stepper, uint8_t *speed, uint8_t *acceleration)
 
     if (acc > 0.0f)
     {
-        stepper_setCurrentAcceleration(stepper, spd / 1000.0f); // save acceleration in milliseconds instead of seconds
-        stepper_updateSpeed(stepper, MINIMUM_HANDLED_SPEED);
+        stepper_setCurrentAcceleration(stepper, acc / 1000.0f); // save acceleration in milliseconds instead of seconds
+        stepper_updateSpeed(stepper, MINIMUM_NOTICEABLED_SPEED);
         stepper_setSpeedType(stepper, DYNAMIC);
     }
     else
@@ -75,7 +78,7 @@ void stepper_accelerate(Stepper *stepper) // only if acceleration is set
 
 void stepper_resetSpeed(Stepper *stepper)
 {
-    stepper_setCurrentSpeed(stepper, MINIMUM_HANDLED_SPEED);
+    stepper_setCurrentSpeed(stepper, MINIMUM_NOTICEABLED_SPEED);
 
     float acceleration = stepper_getCurrentAcceleration(stepper);
     if (acceleration < 0.0f)

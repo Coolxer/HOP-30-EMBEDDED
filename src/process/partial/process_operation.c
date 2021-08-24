@@ -31,8 +31,8 @@ void process_reverse()
     stepper_changeDirectionImmediately(X_STEPPER);
     stepper_changeDirectionImmediately(W_STEPPER);
 
-    stepper_setCurrentSpeed(X_STEPPER, MINIMUM_HANDLED_SPEED);
-    stepper_setCurrentSpeed(W_STEPPER, MINIMUM_HANDLED_SPEED);
+    stepper_setCurrentSpeed(X_STEPPER, MINIMUM_NOTICEABLED_SPEED);
+    stepper_setCurrentSpeed(W_STEPPER, MINIMUM_NOTICEABLED_SPEED);
 
     PROCESS_STATE = BACKWARD;
 }

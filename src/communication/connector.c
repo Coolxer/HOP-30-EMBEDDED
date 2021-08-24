@@ -12,7 +12,7 @@ void connector_init()
     __HAL_LINKDMA(&uart, hdmarx, dma.requestLine);
     __HAL_LINKDMA(&uart, hdmatx, dma.responseLine);
 
-    HAL_UARTEx_ReceiveToIdle_DMA(&uart, dma.requestBuffer, MAX_COMMAND_SIZE);
+    HAL_UARTEx_ReceiveToIdle_DMA(&uart, dma.commandBuffer, MAX_COMMAND_SIZE);
     __HAL_DMA_DISABLE_IT(&dma.requestLine, DMA_IT_HT);
 }
 

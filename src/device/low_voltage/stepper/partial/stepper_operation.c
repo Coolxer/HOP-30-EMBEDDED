@@ -60,23 +60,20 @@ void stepper_run(Stepper *stepper)
 
 void stepper_watchdog(Stepper *stepper)
 {
-    if (stepper_getState(stepper) == MOVING)
+    if (stepper_getState(stepper) != MOVING || stepper_getSpeedType(stepper) != DYNAMIC)
+        return;
+
+    if (stepper_getSpeedState(stepper) != CONSTANT)
+        stepper_accelerate(stepper);
+    else
     {
-        if (stepper_getSpeedType(stepper) == DYNAMIC)
-        {
-            if (stepper_getSpeedState(stepper) != CONSTANT)
-                stepper_accelerate(stepper);
-            else
-            {
-                // deceleration is only possible with MOVING, because with HOMING destination is unknown
-                if (stepper_getMoveType(stepper) == PRECISED)
-                {
-                    // check if target is less or equal to number of steps needed for deceleration (same value as acceleration)
-                    // then start to deceleration
-                    if ((stepper_getUnloadedSteps(stepper) + calculateRemainingSteps(stepper)) <= stepper_getStepsNeededToAccelerate(stepper))
-                        stepper_initAcceleration(stepper, FALLING);
-                }
-            }
-        }
+        // deceleration is only possible with MOVING, because with HOMING destination is unknown
+        if (stepper_getMoveType(stepper) != PRECISED)
+            return;
+
+        // check if target is less or equal to number of steps needed for deceleration (same value as acceleration)
+        // then start to deceleration
+        if ((stepper_getUnloadedSteps(stepper) + calculateRemainingSteps(stepper)) <= stepper_getStepsNeededToAccelerate(stepper))
+            stepper_initAcceleration(stepper, FALLING);
     }
 }

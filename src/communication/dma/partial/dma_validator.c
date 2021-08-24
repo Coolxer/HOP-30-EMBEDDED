@@ -17,7 +17,7 @@ uint8_t checkCommandLengthLimits()
 
 uint8_t checkCommandBeginTerminator()
 {
-    if (dma.requestBuffer[0] != COMMAND_BEGIN_TERMINATOR)
+    if (dma.commandBuffer[0] != COMMAND_BEGIN_TERMINATOR)
         return ERR.COMMAND_INCORRECT_BEGINING;
 
     return CORRECT;
@@ -25,7 +25,7 @@ uint8_t checkCommandBeginTerminator()
 
 uint8_t checkCommandEndTerminator()
 {
-    if (dma.requestBuffer[dma.receivedCommandSize - 1] != COMMAND_END_TERMINATOR)
+    if (dma.commandBuffer[dma.receivedCommandSize - 1] != COMMAND_END_TERMINATOR)
         return ERR.COMMAND_INCORRECT_END;
 
     return CORRECT;

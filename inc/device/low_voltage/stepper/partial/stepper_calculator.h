@@ -8,9 +8,6 @@
 
 #define MAX_16BIT_VALUE 65535
 
-// cannot handle speed less than this value (reqister limit)
-extern float MINIMUM_HANDLED_SPEED;
-
 // structure of speed setting registers
 typedef struct
 {
