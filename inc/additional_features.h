@@ -6,6 +6,7 @@
 // features that are not implemented yet, but maybe will be (are in GRBLHAL)
 // this features required pins so
 
+// TIMER 1
 #define SPINDLE_PWM_PORT GPIOB
 #define SPINDLE_PWM_PIN GPIO_PIN_1
 
@@ -27,5 +28,8 @@
 
 #define PROBE_PORT GPIOC
 #define PROBE_PIN GPIO_PIN_0
+
+#define SAFETY_DOOR_PORT GPIOC
+#define SAFETY_DOOR_PIN 8
 
 #endif // ADDITIONAL_FEATURES_H
