@@ -3,7 +3,7 @@
 
 #include "stm32f4xx_hal.h"
 
-#define TH_PHASE_MOTOR_PORT GPIOC
-#define TH_PHASE_MOTOR_PIN GPIO_PIN_4
+#define TH_PHASE_MOTOR_PORT GPIOD
+#define TH_PHASE_MOTOR_PIN GPIO_PIN_2
 
 #endif // TH_PHASE_MOTOR_CONNECTION_H

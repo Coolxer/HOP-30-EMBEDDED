@@ -7,25 +7,25 @@
 // this features required pins so
 
 #define SPINDLE_PWM_PORT GPIOB
-#define SPINDLE_PWM_PIN 1
+#define SPINDLE_PWM_PIN GPIO_PIN_1
 
 #define SPINDLE_DIR_PORT GPIOC
-#define SPINDLE_DIR_PIN 4
+#define SPINDLE_DIR_PIN GPIO_PIN_4
 
 // in my case it will be directly to the reset pin (no PORT and no PIN given)
 // so there is not software at all
 
 // ping for reset is given to the GRBLHAL
 #define RESET_BTN_PORT GPIOA
-#define RESET_BTN_PIN 1
+#define RESET_BTN_PIN GPIO_PIN_1
 
 #define HOLD_BTN_PORT GPIOA
-#define HOLD_BTN_PIN 4
+#define HOLD_BTN_PIN GPIO_PIN_4
 
 #define START_BTN_PORT GPIOB
-#define START_BTN_PIN 0
+#define START_BTN_PIN GPIO_PIN_0
 
 #define PROBE_PORT GPIOC
-#define PROBE_PIN 0
+#define PROBE_PIN GPIO_PIN_0
 
 #endif // ADDITIONAL_FEATURES_H
