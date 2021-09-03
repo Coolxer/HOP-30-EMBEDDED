@@ -16,14 +16,6 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
     UNUSED(huart); // turn off warning: unused parameter...
 
-    /*
-    if (dma.RECEIVED_COMMAND)
-    {
-        connector_sendResponse(response_builder_buildErr(ZERO_INDEX, ERR.REQUESTING_TOO_FAST));
-        return;
-    }
-    */
-
     dma.receivedCommandSize = Size;
     dma.RECEIVED_COMMAND = 1;
 }
