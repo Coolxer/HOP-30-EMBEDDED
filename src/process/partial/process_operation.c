@@ -12,7 +12,7 @@
 void process_init()
 {
     stepper_switch(X_STEPPER, ON);
-    stepper_switch(W_STEPPER, ON);
+    stepper_switch(A_STEPPER, ON);
 
     if (COOLANT_ENABLE)
         hvd_switch(&POMP, ON);
@@ -23,16 +23,16 @@ void process_init()
     PROCESS_CONFIGURED = 0;
 
     stepper_run(X_STEPPER);
-    stepper_run(W_STEPPER);
+    stepper_run(A_STEPPER);
 }
 
 void process_reverse()
 {
     stepper_changeDirectionImmediately(X_STEPPER);
-    stepper_changeDirectionImmediately(W_STEPPER);
+    stepper_changeDirectionImmediately(A_STEPPER);
 
     stepper_setCurrentSpeed(X_STEPPER, MINIMUM_NOTICEABLED_SPEED);
-    stepper_setCurrentSpeed(W_STEPPER, MINIMUM_NOTICEABLED_SPEED);
+    stepper_setCurrentSpeed(A_STEPPER, MINIMUM_NOTICEABLED_SPEED);
 
     PROCESS_STATE = BACKWARD;
 }

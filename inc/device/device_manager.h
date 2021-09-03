@@ -16,7 +16,7 @@ extern Stepper steppers[STEPPERS_AMOUNT];
 extern Endstop endstops[ENDSTOPS_AMOUNT];
 
 // additional pointers to easy grab (useful)
-extern Stepper *W_STEPPER;
+extern Stepper *A_STEPPER;
 extern Stepper *X_STEPPER;
 extern Stepper *Y_STEPPER;
 extern Stepper *Z_STEPPER;

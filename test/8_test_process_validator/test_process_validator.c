@@ -28,7 +28,7 @@ void test_process_validateConfigure_should_give_error()
     PROCESS_PREVIOUS_STATE = NONE;
 
     stepper_setState(X_STEPPER, MOVING);
-    stepper_setState(W_STEPPER, MOVING);
+    stepper_setState(A_STEPPER, MOVING);
 
     TEST_ASSERT_EQUAL_UINT8(ERR.STEPPER_ALREADY_RUNNING, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 
@@ -48,7 +48,7 @@ void test_process_validateConfigure_should_give_no_error()
     PROCESS_STATE = NONE;
 
     stepper_setState(X_STEPPER, LOW);
-    stepper_setState(W_STEPPER, LOW);
+    stepper_setState(A_STEPPER, LOW);
 
     TEST_ASSERT_EQUAL_UINT8(CORRECT, process_validateConfigure((void *)"0\0", (void *)"0\0"));
 }

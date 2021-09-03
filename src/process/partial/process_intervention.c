@@ -10,7 +10,7 @@
 void process_pause()
 {
     stepper_pause(X_STEPPER);
-    stepper_pause(W_STEPPER);
+    stepper_pause(A_STEPPER);
 
     if (COOLANT_ENABLE)
         hvd_switch(&POMP, OFF);
@@ -24,7 +24,7 @@ void process_pause()
 void process_resume()
 {
     stepper_resume(X_STEPPER);
-    stepper_resume(W_STEPPER);
+    stepper_resume(A_STEPPER);
 
     if (COOLANT_ENABLE)
         hvd_switch(&POMP, ON);
@@ -37,7 +37,7 @@ void process_resume()
 void process_stop()
 {
     stepper_stop(X_STEPPER);
-    stepper_stop(W_STEPPER);
+    stepper_stop(A_STEPPER);
 
     if (COOLANT_ENABLE)
         hvd_switch(&POMP, OFF);

@@ -34,7 +34,7 @@ void endstopClickedCallback(Endstop *endstop)
             if (PROCESS_STATE == BACKWARD)
             {
                 stepper_stop(X_STEPPER);
-                stepper_stop(W_STEPPER);
+                stepper_stop(A_STEPPER);
                 PROCESS_STATE = NONE;
             }
             else

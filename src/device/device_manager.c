@@ -22,7 +22,7 @@
 Stepper steppers[STEPPERS_AMOUNT] = {0};
 Endstop endstops[ENDSTOPS_AMOUNT] = {0};
 
-Stepper *W_STEPPER = NULL;
+Stepper *A_STEPPER = NULL;
 Stepper *X_STEPPER = NULL;
 Stepper *Y_STEPPER = NULL;
 Stepper *Z_STEPPER = NULL;
@@ -35,8 +35,8 @@ uint8_t devicesStates[12] = {0};
 void device_manager_init()
 {
     // create stepper with configs
-    stepper_init(&steppers[0], CIRCULAR, W_NAME, W_DIR_INV, W_MASTER_TIMER, W_SLAVE_TIMER, W_ALTERNATE_FUNCTION, W_CHANNEL, W_ITR, W_IRQ,
-                 W_ENABLE_PORT, W_ENABLE_PIN, W_STEP_PORT, W_STEP_PIN, W_DIR_PORT, W_DIR_PIN);
+    stepper_init(&steppers[0], CIRCULAR, A_NAME, A_DIR_INV, A_MASTER_TIMER, A_SLAVE_TIMER, A_ALTERNATE_FUNCTION, A_CHANNEL, A_ITR, A_IRQ,
+                 A_ENABLE_PORT, A_ENABLE_PIN, A_STEP_PORT, A_STEP_PIN, A_DIR_PORT, A_DIR_PIN);
 
     stepper_init(&steppers[1], LINEAR, X_NAME, X_DIR_INV, X_MASTER_TIMER, X_SLAVE_TIMER, X_ALTERNATE_FUNCTION, X_CHANNEL, X_ITR, X_IRQ,
                  X_ENABLE_PORT, X_ENABLE_PIN, X_STEP_PORT, X_STEP_PIN, X_DIR_PORT, X_DIR_PIN);
@@ -58,7 +58,7 @@ void device_manager_init()
     endstop_init(&endstops[5], (uint8_t *)"zr", ZR_PORT, ZR_PIN, ZR_IRQ);
 
     // create additional pointers to steppers
-    W_STEPPER = &steppers[0];
+    A_STEPPER = &steppers[0];
     X_STEPPER = &steppers[1];
     Y_STEPPER = &steppers[2];
     Z_STEPPER = &steppers[3];

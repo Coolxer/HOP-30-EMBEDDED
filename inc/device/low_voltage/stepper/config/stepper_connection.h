@@ -6,28 +6,28 @@
 // MASTER_TIMER is PWM timer
 // SLAVE_TIMER is Step-Counter timer
 
-/**************** W STEPPER  ******************/
+/**************** A STEPPER  ******************/
 
-#define W_NAME 'w'
+#define A_NAME 'w'
 
-#define W_MASTER_TIMER TIM10
-#define W_SLAVE_TIMER TIM9
+#define A_MASTER_TIMER TIM10
+#define A_SLAVE_TIMER TIM9
 
-#define W_ALTERNATE_FUNCTION GPIO_AF3_TIM10
-#define W_CHANNEL TIM_CHANNEL_1
-#define W_ITR TIM_TS_ITR2
-#define W_IRQ TIM1_BRK_TIM9_IRQn
+#define A_ALTERNATE_FUNCTION GPIO_AF3_TIM10
+#define A_CHANNEL TIM_CHANNEL_1
+#define A_ITR TIM_TS_ITR2
+#define A_IRQ TIM1_BRK_TIM9_IRQn
 
-#define W_ENABLE_PORT GPIOC
-#define W_ENABLE_PIN GPIO_PIN_9
+#define A_ENABLE_PORT GPIOC
+#define A_ENABLE_PIN GPIO_PIN_9
 
-#define W_STEP_PORT GPIOB
-#define W_STEP_PIN GPIO_PIN_8
+#define A_STEP_PORT GPIOB
+#define A_STEP_PIN GPIO_PIN_8
 
-#define W_DIR_PORT GPIOB
-#define W_DIR_PIN GPIO_PIN_9
+#define A_DIR_PORT GPIOB
+#define A_DIR_PIN GPIO_PIN_9
 
-#define W_DIR_INV 1
+#define A_DIR_INV 1
 
 /************* END OF W STEPPER  **************/
 

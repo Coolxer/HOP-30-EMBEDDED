@@ -5,7 +5,7 @@
 
 void TIM1_BRK_TIM9_IRQHandler(void)
 {
-    HAL_TIM_IRQHandler(stepper_getSlaveTimer(W_STEPPER));
+    HAL_TIM_IRQHandler(stepper_getSlaveTimer(A_STEPPER));
 }
 
 void TIM8_BRK_TIM12_IRQHandler(void)
