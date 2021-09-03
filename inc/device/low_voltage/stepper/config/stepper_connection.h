@@ -8,7 +8,7 @@
 
 /**************** A STEPPER  ******************/
 
-#define A_NAME 'w'
+#define A_NAME 'a'
 
 #define A_MASTER_TIMER TIM10
 #define A_SLAVE_TIMER TIM9
