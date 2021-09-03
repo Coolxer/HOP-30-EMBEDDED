@@ -11,12 +11,12 @@
 
 void process_configure(uint8_t *direction, uint8_t *coolant)
 {
-    stepper_setDirection(X_STEPPER, LEFT);
+    stepper_setDirection(Y_STEPPER, LEFT);
     stepper_setDirection(A_STEPPER, direction);
 
     COOLANT_ENABLE = convertStrToBoolean(coolant);
 
-    if (endstop_isClicked(X_STEPPER->minEndstop))
+    if (endstop_isClicked(Y_STEPPER->minEndstop))
         process_reverse();
 
     PROCESS_CONFIGURED = 1;

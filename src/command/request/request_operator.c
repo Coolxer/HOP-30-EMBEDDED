@@ -26,22 +26,22 @@ Request request_operate(uint8_t *operation)
     /* STEPPER REQUESTS */
 
     if (stringEqual(OPT.CONFIGURE_STEPPER, operation))
-        return request_init(INSTANT, KEY.STEPPER, KEY.SPEED, KEY.ACCELERATION, 3, &stepper_validateConfigure, &stepper_configure, 2, X_STEPPER, NULL);
+        return request_init(INSTANT, KEY.STEPPER, KEY.SPEED, KEY.ACCELERATION, 3, &stepper_validateConfigure, &stepper_configure, 2, A_STEPPER, NULL);
 
     else if (stringEqual(OPT.SWITCH_STEPPER, operation))
-        return request_init(INSTANT, KEY.STEPPER, KEY.STATE, EMPTY_STRING, 2, &stepper_validateSwitch, &stepper_switch, 1, X_STEPPER, NULL);
+        return request_init(INSTANT, KEY.STEPPER, KEY.STATE, EMPTY_STRING, 2, &stepper_validateSwitch, &stepper_switch, 1, A_STEPPER, NULL);
 
     else if (stringEqual(OPT.MOVE_STEPPER, operation))
-        return request_init(LONG_TERM, KEY.STEPPER, KEY.WAY, KEY.DIRECTION, 3, &stepper_validateMove, &stepper_move, 2, X_STEPPER, NULL);
+        return request_init(LONG_TERM, KEY.STEPPER, KEY.WAY, KEY.DIRECTION, 3, &stepper_validateMove, &stepper_move, 2, A_STEPPER, NULL);
 
     else if (stringEqual(OPT.PAUSE_STEPPER, operation))
-        return request_init(INSTANT, KEY.STEPPER, EMPTY_STRING, EMPTY_STRING, 1, &stepper_validatePause, &stepper_pause, 0, X_STEPPER, NULL);
+        return request_init(INSTANT, KEY.STEPPER, EMPTY_STRING, EMPTY_STRING, 1, &stepper_validatePause, &stepper_pause, 0, A_STEPPER, NULL);
 
     else if (stringEqual(OPT.RESUME_STEPPER, operation))
-        return request_init(INSTANT, KEY.STEPPER, EMPTY_STRING, EMPTY_STRING, 1, &stepper_validateResume, &stepper_resume, 0, X_STEPPER, NULL);
+        return request_init(INSTANT, KEY.STEPPER, EMPTY_STRING, EMPTY_STRING, 1, &stepper_validateResume, &stepper_resume, 0, A_STEPPER, NULL);
 
     else if (stringEqual(OPT.STOP_STEPPER, operation))
-        return request_init(INSTANT, KEY.STEPPER, EMPTY_STRING, EMPTY_STRING, 1, &stepper_validateStop, &stepper_stop, 0, X_STEPPER, NULL);
+        return request_init(INSTANT, KEY.STEPPER, EMPTY_STRING, EMPTY_STRING, 1, &stepper_validateStop, &stepper_stop, 0, A_STEPPER, NULL);
 
     /* POMP AND TH_PHASE_MOTOR REQUESTS */
 
