@@ -5,6 +5,7 @@
 #include "null.h"
 #include "data/assistant.h"
 
+#include "device/low_voltage/stepper/config/stepper_calculation.h"
 #include "device/low_voltage/stepper/config/stepper_connection.h"
 #include "device/low_voltage/stepper/partial/stepper_setup.h"
 #include "device/low_voltage/stepper/partial/stepper_operation.h"
@@ -35,16 +36,16 @@ uint8_t devicesStates[12] = {0};
 void device_manager_init()
 {
     // create stepper with configs
-    stepper_init(&steppers[0], CIRCULAR, A_NAME, A_DIR_INV, A_MASTER_TIMER, A_SLAVE_TIMER, A_ALTERNATE_FUNCTION, A_CHANNEL, A_ITR, A_IRQ,
+    stepper_init(&steppers[0], A_NAME, A_STEPS_PER_DEGREE, A_DIR_INV, A_MASTER_TIMER, A_SLAVE_TIMER, A_ALTERNATE_FUNCTION, A_CHANNEL, A_ITR, A_IRQ,
                  A_ENABLE_PORT, A_ENABLE_PIN, A_STEP_PORT, A_STEP_PIN, A_DIR_PORT, A_DIR_PIN);
 
-    stepper_init(&steppers[1], LINEAR, X_NAME, X_DIR_INV, X_MASTER_TIMER, X_SLAVE_TIMER, X_ALTERNATE_FUNCTION, X_CHANNEL, X_ITR, X_IRQ,
+    stepper_init(&steppers[1], X_NAME, X_STEPS_PER_MM, X_DIR_INV, X_MASTER_TIMER, X_SLAVE_TIMER, X_ALTERNATE_FUNCTION, X_CHANNEL, X_ITR, X_IRQ,
                  X_ENABLE_PORT, X_ENABLE_PIN, X_STEP_PORT, X_STEP_PIN, X_DIR_PORT, X_DIR_PIN);
 
-    stepper_init(&steppers[2], LINEAR, Y_NAME, Y_DIR_INV, Y_MASTER_TIMER, Y_SLAVE_TIMER, Y_ALTERNATE_FUNCTION, Y_CHANNEL, Y_ITR, Y_IRQ,
+    stepper_init(&steppers[2], Y_NAME, Y_STEPS_PER_MM, Y_DIR_INV, Y_MASTER_TIMER, Y_SLAVE_TIMER, Y_ALTERNATE_FUNCTION, Y_CHANNEL, Y_ITR, Y_IRQ,
                  Y_ENABLE_PORT, Y_ENABLE_PIN, Y_STEP_PORT, Y_STEP_PIN, Y_DIR_PORT, Y_DIR_PIN);
 
-    stepper_init(&steppers[3], LINEAR, Z_NAME, Z_DIR_INV, Z_MASTER_TIMER, Z_SLAVE_TIMER, Z_ALTERNATE_FUNCTION, Z_CHANNEL, Z_ITR, Z_IRQ,
+    stepper_init(&steppers[3], Z_NAME, Z_STEPS_PER_MM, Z_DIR_INV, Z_MASTER_TIMER, Z_SLAVE_TIMER, Z_ALTERNATE_FUNCTION, Z_CHANNEL, Z_ITR, Z_IRQ,
                  Z_ENABLE_PORT, Z_ENABLE_PIN, Z_STEP_PORT, Z_STEP_PIN, Z_DIR_PORT, Z_DIR_PIN);
 
     // create endstops with configs

@@ -3,17 +3,12 @@
 
 #include "device/low_voltage/stepper/stepper.h"
 
-#include "device/low_voltage/stepper/enum/axis_type.h"
 #include "device/low_voltage/stepper/enum/move_type.h"
-#include "device/low_voltage/stepper/enum/axis_type.h"
 #include "device/low_voltage/stepper/enum/speed_state.h"
 #include "device/low_voltage/stepper/enum/speed_type.h"
 #include "device/low_voltage/stepper/enum/state.h"
 
 /* INFO SECTION */
-
-// stepper->info.axisType
-enum AxisType stepper_getAxisType(Stepper *stepper);
 
 // stepper->info.name
 uint8_t stepper_getName(Stepper *stepper);
@@ -21,6 +16,13 @@ uint8_t stepper_getName(Stepper *stepper);
 // stepper->info.index
 uint8_t *stepper_getIndex(Stepper *stepper);
 void stepper_setIndex(Stepper *stepper, uint8_t *index);
+
+// stepper->info.state
+enum State stepper_getState(Stepper *stepper);
+void stepper_setState(Stepper *stepper, enum State state);
+
+// stepper->info.invertedDirection
+uint8_t stepper_isDirectionInverted(Stepper *stepper);
 
 /* END OF INFO SECTION */
 
@@ -49,6 +51,12 @@ void stepper_setUnloadedSteps(Stepper *stepper, uint32_t steps);
 // stepper->movement.type
 enum MoveType stepper_getMoveType(Stepper *stepper);
 void stepper_setMoveType(Stepper *stepper, enum MoveType type);
+
+// stepper->movement.direction
+uint8_t stepper_getDirection(Stepper *stepper);
+
+// stepper->movement.stepsPerUnit
+float stepper_getStepsPerUnit(Stepper *stepper);
 
 /* END OF INSTANCE SECTION */
 
@@ -88,15 +96,5 @@ uint32_t stepper_getTarget(Stepper *stepper);
 uint32_t stepper_getProgress(Stepper *stepper);
 
 /* END OF HARDWARE SECTION */
-
-// stepper->info.state
-enum State stepper_getState(Stepper *stepper);
-void stepper_setState(Stepper *stepper, enum State state);
-
-// stepper->movement.direction
-uint8_t stepper_getDirection(Stepper *stepper);
-
-// stepper->info.invertedDirection
-uint8_t stepper_isDirectionInverted(Stepper *stepper);
 
 #endif // STEPPER_HELPER_H

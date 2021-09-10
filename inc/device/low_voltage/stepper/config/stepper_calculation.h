@@ -3,37 +3,27 @@
 
 #include <stdint.h>
 
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+// float values presented below are given with max 7 digits after comma
+// they are just given to show order of magnitude concrete variable
+// they are not used in calculations, because of precision
+// last-level value is high precision, because it's calculated of no-rounded subvalues
+// only last-level value is rounded to minimalize calculation ERRs
+
 /************************************* GENERAL ****************************************/
 
-extern const uint8_t STEPPER_STEPS_PER_REVOLUTION;
-extern const uint8_t MICROSTEPPING;
+//#define DEFAULT_STEPS_PER_REVOLUTION 200;
+//#define MICROSTEPPING 16;
 
-extern const uint8_t BIG_GEAR_DIAMETER;
-extern const uint8_t SMALL_GEAR_DIAMETER;
-extern const float GEARS_PROPORTION;
-
-extern const uint16_t SMALL_GEAR_STEPS_PER_REVOLUTION;
-
-extern const uint16_t STEPS_PER_REVOLUTION;
+//#define BIG_GEAR_DIAMETER 95;
+//#define SMALL_GEAR_DIAMETER 25;
+//#define GEARS_PROPORTION 3.8;
 
 /********************************** END OF GENERAL ***********************************/
 
-/******************************** LINEAR COMMON AXIS *********************************/
-
-extern const float SMALL_GEAR_CIRCUMFERENCE;
-
-extern const float SG_SPM;
-
-extern const float STEPS_PER_MM;
-
-/*************************** END OF LINEAR COMMON AXIS *******************************/
-
-/***************************** CIRCULAR COMMON AXIS  *********************************/
-
-extern const float SG_SPD;
-
-extern const float STEPS_PER_DEGREE;
-
-/************************** END OF CIRCULAR COMMON AXIS ******************************/
+#define A_STEPS_PER_DEGREE 80.000
+#define X_STEPS_PER_MM 77.000
+#define Y_STEPS_PER_MM 77.000
+#define Z_STEPS_PER_MM 4600.000
 
 #endif // STEPPER_CALCULATION_H

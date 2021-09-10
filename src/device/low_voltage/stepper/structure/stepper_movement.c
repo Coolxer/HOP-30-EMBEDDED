@@ -1,8 +1,10 @@
 #include "device/low_voltage/stepper/structure/stepper_movement.h"
 
-Movement stepper_movement_init()
+Movement stepper_movement_init(float stepsPerUnit)
 {
     Movement movement = {0};
+
+    movement.stepsPerUnit = stepsPerUnit;
 
     movement.rest = 0;
     movement.unloadedSteps = 0;

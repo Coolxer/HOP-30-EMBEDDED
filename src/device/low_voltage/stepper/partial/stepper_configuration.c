@@ -14,7 +14,7 @@ float MINIMUM_NOTICEABLED_SPEED = 0.01f; // 0.00025f;[160 MHz]
 // calls multiple times with acceleration / deceleration
 void stepper_updateSpeed(Stepper *stepper, float speed)
 {
-    Speed_params regs = convertSpeedToRegisters(stepper_getAxisType(stepper), speed);
+    Speed_params regs = convertSpeedToRegisters(stepper_getStepsPerUnit(stepper), speed);
     stepper_setSpeedRegisters(stepper, regs.psc, regs.arr, regs.pul);
 
     stepper_setCurrentSpeed(stepper, speed);

@@ -2,11 +2,6 @@
 
 /* INFO SECTION */
 
-enum AxisType stepper_getAxisType(Stepper *stepper)
-{
-    return stepper->info.axisType;
-}
-
 uint8_t stepper_getName(Stepper *stepper)
 {
     return stepper->info.name;
@@ -20,6 +15,21 @@ uint8_t *stepper_getIndex(Stepper *stepper)
 void stepper_setIndex(Stepper *stepper, uint8_t *index)
 {
     stepper->info.index = index;
+}
+
+enum State stepper_getState(Stepper *stepper)
+{
+    return stepper->info.state;
+}
+
+void stepper_setState(Stepper *stepper, enum State state)
+{
+    stepper->info.state = state;
+}
+
+uint8_t stepper_isDirectionInverted(Stepper *stepper)
+{
+    return stepper->info.invertedDirection;
 }
 
 /* END OF INFO SECTION */
@@ -79,6 +89,18 @@ void stepper_setMoveType(Stepper *stepper, enum MoveType type)
 {
     stepper->movement.type = type;
 }
+
+uint8_t stepper_getDirection(Stepper *stepper)
+{
+    return stepper->movement.direction;
+}
+
+float stepper_getStepsPerUnit(Stepper *stepper)
+{
+    return stepper->movement.stepsPerUnit;
+}
+
+float getStepsPerUnit(Stepper *stepper);
 
 /* END OF MOVEMENT SECTION */
 
@@ -157,23 +179,3 @@ uint32_t stepper_getProgress(Stepper *stepper)
 }
 
 /* END OF HARDWARE SECTION */
-
-enum State stepper_getState(Stepper *stepper)
-{
-    return stepper->info.state;
-}
-
-void stepper_setState(Stepper *stepper, enum State state)
-{
-    stepper->info.state = state;
-}
-
-uint8_t stepper_getDirection(Stepper *stepper)
-{
-    return stepper->movement.direction;
-}
-
-uint8_t stepper_isDirectionInverted(Stepper *stepper)
-{
-    return stepper->info.invertedDirection;
-}

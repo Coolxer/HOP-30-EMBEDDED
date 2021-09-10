@@ -30,7 +30,7 @@ void stepper_move(Stepper *stepper, uint8_t *way, uint8_t *direction)
     {
         stepper_setMoveType(stepper, PRECISED);
 
-        uint32_t steps = convertWayToSteps(stepper_getAxisType(stepper), road);
+        uint32_t steps = convertWayToSteps(stepper_getStepsPerUnit(stepper), road);
 
         // TIM2 and TIM5 are 32-bit timers and there is something like, that i need to decrease arr for them
         if (stepper_getSlaveTimer(stepper)->Instance == TIM2 || stepper_getSlaveTimer(stepper)->Instance == TIM5)

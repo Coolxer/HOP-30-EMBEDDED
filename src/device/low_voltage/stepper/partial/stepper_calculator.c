@@ -7,17 +7,14 @@
 #include "device/low_voltage/stepper/partial/stepper_helper.h"
 
 Speed_params
-convertSpeedToRegisters(enum AxisType axisType, float speed)
+convertSpeedToRegisters(float stepsPerUnit, float speed)
 {
     Speed_params regs = {0};
     float arr = 0.0f; // autoreload
     float stepsPerSecond = 0.0f;
 
     // convert mm/s to steps/s
-    if (axisType == LINEAR)
-        stepsPerSecond = (float)(speed * STEPS_PER_MM);
-    else // convert obr/min to steps/s
-        stepsPerSecond = (float)((speed * STEPS_PER_REVOLUTION) / 60.0f);
+    stepsPerSecond = (float)(speed * stepsPerUnit);
 
     /* MATHEMATICAL FORMULA
 
@@ -105,10 +102,10 @@ uint32_t calculateStepsNeededToAccelerate(Stepper *stepper)
     return steps;
 }
 
-uint32_t convertWayToSteps(enum AxisType axisType, float way)
+uint32_t convertWayToSteps(float stepsPerUnit, float way)
 {
     // calc real steps need to make to move by given mm or deg.
-    uint32_t steps = (uint32_t)(round(way * (axisType == LINEAR ? STEPS_PER_MM : STEPS_PER_DEGREE)));
+    uint32_t steps = (uint32_t)(round(way * stepsPerUnit));
 
     return steps;
 }
