@@ -9,10 +9,9 @@ typedef struct
     uint8_t name;   // name
     uint8_t *index; // command index
 
-    enum State state;          // state of stepper
-    uint8_t invertedDirection; // is direction inverted?
+    enum State state; // state of stepper
 } Info;
 
-Info stepper_info_init(uint8_t name, uint8_t invertedDirection);
+Info stepper_info_init(uint8_t name);
 
 #endif // STEPPER_INFO_H

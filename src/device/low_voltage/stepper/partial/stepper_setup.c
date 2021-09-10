@@ -5,12 +5,12 @@
 void stepper_init(Stepper *stepper, uint8_t name, float stepsPerUnit, uint8_t invertedDirection, TIM_TypeDef *masterTimer, TIM_TypeDef *slaveTimer, uint8_t alternateFunction, uint32_t channel, uint32_t itr, uint8_t irq,
                   GPIO_TypeDef *enablePort, uint16_t enablePin, GPIO_TypeDef *stepPort, uint16_t stepPin, GPIO_TypeDef *dirPort, uint16_t dirPin)
 {
-    stepper->info = stepper_info_init(name, invertedDirection);
+    stepper->info = stepper_info_init(name);
 
     stepper->hardware = stepper_hardware_init(masterTimer, slaveTimer, alternateFunction, channel, itr, irq, enablePort, enablePin, stepPort, stepPin, dirPort, dirPin);
     stepper->speed = stepper_speed_init();
     stepper->acceleration = stepper_acceleration_init();
-    stepper->movement = stepper_movement_init(stepsPerUnit);
+    stepper->movement = stepper_movement_init(stepsPerUnit, invertedDirection);
 
     stepper_setPeripherals(stepper);
 }

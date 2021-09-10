@@ -27,11 +27,6 @@ void stepper_setState(Stepper *stepper, enum State state)
     stepper->info.state = state;
 }
 
-uint8_t stepper_isDirectionInverted(Stepper *stepper)
-{
-    return stepper->info.invertedDirection;
-}
-
 /* END OF INFO SECTION */
 
 /* ACCELERATION SECTION */
@@ -59,6 +54,11 @@ void stepper_setStepsNeededToAccelerate(Stepper *stepper, uint32_t steps)
 /* END OF ACCELERATION SECTION */
 
 /* MOVEMENT SECTION */
+
+float stepper_getStepsPerUnit(Stepper *stepper)
+{
+    return stepper->movement.stepsPerUnit;
+}
 
 uint16_t stepper_getRest(Stepper *stepper)
 {
@@ -95,12 +95,10 @@ uint8_t stepper_getDirection(Stepper *stepper)
     return stepper->movement.direction;
 }
 
-float stepper_getStepsPerUnit(Stepper *stepper)
+uint8_t stepper_isDirectionInverted(Stepper *stepper)
 {
-    return stepper->movement.stepsPerUnit;
+    return stepper->movement.invertedDirection;
 }
-
-float getStepsPerUnit(Stepper *stepper);
 
 /* END OF MOVEMENT SECTION */
 

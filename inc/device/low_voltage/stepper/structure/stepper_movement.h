@@ -18,8 +18,9 @@ typedef struct
     volatile uint8_t FINISHED_FLAG; // stepper finish movement flag
 
     uint8_t direction;
+    uint8_t invertedDirection; // is direction inverted?
 } Movement;
 
-Movement stepper_movement_init(float stepsPerUnit);
+Movement stepper_movement_init(float stepsPerUnit, uint8_t invertedDirection);
 
 #endif // STEPPER_MOVEMENT_H

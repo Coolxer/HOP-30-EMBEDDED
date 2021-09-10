@@ -2,7 +2,7 @@
 
 #include "device/low_voltage/stepper/enum/state.h"
 
-Info stepper_info_init(uint8_t name, uint8_t invertedDirection)
+Info stepper_info_init(uint8_t name)
 {
     Info info = {0};
 
@@ -10,7 +10,5 @@ Info stepper_info_init(uint8_t name, uint8_t invertedDirection)
     info.name = name;
 
     info.state = LOW;
-    info.invertedDirection = invertedDirection;
-
     return info;
 }
